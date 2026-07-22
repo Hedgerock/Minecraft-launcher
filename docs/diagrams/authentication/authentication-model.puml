@@ -1,0 +1,13 @@
+@startuml
+
+interface Credentials
+
+class AuthenticationRequest
+class UsernamePasswordCredentials
+class OfflineCredentials
+
+AuthenticationRequest --> Credentials
+Credentials <|-- UsernamePasswordCredentials
+Credentials <|-- OfflineCredentials
+
+@enduml

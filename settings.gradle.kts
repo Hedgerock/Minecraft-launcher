@@ -1,0 +1,13 @@
+rootProject.name = "launcher"
+include("launcher-ui")
+include("launcher-core")
+include("launcher-api")
+include("launcher-downloader")
+include("launcher-downloader")
+include("launcher-game")
+include("launcher-common")
+include("launcher-auth")
+include("launcher-model")
+include("launcher-storage")
+include("launcher-verification")
+include("docs")

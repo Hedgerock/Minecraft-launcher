@@ -1,0 +1,23 @@
+@startuml
+
+participant DownloadTask
+participant SessionManager
+participant Session
+
+DownloadTask --> SessionManager : currentSession()
+SessionManager --> DownloadTask : Session
+
+DownloadTask --> Session : token()
+Session --> DownloadTask : expired()
+
+alt valid
+
+DownloadTask -> HttpClient : execute()
+
+else expired
+
+DownloadTask -> SessionManager : refresh() / close()
+
+end
+
+@enduml

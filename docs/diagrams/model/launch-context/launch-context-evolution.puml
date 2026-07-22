@@ -1,0 +1,12 @@
+@startuml
+
+class LaunchContext
+class Configuration
+class Manifest
+class VerificationReport
+
+LaunchContext --> Configuration
+LaunchContext --> Manifest
+LaunchContext --> VerificationReport
+
+@enduml

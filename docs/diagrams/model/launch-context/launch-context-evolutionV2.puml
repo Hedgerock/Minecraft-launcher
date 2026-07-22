@@ -1,0 +1,18 @@
+@startuml
+class LaunchContext
+class GameSession
+class Version
+class Profile
+class Manifest
+class VerificationReport
+
+LaunchContext --> GameSession
+GameSession --> Profile
+GameSession --> Version
+GameSession --> Manifest
+
+Profile --> VerificationReport
+Version --> VerificationReport
+Manifest --> VerificationReport
+
+@enduml

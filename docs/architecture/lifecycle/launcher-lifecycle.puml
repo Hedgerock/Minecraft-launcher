@@ -1,0 +1,20 @@
+@startuml
+
+[*] --> LauncherStarted
+
+LauncherStarted --> WaitingForAuthentication
+WaitingForAuthentication --> Authenticating
+Authenticating --> AuthenticatingFailed
+Authenticating --> Authenticated
+AuthenticatingFailed --> WaitingForAuthentication
+Authenticated --> ProfileSelection
+ProfileSelection --> ManifestLoading
+ManifestLoading --> Verification
+Verification --> Download
+Download --> PreparingGame
+PreparingGame --> LaunchingGame
+LaunchingGame --> Running
+Running --> Stopped
+Stopped --> [*]
+
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+
+[*] -> NoSession
+NoSession --> SessionOpened
+SessionOpened --> TokenExpired
+TokenExpired --> SessionRefreshed
+TokenExpired --> SessionClosed
+SessionRefreshed --> SessionOpened
+SessionClosed --> NoSession
+
+@enduml

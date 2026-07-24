@@ -1,0 +1,17 @@
+@startuml
+
+actor User
+
+participant Launcher
+participant Bootstrap
+participant ApplicationAssembly
+participant LauncherEngine
+
+User -> Launcher : start()
+Launcher -> Bootstrap : create()
+Bootstrap -> ApplicationAssembly : assemble()
+ApplicationAssembly --> Bootstrap : LauncherEngine
+Bootstrap --> Launcher : engine
+Launcher -> LauncherEngine : launch()
+
+@enduml

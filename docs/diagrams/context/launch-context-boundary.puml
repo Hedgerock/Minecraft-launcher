@@ -1,0 +1,21 @@
+@startuml
+
+class LaunchContext
+
+class LauncherConfiguration
+class Manifest
+class VerificationReport
+class DownloadReport
+
+LaunchContext --> LauncherConfiguration
+LaunchContext --> Manifest
+LaunchContext --> VerificationReport
+LaunchContext --> DownloadReport
+
+note right of LaunchContext
+Не владеет объектами
+Только передает их
+между LauncherTask
+end note
+
+@enduml

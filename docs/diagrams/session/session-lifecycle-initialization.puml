@@ -1,0 +1,14 @@
+@startuml
+
+interface AuthenticationProvider
+
+class SessionManager
+class Session
+class SessionHandle
+
+AuthenticationProvider --> SessionManager: open(Session)
+SessionManager --> Session
+SessionManager --> SessionHandle
+SessionHandle --> Session
+
+@enduml

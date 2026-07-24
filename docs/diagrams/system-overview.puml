@@ -1,0 +1,53 @@
+@startuml
+
+package "UI" {
+    [LAUNCHER UI]
+}
+
+package "Application" {
+    [LauncherEngine]
+    [OperationManager]
+    [EventBus]
+}
+
+package "Authentication" {
+    [AuthenticationProvider]
+    [SessionManager]
+}
+
+package "Operations" {
+    [LaunchOperation]
+}
+
+package "Execution" {
+    [TaskPipeline]
+    [LauncherTask]
+}
+
+package "Services" {
+    [Verification]
+    [Download]
+    [Game]
+}
+
+package "Infrastructure" {
+    [Storage]
+    [HTTP]
+    [Directories]
+}
+
+[LAUNCHER UI] --> [LauncherEngine]
+[LauncherEngine] --> [OperationManager]
+[LauncherEngine] --> [EventBus]
+[LauncherEngine] --> [AuthenticationProvider]
+[OperationManager] --> [LaunchOperation]
+[LaunchOperation] --> [TaskPipeline]
+[TaskPipeline] --> [LauncherTask]
+[LauncherTask] --> [Verification]
+[LauncherTask] --> [Download]
+[LauncherTask] --> [Game]
+[Verification] --> [Storage]
+[Download] --> [HTTP]
+[Download] --> [Storage]
+
+@enduml

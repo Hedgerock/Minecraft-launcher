@@ -1,0 +1,12 @@
+@startuml
+
+[*] --> IDLE
+IDLE --> AUTHENTICATING
+AUTHENTICATING --> ACTIVE : Success
+AUTHENTICATING --> IDLE : Invalid credentials
+ACTIVE --> EXPIRED : Token expired
+ACTIVE --> CLOSED : Logout
+EXPIRED --> CLOSED
+CLOSED --> IDLE
+
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+
+actor User
+
+participant AuthenticationProvider
+participant SessionManager
+participant Session
+participant SessionHandle
+
+User -> AuthenticationProvider : authenticate(request)
+AuthenticationProvider -> AuthenticationProvider : validate(credentials)
+AuthenticationProvider -> Session : create()
+AuthenticationProvider -> SessionManager : open(session)
+SessionManager --> AuthenticationProvider : success
+AuthenticationProvider --> User : authenticated
+User -> SessionManager : acquire()
+SessionManager -> SessionHandle : create()
+SessionHandle --> User: handle
+
+@enduml

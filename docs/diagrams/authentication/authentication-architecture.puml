@@ -1,0 +1,19 @@
+@startuml
+
+class Profile
+
+interface AuthenticationProvider
+
+class Session
+class SessionManager
+class SessionHandle
+class SessionToken
+
+Profile --> AuthenticationProvider : authenticate()
+AuthenticationProvider --> Session : create()
+Session --> SessionToken
+SessionManager --> Session : owns
+SessionManager --> SessionHandle : acquire()
+SessionHandle --> Session : temporary access
+
+@enduml

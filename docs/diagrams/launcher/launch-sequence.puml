@@ -1,0 +1,29 @@
+@startuml
+
+actor User
+
+participant "Launcher UI" as UI
+participant LauncherEngine
+participant OperationManager
+participant OperationResolver
+participant OperationFactory
+participant LaunchOperation
+participant TaskPipeline
+participant LauncherStateMachine
+
+User -> UI: Click launch
+UI -> LauncherEngine : launch(profile)
+LauncherEngine -> OperationManager : execute()
+OperationManager -> OperationResolver : resolve(profile)
+OperationResolver -> OperationFactory : create(LaunchOperation)
+OperationFactory --> OperationResolver : LaunchOperation
+OperationResolver --> OperationManager : LaunchOperation
+OperationManager -> LaunchOperation : execute()
+LaunchOperation -> TaskPipeline : execute(context)
+TaskPipeline --> LaunchOperation : Result
+LaunchOperation --> OperationManager : Result
+OperationManager --> LauncherEngine : Result
+LauncherEngine -> LauncherStateMachine : transition(RUNNING)
+LauncherEngine --> UI : Success
+
+@enduml

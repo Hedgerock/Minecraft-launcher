@@ -1,0 +1,19 @@
+@startuml
+
+class Profile
+interface AuthenticationProvider
+
+class SessionManager
+class SessionHandle
+class Session
+class LauncherTask
+
+Profile --> AuthenticationProvider
+AuthenticationProvider --> SessionManager
+SessionManager --> Session
+
+Execution --> SessionHandle
+SessionHandle --> LauncherTask
+LauncherTask --> services
+
+@enduml

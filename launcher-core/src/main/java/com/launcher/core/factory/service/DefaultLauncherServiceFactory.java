@@ -9,10 +9,10 @@ import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.infrastructure.LauncherInfrastructure;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.service.LauncherServices;
-import com.launcher.storage.directory.DirectoryProvider;
-import com.launcher.storage.directory.LocalDirectoryProvider;
-import com.launcher.storage.service.DefaultDirectoryService;
-import com.launcher.storage.service.DirectoryService;
+import com.launcher.core.storage.directory.DirectoryProvider;
+import com.launcher.core.storage.directory.LocalDirectoryProvider;
+import com.launcher.core.storage.service.DefaultDirectoryService;
+import com.launcher.core.storage.service.DirectoryService;
 
 public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     private final LauncherConfiguration configuration;

@@ -1,4 +1,4 @@
-package com.launcher.storage.file;
+package com.launcher.core.storage.file;
 
 import java.nio.file.Path;
 

@@ -1,8 +1,9 @@
 package com.launcher.verification.service;
 
+
 import com.launcher.model.manifest.Manifest;
-import com.launcher.storage.directory.DirectoryProvider;
-import com.launcher.storage.file.FileStorage;
+import com.launcher.core.storage.directory.DirectoryProvider;
+import com.launcher.core.storage.file.FileStorage;
 import com.launcher.storage.hash.HashService;
 import com.launcher.verification.model.VerificationPlan;
 

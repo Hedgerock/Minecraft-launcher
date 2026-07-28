@@ -1,4 +1,4 @@
-package com.launcher.storage.service;
+package com.launcher.core.storage.service;
 
 public interface DirectoryService {
 

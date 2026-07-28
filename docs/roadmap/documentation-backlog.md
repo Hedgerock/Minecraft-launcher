@@ -40,7 +40,7 @@ Events
 
 Examples
 ------------
-⬜ login-sequence.md
-⬜ logout-sequence.md
-⬜ verification-flow.md
-⬜ download-flow.md
+✔ login-sequence.md
+✔ logout-sequence.md
+✔ verification-flow.md
+✔ download-flow.md

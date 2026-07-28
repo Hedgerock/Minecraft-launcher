@@ -5,7 +5,7 @@ import com.launcher.core.result.Result;
 import com.launcher.core.result.SuccessResult;
 import com.launcher.core.state.LauncherState;
 import com.launcher.core.task.LauncherTask;
-import com.launcher.storage.service.DirectoryService;
+import com.launcher.core.storage.service.DirectoryService;
 
 public class PrepareDirectoriesTask implements LauncherTask {
 

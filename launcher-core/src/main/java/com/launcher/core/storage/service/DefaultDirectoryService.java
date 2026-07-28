@@ -1,8 +1,8 @@
-package com.launcher.storage.service;
+package com.launcher.core.storage.service;
 
 import com.launcher.model.storage.LauncherDirectories;
-import com.launcher.storage.directory.DirectoryProvider;
-import com.launcher.storage.file.FileStorage;
+import com.launcher.core.storage.directory.DirectoryProvider;
+import com.launcher.core.storage.file.FileStorage;
 
 import java.nio.file.Path;
 

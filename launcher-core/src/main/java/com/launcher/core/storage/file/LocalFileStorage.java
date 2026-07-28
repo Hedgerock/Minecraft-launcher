@@ -1,6 +1,6 @@
-package com.launcher.storage.file;
+package com.launcher.core.storage.file;
 
-import com.launcher.storage.exception.StorageException;
+import com.launcher.core.storage.exception.StorageException;
 
 import java.io.IOException;
 import java.nio.file.Files;

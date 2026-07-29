@@ -77,7 +77,10 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Migrated LauncherEngine to launch operations via OperationManager
 - LauncherEngine no longer uses the old execution path via TaskPipeline
 - Validated the new behavior with tests for LauncherEngine and the operation pipeline
+- OperationManager is now the main entry point for long-running launcher operations
 
 ### Removed
 
 - Removed the deprecated TaskPipeline, as it is no longer used in the code
+- Removed obsolete launch planning abstractions from the old task pipeline model: LaunchPlan, DefaultLaunchPlan,
+TaskFactory, DefaultTaskFactory

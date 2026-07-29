@@ -18,10 +18,33 @@ public abstract class LaunchOperation {
     }
 
     public OperationResult execute() {
-        List<LauncherTask> tasks = createTask();
+        OperationResult result;
 
+        try {
+            beforeExecute();
+
+            List<LauncherTask> tasks = createTask();
+            result = executeTasks(tasks);
+
+            afterExecute(result);
+        } catch (Exception e) {
+            result = OperationResult.failure(e.getMessage());
+        }
+
+        finalizeOperation(result);
+
+        return result;
+    }
+
+    protected void beforeExecute() {}
+
+    protected OperationResult executeTasks(List<LauncherTask> tasks) {
         return executionStrategy.execute(tasks, launchContext);
     }
+
+    protected void afterExecute(OperationResult result) {}
+
+    protected void finalizeOperation(OperationResult result) {}
 
     protected abstract List<LauncherTask> createTask();
 }

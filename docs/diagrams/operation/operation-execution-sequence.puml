@@ -1,0 +1,34 @@
+@startuml
+
+title Operation Execution Sequence (Success)
+
+participant LauncherEngine
+participant OperationManager
+participant OperationFactory
+participant LaunchOperation
+participant SequentialExecutionStrategy
+participant LauncherTask
+
+LauncherEngine -> OperationManager : execute(OperationType)
+
+OperationManager -> OperationFactory : create(OperationType)
+OperationFactory --> OperationManager : LaunchOperation
+
+OperationManager -> LaunchOperation : execute()
+
+LaunchOperation -> SequentialExecutionStrategy : execute(tasks)
+
+loop for each LauncherTask
+
+    SequentialExecutionStrategy -> LauncherTask : execute
+    LauncherTask --> SequentialExecutionStrategy : SuccessResult
+
+end
+
+SequentialExecutionStrategy --> LaunchOperation : OperationResult(success)
+
+LaunchOperation --> OperationManager : OperationResult(success)
+
+OperationManager --> LauncherEngine : OperationResult(success)
+
+@enduml

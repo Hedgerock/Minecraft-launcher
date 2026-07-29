@@ -1,28 +1,14 @@
 package com.launcher.core.operation;
 
-import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;
+import com.launcher.core.operation.result.OperationResult;
+import com.launcher.core.operation.type.OperationType;
 
-public class OperationManager {
+public interface OperationManager {
 
-    private final OperationFactory operationFactory;
-    private final ExecutionStrategy executionStrategy;
-    private final LaunchContext launchContext;
-
-    public OperationManager(OperationFactory operationFactory, ExecutionStrategy executionStrategy, LaunchContext launchContext) {
-        this.operationFactory = operationFactory;
-        this.executionStrategy = executionStrategy;
-        this.launchContext = launchContext;
-    }
-
-    public OperationResult execute(OperationType type) {
-        LaunchOperation operation = operationFactory.create(
-                type,
-                launchContext,
-                executionStrategy
-        );
-
-        return operation.execute();
-    }
+    OperationResult execute(
+            OperationType type,
+            LaunchContext context
+    );
 
 }

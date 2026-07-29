@@ -7,7 +7,7 @@ import com.launcher.api.manifest.mapper.ManifestMapper;
 import com.launcher.api.manifest.service.HttpManifestService;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.infrastructure.LauncherInfrastructure;
-import com.launcher.core.manifest.ManifestService;
+import com.launcher.api.manifest.service.ManifestService;
 import com.launcher.core.service.LauncherServices;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.directory.LocalDirectoryProvider;

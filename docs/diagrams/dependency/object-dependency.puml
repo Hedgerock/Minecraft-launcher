@@ -1,20 +1,41 @@
 @startuml
-class LauncherEngine <<Singleton>>
-class TaskPipeline <<Singleton>>
-class VerificationTask <<Singleton>> {
-    + Если задачи\n создаются один раз\n при сборке приложения
-}
-class LauncherTask <<interface>>
-class VerificationService <<Singleton>>
-class FileVerifier <<Singleton>>
-class HashVerifier <<Singleton>>
-class FileStorage <<Singleton>>
 
-LauncherEngine --> TaskPipeline
+class LauncherEngine <<ApplicationService>>
+class LauncherStateMachine
+interface OperationManager
+class DefaultOperationManager
+interface OperationFactory
+class DefaultOperationFactory
+abstract class LaunchOperation
+interface ExecutionStrategy
+class SequentialExecutionStrategy
+interface LauncherTask
+class VerificationTask
+class VerificationService
+class FileVerifier
+class HashVerifier
+class FileStorage
+
+LauncherEngine --> LauncherStateMachine
+LauncherEngine --> OperationManager
+
+DefaultOperationManager ..|> OperationManager
+DefaultOperationManager --> OperationFactory
+DefaultOperationManager --> ExecutionStrategy
+DefaultOperationManager --> LaunchOperation
+
+DefaultOperationFactory ..|> OperationFactory
+DefaultOperationFactory --> LaunchOperation
+
+SequentialExecutionStrategy ..> ExecutionStrategy
+SequentialExecutionStrategy --> LauncherTask
+LaunchOperation --> SequentialExecutionStrategy
+ExecutionStrategy --> LauncherTask
+
 VerificationTask ..|> LauncherTask
-TaskPipeline --> VerificationTask
 VerificationTask --> VerificationService
 VerificationService --> FileVerifier
 FileVerifier --> HashVerifier
 FileVerifier --> FileStorage
+
 @enduml

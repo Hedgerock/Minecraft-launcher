@@ -1,0 +1,16 @@
+@startuml
+
+title Operation Lifecycle (Success)
+
+start
+
+:Analyze;
+:Plan;
+:Execute;
+:Verify;
+:Finalize;
+:OperationResult (Success);
+
+stop
+
+@enduml

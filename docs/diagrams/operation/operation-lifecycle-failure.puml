@@ -1,0 +1,24 @@
+@startuml
+
+title Operation Lifecycle (Failure)
+
+start
+
+:Analyze;
+:Plan;
+:Execute;
+
+if (Failure?) then (yes)
+:Finalize;
+:OperationResult (Failure);
+stop
+
+else (no)
+:Verify;
+:Finalize;
+:OperationResult (Success);
+stop
+
+endif
+
+@enduml

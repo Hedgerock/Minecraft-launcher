@@ -55,7 +55,8 @@ L-5
 - LauncherEngine не знает деталей конкретных Operation
 - LaunchContext создается отдельно для каждой Operation
 - LauncherStateMachine централизует изменение состояния приложения
-- TaskPipeline инкапсулирует порядок выполнения задач
+- OperationManager управляет запуском Operation
+- ExecutionStrategy определяет способ выполнения LauncherTask внутри Operation
 
 Связанные документы
 

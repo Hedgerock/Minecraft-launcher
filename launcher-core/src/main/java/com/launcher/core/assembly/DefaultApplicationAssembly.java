@@ -2,18 +2,19 @@ package com.launcher.core.assembly;
 
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.core.execution.ExecutionStrategy;
+import com.launcher.core.execution.SequentialExecutionStrategy;
 import com.launcher.core.factory.infrastructure.DefaultLauncherInfrastructureFactory;
 import com.launcher.core.factory.infrastructure.LauncherInfrastructureFactory;
 import com.launcher.core.factory.service.DefaultLauncherServiceFactory;
 import com.launcher.core.factory.service.LauncherServicesFactory;
-import com.launcher.core.factory.task.DefaultTaskFactory;
-import com.launcher.core.factory.task.TaskFactory;
 import com.launcher.core.infrastructure.LauncherInfrastructure;
-import com.launcher.core.launch.DefaultLaunchPlan;
-import com.launcher.core.launch.LaunchPlan;
+import com.launcher.core.operation.DefaultOperationManager;
+import com.launcher.core.operation.OperationManager;
+import com.launcher.core.operation.factory.DefaultOperationFactory;
+import com.launcher.core.operation.factory.OperationFactory;
 import com.launcher.core.service.LauncherServices;
 import com.launcher.core.state.LauncherStateMachine;
-import com.launcher.core.task.TaskPipeline;
 
 public class DefaultApplicationAssembly implements ApplicationAssembly {
     private final LauncherConfiguration launcherConfiguration;
@@ -35,13 +36,19 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
 
         LauncherServices services = servicesFactory.createServices();
 
+        OperationFactory operationFactory = new DefaultOperationFactory(
+                services.manifestService()
+        );
+
+        ExecutionStrategy executionStrategy = new SequentialExecutionStrategy();
+
+        OperationManager operationManager = new DefaultOperationManager(
+                operationFactory,
+                executionStrategy
+        );
+
         LauncherStateMachine stateMachine = new LauncherStateMachine(launcherInfrastructure.eventBus());
 
-        TaskFactory taskFactory = new DefaultTaskFactory(services);
-        LaunchPlan launchPlan = new DefaultLaunchPlan(taskFactory.createTasks());
-
-        TaskPipeline taskPipeline = new TaskPipeline(launchPlan);
-
-        return new LauncherEngine(stateMachine, taskPipeline);
+        return new LauncherEngine(stateMachine, operationManager);
     }
 }

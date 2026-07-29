@@ -1,4 +1,4 @@
-package com.launcher.core.manifest;
+package com.launcher.api.manifest.service;
 
 import com.launcher.model.manifest.Manifest;
 

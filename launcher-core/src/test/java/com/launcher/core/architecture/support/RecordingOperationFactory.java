@@ -3,9 +3,9 @@ package com.launcher.core.architecture.support;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
-import com.launcher.core.operation.OperationFactory;
-import com.launcher.core.operation.OperationType;
-import com.launcher.core.operation.RepairOperation;
+import com.launcher.core.operation.factory.OperationFactory;
+import com.launcher.core.operation.type.OperationType;
+import com.launcher.core.operation.impl.RepairOperation;
 
 public class RecordingOperationFactory implements OperationFactory {
     public static final String RECORDING_EVENT_NAME = "OperationFactory";

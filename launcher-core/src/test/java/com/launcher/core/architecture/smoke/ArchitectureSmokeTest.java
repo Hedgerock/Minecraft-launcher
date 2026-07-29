@@ -5,9 +5,10 @@ import com.launcher.core.architecture.support.RecordingExecutionStrategy;
 import com.launcher.core.architecture.support.RecordingOperationFactory;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.launch.LaunchContext;
+import com.launcher.core.operation.DefaultOperationManager;
 import com.launcher.core.operation.OperationManager;
-import com.launcher.core.operation.OperationResult;
-import com.launcher.core.operation.OperationType;
+import com.launcher.core.operation.result.OperationResult;
+import com.launcher.core.operation.type.OperationType;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -19,21 +20,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ArchitectureSmokeTest {
 
-    @Test
-    void should_contains_new_repair_operation() {
-        //given
-        RecordingEvents events = new RecordingEvents();
-        RecordingExecutionStrategy strategy = new RecordingExecutionStrategy(events);
-        RecordingOperationFactory factory = new RecordingOperationFactory(events);
-        LaunchContext launchContext = new LaunchContext(
+    private LaunchContext getContext() {
+        return new LaunchContext(
                 new LauncherConfiguration(
                         URI.create("currentPath"),
                         Path.of("")
                 )
         );
-        OperationManager manager = new OperationManager(factory, strategy, launchContext);
+    }
+
+    private OperationManager getDefaultOperationManager(RecordingEvents events) {
+        RecordingExecutionStrategy strategy = new RecordingExecutionStrategy(events);
+        RecordingOperationFactory factory = new RecordingOperationFactory(events);
+        return new DefaultOperationManager(factory, strategy);
+    }
+
+    @Test
+    void should_contains_new_repair_operation() {
+        //given
+        RecordingEvents events = new RecordingEvents();
+        LaunchContext launchContext = getContext();
+        OperationManager manager = getDefaultOperationManager(events);
         //when
-        manager.execute(OperationType.REPAIR);
+        manager.execute(OperationType.REPAIR, launchContext);
 
         //then
 
@@ -47,17 +56,10 @@ class ArchitectureSmokeTest {
     void should_return_sequential_list_of_the_components() {
         //given
         RecordingEvents events = new RecordingEvents();
-        RecordingExecutionStrategy strategy = new RecordingExecutionStrategy(events);
-        RecordingOperationFactory factory = new RecordingOperationFactory(events);
-        LaunchContext launchContext = new LaunchContext(
-                new LauncherConfiguration(
-                        URI.create("currentPath"),
-                        Path.of("")
-                )
-        );
-        OperationManager manager = new OperationManager(factory, strategy, launchContext);
+        LaunchContext launchContext = getContext();
+        OperationManager manager = getDefaultOperationManager(events);
         //when
-        manager.execute(OperationType.REPAIR);
+        manager.execute(OperationType.REPAIR, launchContext);
 
         //then
 
@@ -71,20 +73,13 @@ class ArchitectureSmokeTest {
     }
 
     @Test
-    void should_execute_repair_operation_pipeline() {
+    void should_execute_repair_operation_successfully() {
         //given
         RecordingEvents events = new RecordingEvents();
-        RecordingExecutionStrategy strategy = new RecordingExecutionStrategy(events);
-        RecordingOperationFactory factory = new RecordingOperationFactory(events);
-        LaunchContext launchContext = new LaunchContext(
-                new LauncherConfiguration(
-                        URI.create("currentPath"),
-                        Path.of("")
-                )
-        );
-        OperationManager manager = new OperationManager(factory, strategy, launchContext);
+        LaunchContext launchContext = getContext();
+        OperationManager manager = getDefaultOperationManager(events);
         //when
-        OperationResult result = manager.execute(OperationType.REPAIR);
+        OperationResult result = manager.execute(OperationType.REPAIR, launchContext);
 
         //then
 

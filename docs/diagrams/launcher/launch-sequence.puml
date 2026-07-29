@@ -8,21 +8,22 @@ participant OperationManager
 participant OperationResolver
 participant OperationFactory
 participant LaunchOperation
-participant TaskPipeline
+participant ExecutionStrategy
 participant LauncherStateMachine
 
 User -> UI: Click launch
-UI -> LauncherEngine : launch(profile)
-LauncherEngine -> OperationManager : execute()
-OperationManager -> OperationResolver : resolve(profile)
-OperationResolver -> OperationFactory : create(LaunchOperation)
-OperationFactory --> OperationResolver : LaunchOperation
-OperationResolver --> OperationManager : LaunchOperation
+UI -> LauncherEngine : launch(configuration)
+LauncherEngine -> LauncherStateMachine : transition(LOADING_MANIFEST)
+LauncherEngine -> OperationManager : execute(LOAD_MANIFEST, context)
+OperationManager -> OperationFactory : create(LOAD_MANIFEST, context, strategy)
+OperationFactory --> OperationManager : LaunchOperation
 OperationManager -> LaunchOperation : execute()
-LaunchOperation -> TaskPipeline : execute(context)
-TaskPipeline --> LaunchOperation : Result
-LaunchOperation --> OperationManager : Result
-OperationManager --> LauncherEngine : Result
+LaunchOperation -> ExecutionStrategy : execute(tasks, context)
+ExecutionStrategy -> LauncherTask : execute(context)
+LauncherTask --> ExecutionStrategy : Result
+ExecutionStrategy --> LaunchOperation : OperationResult
+LaunchOperation --> OperationManager : OperationResult
+OperationManager --> LauncherEngine : OperationResult
 LauncherEngine -> LauncherStateMachine : transition(RUNNING)
 LauncherEngine --> UI : Success
 

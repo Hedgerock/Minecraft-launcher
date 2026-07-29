@@ -2,29 +2,33 @@ package com.launcher.core;
 
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.launch.LaunchContext;
+import com.launcher.core.operation.OperationManager;
+import com.launcher.core.operation.result.OperationResult;
+import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.state.LauncherState;
 import com.launcher.core.state.LauncherStateMachine;
-import com.launcher.core.task.TaskPipeline;
-import com.launcher.core.result.Result;
 
 public class LauncherEngine {
 
     private final LauncherStateMachine stateMachine;
-    private final TaskPipeline taskPipeline;
+    private final OperationManager operationManager;
 
-    public LauncherEngine(LauncherStateMachine stateMachine, TaskPipeline taskPipeline) {
+    public LauncherEngine(LauncherStateMachine stateMachine, OperationManager operationManager) {
         this.stateMachine = stateMachine;
-        this.taskPipeline = taskPipeline;
+        this.operationManager = operationManager;
     }
 
     public void launch(LauncherConfiguration configuration) {
         LaunchContext context = new LaunchContext(configuration);
 
-        stateMachine.transition(LauncherState.CHECKING_UPDATES);
+        stateMachine.transition(LauncherState.LOADING_MANIFEST);
 
-        Result result = taskPipeline.execute(context);
+        OperationResult result = operationManager.execute(
+                OperationType.LOAD_MANIFEST,
+                context
+        );
 
-        if (!result.success()) {
+        if (!result.isSuccess()) {
             stateMachine.transition(LauncherState.FAILED);
             return;
         }

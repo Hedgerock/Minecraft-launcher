@@ -67,3 +67,17 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Introduced ExecutionStrategy
 - Added Architecture Smoke Tests
 - Added architecture testing documentation
+
+---
+
+## Unreleased
+
+### Changed
+
+- Migrated LauncherEngine to launch operations via OperationManager
+- LauncherEngine no longer uses the old execution path via TaskPipeline
+- Validated the new behavior with tests for LauncherEngine and the operation pipeline
+
+### Removed
+
+- Removed the deprecated TaskPipeline, as it is no longer used in the code

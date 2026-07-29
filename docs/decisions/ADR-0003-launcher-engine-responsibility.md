@@ -1,7 +1,8 @@
 # ADR-0003 LauncherEngine Responsibility
 
 ## Статус
-Accepted
+
+Superseded by ADR-0012
 
 ## Контекст
 
@@ -18,7 +19,9 @@ LauncherEngine управляет жизненным циклом запуска
 
 ## Решение
 
-На текущем этапе LauncherEngine напрямую использует TaskPipeline.
+Исторически LauncherEngine напрямую использует TaskPipeline.
+
+После перехода на operation-модель актуальное решение описано в ADR-0012
 
 Отдельный LaunchOrchestrator не вводится
 
@@ -38,7 +41,6 @@ LauncherEngine отвечает за:
 - управление жизненным циклом
 - запуск Operation
 - обработку результата выполнения
-
 
 LauncherEngine не отвечает за:
 

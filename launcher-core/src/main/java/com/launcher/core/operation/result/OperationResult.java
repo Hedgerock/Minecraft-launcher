@@ -1,4 +1,4 @@
-package com.launcher.core.operation;
+package com.launcher.core.operation.result;
 
 public record OperationResult(
         boolean isSuccess
@@ -8,7 +8,9 @@ public record OperationResult(
         return new OperationResult(true);
     }
 
-    public static OperationResult failure() {
+    public static OperationResult failure(String message) {
+        System.out.println(message);
+
         return new OperationResult(false);
     }
 }

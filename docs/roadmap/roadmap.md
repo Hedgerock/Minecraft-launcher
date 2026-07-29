@@ -2,7 +2,7 @@ Phase 1 - Foundation
 
 ✔ Bootstrap
 ✔ LauncherEngine
-✔ TaskPipeline
+✔ TaskPipeline initial model, later replaced by OperationManager
 ✔ Infrastructure
 ✔ Verification
 ✔ Session Model
@@ -28,7 +28,7 @@ Phase 1.2 - Authentication
 
 Phase 1.3 - Task Lifecycle
 
-⬜ RFC-0003 Task Lifecycle
+✔ RFC-0003 Task Lifecycle
 ⬜ Cancellation
 ⬜ Cancellation Policy
 

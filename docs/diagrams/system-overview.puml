@@ -20,7 +20,7 @@ package "Operations" {
 }
 
 package "Execution" {
-    [TaskPipeline]
+    [ExecutionStrategy]
     [LauncherTask]
 }
 
@@ -41,8 +41,8 @@ package "Infrastructure" {
 [LauncherEngine] --> [EventBus]
 [LauncherEngine] --> [AuthenticationProvider]
 [OperationManager] --> [LaunchOperation]
-[LaunchOperation] --> [TaskPipeline]
-[TaskPipeline] --> [LauncherTask]
+[LaunchOperation] --> [ExecutionStrategy]
+[ExecutionStrategy] --> [LauncherTask]
 [LauncherTask] --> [Verification]
 [LauncherTask] --> [Download]
 [LauncherTask] --> [Game]

@@ -18,10 +18,10 @@
 LaunchOperation сохраняет единый lifecycle boundary:
 
 ```text
-started event
-    -> execution attempt
-        -> finalization attempt
-            -> completed/failed event
+событие начала
+    -> попытка выполнения
+        -> попытка финализации
+            -> событие успешного завершения или ошибки
                 -> OperationResult
 ```
 

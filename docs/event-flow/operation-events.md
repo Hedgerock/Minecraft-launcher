@@ -1,6 +1,6 @@
 # Operation Events
 
-## Overview
+## Обзор
 
 LaunchOperation публикует события исключительно для уведомления других подсистем об изменении
 собственного жизненного цикла
@@ -11,27 +11,27 @@ LaunchOperation не знает, кто является подписчиком 
 
 ## OperationStartedEvent
 
-### Publisher
+### Источник
 
 LaunchOperation
 
-### Subscribers
+### Подписчики
 
 - Launcher UI
 - Telemetry
 - Logger
 
-### Payload
+### Данные события
 
 - OperationType
 
-### Guarantees
+### Гарантии
 
 - Публикуется один раз для каждой LaunchOperation
 - Всегда является первым событием жизненного цикла Operation
 - Публикуется до создания LauncherTask
 
-### Notes
+### Примечания
 
 После публикации начинается выполнение жизненного цикла Operation
 
@@ -39,27 +39,27 @@ LaunchOperation
 
 ## OperationCompletedEvent
 
-### Publisher
+### Источник
 
 LaunchOperation
 
-### Subscribers
+### Подписчики
 
 - Launcher UI
 - Logger
 - Telemetry
 
-### Payload
+### Данные события
 
 - OperationType
 
-### Guarantees
+### Гарантии
 
 - Публикуется только после успешного завершения Operation
 - Публикуется не более одного раза
 - Завершает жизненный цикл успешной Operation
 
-### Notes
+### Примечания
 
 К моменту публикации:
 
@@ -71,29 +71,29 @@ LaunchOperation
 
 ## OperationFailedEvent
 
-### Publisher
+### Источник
 
 LaunchOperation
 
-### Subscribers
+### Подписчики
 
 - Launcher UI
 - Logger
 - Telemetry
 
-### Payload
+### Данные события
 
 - OperationType
-- Error message
+- Сообщение об ошибке (errorMessage)
 
-### Guarantees
+### Гарантии
 
 - Публикуется только при неуспешном завершении Operation
 - Публикуется не более одного раза
 - Завершает жизненный цикл неуспешной Operation
 - Публикуется также в случае ошибки внутри finalizeOperation(...)
 
-### Notes
+### Примечания
 
 Operation считается завершенной независимо от причины возникновения ошибки
 

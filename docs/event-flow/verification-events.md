@@ -1,6 +1,6 @@
 # Verification Events
 
-## Overview
+## Обзор
 
 Verification публикует события исключительно для уведомления других подсистем о ходе
 выполнения проверки
@@ -11,22 +11,22 @@ Verification не знает, кто является подписчиком с�
 
 ## VerificationStarted
 
-### Publisher
+### Источник
 
 VerificationOperation
 
-### Subscribers
+### Подписчики
 
 - Launcher UI
 - Telemetry
 - Logger
 
-### Guarantees
+### Гарантии
 
 - Публикуется один раз для каждой VerificationOperation
 - Всегда является первым событием жизненного цикла проверки
 
-### Notes
+### Примечания
 
 После публикации начинается последовательная обработка LauncherTask
 
@@ -34,23 +34,23 @@ VerificationOperation
 
 ## VerificationProgressChanged
 
-### Publisher
+### Источник
 
 VerificationOperation
 
-### Subscribers
+### Подписчики
 
 - Launcher UI
 - Telemetry
 
-### Payload
+### Данные события
 
 - OperationId
 - ProcessedFiles
 - TotalFiles
 - CurrentFile (optional
 
-### Guarantees
+### Гарантии
 
 - Может публиковаться произвольное количество раз
 - Процент выполнения никогда не уменьшается
@@ -59,19 +59,19 @@ VerificationOperation
 
 ## VerificationCompleted
 
-### Subscribers
+### Подписчики
 
 - Launcher UI
 - Logger
 - Telemetry
 
-### Payload
+### Данные события
 
 - OperationId
 - VerificationReport
 - FinishedAt
 
-### Guarantees
+### Гарантии
 
 - Публикуется не более одного раза
 - Завершает жизненный цикл VerificationOperation

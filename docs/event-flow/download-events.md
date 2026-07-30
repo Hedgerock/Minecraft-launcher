@@ -1,6 +1,6 @@
 # Download Events
 
-## Overview
+## Обзор
 
 DownloadOperation публикует события, описывающие жизненный цикл загрузки файлов
 
@@ -10,23 +10,23 @@ DownloadOperation публикует события, описывающие жи
 
 ## DownloadStarted
 
-### Publisher
+### Источник
 
 DownloadOperation
 
-### Subscribers
+### Подписчики
 
 - Launcher UI
 - Telemetry
 
-### Payload
+### Данные события
 
 - OperationId
 - TotalFiles
 - TotalBytes
 - StartedAt
 
-### Guarantees
+### Гарантии
 
 Публикуется ровно один раз для каждой DownloadOperation
 
@@ -34,23 +34,23 @@ DownloadOperation
 
 ## DownloadProgressChanged
 
-### Publisher
+### Источник
 
 DownloadOperation
 
-### Subscribers
+### Подписчики
 
 - Launcher UI
 - Telemetry
 
-### Payload
+### Данные события
 
 - DownloadFiles
 - TotalFiles
 - DownloadBytes
 - TotalBytes
 
-### Guarantees
+### Гарантии
 
 Публикуется произвольное количество раз
 
@@ -60,22 +60,22 @@ DownloadOperation
 
 ## DownloadCompleted
 
-### Publisher
+### Источник
 
 Download Operation
 
-### Subscribers
+### Подписчики
 
 - Launcher UI
 - Telemetry
 - Logger
 
-### Payload
+### Данные события
 
 - DownloadReport
 - FinishedAt
 
-### Guarantees
+### Гарантии
 
 Публикуется не более одного раза
 
@@ -83,7 +83,7 @@ Download Operation
 
 ---
 
-## Notes
+## Примечания
 
 DownloadOperation не публикует события ошибок
 

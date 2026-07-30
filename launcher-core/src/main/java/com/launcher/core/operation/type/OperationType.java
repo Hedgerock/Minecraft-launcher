@@ -4,5 +4,5 @@ public enum OperationType {
 
     REPAIR,
     LOAD_MANIFEST,
-
+    VERIFY_FILES
 }

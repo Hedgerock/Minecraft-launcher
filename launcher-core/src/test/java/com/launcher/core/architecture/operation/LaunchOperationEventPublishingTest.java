@@ -3,6 +3,7 @@ package com.launcher.core.architecture.operation;
 import com.launcher.core.architecture.support.EventPublishingOperation;
 import com.launcher.core.architecture.support.FailingWithoutMessageOperation;
 import com.launcher.core.architecture.support.FinalizeFailingOperation;
+import com.launcher.core.architecture.support.FixedResultExecutionStrategy;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.event.events.OperationCompletedEvent;
@@ -10,6 +11,7 @@ import com.launcher.core.event.events.OperationFailedEvent;
 import com.launcher.core.event.events.OperationStartedEvent;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
+import com.launcher.core.operation.impl.VerificationOperation;
 import com.launcher.core.operation.result.OperationResult;
 import org.junit.jupiter.api.Test;
 
@@ -27,6 +29,48 @@ class LaunchOperationEventPublishingTest {
                         URI.create("currentPath"),
                         Path.of("")
                 )
+        );
+    }
+
+    @Test
+    void should_publish_verify_files_events_when_verification_operation_succeeded() {
+        //given
+        EventBus eventBus = new EventBus();
+        List<String> events = new ArrayList<>();
+
+        eventBus.subscribe(
+                OperationStartedEvent.class,
+                event -> {
+                    String message = "%s:%s"
+                            .formatted("started", event.operationType());
+                    events.add(message);
+                }
+        );
+        eventBus.subscribe(
+                OperationCompletedEvent.class,
+                event -> {
+                    String message = "%s:%s"
+                            .formatted("completed", event.operationType());
+                    events.add(message);
+                }
+        );
+
+        LaunchOperation operation = new VerificationOperation(
+                getContext(),
+                new FixedResultExecutionStrategy(OperationResult.success()),
+                eventBus
+        );
+
+        //when
+        operation.execute();
+
+        //then
+        assertEquals(
+                List.of(
+                        "started:VERIFY_FILES",
+                        "completed:VERIFY_FILES"
+                ),
+                events
         );
     }
 

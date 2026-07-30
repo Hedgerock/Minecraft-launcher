@@ -7,6 +7,7 @@ import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.impl.LoadManifestOperation;
 import com.launcher.core.operation.impl.RepairOperation;
+import com.launcher.core.operation.impl.VerificationOperation;
 import com.launcher.core.operation.type.OperationType;
 
 public class DefaultOperationFactory implements OperationFactory {
@@ -23,6 +24,7 @@ public class DefaultOperationFactory implements OperationFactory {
         return switch (type) {
             case REPAIR -> new RepairOperation(context, executionStrategy, eventBus);
             case LOAD_MANIFEST -> new LoadManifestOperation(context, executionStrategy, eventBus, service);
+            case VERIFY_FILES -> new VerificationOperation(context, executionStrategy, eventBus);
         };
     }
 }

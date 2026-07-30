@@ -1,9 +1,11 @@
 package com.launcher.core.architecture.support;
 
+import com.launcher.core.event.EventBus;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.result.OperationResult;
+import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.task.LauncherTask;
 
 import java.util.List;
@@ -16,8 +18,14 @@ public class FailingLifecycleOperation extends LaunchOperation {
 
     private final RecordingEvents events;
 
-    public FailingLifecycleOperation(LaunchContext launchContext, ExecutionStrategy executionStrategy, RecordingEvents events) {
-        super(launchContext, executionStrategy);
+    public FailingLifecycleOperation(
+            LaunchContext launchContext,
+            ExecutionStrategy executionStrategy,
+            OperationType operationType,
+            EventBus eventBus,
+            RecordingEvents events
+    ) {
+        super(launchContext, executionStrategy, operationType, eventBus);
         this.events = events;
     }
 

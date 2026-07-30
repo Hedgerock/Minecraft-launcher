@@ -1,16 +1,33 @@
 package com.launcher.core.operation.result;
 
-public record OperationResult(
-        boolean isSuccess
-) {
+import java.util.Optional;
+
+public final class OperationResult {
+    private static final OperationResult SUCCESS = new OperationResult(true, null);
+
+    private final boolean success;
+    private final String errorMessage;
+
+    private OperationResult(boolean success, String errorMessage) {
+        this.success = success;
+        this.errorMessage = errorMessage;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
 
     public static OperationResult success() {
-        return new OperationResult(true);
+        return SUCCESS;
     }
 
-    public static OperationResult failure(String message) {
-        System.out.println(message);
-
-        return new OperationResult(false);
+    public static OperationResult failure(String errorMessage) {
+        return new OperationResult(false, errorMessage);
     }
+    public
+    Optional<String> errorMessage() {
+        return Optional.ofNullable(errorMessage);
+    }
+
+
 }

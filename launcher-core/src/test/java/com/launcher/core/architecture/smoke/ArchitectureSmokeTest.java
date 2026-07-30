@@ -4,6 +4,7 @@ import com.launcher.core.architecture.support.RecordingEvents;
 import com.launcher.core.architecture.support.RecordingExecutionStrategy;
 import com.launcher.core.architecture.support.RecordingOperationFactory;
 import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.core.event.EventBus;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.DefaultOperationManager;
 import com.launcher.core.operation.OperationManager;
@@ -31,7 +32,10 @@ class ArchitectureSmokeTest {
 
     private OperationManager getDefaultOperationManager(RecordingEvents events) {
         RecordingExecutionStrategy strategy = new RecordingExecutionStrategy(events);
-        RecordingOperationFactory factory = new RecordingOperationFactory(events);
+        RecordingOperationFactory factory = new RecordingOperationFactory(
+                events,
+                new EventBus()
+        );
         return new DefaultOperationManager(factory, strategy);
     }
 

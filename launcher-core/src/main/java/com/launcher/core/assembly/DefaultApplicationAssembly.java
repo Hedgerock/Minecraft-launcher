@@ -37,7 +37,8 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
         LauncherServices services = servicesFactory.createServices();
 
         OperationFactory operationFactory = new DefaultOperationFactory(
-                services.manifestService()
+                services.manifestService(),
+                launcherInfrastructure.eventBus()
         );
 
         ExecutionStrategy executionStrategy = new SequentialExecutionStrategy();

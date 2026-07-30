@@ -1,0 +1,33 @@
+# Ретроспектива: Обработка ошибок жизненного цикла Operation
+
+## Контекст
+
+Во время стабилизации жизненного цикла Operation был найден незащищенный hook: finalizeOperation(...)
+
+До изменения исключение из finalizeOperation(...) могло выйти наружу из LaunchOperation.execute(),
+пропустить публикацию финального события и обойти контракт OperationResult
+
+## Решение
+
+Ошибки finalizeOperation(...) считаются ошибками Operation
+
+Исключение преобразуется в OperationResult.failure(...), после чего публикуется OperationFailedEvent
+
+## Результат
+
+LaunchOperation сохраняет единый lifecycle boundary:
+
+```text
+started event
+    -> execution attempt
+        -> finalization attempt
+            -> completed/failed event
+                -> OperationResult
+```
+
+## Отложено
+
+Текущая модель OperationResult хранит только одно сообщение ошибки
+
+Если в будущем потребуется сохранять одновременно исходную ошибку выполнения и ошибку
+финализации, можно расширить модель результата до списка причин или отдельного FailureDetails

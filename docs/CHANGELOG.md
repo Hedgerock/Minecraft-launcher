@@ -72,15 +72,22 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 
 ## Unreleased
 
+### Added
+
+- Added operation lifecycle events for operation start, successful completion and failure
+
 ### Changed
 
 - Migrated LauncherEngine to launch operations via OperationManager
 - LauncherEngine no longer uses the old execution path via TaskPipeline
-- Validated the new behavior with tests for LauncherEngine and the operation pipeline
+- Validated the new behavior with tests for LauncherEngine and the operation execution flow
 - OperationManager is now the main entry point for long-running launcher operations
+- OperationResult now stores failure messages instead of printing them as side effects
+- OperationFailedEvent now includes a failure message from OperationResult
+- LaunchOperation now converts finalizeOperation(...) exceptions into failed operation results
 
 ### Removed
 
 - Removed the deprecated TaskPipeline, as it is no longer used in the code
-- Removed obsolete launch planning abstractions from the old task pipeline model: LaunchPlan, DefaultLaunchPlan,
-TaskFactory, DefaultTaskFactory
+- Removed obsolete launch planning abstractions from the old task pipeline model: 
+  LaunchPlan, DefaultLaunchPlan, TaskFactory, DefaultTaskFactory

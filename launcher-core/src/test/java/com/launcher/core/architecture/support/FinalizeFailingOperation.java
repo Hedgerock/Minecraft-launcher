@@ -1,32 +1,35 @@
-package com.launcher.core.operation.impl;
+package com.launcher.core.architecture.support;
 
 import com.launcher.core.event.EventBus;
-import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
+import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.task.LauncherTask;
 
-import java.util.Collections;
 import java.util.List;
 
-public final class RepairOperation extends LaunchOperation {
+public final class FinalizeFailingOperation extends LaunchOperation {
 
-    public RepairOperation(
+    public FinalizeFailingOperation(
             LaunchContext launchContext,
-            ExecutionStrategy executionStrategy,
             EventBus eventBus
     ) {
         super(
                 launchContext,
-                executionStrategy,
+                new FixedResultExecutionStrategy(OperationResult.success()),
                 OperationType.REPAIR,
                 eventBus
         );
     }
 
     @Override
+    protected void finalizeOperation(OperationResult result) {
+        throw new IllegalStateException("finalize failed");
+    }
+
+    @Override
     protected List<LauncherTask> createTask() {
-        return Collections.emptyList();
+        return List.of();
     }
 }

@@ -34,4 +34,12 @@
 
 TaskPipeline использовался на раннем этапе как простой механизм последовательного выполнения
 
-После введения operation-модели основной путь выполнения был изменен
+После введения operation-модели основной путь выполнения был изменен:
+
+```text
+LauncherEngine
+ -> OperationManager
+    -> LaunchOperation
+        -> ExecutionStrategy
+            -> LauncherTask
+```

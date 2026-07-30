@@ -75,6 +75,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 ### Added
 
 - Added operation lifecycle events for operation start, successful completion and failure
+- Added LaunchOperation lifecycle contract documentation
 
 ### Changed
 

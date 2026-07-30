@@ -77,6 +77,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added operation lifecycle events for operation start, successful completion and failure
 - Added LaunchOperation lifecycle contract documentation
 - Added factory support for VERIFY_FILES operation
+- Added status helper methods to VerificationPlan
 
 ### Changed
 

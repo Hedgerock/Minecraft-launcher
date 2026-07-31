@@ -81,6 +81,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added FileVerifier contract for verifying individual manifest files
 - Added HashService.sha256(Path) for file hash calculation
 - Added FileMetadataReader contract for read-only file metadata access
+- Added module boundary documentation for launcher-core dependency policy
 
 ### Changed
 

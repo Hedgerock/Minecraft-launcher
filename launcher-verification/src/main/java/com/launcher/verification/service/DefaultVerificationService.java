@@ -1,25 +1,38 @@
 package com.launcher.verification.service;
 
 
-import com.launcher.model.manifest.Manifest;
 import com.launcher.core.storage.directory.DirectoryProvider;
-import com.launcher.core.storage.file.FileStorage;
-import com.launcher.storage.hash.HashService;
+import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.Manifest;
+import com.launcher.verification.file.FileVerifier;
+import com.launcher.verification.model.FileVerificationResult;
 import com.launcher.verification.model.VerificationPlan;
 
-public class DefaultVerificationService implements VerificationService {
-    private final FileStorage fileStorage;
-    private final DirectoryProvider directoryProvider;
-    private final HashService hashService;
+import java.nio.file.Path;
+import java.util.List;
 
-    public DefaultVerificationService(FileStorage fileStorage, DirectoryProvider directoryProvider, HashService hashService) {
-        this.fileStorage = fileStorage;
+public class DefaultVerificationService implements VerificationService {
+    private final DirectoryProvider directoryProvider;
+    private final FileVerifier fileVerifier;
+
+    public DefaultVerificationService(DirectoryProvider directoryProvider, FileVerifier fileVerifier) {
         this.directoryProvider = directoryProvider;
-        this.hashService = hashService;
+        this.fileVerifier = fileVerifier;
     }
 
     @Override
     public VerificationPlan verify(Manifest manifest) {
-        return null;
+        List<FileVerificationResult> results = manifest.files()
+                .stream()
+                .map(this::verifyFile)
+                .toList();
+
+        return new VerificationPlan(results);
+    }
+
+    private FileVerificationResult verifyFile(FileEntry file) {
+        Path filePath = directoryProvider.directories().launcher().resolve(file.path());
+
+        return fileVerifier.verify(filePath, file);
     }
 }

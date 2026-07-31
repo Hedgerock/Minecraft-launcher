@@ -28,7 +28,7 @@ class VerificationPlanTest {
     }
 
     @Test
-    void should_have_missing_files_when_any_file_is_missing() {
+    void should_have_missing_files_when_any_file_is_missed() {
         //given
         VerificationPlan plan = new VerificationPlan(
                 List.of(
@@ -58,7 +58,7 @@ class VerificationPlanTest {
     }
 
     @Test
-    void should_have_corrupted_files_when_any_file_is_corrupting() {
+    void should_have_corrupted_files_when_any_file_is_corrupted() {
         //given
         VerificationPlan plan = new VerificationPlan(
                 List.of(

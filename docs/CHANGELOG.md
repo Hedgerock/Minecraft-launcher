@@ -78,6 +78,8 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added LaunchOperation lifecycle contract documentation
 - Added factory support for VERIFY_FILES operation
 - Added status helper methods to VerificationPlan
+- Added FileVerifier contract for verifying individual manifest files
+- Added HashService.sha256(Path) for file hash calculation
 
 ### Changed
 
@@ -94,3 +96,4 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Removed the deprecated TaskPipeline, as it is no longer used in the code
 - Removed obsolete launch planning abstractions from the old task pipeline model: 
   LaunchPlan, DefaultLaunchPlan, TaskFactory, DefaultTaskFactory
+- Removed obsolete HashVerifier abstraction

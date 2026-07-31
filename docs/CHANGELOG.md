@@ -80,6 +80,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added status helper methods to VerificationPlan
 - Added FileVerifier contract for verifying individual manifest files
 - Added HashService.sha256(Path) for file hash calculation
+- Added FileMetadataReader contract for read-only file metadata access
 
 ### Changed
 
@@ -90,6 +91,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - OperationResult now stores failure messages instead of printing them as side effects
 - OperationFailedEvent now includes a failure message from OperationResult
 - LaunchOperation now converts finalizeOperation(...) exceptions into failed operation results
+- DefaultFileVerifier now uses FileMetadataReader instead of mutable FileStorage
 
 ### Removed
 

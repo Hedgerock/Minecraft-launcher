@@ -14,10 +14,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    implementation(project(":launcher-common"))
-    implementation(project(":launcher-api"))
     implementation(project(":launcher-model"))
-    implementation(project(":launcher-auth"))
     implementation(project(":launcher-storage"))
     implementation(project(":launcher-core"))
 }

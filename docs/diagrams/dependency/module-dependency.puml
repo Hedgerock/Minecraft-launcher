@@ -1,27 +1,82 @@
 @startuml
 
-package "launcher-app" {}
-package "launcher-ui" {}
-package "launcher-core" {}
-package "launcher-api" {}
-package "launcher-verification" {}
-package "launcher-storage" {}
-package "launcher-model" {}
+title Launcher Module Dependency Target
 
-"launcher-app" --> "launcher-ui"
-"launcher-app" --> "launcher-core"
+package "Application" {
+    [launcher-app]
+}
 
-"launcher-ui" --> "launcher-core"
+package "Presentation" {
+    [launcher-ui]
+}
 
-"launcher-core" --> "launcher-api"
-"launcher-core" --> "launcher-model"
+package "Core" {
+    [launcher-core]
+}
 
-"launcher-core" --> "launcher-verification"
-"launcher-core" --> "launcher-storage"
+package "Domain Models" {
+    [launcher-model]
+}
 
-"launcher-verification" --> "launcher-storage"
-"launcher-verification" --> "launcher-model"
+package "Shared" {
+    [launcher-common]
+}
 
-"launcher-storage" --> "launcher-model"
+package "Adapters / Infrastructure" {
+    [launcher-api]
+    [launcher-auth]
+    [launcher-storage]
+    [launcher-verification]
+    [launcher-downloader]
+    [launcher-game]
+}
 
+[launcher-app] --> [launcher-ui]
+[launcher-app] --> [launcher-core]
+[launcher-app] --> [launcher-api]
+[launcher-app] --> [launcher-auth]
+[launcher-app] --> [launcher-storage]
+[launcher-app] --> [launcher-verification]
+[launcher-app] --> [launcher-downloader]
+[launcher-app] --> [launcher-game]
+
+[launcher-ui] --> [launcher-core]
+
+[launcher-core] --> [launcher-model]
+[launcher-core] --> [launcher-common]
+
+[launcher-api] --> [launcher-model]
+
+[launcher-auth] --> [launcher-model]
+
+[launcher-storage] --> [launcher-model]
+
+[launcher-verification] --> [launcher-model]
+[launcher-verification] --> [launcher-storage]
+
+note right of [launcher-core]
+    Core contains orchestration:
+    - LauncherEngine
+    - OperationManager
+    - LaunchOperation
+    - ExecutionStrategy
+    - LaunchStateMachine
+
+    Core must not create concrete
+    infrastructure adapters
+end note
+
+note bottom of [launcher-app]
+Composition root
+
+Creates concrete implementations
+and writes modules together
+end note
+
+note bottom of [launcher-api]
+Adapter module
+
+HTTP/manifest implementations
+must be assembled outside core
+end note
 @enduml

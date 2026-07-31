@@ -82,6 +82,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added HashService.sha256(Path) for file hash calculation
 - Added FileMetadataReader contract for read-only file metadata access
 - Added module boundary documentation for launcher-core dependency policy
+- Added launcher-core module boundary architecture test scaffold
 
 ### Changed
 
@@ -93,6 +94,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - OperationFailedEvent now includes a failure message from OperationResult
 - LaunchOperation now converts finalizeOperation(...) exceptions into failed operation results
 - DefaultFileVerifier now uses FileMetadataReader instead of mutable FileStorage
+- Updated module dependency diagram to reflect launcher-app as the composition root
 
 ### Removed
 

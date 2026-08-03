@@ -1,4 +1,4 @@
-package com.launcher.core.assembly;
+package com.launcher.app.assembly;
 
 import com.launcher.core.LauncherEngine;
 

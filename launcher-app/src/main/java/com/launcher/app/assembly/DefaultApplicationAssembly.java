@@ -3,18 +3,17 @@ package com.launcher.app.assembly;
 import com.launcher.app.infrastructure.factory.DefaultLauncherInfrastructureFactory;
 import com.launcher.app.service.factory.DefaultLauncherServiceFactory;
 import com.launcher.core.LauncherEngine;
-import com.launcher.core.assembly.ApplicationAssembly;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.execution.SequentialExecutionStrategy;
-import com.launcher.core.factory.infrastructure.LauncherInfrastructureFactory;
-import com.launcher.core.factory.service.LauncherServicesFactory;
-import com.launcher.core.infrastructure.LauncherInfrastructure;
+import com.launcher.app.infrastructure.factory.LauncherInfrastructureFactory;
+import com.launcher.app.service.factory.LauncherServicesFactory;
+import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.core.operation.DefaultOperationManager;
 import com.launcher.core.operation.OperationManager;
 import com.launcher.core.operation.factory.DefaultOperationFactory;
 import com.launcher.core.operation.factory.OperationFactory;
-import com.launcher.core.service.LauncherServices;
+import com.launcher.app.service.LauncherServices;
 import com.launcher.core.state.LauncherStateMachine;
 
 public class DefaultApplicationAssembly implements ApplicationAssembly {

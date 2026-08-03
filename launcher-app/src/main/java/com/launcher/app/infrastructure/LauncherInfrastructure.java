@@ -1,4 +1,4 @@
-package com.launcher.core.infrastructure;
+package com.launcher.app.infrastructure;
 
 import com.launcher.api.http.HttpClient;
 import com.launcher.core.event.EventBus;

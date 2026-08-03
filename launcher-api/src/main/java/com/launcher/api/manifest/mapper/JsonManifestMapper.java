@@ -1,6 +1,5 @@
 package com.launcher.api.manifest.mapper;
 
-
 import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 

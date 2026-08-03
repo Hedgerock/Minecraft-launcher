@@ -1,6 +1,5 @@
 package com.launcher.core.manifest;
 
-import com.launcher.api.manifest.service.ManifestService;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.state.LauncherState;
 import com.launcher.core.task.LauncherTask;

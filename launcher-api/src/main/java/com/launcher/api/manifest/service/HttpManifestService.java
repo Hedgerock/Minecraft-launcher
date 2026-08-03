@@ -1,8 +1,8 @@
 package com.launcher.api.manifest.service;
 
-
 import com.launcher.api.manifest.client.ManifestClient;
 import com.launcher.api.manifest.mapper.ManifestMapper;
+import com.launcher.core.manifest.ManifestService;
 import com.launcher.model.manifest.Manifest;
 
 public class HttpManifestService implements ManifestService {

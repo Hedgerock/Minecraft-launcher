@@ -21,10 +21,7 @@ class LauncherCoreBoundaryTest {
             .resolve("java");
 
     private static final List<String> FORBIDDEN_IMPORTS = List.of(
-            "import com.launcher.api.http.JavaHttpClient;",
-            "import com.launcher.api.manifest.client.HttpManifestClient;",
-            "import com.launcher.api.manifest.mapper.JsonManifestMapper;",
-            "import com.launcher.api.manifest.service.HttpManifestService;",
+            "import com.launcher.api.",
             "import com.launcher.storage.file.LocalFileStorage;",
             "import com.launcher.storage.file.LocalFileMetadataReader;"
     );

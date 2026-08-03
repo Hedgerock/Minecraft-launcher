@@ -1,6 +1,6 @@
 package com.launcher.core.architecture.operation;
 
-import com.launcher.api.manifest.service.ManifestService;
+import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.architecture.support.FixedResultExecutionStrategy;
 import com.launcher.core.architecture.support.RecordingManifestService;
 import com.launcher.core.configuration.LauncherConfiguration;

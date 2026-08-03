@@ -17,6 +17,7 @@ dependencies {
     implementation(project(":launcher-common"))
     implementation(project(":launcher-model"))
     implementation(project(":launcher-auth"))
+    implementation(project(":launcher-core"))
 }
 
 tasks.test {

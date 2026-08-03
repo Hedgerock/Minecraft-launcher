@@ -1,6 +1,6 @@
 package com.launcher.core.architecture.support;
 
-import com.launcher.api.manifest.service.ManifestService;
+import com.launcher.core.manifest.ManifestService;
 import com.launcher.model.manifest.Manifest;
 
 public class RecordingManifestService implements ManifestService {

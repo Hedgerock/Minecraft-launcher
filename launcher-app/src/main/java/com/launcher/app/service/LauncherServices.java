@@ -1,6 +1,6 @@
 package com.launcher.app.service;
 
-import com.launcher.api.manifest.service.ManifestService;
+import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.storage.service.DirectoryService;
 
 public record LauncherServices(

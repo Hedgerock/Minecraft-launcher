@@ -1,6 +1,6 @@
 package com.launcher.core.operation.impl;
 
-import com.launcher.api.manifest.service.ManifestService;
+import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;

@@ -16,6 +16,8 @@ dependencies {
 
     implementation(project(":launcher-core"))
     implementation(project(":launcher-api"))
+    implementation(project(":launcher-storage"))
+    implementation(project(":launcher-verification"))
 }
 
 tasks.test {

@@ -13,6 +13,14 @@ import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.directory.LocalDirectoryProvider;
 import com.launcher.core.storage.service.DefaultDirectoryService;
 import com.launcher.core.storage.service.DirectoryService;
+import com.launcher.core.verification.VerificationService;
+import com.launcher.storage.file.FileMetadataReader;
+import com.launcher.storage.file.LocalFileMetadataReader;
+import com.launcher.storage.hash.HashService;
+import com.launcher.storage.hash.Sha256HashService;
+import com.launcher.verification.file.DefaultFileVerifier;
+import com.launcher.verification.file.FileVerifier;
+import com.launcher.verification.service.DefaultVerificationService;
 
 public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     private final LauncherConfiguration configuration;
@@ -36,20 +44,32 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
         );
     }
 
-    private DirectoryService createDirectoryService() {
-        DirectoryProvider directoryProvider = new LocalDirectoryProvider(configuration);
+    private DirectoryService createDirectoryService(DirectoryProvider directoryProvider) {
         return new DefaultDirectoryService(
                 directoryProvider,
                 infrastructure.fileStorage()
         );
     }
 
+    private VerificationService createVerificationService(DirectoryProvider directoryProvider) {
+        FileMetadataReader metadataReader = new LocalFileMetadataReader();
+        HashService hashService = new Sha256HashService();
+
+        FileVerifier fileVerifier = new DefaultFileVerifier(metadataReader, hashService);
+
+
+        return new DefaultVerificationService(directoryProvider, fileVerifier);
+    }
+
     @Override
     public LauncherServices createServices() {
+        DirectoryProvider directoryProvider = new LocalDirectoryProvider(configuration);
+
 
         return new LauncherServices(
                 createManifestService(),
-                createDirectoryService()
+                createVerificationService(directoryProvider),
+                createDirectoryService(directoryProvider)
         );
     }
 }

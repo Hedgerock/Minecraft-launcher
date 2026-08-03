@@ -9,22 +9,33 @@ import com.launcher.core.operation.impl.LoadManifestOperation;
 import com.launcher.core.operation.impl.RepairOperation;
 import com.launcher.core.operation.impl.VerificationOperation;
 import com.launcher.core.operation.type.OperationType;
+import com.launcher.core.verification.VerificationService;
 
 public class DefaultOperationFactory implements OperationFactory {
     private final ManifestService service;
+    private final VerificationService verificationService;
     private final EventBus eventBus;
 
-    public DefaultOperationFactory(ManifestService service, EventBus eventBus) {
+    public DefaultOperationFactory(
+            ManifestService service,
+            VerificationService verificationService,
+            EventBus eventBus
+    ) {
         this.service = service;
+        this.verificationService = verificationService;
         this.eventBus = eventBus;
     }
 
     @Override
-    public LaunchOperation create(OperationType type, LaunchContext context, ExecutionStrategy executionStrategy) {
+    public LaunchOperation create(
+            OperationType type,
+            LaunchContext context,
+            ExecutionStrategy executionStrategy
+    ) {
         return switch (type) {
             case REPAIR -> new RepairOperation(context, executionStrategy, eventBus);
             case LOAD_MANIFEST -> new LoadManifestOperation(context, executionStrategy, eventBus, service);
-            case VERIFY_FILES -> new VerificationOperation(context, executionStrategy, eventBus);
+            case VERIFY_FILES -> new VerificationOperation(context, executionStrategy, eventBus, verificationService);
         };
     }
 }

@@ -46,6 +46,7 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
 
         OperationFactory operationFactory = new DefaultOperationFactory(
                 services.manifestService(),
+                services.verificationService(),
                 launcherInfrastructure.eventBus()
         );
 

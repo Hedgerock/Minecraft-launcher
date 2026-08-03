@@ -1,11 +1,12 @@
 package com.launcher.core.architecture.operation;
 
-import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.architecture.support.FixedResultExecutionStrategy;
+import com.launcher.core.architecture.support.RecordVerificationService;
 import com.launcher.core.architecture.support.RecordingManifestService;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.launch.LaunchContext;
+import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.factory.DefaultOperationFactory;
 import com.launcher.core.operation.impl.LoadManifestOperation;
@@ -13,10 +14,12 @@ import com.launcher.core.operation.impl.RepairOperation;
 import com.launcher.core.operation.impl.VerificationOperation;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.operation.type.OperationType;
+import com.launcher.core.verification.model.VerificationPlan;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
@@ -32,17 +35,30 @@ class OperationFactoryTest {
         );
     }
 
+    private VerificationPlan getVerificationPlan() {
+        return new VerificationPlan(
+                List.of()
+        );
+    }
+
+    private DefaultOperationFactory getDefaultOperationFactory(
+            ManifestService manifestService,
+            EventBus eventBus
+    ) {
+        return new DefaultOperationFactory(
+                manifestService,
+                new RecordVerificationService(getVerificationPlan()),
+                eventBus
+        );
+    }
+
     @Test
     void should_create_load_manifest_operation_for_load_manifest_type() {
         //given
         ManifestService service = new RecordingManifestService();
         EventBus eventBus = new EventBus();
-        DefaultOperationFactory factory = new DefaultOperationFactory(
-                service,
-                eventBus
-        );
-
         LaunchContext context = getContext();
+        DefaultOperationFactory factory = getDefaultOperationFactory(service, eventBus);
 
         //when
         LaunchOperation operation = factory.create(
@@ -60,12 +76,8 @@ class OperationFactoryTest {
         //given
         ManifestService service = new RecordingManifestService();
         EventBus eventBus = new EventBus();
-        DefaultOperationFactory factory = new DefaultOperationFactory(
-                service,
-                eventBus
-        );
-
         LaunchContext context = getContext();
+        DefaultOperationFactory factory = getDefaultOperationFactory(service, eventBus);
 
         //when
         LaunchOperation operation = factory.create(
@@ -84,12 +96,8 @@ class OperationFactoryTest {
         //given
         ManifestService service = new RecordingManifestService();
         EventBus eventBus = new EventBus();
-        DefaultOperationFactory factory = new DefaultOperationFactory(
-                service,
-                eventBus
-        );
-
         LaunchContext context = getContext();
+        DefaultOperationFactory factory = getDefaultOperationFactory(service, eventBus);
 
         //when
         LaunchOperation operation = factory.create(

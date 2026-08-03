@@ -1,9 +1,6 @@
 package com.launcher.core.architecture.operation;
 
-import com.launcher.core.architecture.support.EventPublishingOperation;
-import com.launcher.core.architecture.support.FailingWithoutMessageOperation;
-import com.launcher.core.architecture.support.FinalizeFailingOperation;
-import com.launcher.core.architecture.support.FixedResultExecutionStrategy;
+import com.launcher.core.architecture.support.*;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.event.events.OperationCompletedEvent;
@@ -13,6 +10,7 @@ import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.impl.VerificationOperation;
 import com.launcher.core.operation.result.OperationResult;
+import com.launcher.core.verification.model.VerificationPlan;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -32,11 +30,18 @@ class LaunchOperationEventPublishingTest {
         );
     }
 
+    private VerificationPlan getVerificationPlan() {
+        return new VerificationPlan(
+                List.of()
+        );
+    }
+
     @Test
     void should_publish_verify_files_events_when_verification_operation_succeeded() {
         //given
         EventBus eventBus = new EventBus();
         List<String> events = new ArrayList<>();
+        LaunchContext context = getContext();
 
         eventBus.subscribe(
                 OperationStartedEvent.class,
@@ -56,9 +61,10 @@ class LaunchOperationEventPublishingTest {
         );
 
         LaunchOperation operation = new VerificationOperation(
-                getContext(),
+                context,
                 new FixedResultExecutionStrategy(OperationResult.success()),
-                eventBus
+                eventBus,
+                new RecordVerificationService(getVerificationPlan())
         );
 
         //when

@@ -6,15 +6,19 @@ import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.task.LauncherTask;
+import com.launcher.core.verification.VerificationService;
+import com.launcher.core.verification.VerifyFilesTask;
 
 import java.util.List;
 
 public final class VerificationOperation extends LaunchOperation {
+    private final VerificationService verificationService;
 
     public VerificationOperation(
             LaunchContext launchContext,
             ExecutionStrategy executionStrategy,
-            EventBus eventBus
+            EventBus eventBus,
+            VerificationService verificationService
     ) {
         super(
                 launchContext,
@@ -22,10 +26,14 @@ public final class VerificationOperation extends LaunchOperation {
                 OperationType.VERIFY_FILES,
                 eventBus
         );
+
+        this.verificationService = verificationService;
     }
 
     @Override
     protected List<LauncherTask> createTask() {
-        return List.of();
+        return List.of(
+                new VerifyFilesTask(verificationService)
+        );
     }
 }

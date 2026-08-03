@@ -83,6 +83,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added FileMetadataReader contract for read-only file metadata access
 - Added module boundary documentation for launcher-core dependency policy
 - Added launcher-core module boundary architecture test scaffold
+- Added VerifyFilesTask for executing file verification through VerificationService
 
 ### Changed
 

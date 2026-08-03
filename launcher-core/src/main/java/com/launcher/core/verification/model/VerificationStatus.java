@@ -1,4 +1,4 @@
-package com.launcher.verification.model;
+package com.launcher.core.verification.model;
 
 public enum VerificationStatus {
     VALID,

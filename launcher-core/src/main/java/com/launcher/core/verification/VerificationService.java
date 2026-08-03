@@ -1,8 +1,8 @@
-package com.launcher.verification.service;
+package com.launcher.core.verification;
 
 
+import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.model.manifest.Manifest;
-import com.launcher.verification.model.VerificationPlan;
 
 public interface VerificationService {
 

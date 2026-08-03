@@ -1,5 +1,8 @@
 package com.launcher.verification.model;
 
+import com.launcher.core.verification.model.FileVerificationResult;
+import com.launcher.core.verification.model.VerificationPlan;
+import com.launcher.core.verification.model.VerificationStatus;
 import com.launcher.model.manifest.FileEntry;
 import org.junit.jupiter.api.Test;
 

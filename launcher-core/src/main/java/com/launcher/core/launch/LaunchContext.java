@@ -1,12 +1,14 @@
 package com.launcher.core.launch;
 
 import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.model.manifest.Manifest;
 
 public class LaunchContext {
 
     private Manifest manifest;
     private final LauncherConfiguration launcherConfiguration;
+    private VerificationPlan verificationPlan;
 
     public LaunchContext(LauncherConfiguration launcherConfiguration) {
         this.launcherConfiguration = launcherConfiguration;
@@ -18,6 +20,16 @@ public class LaunchContext {
 
     public LaunchContext setManifest(Manifest manifest) {
         this.manifest = manifest;
+        return this;
+    }
+
+    public VerificationPlan getVerificationPlan() {
+        return verificationPlan;
+    }
+
+    public LaunchContext setVerificationPlan(VerificationPlan verificationPlan) {
+        this.verificationPlan = verificationPlan;
+
         return this;
     }
 

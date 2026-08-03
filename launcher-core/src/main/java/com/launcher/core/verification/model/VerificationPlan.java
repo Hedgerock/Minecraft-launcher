@@ -1,4 +1,4 @@
-package com.launcher.verification.model;
+package com.launcher.core.verification.model;
 
 import java.util.List;
 

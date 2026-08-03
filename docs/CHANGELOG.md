@@ -98,6 +98,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Moved concrete application assembly and infrastructure factories from launcher-core to launcher-app
 - Enabled launcher-core module boundary architecture test after moving concrete factories
 - Moved remaining application assembly contracts and service bundles from launcher-core to launcher-app
+- Moved verification result contract into launcher-core
 
 ### Removed
 

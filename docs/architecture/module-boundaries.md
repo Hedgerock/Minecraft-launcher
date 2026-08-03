@@ -12,6 +12,8 @@
 `launcher-core` содержит orchestration-логику лаунчера и не должен создавать конкретные инфраструктурные
 реализации
 
+`launcher-verification` владеет алгоритмом проверки файлов и реализациями сервисов верификации
+
 `launcher-core` отвечает за
 
 - Жизненный цикл `LauncherEngine`
@@ -86,7 +88,7 @@
 
 `launcher-core` больше не отвечает за контракты сборок приложений.
 
-`launcher-core` больше не зависит от `laincher-api`
+`launcher-core` больше не зависит от `launcher-api`
 
 Контракт загрузки манифеста принадлежит `launcher-core`, а HTTP-реализация находится в
 `launcher-api`
@@ -111,6 +113,21 @@
 
 `launcher-core` может запускать операции верификации, но не должен самостоятельно выполнять детали
 проверки файлов
+
+### `launcher-core` владеет
+
+- `VerificationService`
+- `VerificationPlan`
+- `FileVerificationResult`
+- `VerificationStatus`
+
+### `launcher-verification` владеет
+
+- `FileVerifier`
+- `DefaultFileVerifier`
+- `DefaultVerificationService`
+- Алгоритмом верификации
+- Взаимодействием с файловой системой и хешированием через контракты
 
 ## Направление зависимостей
 

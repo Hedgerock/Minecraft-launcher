@@ -1,7 +1,7 @@
 package com.launcher.verification.file;
 
 import com.launcher.model.manifest.FileEntry;
-import com.launcher.verification.model.FileVerificationResult;
+import com.launcher.core.verification.model.FileVerificationResult;
 
 import java.nio.file.Path;
 

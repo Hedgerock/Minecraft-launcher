@@ -1,6 +1,5 @@
-package com.launcher.core.architecture.boundaty;
+package com.launcher.core.architecture.boundary;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -31,7 +30,6 @@ class LauncherCoreBoundaryTest {
     );
 
     @Test
-    @Disabled("Enabled after moving concrete infrastructure factories from launcher-core to launcher-app")
     void launcher_core_should_not_import_concrete_infrastructure_adapters() throws IOException {
         List<String> violations = findViolations();
 

@@ -2,7 +2,7 @@ package com.launcher.app.bootstrap;
 
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.assembly.ApplicationAssembly;
-import com.launcher.core.assembly.DefaultApplicationAssembly;
+import com.launcher.app.assembly.DefaultApplicationAssembly;
 import com.launcher.core.configuration.LauncherConfiguration;
 
 public class Bootstrap {

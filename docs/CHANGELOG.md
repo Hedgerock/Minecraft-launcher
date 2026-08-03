@@ -95,6 +95,8 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - LaunchOperation now converts finalizeOperation(...) exceptions into failed operation results
 - DefaultFileVerifier now uses FileMetadataReader instead of mutable FileStorage
 - Updated module dependency diagram to reflect launcher-app as the composition root
+- Moved concrete application assembly and infrastructure factories from launcher-core to launcher-app
+- Enabled launcher-core module boundary architecture test after moving concrete factories
 
 ### Removed
 

@@ -1,12 +1,13 @@
-package com.launcher.core.assembly;
+package com.launcher.app.assembly;
 
+import com.launcher.app.infrastructure.factory.DefaultLauncherInfrastructureFactory;
+import com.launcher.app.service.factory.DefaultLauncherServiceFactory;
 import com.launcher.core.LauncherEngine;
+import com.launcher.core.assembly.ApplicationAssembly;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.execution.SequentialExecutionStrategy;
-import com.launcher.core.factory.infrastructure.DefaultLauncherInfrastructureFactory;
 import com.launcher.core.factory.infrastructure.LauncherInfrastructureFactory;
-import com.launcher.core.factory.service.DefaultLauncherServiceFactory;
 import com.launcher.core.factory.service.LauncherServicesFactory;
 import com.launcher.core.infrastructure.LauncherInfrastructure;
 import com.launcher.core.operation.DefaultOperationManager;
@@ -26,9 +27,17 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
     @Override
     public LauncherEngine createEngine() {
 
-        LauncherInfrastructureFactory infrastructureFactory = new DefaultLauncherInfrastructureFactory(launcherConfiguration);
+        LauncherInfrastructureFactory infrastructureFactory =
+                new DefaultLauncherInfrastructureFactory(launcherConfiguration);
 
         LauncherInfrastructure launcherInfrastructure = infrastructureFactory.createInfrastructure();
+        OperationManager operationManager = createOperationManager(launcherInfrastructure);
+        LauncherStateMachine stateMachine = new LauncherStateMachine(launcherInfrastructure.eventBus());
+
+        return new LauncherEngine(stateMachine, operationManager);
+    }
+
+    private OperationManager createOperationManager(LauncherInfrastructure launcherInfrastructure) {
         LauncherServicesFactory servicesFactory = new DefaultLauncherServiceFactory(
                 launcherConfiguration,
                 launcherInfrastructure
@@ -43,13 +52,9 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
 
         ExecutionStrategy executionStrategy = new SequentialExecutionStrategy();
 
-        OperationManager operationManager = new DefaultOperationManager(
+        return new DefaultOperationManager(
                 operationFactory,
                 executionStrategy
         );
-
-        LauncherStateMachine stateMachine = new LauncherStateMachine(launcherInfrastructure.eventBus());
-
-        return new LauncherEngine(stateMachine, operationManager);
     }
 }

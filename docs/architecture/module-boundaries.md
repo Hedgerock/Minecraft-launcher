@@ -82,11 +82,10 @@
 
 Кандидаты на перенос
 
-- `DefaultApplicationAssembly`
-- `DefaultLauncherInfrastructureFactory`
-- `DefaultLauncherServiceFactory`
 - `LauncherInfrastructure`
 - `LauncherServices`
+
+Concrete assembly/factory перенесены в `launcher-app`
 
 ## Границы хранения
 

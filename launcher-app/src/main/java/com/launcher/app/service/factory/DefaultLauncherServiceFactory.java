@@ -1,13 +1,14 @@
-package com.launcher.core.factory.service;
+package com.launcher.app.service.factory;
 
 import com.launcher.api.manifest.client.HttpManifestClient;
 import com.launcher.api.manifest.client.ManifestClient;
 import com.launcher.api.manifest.mapper.JsonManifestMapper;
 import com.launcher.api.manifest.mapper.ManifestMapper;
 import com.launcher.api.manifest.service.HttpManifestService;
-import com.launcher.core.configuration.LauncherConfiguration;
-import com.launcher.core.infrastructure.LauncherInfrastructure;
 import com.launcher.api.manifest.service.ManifestService;
+import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.core.factory.service.LauncherServicesFactory;
+import com.launcher.core.infrastructure.LauncherInfrastructure;
 import com.launcher.core.service.LauncherServices;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.directory.LocalDirectoryProvider;

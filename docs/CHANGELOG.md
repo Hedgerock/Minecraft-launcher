@@ -100,6 +100,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Enabled launcher-core module boundary architecture test after moving concrete factories
 - Moved remaining application assembly contracts and service bundles from launcher-core to launcher-app
 - Moved verification result contract into launcher-core
+- LauncherEngine now runs VERIFY_FILES after LOAD_MANIFEST during launch
 
 ### Removed
 

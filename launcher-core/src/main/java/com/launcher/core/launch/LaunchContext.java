@@ -29,7 +29,6 @@ public class LaunchContext {
 
     public LaunchContext setVerificationPlan(VerificationPlan verificationPlan) {
         this.verificationPlan = verificationPlan;
-
         return this;
     }
 

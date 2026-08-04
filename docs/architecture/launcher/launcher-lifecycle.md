@@ -21,7 +21,7 @@ Launcher представляет собой управляемую систем
 | LOADING_MANIFEST | Получение описания сборки           |
 | VERIFYING_FILES  | Проверка локального состояния       |
 | DOWNLOADING      | Получение недостающих ресурсов      |
-| PREPARING_GAME   | Подготовка окржения                 |
+| PREPARING_GAME   | Подготовка окружения                |
 | LAUNCHING        | Запуск игрового процесса            |
 | RUNNING          | Игра запущена                       |
 | FAILED           | Не удалось выполнять операцию       |
@@ -49,7 +49,11 @@ L-5
 Завершение Operation всегда приводит систему в согласованное состояние 
 (RUNNING, FAILED или IDLE в зависимости от сценария)
 
-## Design Rationale
+После успешной загрузки manifest launcher переходит к VERIFYING_FILES
+
+До появления DownloadOperation невалидный VerificationPlan переводит launcher в FAILED
+
+## Обоснование Проекта
 
 - Bootstrap отделен от LauncherEngine для изоляции процесса сборки зависимостей
 - LauncherEngine не знает деталей конкретных Operation

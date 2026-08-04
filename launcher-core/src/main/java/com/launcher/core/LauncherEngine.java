@@ -23,12 +23,33 @@ public class LauncherEngine {
 
         stateMachine.transition(LauncherState.LOADING_MANIFEST);
 
-        OperationResult result = operationManager.execute(
+        OperationResult loadManifestResult = operationManager.execute(
                 OperationType.LOAD_MANIFEST,
                 context
         );
 
-        if (!result.isSuccess()) {
+        if (!loadManifestResult.isSuccess()) {
+            stateMachine.transition(LauncherState.FAILED);
+            return;
+        }
+
+        stateMachine.transition(LauncherState.VERIFYING_FILES);
+
+        OperationResult verifyFilesResult = operationManager.execute(
+          OperationType.VERIFY_FILES,
+          context
+        );
+
+        if (!verifyFilesResult.isSuccess()) {
+            stateMachine.transition(LauncherState.FAILED);
+            return;
+        }
+
+        boolean isVerificationPlanEmptyOrIsNotValid =
+                context.getVerificationPlan() == null ||
+                        !context.getVerificationPlan().isValid();
+
+        if (isVerificationPlanEmptyOrIsNotValid) {
             stateMachine.transition(LauncherState.FAILED);
             return;
         }

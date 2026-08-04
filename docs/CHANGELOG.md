@@ -84,6 +84,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added module boundary documentation for launcher-core dependency policy
 - Added launcher-core module boundary architecture test scaffold
 - Added VerifyFilesTask for executing file verification through VerificationService
+- Added DownloadPlan and DownloadPlanBuilder for deriving downloads from verification results
 
 ### Changed
 

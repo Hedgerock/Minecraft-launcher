@@ -27,7 +27,7 @@ class DownloadPlanBuilderTest {
     void should_not_include_valid_files_in_download_plan() {
         //given
         VerificationPlan plan = getLoadedVerificationPlan();
-        FileEntry validFileEntry = getTargetFileEntry();
+        FileEntry validFileEntry = getFileEntry("valid.jar");
 
         //when
         DownloadPlan result = builder.build(plan);
@@ -41,54 +41,54 @@ class DownloadPlanBuilderTest {
     @Test
     void should_include_corrupted_files_in_download_plan() {
         //given
-        FileEntry fileEntry = getFileEntry();
+        FileEntry corruptedFileEntry = getFileEntry("corrupted.jar");
         VerificationPlan plan =
-                getVerificationPlan(VerificationStatus.CORRUPTED, fileEntry);
+                getVerificationPlan(VerificationStatus.CORRUPTED, corruptedFileEntry);
 
         //when
         DownloadPlan result = builder.build(plan);
 
         //then
         assertFalse(result.isEmpty());
-        assertEquals(result.files(), List.of(fileEntry));
+        assertEquals(result.files(), List.of(corruptedFileEntry));
     }
 
     @Test
     void should_include_outdated_files_in_download_plan() {
         //given
-        FileEntry fileEntry = getFileEntry();
+        FileEntry outdatedFileEntry = getFileEntry("outdated.jar");
         VerificationPlan plan =
-                getVerificationPlan(VerificationStatus.OUTDATED, fileEntry);
+                getVerificationPlan(VerificationStatus.OUTDATED, outdatedFileEntry);
 
         //when
         DownloadPlan result = builder.build(plan);
 
         //then
         assertFalse(result.isEmpty());
-        assertEquals(result.files(), List.of(fileEntry));
+        assertEquals(result.files(), List.of(outdatedFileEntry));
     }
 
     @Test
     void should_include_missing_files_in_download_plan() {
         //given
-        FileEntry fileEntry = getFileEntry();
+        FileEntry missingFileEntry = getFileEntry("missing.jar");
         VerificationPlan plan =
-                getVerificationPlan(VerificationStatus.MISSING, fileEntry);
+                getVerificationPlan(VerificationStatus.MISSING, missingFileEntry);
 
         //when
         DownloadPlan result = builder.build(plan);
 
         //then
         assertFalse(result.isEmpty());
-        assertEquals(result.files(), List.of(fileEntry));
+        assertEquals(result.files(), List.of(missingFileEntry));
     }
 
     @Test
     void should_create_empty_download_plan_when_verification_plan_is_valid() {
         //given
-        FileEntry fileEntry = getFileEntry();
+        FileEntry validFileEntry = getFileEntry("valid.jar");
         VerificationPlan plan =
-                getVerificationPlan(VerificationStatus.VALID, fileEntry);
+                getVerificationPlan(VerificationStatus.VALID, validFileEntry);
 
         //when
         DownloadPlan result = builder.build(plan);
@@ -98,10 +98,10 @@ class DownloadPlanBuilderTest {
         assertTrue(result.files().isEmpty());
     }
     private VerificationPlan getLoadedVerificationPlan() {
-        FileEntry validFileEntry = getTargetFileEntry();
-        FileEntry corruptedFileEntry = getFileEntry();
-        FileEntry outdatedFileEntry = getFileEntry();
-        FileEntry missingFileEntry = getFileEntry();
+        FileEntry validFileEntry = getFileEntry("valid.jar");
+        FileEntry corruptedFileEntry = getFileEntry("corrupted.jar");
+        FileEntry outdatedFileEntry = getFileEntry("outdated.jar");
+        FileEntry missingFileEntry = getFileEntry("missing.jar");
 
         return new VerificationPlan(
                 List.of(
@@ -113,21 +113,13 @@ class DownloadPlanBuilderTest {
         );
     }
 
-    private FileEntry getFileEntry() {
+    private FileEntry getFileEntry(String path) {
         return new FileEntry(
-                "test-path",
-                "sha256",
+                path,
+                "sha256-" + path,
                 123L,
-                "https://test-url.com"
+                "https://test-url.com/"+path
         );
     }
 
-    private FileEntry getTargetFileEntry() {
-        return new FileEntry(
-                "target-path",
-                "target-sha256",
-                12345678L,
-                "https://target-test-url.com"
-        );
-    }
 }

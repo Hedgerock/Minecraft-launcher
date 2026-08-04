@@ -85,6 +85,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added launcher-core module boundary architecture test scaffold
 - Added VerifyFilesTask for executing file verification through VerificationService
 - Added DownloadPlan and DownloadPlanBuilder for deriving downloads from verification results
+- Added BuildDownloadPlanTask for executing download planning through DownloadService
 
 ### Changed
 
@@ -102,6 +103,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Moved remaining application assembly contracts and service bundles from launcher-core to launcher-app
 - Moved verification result contract into launcher-core
 - LauncherEngine now runs VERIFY_FILES after LOAD_MANIFEST during launch
+- LaunchContext now includes a DownloadPlan
 
 ### Removed
 

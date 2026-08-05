@@ -3,6 +3,7 @@ package com.launcher.core.architecture.operation;
 import com.launcher.core.architecture.support.*;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
+import com.launcher.core.download.DownloadService;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.event.events.OperationCompletedEvent;
 import com.launcher.core.event.events.OperationFailedEvent;
@@ -10,8 +11,10 @@ import com.launcher.core.event.events.OperationStartedEvent;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.impl.BuildDownloadPlanOperation;
+import com.launcher.core.operation.impl.DownloadFilesOperation;
 import com.launcher.core.operation.impl.VerificationOperation;
 import com.launcher.core.operation.result.OperationResult;
+import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.verification.model.VerificationPlan;
 import org.junit.jupiter.api.Test;
 
@@ -39,28 +42,41 @@ class LaunchOperationEventPublishingTest {
     }
 
     @Test
+    void should_publish_download_files_events_when_download_files_operation_succeeded() {
+        //given
+        EventBus eventBus = new EventBus();
+        List<String> events = new ArrayList<>();
+        LaunchContext context = getContext();
+        DownloadService service = new RecordingDownloadService();
+
+        subscribe(TestEvents.STARTED, eventBus, events);
+        subscribe(TestEvents.COMPLETED, eventBus, events);
+
+        LaunchOperation operation = new DownloadFilesOperation(
+                context,
+                new FixedResultExecutionStrategy(OperationResult.success()),
+                eventBus,
+                service
+        );
+
+        //when
+        operation.execute();
+
+        //then
+        List<String> expectedEvents =
+                getExpectedEvents(TestEvents.COMPLETED, OperationType.DOWNLOAD_FILES);
+        assertEquals(expectedEvents, events);
+    }
+
+    @Test
     void should_publish_build_download_plan_events_when_build_download_plan_operation_succeeded() {
         //given
         EventBus eventBus = new EventBus();
         List<String> events = new ArrayList<>();
         LaunchContext context = getContext();
 
-        eventBus.subscribe(
-                OperationStartedEvent.class,
-                event -> {
-                    String message = "%s:%s"
-                            .formatted("started", event.operationType());
-                    events.add(message);
-                }
-        );
-        eventBus.subscribe(
-                OperationCompletedEvent.class,
-                event -> {
-                    String message = "%s:%s"
-                            .formatted("completed", event.operationType());
-                    events.add(message);
-                }
-        );
+        subscribe(TestEvents.STARTED, eventBus, events);
+        subscribe(TestEvents.COMPLETED, eventBus, events);
 
         LaunchOperation operation = new BuildDownloadPlanOperation(
                 context,
@@ -73,13 +89,9 @@ class LaunchOperationEventPublishingTest {
         operation.execute();
 
         //then
-        assertEquals(
-                List.of(
-                        "started:BUILD_DOWNLOAD_PLAN",
-                        "completed:BUILD_DOWNLOAD_PLAN"
-                ),
-                events
-        );
+        List<String> expectedEvents =
+                getExpectedEvents(TestEvents.COMPLETED, OperationType.BUILD_DOWNLOAD_PLAN);
+        assertEquals(expectedEvents, events);
     }
 
     @Test
@@ -89,22 +101,8 @@ class LaunchOperationEventPublishingTest {
         List<String> events = new ArrayList<>();
         LaunchContext context = getContext();
 
-        eventBus.subscribe(
-                OperationStartedEvent.class,
-                event -> {
-                    String message = "%s:%s"
-                            .formatted("started", event.operationType());
-                    events.add(message);
-                }
-        );
-        eventBus.subscribe(
-                OperationCompletedEvent.class,
-                event -> {
-                    String message = "%s:%s"
-                            .formatted("completed", event.operationType());
-                    events.add(message);
-                }
-        );
+        subscribe(TestEvents.STARTED, eventBus, events);
+        subscribe(TestEvents.COMPLETED, eventBus, events);
 
         LaunchOperation operation = new VerificationOperation(
                 context,
@@ -117,13 +115,9 @@ class LaunchOperationEventPublishingTest {
         operation.execute();
 
         //then
-        assertEquals(
-                List.of(
-                        "started:VERIFY_FILES",
-                        "completed:VERIFY_FILES"
-                ),
-                events
-        );
+        List<String> expectedEvents =
+                getExpectedEvents(TestEvents.COMPLETED, OperationType.VERIFY_FILES);
+        assertEquals(expectedEvents, events);
     }
 
     @Test
@@ -132,23 +126,9 @@ class LaunchOperationEventPublishingTest {
         EventBus eventBus = new EventBus();
         List<String> events = new ArrayList<>();
         LaunchContext context = getContext();
-        eventBus.subscribe(
-                OperationStartedEvent.class,
-                event -> {
-                    String message = "%s:%s"
-                            .formatted("started", event.operationType());
-                    events.add(message);
-                }
-        );
 
-        eventBus.subscribe(
-                OperationFailedEvent.class,
-                event -> {
-                    String message = "%s:%s:%s"
-                            .formatted("failed", event.operationType(), event.errorMessage());
-                    events.add(message);
-                }
-        );
+        subscribe(TestEvents.STARTED, eventBus, events);
+        subscribe(TestEvents.FAILED, eventBus, events);
 
         LaunchOperation operation = new FinalizeFailingOperation(
                 context,
@@ -159,13 +139,9 @@ class LaunchOperationEventPublishingTest {
         operation.execute();
 
         //then
-        assertEquals(
-                List.of(
-                        "started:REPAIR",
-                        "failed:REPAIR:finalize failed"
-                ),
-                events
-        );
+        List<String> expectedEvents =
+                getExpectedEvents(TestEvents.FAILED, OperationType.REPAIR, "finalize failed");
+        assertEquals(expectedEvents, events);
     }
 
     @Test
@@ -174,23 +150,9 @@ class LaunchOperationEventPublishingTest {
         EventBus eventBus = new EventBus();
         List<String> events = new ArrayList<>();
         LaunchContext context = getContext();
-        eventBus.subscribe(
-                OperationStartedEvent.class,
-                event -> {
-                    String message = "%s:%s"
-                            .formatted("started", event.operationType());
-                    events.add(message);
-                }
-        );
 
-        eventBus.subscribe(
-                OperationFailedEvent.class,
-                event -> {
-                    String message = "%s:%s:%s"
-                            .formatted("failed", event.operationType(), event.errorMessage());
-                    events.add(message);
-                }
-        );
+        subscribe(TestEvents.STARTED, eventBus, events);
+        subscribe(TestEvents.FAILED, eventBus, events);
 
         LaunchOperation operation = new FailingWithoutMessageOperation(
                 context,
@@ -201,13 +163,10 @@ class LaunchOperationEventPublishingTest {
         operation.execute();
 
         //then
-        assertEquals(
-                List.of(
-                        "started:REPAIR",
-                        "failed:REPAIR:IllegalStateException"
-                ),
-                events
-        );
+        List<String> expectedEvents =
+                getExpectedEvents(TestEvents.FAILED, OperationType.REPAIR, "IllegalStateException");
+
+        assertEquals(expectedEvents, events);
     }
 
     @Test
@@ -216,24 +175,8 @@ class LaunchOperationEventPublishingTest {
         EventBus eventBus = new EventBus();
         List<String> events = new ArrayList<>();
 
-
-        eventBus.subscribe(
-                OperationStartedEvent.class,
-                event -> {
-                    String message = "%s:%s"
-                            .formatted("started", event.operationType());
-                    events.add(message);
-                }
-        );
-
-        eventBus.subscribe(
-                OperationFailedEvent.class,
-                event -> {
-                    String message = "%s:%s:%s"
-                            .formatted("failed", event.operationType(), event.errorMessage());
-                    events.add(message);
-                }
-        );
+        subscribe(TestEvents.STARTED, eventBus, events);
+        subscribe(TestEvents.FAILED, eventBus, events);
 
         LaunchOperation operation = new EventPublishingOperation(
                 getContext(),
@@ -245,13 +188,9 @@ class LaunchOperationEventPublishingTest {
         operation.execute();
 
         //then
-        assertEquals(
-                List.of(
-                        "started:REPAIR",
-                        "failed:REPAIR:failure"
-                ),
-                events
-        );
+        List<String> expectedEvents =
+                getExpectedEvents(TestEvents.FAILED, OperationType.REPAIR, "failure");
+        assertEquals(expectedEvents, events);
     }
 
     @Test
@@ -260,22 +199,8 @@ class LaunchOperationEventPublishingTest {
         EventBus eventBus = new EventBus();
         List<String> events = new ArrayList<>();
 
-        eventBus.subscribe(
-                OperationStartedEvent.class,
-                event -> {
-                    String message = "%s:%s"
-                            .formatted("started", event.operationType());
-                    events.add(message);
-                }
-        );
-        eventBus.subscribe(
-                OperationCompletedEvent.class,
-                event -> {
-                    String message = "%s:%s"
-                            .formatted("completed", event.operationType());
-                    events.add(message);
-                }
-        );
+        subscribe(TestEvents.STARTED, eventBus, events);
+        subscribe(TestEvents.COMPLETED, eventBus, events);
 
         LaunchOperation operation = new EventPublishingOperation(
                 getContext(),
@@ -287,12 +212,75 @@ class LaunchOperationEventPublishingTest {
         operation.execute();
 
         //then
-        assertEquals(
-                List.of(
-                        "started:REPAIR",
-                        "completed:REPAIR"
-                ),
-                events
-        );
+        List<String> expectedEvents =
+                getExpectedEvents(TestEvents.COMPLETED, OperationType.REPAIR);
+
+        assertEquals(expectedEvents, events);
+    }
+
+    @SuppressWarnings("all")
+    private List<String> getExpectedEvents(TestEvents currentEvent, OperationType operationType) {
+        return getExpectedEvents(currentEvent, operationType, "empty-error-message");
+    }
+
+    private List<String> getExpectedEvents(
+            TestEvents currentEvent, OperationType operationType, String errorMessage) {
+        String startedMessage = "%s:%s".formatted("started", operationType);
+
+        return switch (currentEvent) {
+            case STARTED -> List.of(startedMessage);
+            case COMPLETED -> {
+                String finishedMessage = "%s:%s".formatted("completed", operationType);
+                yield List.of(startedMessage, finishedMessage);
+            }
+            case FAILED -> {
+                String finishedMessage = "%s:%s:%s".formatted("failed", operationType, errorMessage);
+                yield List.of(startedMessage, finishedMessage);
+            }
+        };
+    }
+
+    private enum TestEvents {
+        STARTED,
+        COMPLETED,
+        FAILED
+    }
+
+    @SuppressWarnings("all")
+    private void subscribe(TestEvents currentEvent, EventBus eventBus, List<String> events) {
+
+        switch (currentEvent) {
+            case STARTED -> {
+                eventBus.subscribe(
+                        OperationStartedEvent.class,
+                        event -> {
+                            String message = "%s:%s"
+                                    .formatted("started", event.operationType());
+                            events.add(message);
+                        }
+                );
+            }
+            case COMPLETED -> {
+                eventBus.subscribe(
+                        OperationCompletedEvent.class,
+                        event -> {
+                            String message = "%s:%s"
+                                    .formatted("completed", event.operationType());
+                            events.add(message);
+                        }
+                );
+            }
+            case FAILED -> {
+                eventBus.subscribe(
+                        OperationFailedEvent.class,
+                        event -> {
+                            String message = "%s:%s:%s"
+                                    .formatted("failed", event.operationType(), event.errorMessage());
+                            events.add(message);
+                        }
+                );
+            }
+        }
+
     }
 }

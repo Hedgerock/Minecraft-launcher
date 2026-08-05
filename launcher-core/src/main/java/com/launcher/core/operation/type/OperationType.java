@@ -4,5 +4,6 @@ public enum OperationType {
     REPAIR,
     LOAD_MANIFEST,
     VERIFY_FILES,
-    BUILD_DOWNLOAD_PLAN
+    BUILD_DOWNLOAD_PLAN,
+    DOWNLOAD_FILES
 }

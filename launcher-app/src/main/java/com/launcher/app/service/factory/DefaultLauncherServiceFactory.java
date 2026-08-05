@@ -8,12 +8,14 @@ import com.launcher.api.manifest.service.HttpManifestService;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.app.service.LauncherServices;
+import com.launcher.core.download.DownloadService;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.directory.LocalDirectoryProvider;
 import com.launcher.core.storage.service.DefaultDirectoryService;
 import com.launcher.core.storage.service.DirectoryService;
 import com.launcher.core.verification.VerificationService;
+import com.launcher.downloader.service.DefaultDownloadService;
 import com.launcher.storage.file.FileMetadataReader;
 import com.launcher.storage.file.LocalFileMetadataReader;
 import com.launcher.storage.hash.HashService;
@@ -51,6 +53,10 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
         );
     }
 
+    private DownloadService createDownloadService(DirectoryProvider directoryProvider) {
+        return new DefaultDownloadService();
+    }
+
     private VerificationService createVerificationService(DirectoryProvider directoryProvider) {
         FileMetadataReader metadataReader = new LocalFileMetadataReader();
         HashService hashService = new Sha256HashService();
@@ -69,7 +75,8 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
         return new LauncherServices(
                 createManifestService(),
                 createVerificationService(directoryProvider),
-                createDirectoryService(directoryProvider)
+                createDirectoryService(directoryProvider),
+                createDownloadService(directoryProvider)
         );
     }
 }

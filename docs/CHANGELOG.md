@@ -88,6 +88,9 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added BuildDownloadPlanTask for building and storing DownloadPlan in LaunchContext
 - Added BUILD_DOWNLOAD_PLAN operation for running download planning through OperationManager
 - LauncherEngine now builds DownloadPlan when verification detects files to download
+- Added DOWNLOAD_FILES operation for running download execution through OperationManager
+- Added launcher-downloader DefaultDownloadService scaffold
+- Application assembly now wires DownloadService into operation factory
 
 ### Changed
 

@@ -2,6 +2,7 @@ package com.launcher.core.architecture.operation;
 
 import com.launcher.core.architecture.support.FixedResultExecutionStrategy;
 import com.launcher.core.architecture.support.RecordVerificationService;
+import com.launcher.core.architecture.support.RecordingDownloadService;
 import com.launcher.core.architecture.support.RecordingManifestService;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
@@ -10,10 +11,7 @@ import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.factory.DefaultOperationFactory;
-import com.launcher.core.operation.impl.BuildDownloadPlanOperation;
-import com.launcher.core.operation.impl.LoadManifestOperation;
-import com.launcher.core.operation.impl.RepairOperation;
-import com.launcher.core.operation.impl.VerificationOperation;
+import com.launcher.core.operation.impl.*;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.verification.model.VerificationPlan;
@@ -50,6 +48,7 @@ class OperationFactoryTest {
         return new DefaultOperationFactory(
                 manifestService,
                 new RecordVerificationService(getVerificationPlan()),
+                new RecordingDownloadService(),
                 builder,
                 eventBus
         );
@@ -130,7 +129,25 @@ class OperationFactoryTest {
         );
 
         //then
-
         assertInstanceOf(BuildDownloadPlanOperation.class, operation);
+    }
+
+    @Test
+    void should_create_download_files_operation_for_download_files_type() {
+        //given
+        ManifestService service = new RecordingManifestService();
+        EventBus eventBus = new EventBus();
+        LaunchContext context = getContext();
+        DefaultOperationFactory factory = getDefaultOperationFactory(service, eventBus);
+
+        //when
+        LaunchOperation operation = factory.create(
+                OperationType.DOWNLOAD_FILES,
+                context,
+                new FixedResultExecutionStrategy(OperationResult.success())
+        );
+
+        //then
+        assertInstanceOf(DownloadFilesOperation.class, operation);
     }
 }

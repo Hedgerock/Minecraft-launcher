@@ -2,12 +2,14 @@ package com.launcher.core.architecture.operation;
 
 import com.launcher.core.architecture.support.*;
 import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.event.events.OperationCompletedEvent;
 import com.launcher.core.event.events.OperationFailedEvent;
 import com.launcher.core.event.events.OperationStartedEvent;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
+import com.launcher.core.operation.impl.BuildDownloadPlanOperation;
 import com.launcher.core.operation.impl.VerificationOperation;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.verification.model.VerificationPlan;
@@ -33,6 +35,50 @@ class LaunchOperationEventPublishingTest {
     private VerificationPlan getVerificationPlan() {
         return new VerificationPlan(
                 List.of()
+        );
+    }
+
+    @Test
+    void should_publish_build_download_plan_events_when_build_download_plan_operation_succeeded() {
+        //given
+        EventBus eventBus = new EventBus();
+        List<String> events = new ArrayList<>();
+        LaunchContext context = getContext();
+
+        eventBus.subscribe(
+                OperationStartedEvent.class,
+                event -> {
+                    String message = "%s:%s"
+                            .formatted("started", event.operationType());
+                    events.add(message);
+                }
+        );
+        eventBus.subscribe(
+                OperationCompletedEvent.class,
+                event -> {
+                    String message = "%s:%s"
+                            .formatted("completed", event.operationType());
+                    events.add(message);
+                }
+        );
+
+        LaunchOperation operation = new BuildDownloadPlanOperation(
+                context,
+                new FixedResultExecutionStrategy(OperationResult.success()),
+                eventBus,
+                new DownloadPlanBuilder()
+        );
+
+        //when
+        operation.execute();
+
+        //then
+        assertEquals(
+                List.of(
+                        "started:BUILD_DOWNLOAD_PLAN",
+                        "completed:BUILD_DOWNLOAD_PLAN"
+                ),
+                events
         );
     }
 

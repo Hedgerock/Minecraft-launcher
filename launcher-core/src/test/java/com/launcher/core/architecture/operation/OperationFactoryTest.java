@@ -4,11 +4,13 @@ import com.launcher.core.architecture.support.FixedResultExecutionStrategy;
 import com.launcher.core.architecture.support.RecordVerificationService;
 import com.launcher.core.architecture.support.RecordingManifestService;
 import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.factory.DefaultOperationFactory;
+import com.launcher.core.operation.impl.BuildDownloadPlanOperation;
 import com.launcher.core.operation.impl.LoadManifestOperation;
 import com.launcher.core.operation.impl.RepairOperation;
 import com.launcher.core.operation.impl.VerificationOperation;
@@ -24,7 +26,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class OperationFactoryTest {
-
+    private final DownloadPlanBuilder builder = new DownloadPlanBuilder();
     private LaunchContext getContext() {
         return new LaunchContext(
                 new LauncherConfiguration(
@@ -48,6 +50,7 @@ class OperationFactoryTest {
         return new DefaultOperationFactory(
                 manifestService,
                 new RecordVerificationService(getVerificationPlan()),
+                builder,
                 eventBus
         );
     }
@@ -111,4 +114,23 @@ class OperationFactoryTest {
         assertInstanceOf(VerificationOperation.class, operation);
     }
 
+    @Test
+    void should_create_build_download_plan_operation_for_build_download_type() {
+        //given
+        ManifestService service = new RecordingManifestService();
+        EventBus eventBus = new EventBus();
+        LaunchContext context = getContext();
+        DefaultOperationFactory factory = getDefaultOperationFactory(service, eventBus);
+
+        //when
+        LaunchOperation operation = factory.create(
+                OperationType.BUILD_DOWNLOAD_PLAN,
+                context,
+                new FixedResultExecutionStrategy(OperationResult.success())
+        );
+
+        //then
+
+        assertInstanceOf(BuildDownloadPlanOperation.class, operation);
+    }
 }

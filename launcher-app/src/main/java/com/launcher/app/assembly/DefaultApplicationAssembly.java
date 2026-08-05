@@ -4,6 +4,7 @@ import com.launcher.app.infrastructure.factory.DefaultLauncherInfrastructureFact
 import com.launcher.app.service.factory.DefaultLauncherServiceFactory;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.execution.SequentialExecutionStrategy;
 import com.launcher.app.infrastructure.factory.LauncherInfrastructureFactory;
@@ -43,10 +44,12 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
         );
 
         LauncherServices services = servicesFactory.createServices();
+        DownloadPlanBuilder builder = new DownloadPlanBuilder();
 
         OperationFactory operationFactory = new DefaultOperationFactory(
                 services.manifestService(),
                 services.verificationService(),
+                builder,
                 launcherInfrastructure.eventBus()
         );
 

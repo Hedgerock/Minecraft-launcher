@@ -1,8 +1,8 @@
 package com.launcher.core.operation.type;
 
 public enum OperationType {
-
     REPAIR,
     LOAD_MANIFEST,
-    VERIFY_FILES
+    VERIFY_FILES,
+    BUILD_DOWNLOAD_PLAN
 }

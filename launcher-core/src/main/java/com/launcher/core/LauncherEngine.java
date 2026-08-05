@@ -7,6 +7,7 @@ import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.state.LauncherState;
 import com.launcher.core.state.LauncherStateMachine;
+import com.launcher.core.verification.model.VerificationPlan;
 
 public class LauncherEngine {
 
@@ -45,16 +46,29 @@ public class LauncherEngine {
             return;
         }
 
-        boolean isVerificationPlanEmptyOrIsNotValid =
-                context.getVerificationPlan() == null ||
-                        !context.getVerificationPlan().isValid();
+        VerificationPlan verificationPlan = context.getVerificationPlan();
 
-        if (isVerificationPlanEmptyOrIsNotValid) {
+        if (verificationPlan == null) {
             stateMachine.transition(LauncherState.FAILED);
             return;
         }
 
-        stateMachine.transition(LauncherState.RUNNING);
+        if (verificationPlan.isValid()) {
+            stateMachine.transition(LauncherState.RUNNING);
+            return;
+        }
+
+        OperationResult buildDownloadPlanResult = operationManager.execute(
+                OperationType.BUILD_DOWNLOAD_PLAN,
+                context
+        );
+
+        if (!buildDownloadPlanResult.isSuccess()) {
+            stateMachine.transition(LauncherState.FAILED);
+            return;
+        }
+
+        stateMachine.transition(LauncherState.FAILED);
 
     }
 }

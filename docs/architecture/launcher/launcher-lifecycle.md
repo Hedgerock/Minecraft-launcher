@@ -53,6 +53,12 @@ L-5
 
 До появления DownloadOperation невалидный VerificationPlan переводит launcher в FAILED
 
+Если VerificationPlan содержит файлы, требующие загрузки, LauncherEngine запускает 
+BUILD_DOWNLOAD_PLAN
+
+До появления DownloadOperation запуск завершается состоянием FAILED после успешного построения
+DownloadPlan
+
 ## Обоснование Проекта
 
 - Bootstrap отделен от LauncherEngine для изоляции процесса сборки зависимостей

@@ -1,154 +1,97 @@
-# Download Flow
+# Поток загрузки
 
 ## Цель
 
 Описать процесс восстановления локального состояния игры путем загрузки отсутствующих или
 поврежденных ресурсов
 
+## Текущий статус
+
+На текущем этапе `LauncherEngine` строит `DownloadPlan`, но еще не запускает `DOWNLOAD_FILES` во время
+основного `launch-flow`
+
+`DefaultFileDownloader` пока завершает выполнение исключением, потому что реальная загрузка файлов еще не реализована
+
 ## Предусловия
 
-- VerificationOperation завершена
-- Получен VerificationReport
-- OperationContext существует
-- Manifest содержит актуальное описание ресурсов
+- `VERIFY_FILES` завершена успешно
+- В `LaunchContext` сохранен `VerificationPlan`
+- Если `VerificationPlan` содржит файлы, требующие восстановления, строится `DownloadPlan`
+- `DownloadPlan` сохранен в `LaunchContext`
 
 ## Последовательность
 
+```text
 LauncherEngine
-|
-▼
-OperationManager
-|
-▼
-DownloadOperation
-|
-▼
-DownloadService
-|
-▼
-Manifest
-|
-▼
-Determine missing resources
-|
-▼
-DownloadQueue
-|
-▼
-Downloader
-|
-▼
-FileStorage
-|
-▼
-VerificationReport update
-|
-▼
-TelemetryReport
-|
-▼
-Result
+    -> OperationManager
+        -> BUILD_DOWNLOAD_PLAN
+            -> BuildDownloadPlanTask
+                -> DownloadPlanBuilder
+                    -> DownloadPlan
+                 
+DOWNLOAD_FILES
+    -> DownloadFilesOperation
+        -> DownloadFilesTask
+            -> DownloadService
+                -> DefaultDownloadService
+                    -> FileDownloader
+```
 
 ## Этапы
 
-### 1.Анализ VerificationReport
+### 1.Анализ `VerificationPlan`
 
-DownloadOperation получает список файлов, требующих восстановления
+`DownloadPlanBuilder` получает `VerificationPlan` и выбирает файлы со статусами `MISSING`, `OUTDATED` и `CORRUPTED`
 
-### 2.Построение DownloadQueue
+Файлы со статусом `VALID` не попадают в `DownloadPlan`
 
-Формируется очередь файлов
+### 2.Построение `DownloadPlan`
 
-### 3.Загрузка (для каждого элемента очереди)
+`BuildDownloadPlanTask` сохраняет построенный `DownloadPlan` в `LaunchContext`
 
-Download
-|
-▼
-Save
-|
-▼
-Publish Progress
+### 3.Выполнение загрузки
 
-### 4.Завершение
+`DownloadFilesTask` получает `DownloadPlan` из `LaunchContext` и передает его в `DownloadService`
 
-Создается:
-- DownloadReport
-- TelemetryReport
+`DefaultDownloadServic` строит целевой путь файла относительно game directory и 
+передает url и targetPath в `FileDownloader`
 
-Публикуется:
-- DownloadCompleted
+### 4.Текущие ограничения
+
+`DOWNLOAD_FILES operation` уже существует, но `LauncherEngine` еще не запускает ее в основном потоке исполнения
+
+`DefaultFileDownloader` пока не выполняет реальную загрузку файлов
 
 ## Компоненты
 
-- OperationManager
-- DownloadOperation
-- DownloadService
-- Downloader
-- DownloadQueue
-- FileStorage
-- DownloadReport
-- TelemetryReport
-
-## Результат
-
-Если загрузка успешна
-
-Operation completed
-|
-▼
-PreparingGame
-
-Если произошла ошибка
-
-Result.failure(...)
-|
-▼
-LauncherStateMachine
-|
-▼
-FAILED
+- `OperationManager`
+- `BuildDownloadPlanTask`
+- `DownloadPlanBuilder`
+- `DownloadPlan`
+- `DownloadFilesOperation`
+- `DownloadFilesTask`
+- `DownloadService`
+- `DefaultDownloadService`
+- `FileDownloader`
 
 ## Инварианты
 
 D-1
-DownloadOperation изменяет только файл, требующие восстановления
+
+`DownloadPlan` содержит только файлы, требующие восстановления
 
 D-2
-DownloadQueue является неизменяемой после построения
+
+`DownloadFilesTask` не строит `DownloadPlan` самостоятельно
 
 D-3
-Downloader не принимает решений о составе очереди
+
+`DefaultDownloadSerivce` не принимает решений о составе загрузки
 
 D-4
-Telemetry не влияет на выполнение загрузки
+
+`FileDownloader` отвечает только за загрузку одного фалйа в указанный targetPath
 
 D-5
-DownloadOperation завершается только после обработки всех элементов очереди
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Реальная загрузка файлов должна быть подключена до запуска `DOWNLOAD_FILES` из `LauncherEngine`

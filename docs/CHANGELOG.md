@@ -90,7 +90,8 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - LauncherEngine now builds DownloadPlan when verification detects files to download
 - Added DOWNLOAD_FILES operation for running download execution through OperationManager
 - Added launcher-downloader DefaultDownloadService scaffold
-- Application assembly now wires DownloadService into operation factory
+- Application assembly now wires DownloadService into the operation factory
+- Added downloader preparation with FileDownloader and DefaultDonwloadService wiring
 
 ### Changed
 

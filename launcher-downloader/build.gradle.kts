@@ -15,6 +15,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     implementation(project(":launcher-core"))
+    implementation(project(":launcher-model"))
 }
 
 tasks.test {

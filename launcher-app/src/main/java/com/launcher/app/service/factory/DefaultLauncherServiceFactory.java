@@ -15,6 +15,8 @@ import com.launcher.core.storage.directory.LocalDirectoryProvider;
 import com.launcher.core.storage.service.DefaultDirectoryService;
 import com.launcher.core.storage.service.DirectoryService;
 import com.launcher.core.verification.VerificationService;
+import com.launcher.downloader.download.DefaultFileDownloader;
+import com.launcher.downloader.download.FileDownloader;
 import com.launcher.downloader.service.DefaultDownloadService;
 import com.launcher.storage.file.FileMetadataReader;
 import com.launcher.storage.file.LocalFileMetadataReader;
@@ -54,7 +56,8 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     }
 
     private DownloadService createDownloadService(DirectoryProvider directoryProvider) {
-        return new DefaultDownloadService();
+        FileDownloader downloader = new DefaultFileDownloader();
+        return new DefaultDownloadService(directoryProvider, downloader);
     }
 
     private VerificationService createVerificationService(DirectoryProvider directoryProvider) {

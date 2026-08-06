@@ -1,11 +1,81 @@
 package com.launcher.downloader.download;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class DefaultFileDownloader implements FileDownloader {
 
     @Override
     public void download(String url, Path targetPath) {
-        throw new UnsupportedOperationException("File download is not implemented yet");
+        Path temporaryFile = null;
+
+        try {
+            Path parent = targetPath.getParent();
+
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+
+            temporaryFile = Files.createTempFile(
+                    parent,
+                    targetPath.getFileName().toString(),
+                    ".download"
+            );
+
+            copyTempFile(url, temporaryFile);
+
+            safeMove(temporaryFile, targetPath);
+
+        } catch (IOException | IllegalArgumentException e) {
+
+            if (temporaryFile != null) {
+                deleteTemporaryFileQuietly(temporaryFile);
+            }
+
+            throw new RuntimeException(
+                    "Failed to download file: " + url,
+                    e
+            );
+        }
     }
+
+    private void copyTempFile(String url, Path temporaryFile) throws IOException {
+        try(InputStream inputStream = URI.create(url).toURL().openStream()) {
+            Files.copy(
+                    inputStream,
+                    temporaryFile,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+        }
+    }
+
+    private void deleteTemporaryFileQuietly(Path temporaryFile) {
+        try {
+            Files.deleteIfExists(temporaryFile);
+        } catch (IOException ignored) {}
+    }
+
+    private void safeMove(Path source, Path targetPath) throws IOException {
+        try {
+            Files.move(
+                    source,
+                    targetPath,
+                    StandardCopyOption.REPLACE_EXISTING,
+                    StandardCopyOption.ATOMIC_MOVE
+            );
+
+        } catch (AtomicMoveNotSupportedException e) {
+            Files.move(
+                    source,
+                    targetPath,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+        }
+    }
+
 }

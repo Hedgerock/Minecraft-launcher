@@ -33,7 +33,7 @@ public class DownloadFilesOperation extends LaunchOperation {
     @Override
     protected List<LauncherTask> createTask() {
         return List.of(
-                new DownloadFilesTask(downloadService)
+                new DownloadFilesTask(downloadService, eventBus)
         );
     }
 }

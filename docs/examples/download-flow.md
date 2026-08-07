@@ -7,10 +7,10 @@
 
 ## Текущий статус
 
-На текущем этапе `LauncherEngine` строит `DownloadPlan`, но еще не запускает `DOWNLOAD_FILES` во время
-основного `launch-flow`
+`LauncherEngine` запускает `DOWNLOAD_FILES` после успешного построения `DownloadPlan`
 
-`DefaultFileDownloader` пока завершает выполнение исключением, потому что реальная загрузка файлов еще не реализована
+После `DOWNLOAD_FILES` `LauncherEngine` повторно запускает `VERIFY_FILES`, потому что загрузка файла
+сама по себе не доказывает корректность локального состояния
 
 ## Предусловия
 
@@ -23,11 +23,16 @@
 
 ```text
 LauncherEngine
-    -> OperationManager
-        -> BUILD_DOWNLOAD_PLAN
-            -> BuildDownloadPlanTask
-                -> DownloadPlanBuilder
-                    -> DownloadPlan
+    -> VERIFY_FILES
+        -> VerificationPlan
+    -> BUILD_DOWNLOAD_PLAN
+        -> DownloadPlan
+    -> DOWNLOAD_FILES
+        -> DownloadService
+            -> DefaultDownloadService
+                -> FileDownloader
+    -> VERIFY_FILES
+         -> VerificationPlan
                  
 DOWNLOAD_FILES
     -> DownloadFilesOperation
@@ -58,7 +63,7 @@ DOWNLOAD_FILES
 
 ### 4.Текущие ограничения
 
-`DOWNLOAD_FILES operation` уже существует, но `LauncherEngine` еще не запускает ее в основном потоке исполнения
+`DOWNLOAD_FILES operation` запускается из `LauncherEngine` после успешного построения `DownloadPlan`
 
 `DefaultFileDownloader` пока не выполняет реальную загрузку файлов
 

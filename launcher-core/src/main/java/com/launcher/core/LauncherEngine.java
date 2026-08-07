@@ -19,37 +19,31 @@ public class LauncherEngine {
         this.operationManager = operationManager;
     }
 
+
     public void launch(LauncherConfiguration configuration) {
         LaunchContext context = new LaunchContext(configuration);
 
-        stateMachine.transition(LauncherState.LOADING_MANIFEST);
-
-        OperationResult loadManifestResult = operationManager.execute(
+        if (!executeOperation(
+                LauncherState.LOADING_MANIFEST,
                 OperationType.LOAD_MANIFEST,
                 context
-        );
-
-        if (!loadManifestResult.isSuccess()) {
-            stateMachine.transition(LauncherState.FAILED);
+        )) {
             return;
         }
 
-        stateMachine.transition(LauncherState.VERIFYING_FILES);
 
-        OperationResult verifyFilesResult = operationManager.execute(
-          OperationType.VERIFY_FILES,
-          context
-        );
-
-        if (!verifyFilesResult.isSuccess()) {
-            stateMachine.transition(LauncherState.FAILED);
+        if (!executeOperation(
+                LauncherState.VERIFYING_FILES,
+                OperationType.VERIFY_FILES,
+                context
+        )) {
             return;
         }
 
-        VerificationPlan verificationPlan = context.getVerificationPlan();
+
+        VerificationPlan verificationPlan = getVerificationPlanOrFail(context);
 
         if (verificationPlan == null) {
-            stateMachine.transition(LauncherState.FAILED);
             return;
         }
 
@@ -58,17 +52,69 @@ public class LauncherEngine {
             return;
         }
 
-        OperationResult buildDownloadPlanResult = operationManager.execute(
+        if (!executeOperation(
+                LauncherState.BUILDING_DOWNLOAD_PLAN,
                 OperationType.BUILD_DOWNLOAD_PLAN,
                 context
-        );
+        )) {
+            return;
+        }
 
-        if (!buildDownloadPlanResult.isSuccess()) {
-            stateMachine.transition(LauncherState.FAILED);
+        if (!executeOperation(
+                LauncherState.DOWNLOADING,
+                OperationType.DOWNLOAD_FILES,
+                context
+        )) {
+            return;
+        }
+
+        if (!executeOperation(
+                LauncherState.VERIFYING_FILES,
+                OperationType.VERIFY_FILES,
+                context
+        )) {
+            return;
+        }
+
+        VerificationPlan downloadedVerificationPlan = getVerificationPlanOrFail(context);
+
+        if (downloadedVerificationPlan == null) {
+            return;
+        }
+
+        if (downloadedVerificationPlan.isValid()) {
+            stateMachine.transition(LauncherState.RUNNING);
             return;
         }
 
         stateMachine.transition(LauncherState.FAILED);
+    }
 
+    private boolean executeOperation(
+            LauncherState state,
+            OperationType type,
+            LaunchContext context
+    ) {
+
+        stateMachine.transition(state);
+
+        OperationResult result = operationManager.execute(type, context);
+
+        if (!result.isSuccess()) {
+            stateMachine.transition(LauncherState.FAILED);
+            return false;
+        }
+
+        return true;
+    }
+
+    private VerificationPlan getVerificationPlanOrFail(LaunchContext context) {
+        VerificationPlan plan = context.getVerificationPlan();
+
+        if (plan == null) {
+            stateMachine.transition(LauncherState.FAILED);
+        }
+
+        return plan;
     }
 }

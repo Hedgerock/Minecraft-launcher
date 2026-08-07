@@ -16,7 +16,7 @@ public class BuildDownloadPlanTask implements LauncherTask {
 
     @Override
     public LauncherState state() {
-        return LauncherState.CHECKING_UPDATES;
+        return LauncherState.BUILDING_DOWNLOAD_PLAN;
     }
 
     @Override

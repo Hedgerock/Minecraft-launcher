@@ -4,7 +4,6 @@ import com.launcher.core.LauncherEngine;
 import com.launcher.core.architecture.support.RecordingManifestService;
 import com.launcher.core.architecture.support.RecordingOperationManager;
 import com.launcher.core.configuration.LauncherConfiguration;
-import com.launcher.core.download.DownloadPlan;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.manifest.ManifestService;
@@ -22,7 +21,8 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class LauncherEngineTest {
     private final DownloadPlanBuilder builder = new DownloadPlanBuilder();
@@ -50,8 +50,255 @@ class LauncherEngineTest {
         );
     }
 
+    private void executeStepsFromLoadManifestToBuildDownloadPlan(
+            RecordingOperationManager operationManager,
+            VerificationPlan verificationPlan
+    ) {
+        ManifestService manifestService = new RecordingManifestService();
+
+        operationManager.registerResult(
+                OperationType.LOAD_MANIFEST,
+                OperationResult.success()
+        );
+
+        operationManager.registerBehavior(
+                OperationType.LOAD_MANIFEST,
+                context -> context.setManifest(manifestService.loadManifest())
+        );
+
+        operationManager.registerResult(
+                OperationType.VERIFY_FILES,
+                OperationResult.success()
+        );
+
+        operationManager.registerBehavior(
+                OperationType.VERIFY_FILES,
+                context -> context.setVerificationPlan(verificationPlan)
+        );
+
+        operationManager.registerResult(
+                OperationType.BUILD_DOWNLOAD_PLAN,
+                OperationResult.success()
+        );
+
+        operationManager.registerBehavior(
+                OperationType.BUILD_DOWNLOAD_PLAN,
+                context -> context.setDownloadPlan(builder.build(verificationPlan))
+        );
+    }
+
     private LauncherStateMachine stateMachine() {
         return new LauncherStateMachine(new EventBus());
+    }
+
+    @Test
+    void should_transition_to_failed_when_verification_after_download_is_failed() {
+        //given
+        LauncherStateMachine stateMachine = stateMachine();
+        VerificationPlan notValidVerificationPlan =
+                getVerificationPlan("not-valid.jar", VerificationStatus.MISSING);
+
+        RecordingOperationManager operationManager =
+                new RecordingOperationManager();
+
+
+        executeStepsFromLoadManifestToBuildDownloadPlan(operationManager, notValidVerificationPlan);
+
+        operationManager.registerResult(
+                OperationType.VERIFY_FILES,
+                OperationResult.failure("Failed to verify files")
+        );
+
+        LauncherEngine engine = new LauncherEngine(stateMachine, operationManager);
+
+        //when
+        engine.launch(configuration());
+
+        //then
+        assertEquals(
+                LauncherState.FAILED,
+                stateMachine.getCurrentState()
+        );
+    }
+
+    @Test
+    void should_transition_to_failed_when_verification_after_download_is_not_valid() {
+        //given
+        LauncherStateMachine stateMachine = stateMachine();
+
+        VerificationPlan notValidVerificationPlan =
+                getVerificationPlan("not-valid.jar", VerificationStatus.MISSING);
+
+        RecordingOperationManager operationManager =
+                new RecordingOperationManager();
+
+
+        executeStepsFromLoadManifestToBuildDownloadPlan(operationManager, notValidVerificationPlan);
+
+        operationManager.registerResult(
+                OperationType.DOWNLOAD_FILES,
+                OperationResult.success()
+        );
+
+        operationManager.registerBehavior(
+                OperationType.VERIFY_FILES,
+                context -> context.setVerificationPlan(notValidVerificationPlan)
+        );
+
+        LauncherEngine engine = new LauncherEngine(stateMachine, operationManager);
+
+        //when
+        engine.launch(configuration());
+
+        //then
+        assertEquals(
+                LauncherState.FAILED,
+                stateMachine.getCurrentState()
+        );
+    }
+
+    @Test
+    void should_transition_to_failed_when_download_files_failed() {
+        //given
+        LauncherStateMachine stateMachine = stateMachine();
+
+        VerificationPlan notValidVerificationPlan =
+                getVerificationPlan("not-valid.jar", VerificationStatus.MISSING);
+
+        RecordingOperationManager operationManager =
+                new RecordingOperationManager();
+
+
+        executeStepsFromLoadManifestToBuildDownloadPlan(operationManager, notValidVerificationPlan);
+
+        operationManager.registerResult(
+                OperationType.DOWNLOAD_FILES,
+                OperationResult.failure("Failed to download files")
+        );
+
+        LauncherEngine engine = new LauncherEngine(stateMachine, operationManager);
+
+        //when
+        engine.launch(configuration());
+
+        //then
+        assertEquals(
+                LauncherState.FAILED,
+                stateMachine.getCurrentState()
+        );
+    }
+
+    @Test
+    void should_transition_to_running_when_downloaded_files_are_valid() {
+        //given
+        LauncherStateMachine stateMachine = stateMachine();
+
+        VerificationPlan validVerificationPlan =
+                getVerificationPlan("valid.jar", VerificationStatus.VALID);
+
+        VerificationPlan notValidVerificationPlan =
+                getVerificationPlan("not-valid.jar", VerificationStatus.MISSING);
+
+        RecordingOperationManager operationManager =
+                new RecordingOperationManager();
+
+
+        executeStepsFromLoadManifestToBuildDownloadPlan(operationManager, notValidVerificationPlan);
+
+        operationManager.registerResult(
+                OperationType.DOWNLOAD_FILES,
+                OperationResult.success()
+        );
+
+        operationManager.registerBehavior(
+                OperationType.VERIFY_FILES,
+                context -> context.setVerificationPlan(validVerificationPlan)
+        );
+
+        LauncherEngine engine = new LauncherEngine(stateMachine, operationManager);
+
+        //when
+        engine.launch(configuration());
+
+        //then
+        assertEquals(
+                LauncherState.RUNNING,
+                stateMachine.getCurrentState()
+        );
+    }
+
+    @Test
+    void should_verify_files_again_after_download_files_succeeded() {
+        //given
+        LauncherStateMachine stateMachine = stateMachine();
+
+        VerificationPlan validVerificationPlan =
+                getVerificationPlan("valid.jar", VerificationStatus.VALID);
+
+        VerificationPlan notValidVerificationPlan =
+                getVerificationPlan("not-valid.jar", VerificationStatus.MISSING);
+
+        RecordingOperationManager operationManager =
+                new RecordingOperationManager();
+
+
+        executeStepsFromLoadManifestToBuildDownloadPlan(operationManager, notValidVerificationPlan);
+
+        operationManager.registerResult(
+                OperationType.DOWNLOAD_FILES,
+                OperationResult.success()
+        );
+
+        operationManager.registerBehavior(
+                OperationType.VERIFY_FILES,
+                context -> context.setVerificationPlan(validVerificationPlan)
+        );
+
+        LauncherEngine engine = new LauncherEngine(stateMachine, operationManager);
+
+        //when
+        engine.launch(configuration());
+
+        //then
+        assertEquals(List.of(
+                OperationType.LOAD_MANIFEST,
+                OperationType.VERIFY_FILES,
+                OperationType.BUILD_DOWNLOAD_PLAN,
+                OperationType.DOWNLOAD_FILES,
+                OperationType.VERIFY_FILES
+        ), operationManager.getExecutedOperationTypes());
+    }
+
+    @Test
+    void should_download_files_when_verification_plan_is_not_valid() {
+        //given
+        LauncherStateMachine stateMachine = stateMachine();
+        RecordingOperationManager operationManager =
+                new RecordingOperationManager();
+
+        VerificationPlan notValidVerificationPlan =
+                getVerificationPlan("not-valid.jar", VerificationStatus.MISSING);
+
+        executeStepsFromLoadManifestToBuildDownloadPlan(operationManager, notValidVerificationPlan);
+
+        operationManager.registerResult(
+                OperationType.DOWNLOAD_FILES,
+                OperationResult.failure("stop")
+        );
+
+        LauncherEngine engine = new LauncherEngine(stateMachine, operationManager);
+
+        //when
+        engine.launch(configuration());
+
+        //then
+        assertEquals(List.of(
+                OperationType.LOAD_MANIFEST,
+                OperationType.VERIFY_FILES,
+                OperationType.BUILD_DOWNLOAD_PLAN,
+                OperationType.DOWNLOAD_FILES
+        ), operationManager.getExecutedOperationTypes());
+
     }
 
     @Test
@@ -141,14 +388,7 @@ class LauncherEngineTest {
 
         operationManager.registerResult(
                 OperationType.BUILD_DOWNLOAD_PLAN,
-                OperationResult.success()
-        );
-
-        DownloadPlan plan = builder.build(notValidVerificationPlan);
-
-        operationManager.registerBehavior(
-                OperationType.BUILD_DOWNLOAD_PLAN,
-                context -> context.setDownloadPlan(plan)
+                OperationResult.failure("stop")
         );
 
         LauncherEngine engine = new LauncherEngine(stateMachine, operationManager);
@@ -163,13 +403,6 @@ class LauncherEngineTest {
                 OperationType.BUILD_DOWNLOAD_PLAN
         ), operationManager.getExecutedOperationTypes());
 
-        // Temporary behavior until the download flow is added
-        assertEquals(
-                LauncherState.FAILED,
-                stateMachine.getCurrentState()
-        );
-
-        assertEquals(plan, operationManager.getReceivedContext().getDownloadPlan());
     }
 
 
@@ -353,57 +586,9 @@ class LauncherEngineTest {
         assertEquals(List.of(
                 OperationType.LOAD_MANIFEST,
                 OperationType.VERIFY_FILES,
-                OperationType.BUILD_DOWNLOAD_PLAN
-        ), operationManager.getExecutedOperationTypes());
-
-        assertEquals(
-                LauncherState.FAILED,
-                stateMachine.getCurrentState()
-        );
-    }
-
-    @Test
-    void should_transition_to_failed_when_verification_plan_is_not_valid() {
-        //given
-        LauncherStateMachine stateMachine = stateMachine();
-        ManifestService manifestService = new RecordingManifestService();
-        VerificationPlan invalidVerificationPlan = getVerificationPlan(
-                "not-valid.jar",
-                VerificationStatus.CORRUPTED
-        );
-        RecordingOperationManager operationManager =
-                new RecordingOperationManager();
-
-        operationManager.registerResult(
-                OperationType.LOAD_MANIFEST,
-                OperationResult.success()
-        );
-
-        operationManager.registerBehavior(
-                OperationType.LOAD_MANIFEST,
-                context -> context.setManifest(manifestService.loadManifest())
-        );
-
-        operationManager.registerResult(
-                OperationType.VERIFY_FILES,
-                OperationResult.success()
-        );
-
-        operationManager.registerBehavior(
-                OperationType.VERIFY_FILES,
-                context -> context.setVerificationPlan(invalidVerificationPlan)
-        );
-
-        LauncherEngine engine = new LauncherEngine(stateMachine, operationManager);
-
-        //when
-        engine.launch(configuration());
-
-        //then
-        assertEquals(List.of(
-                OperationType.LOAD_MANIFEST,
-                OperationType.VERIFY_FILES,
-                OperationType.BUILD_DOWNLOAD_PLAN
+                OperationType.BUILD_DOWNLOAD_PLAN,
+                OperationType.DOWNLOAD_FILES,
+                OperationType.VERIFY_FILES
         ), operationManager.getExecutedOperationTypes());
 
         assertEquals(

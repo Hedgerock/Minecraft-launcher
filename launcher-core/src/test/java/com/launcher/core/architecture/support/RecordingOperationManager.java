@@ -5,15 +5,12 @@ import com.launcher.core.operation.OperationManager;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.operation.type.OperationType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
-public class RecordingOperationManager implements OperationManager {
-    private final Map<OperationType, OperationResult> operationResults = new HashMap<>();
-    private final Map<OperationType, Consumer<LaunchContext>> behaviors = new HashMap<>();
+public final class RecordingOperationManager implements OperationManager {
+    private final Map<OperationType, Queue<OperationResult>> operationResults = new HashMap<>();
+    private final Map<OperationType, Queue<Consumer<LaunchContext>>> behaviors = new HashMap<>();
 
     private final List<OperationType> executedOperationTypes = new ArrayList<>();
     private LaunchContext receivedContext;
@@ -23,27 +20,35 @@ public class RecordingOperationManager implements OperationManager {
         this.executedOperationTypes.add(type);
         this.receivedContext = context;
 
-        Consumer<LaunchContext> behavior = behaviors.get(type);
+        Queue<Consumer<LaunchContext>> queue = behaviors.get(type);
 
-        if (behavior != null) {
-            behavior.accept(context);
+        if (queue != null && !queue.isEmpty()) {
+            queue.poll().accept(context);
         }
 
-        return operationResults.getOrDefault(
-                type,
-                OperationResult.success()
-        );
+        Queue<OperationResult> resultQueue = operationResults.get(type);
+        OperationResult result = OperationResult.success();
+
+        if (resultQueue != null && !resultQueue.isEmpty()) {
+            result = resultQueue.poll();
+        }
+
+        return result;
     }
 
     public void registerResult(OperationType type, OperationResult result) {
-        operationResults.put(type, result);
+        operationResults
+            .computeIfAbsent(type, key -> new ArrayDeque<>())
+            .add(result);
     }
 
     public void registerBehavior(
             OperationType type,
             Consumer<LaunchContext> behavior
     ) {
-        behaviors.put(type, behavior);
+        behaviors
+            .computeIfAbsent(type, key -> new ArrayDeque<>())
+            .add(behavior);
     }
 
     public List<OperationType> getExecutedOperationTypes() {

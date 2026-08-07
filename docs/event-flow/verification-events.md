@@ -68,7 +68,7 @@ VerificationOperation
 ### Данные события
 
 - OperationId
-- VerificationReport
+- VerificationPlan
 - FinishedAt
 
 ### Гарантии

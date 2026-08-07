@@ -1,18 +1,28 @@
 # Download Events
 
+## Статус
+
+Proposed
+
+## Текущее состояние
+
+Документ описывает планируемы специализированные события загрузки
+
+На текущем этапе `DOWNLOAD_FILES` публикует только общие `operation lifecycle events`
+
 ## Обзор
 
-DownloadOperation публикует события, описывающие жизненный цикл загрузки файлов
+`DownloadOperation` публикует события, описывающие жизненный цикл загрузки файлов
 
 События являются неизменяемыми фактами и не используются для управления выполнения операций
 
-Ошибки загрузки передаются через Result и обрабатываются OperationManager
+Ошибки загрузки передаются через Result и обрабатываются `OperationManager`
 
 ## DownloadStarted
 
 ### Источник
 
-DownloadOperation
+`DownloadOperation`
 
 ### Подписчики
 
@@ -21,10 +31,10 @@ DownloadOperation
 
 ### Данные события
 
-- OperationId
-- TotalFiles
-- TotalBytes
-- StartedAt
+- `OperationId`
+- `TotalFiles`
+- `TotalBytes`
+- `StartedAt`
 
 ### Гарантии
 
@@ -40,15 +50,15 @@ DownloadOperation
 
 ### Подписчики
 
-- Launcher UI
-- Telemetry
+- `Launcher UI`
+- `Telemetry`
 
 ### Данные события
 
-- DownloadFiles
-- TotalFiles
-- DownloadBytes
-- TotalBytes
+- `DownloadFiles`
+- `TotalFiles`
+- `DownloadBytes`
+- `TotalBytes`
 
 ### Гарантии
 
@@ -62,35 +72,35 @@ DownloadOperation
 
 ### Источник
 
-Download Operation
+`Download Operation`
 
 ### Подписчики
 
-- Launcher UI
-- Telemetry
-- Logger
+- `Launcher UI`
+- `Telemetry`
+- `Logger`
 
 ### Данные события
 
-- DownloadReport
-- FinishedAt
+- `DownloadReport`
+- `FinishedAt`
 
 ### Гарантии
 
 Публикуется не более одного раза
 
-Является завершающим событием жизненного цикла DownloadOperation
+Является завершающим событием жизненного цикла `DownloadOperation`
 
 ---
 
 ## Примечания
 
-DownloadOperation не публикует события ошибок
+`DownloadOperation` не публикует события ошибок
 
-Любые ошибки возвращаются через Result.failure(...)
+Любые ошибки возвращаются через `Result.failure(...)`
 
 Инфраструктурные проблемы (например, потеря сети) могут публиковаться отдельно
-инфраструктурным слоем и не являются частью жизненного цикла DownloadOperation
+инфраструктурным слоем и не являются частью жизненного цикла `DownloadOperation`
 
 
 

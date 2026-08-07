@@ -16,7 +16,6 @@
 ## Артефакты
 
 LoadManifestTask -> Manifest
-
-VerificationTask -> VerificationReport
-
-DownloadPlanningTask -> DownloadPlan
+VerifyFilesTask -> VerificationPlan
+BuildDownloadPlanTask -> DownloadPlan
+DownloadFilesTask -> uses DownloadPlan

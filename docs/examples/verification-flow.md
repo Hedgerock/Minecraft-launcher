@@ -13,34 +13,15 @@
 
 ## Последовательность
 
+```text
 LauncherEngine
-|
-▼
-OperationManager
-|
-▼
-VerificationOperation
-|
-▼
-VerificationService
-|
-▼
-FileVerifier
-|
-├────────────────┐
-|                |
-▼                ▼               
-HashVerifier    FileStorage
-|                |
-└──────┬─────────┘
-       ▼
-VerificationReport
-       |
-       ▼
-TelemetryReport
-       | 
-       ▼
-    Result
+    -> OperationManager
+    -> VerificationOperation
+    -> VerifyFilesTask
+    -> VerificationService
+    -> FileVerifier
+    -> VerificationPlan
+```
 
 ## Этапы
 

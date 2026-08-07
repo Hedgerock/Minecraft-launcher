@@ -2,17 +2,19 @@
 
 ## Статус
 
-Proposed
-
-## Текущее состояние
-
 Документ описывает планируемы специализированные события загрузки
 
-На текущем этапе `DOWNLOAD_FILES` публикует только общие `operation lifecycle events`
+На текущем этапе `DOWNLOAD_FILES` публикует только общие события жизненного цикла `Operation`
+
+- `OperationStartedEvent`
+- `OperationCompletedEvent`
+- `OperationFailedEvent`
+
+Специализированные события `DownloadStarted`, `DownloadProgressChanged` и `DownloadCompleted` еще не реализованы
 
 ## Обзор
 
-`DownloadOperation` публикует события, описывающие жизненный цикл загрузки файлов
+Будущая специализированная `download operation` будет публиковать события, описывающие жизненный цикл загрузки файлов
 
 События являются неизменяемыми фактами и не используются для управления выполнения операций
 
@@ -82,7 +84,7 @@ DownloadOperation
 
 ### Данные события
 
-- `DownloadReport`
+- Future `DownloadReport`
 - `FinishedAt`
 
 ### Гарантии

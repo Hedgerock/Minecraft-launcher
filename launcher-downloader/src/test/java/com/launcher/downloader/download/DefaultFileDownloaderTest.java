@@ -1,5 +1,6 @@
 package com.launcher.downloader.download;
 
+import com.launcher.downloader.exception.DownloadException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -43,8 +44,8 @@ class DefaultFileDownloaderTest {
         Path target = tempDir.resolve("mods/test.jar");
 
         //when
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        DownloadException exception = assertThrows(
+                DownloadException.class,
                 () -> downloader.download(FAKE_URL, target)
         );
 

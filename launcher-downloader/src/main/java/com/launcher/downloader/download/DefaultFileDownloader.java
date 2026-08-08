@@ -1,5 +1,7 @@
 package com.launcher.downloader.download;
 
+import com.launcher.downloader.exception.DownloadException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -11,6 +13,7 @@ import java.nio.file.StandardCopyOption;
 public class DefaultFileDownloader implements FileDownloader {
 
     @Override
+    @SuppressWarnings("DataFlowIssue")
     public void download(String url, Path targetPath) {
         Path temporaryFile = null;
 
@@ -37,10 +40,7 @@ public class DefaultFileDownloader implements FileDownloader {
                 deleteTemporaryFileQuietly(temporaryFile);
             }
 
-            throw new RuntimeException(
-                    "Failed to download file: " + url,
-                    e
-            );
+            throw new DownloadException(url, e);
         }
     }
 

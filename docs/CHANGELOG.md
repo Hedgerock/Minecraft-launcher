@@ -94,6 +94,9 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added downloader preparation with FileDownloader and DefaultDownloadService wiring
 - LauncherEngine now runs DOWNLOAD_FILES after building DownloadPlan
 - LauncherEngine now verifies files again after download execution
+- Added specialized download progress events for DOWNLOAD_FILES execution
+- Added launcher state transition tests for download execution flow
+- Added DownloadException in launcher-downloader for file download failures
 
 ### Changed
 

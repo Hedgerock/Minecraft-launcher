@@ -2,29 +2,43 @@
 
 ## Статус
 
-Документ описывает планируемы специализированные события загрузки
+Документ описывает текущий контракт специализированных событий загрузки файлов
 
-На текущем этапе `DOWNLOAD_FILES` публикует только общие события жизненного цикла `Operation`
+На текущем этапе `DOWNLOAD_FILES` публикует как общие события жизненного цикла `Operation`, так и специализированные
+события загрузки
+
+### Общие события
 
 - `OperationStartedEvent`
 - `OperationCompletedEvent`
 - `OperationFailedEvent`
 
-Специализированные события `DownloadStarted`, `DownloadProgressChanged` и `DownloadCompleted` еще не реализованы
+### Специализированные события
+
+- `DownloadStartedEvent`
+- `DownloadProgressChangedEvent`
+- `DownloadCompletedEvent`
+
+Специализированные события публикуются непосредственно `DownloadFilesTask` через `EventBus`
+
 
 ## Обзор
 
-Будущая специализированная `download operation` будет публиковать события, описывающие жизненный цикл загрузки файлов
+`DownloadFilesTask` публикует события, описывающие жизненный цикл выполнения загрузки файлов
 
-События являются неизменяемыми фактами и не используются для управления выполнения операций
+События являются неизменными фактами и не используются для управления выполнением операции
 
-Ошибки загрузки передаются через Result и обрабатываются `OperationManager`
+На текущем этапе `DownloadProgressChangedEvent` не представляет потоковый прогресс. После успешного
+завершения `downloadService.download(...)` публикуется одно событие с полностью завершенным прогрессом
 
-## DownloadStarted
+Ошибки загрузки не публикуются специализированным событием. Они преобразуются в `Result.failure(...)` и передаются
+вызывающему коду
+
+## DownloadStartedEvent
 
 ### Источник
 
-`DownloadOperation`
+`DownloadFilesTask`
 
 ### Подписчики
 
@@ -33,22 +47,22 @@
 
 ### Данные события
 
-- `OperationId`
 - `TotalFiles`
 - `TotalBytes`
-- `StartedAt`
 
 ### Гарантии
 
-Публикуется ровно один раз для каждой DownloadOperation
+- Публикуется ровно один раз для каждого непустого `DownloadPlan`
+- Публикуется перед началом `downloadService.download(...)`
+- Для пустого `DownloadPlan` не публикуется
 
 ---
 
-## DownloadProgressChanged
+## DownloadProgressChangedEvent
 
 ### Источник
 
-DownloadOperation
+`DownloadFilesTask`
 
 ### Подписчики
 
@@ -59,18 +73,29 @@ DownloadOperation
 
 - `DownloadFiles`
 - `TotalFiles`
-- `DownloadBytes`
+- `DownloadedBytes`
 - `TotalBytes`
+
+### Текущее поведение
+
+На текущем этапе публикуется один раз после успешного завершения `downloadService.download(...)`
+
+Событие содержит полностью завершенный прогресс
+
+- `DownloadedFiles == TotalBytes`
+- `DownloadedBytes == TotalBytes`
+
+Потоковая публикация промежуточного прогресса пока не реализована
 
 ### Гарантии
 
-Публикуется произвольное количество раз
-
-Значения прогресса никогда не уменьшается
+- Не публикуется при ошибке загрузки
+- Не публикуется для пустого `DownloadPlan`
+- При успешной загрузке публикуется до `DownloadCompletedEvent`
 
 ---
 
-## DownloadCompleted
+## DownloadCompletedEvent
 
 ### Источник
 
@@ -84,25 +109,55 @@ DownloadOperation
 
 ### Данные события
 
-- Future `DownloadReport`
-- `FinishedAt`
+- `TotalFiles`
+- `TotalBytes`
 
 ### Гарантии
 
-Публикуется не более одного раза
+- Публикуется не более одного раза для каждого успешного выполнения загрузки
+- Публикуется только после успешного завершения `downloadService.download(...)`
+- Публикуется после `DownloadProgressChangedEvent`
+- Не публикуется при ошибке загрузки
+- Не публикуется для пустого `DownloadPlan`
 
-Является завершающим событием жизненного цикла `DownloadOperation`
+Является завершающим специализированным событием жизненного цикла загрузки
+
+---
+
+## Порядок событий
+
+```text
+Для непустого `DownloadPlan` при успешной загрузке:
+    DownloadStartedEvent
+        -> downloadService.download(...)
+            -> DownloadProgressChangedEvent
+                -> DownloadCompletedEvent
+                
+При ошибке загрузки:
+    DownloadStartedEvent
+        -> downloadService.download(...)
+            -> Result.failure(...)          
+```
+
+`DownloadProgressChangedEvent` и `DownloadCompletedEvent` после ошибки не публикуются
+
+Для пустого `DownloadPlan` -> Result.success(...)
+
+Специализированные события загрузки не публикуются
 
 ---
 
 ## Примечания
 
-`DownloadOperation` не публикует события ошибок
+`DownloadFilesTask` не знает о конкретных подписчиках событий
 
-Любые ошибки возвращаются через `Result.failure(...)`
+`DownloadService` не отвечает за публикацию событий и не зависит от `EventBus`
 
-Инфраструктурные проблемы (например, потеря сети) могут публиковаться отдельно
-инфраструктурным слоем и не являются частью жизненного цикла `DownloadOperation`
+Текущая реализация `DownloadProgressChangedEvent` является промежуточной. При появлении требования
+на потоковый прогресс контракт `DownloadService` может быть расширен механизмом listener/callback
+
+Инфраструктурные проблемы могут публиковаться отдельными инфраструктурными событиями и не являются частью
+специализированного жизненного цикла загрузки
 
 
 

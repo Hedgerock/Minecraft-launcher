@@ -5,19 +5,29 @@
 Описать процесс восстановления локального состояния игры путем загрузки отсутствующих или
 поврежденных ресурсов
 
+---
+
 ## Текущий статус
 
 `LauncherEngine` запускает `DOWNLOAD_FILES` после успешного построения `DownloadPlan`
 
+`DownloadFilesTask` выполняет загрузку через `DownloadService` и публикует специализированные события
+жизненного цикла загрузки
+
 После `DOWNLOAD_FILES` `LauncherEngine` повторно запускает `VERIFY_FILES`, потому что загрузка файла
 сама по себе не доказывает корректность локального состояния
+
+---
 
 ## Предусловия
 
 - `VERIFY_FILES` завершена успешно
 - В `LaunchContext` сохранен `VerificationPlan`
-- Если `VerificationPlan` содржит файлы, требующие восстановления, строится `DownloadPlan`
+- `VerificationPlan` содержит файлы, требующие восстановления
+- `BUILD_DOWNLOAD_PLAN` успешно построен
 - `DownloadPlan` сохранен в `LaunchContext`
+
+---
 
 ## Последовательность
 
@@ -26,27 +36,29 @@ LauncherEngine
     -> VERIFY_FILES
         -> VerificationPlan
     -> BUILD_DOWNLOAD_PLAN
+        -> BuildDownloadPlanTask
+            -> DownloadPlanBuilder
         -> DownloadPlan
     -> DOWNLOAD_FILES
-        -> DownloadService
-            -> DefaultDownloadService
-                -> FileDownloader
-    -> VERIFY_FILES
-         -> VerificationPlan
-                 
-DOWNLOAD_FILES
-    -> DownloadFilesOperation
         -> DownloadFilesTask
             -> DownloadService
                 -> DefaultDownloadService
                     -> FileDownloader
+    -> VERIFY_FILES
+        -> VerificationPlan
 ```
+
+---
 
 ## Этапы
 
 ### 1.Анализ `VerificationPlan`
 
-`DownloadPlanBuilder` получает `VerificationPlan` и выбирает файлы со статусами `MISSING`, `OUTDATED` и `CORRUPTED`
+`DownloadPlanBuilder` получает `VerificationPlan` и выбирает файлы со статусами 
+
+- `MISSING`
+- `OUTDATED`
+- `CORRUPTED`
 
 Файлы со статусом `VALID` не попадают в `DownloadPlan`
 
@@ -58,14 +70,36 @@ DOWNLOAD_FILES
 
 `DownloadFilesTask` получает `DownloadPlan` из `LaunchContext` и передает его в `DownloadService`
 
-`DefaultDownloadServic` строит целевой путь файла относительно game directory и 
-передает url и targetPath в `FileDownloader`
+`DefaultDownloadService` получает `game directory` через `DirectoryProvider`, строит целевой путь для каждого файла
+относительно `game directory` и передает `url` и `targetPath` в `FileDownloader`
 
-### 4.Текущие ограничения
+### 4.Загрузка отдельного файла
 
-`DOWNLOAD_FILES operation` запускается из `LauncherEngine` после успешного построения `DownloadPlan`
+`FileDownloader` загружает файл во временный файл после успешной загрузки перемещает его в целевой `targetPath`
 
-`DefaultFileDownloader` пока не выполняет реальную загрузку файлов
+При ошибке временный файл удаляется, а ошибка передается вызывающему коду
+
+### 5.Повторная проверка
+
+После успешного `DOWNLOAD_FILES` `LauncherEngine` повторно запускает `VERIFY_FILES`
+
+Повторная проверка определяет, действительно ли локальное состояние соответствует ожидаемому состоянию
+
+Если повторный `VerificationPlan` валиден, `LauncherEngine` переходит в `RUNNING`
+
+Если проверка завершается ошибкой, или план остается невалидным, `LauncherEngine` переходит в `FAILED`
+
+---
+
+## Текущие ограничения
+
+- `DownloadFilesTask` не получает потоковый прогресс от `DownloadService`
+- `DownloadProgressChangedEvent` публикуется один раз после успешного завершения загрузки и содержит
+  полностью завершенный прогресс
+- Проверка `checksum` не выполняется непосредственно `DownloadService` или `FileDownloader`
+- Итоговая корректность загруженных файлов подтверждается `VERIFY_FILES`
+
+---
 
 ## Компоненты
 
@@ -78,6 +112,9 @@ DOWNLOAD_FILES
 - `DownloadService`
 - `DefaultDownloadService`
 - `FileDownloader`
+- `DefaultFileDownloader`
+
+---
 
 ## Инварианты
 
@@ -91,7 +128,7 @@ D-2
 
 D-3
 
-`DefaultDownloadSerivce` не принимает решений о составе загрузки
+`DefaultDownloadService` не принимает решений о составе загрузки
 
 D-4
 
@@ -99,4 +136,22 @@ D-4
 
 D-5
 
-Реальная загрузка файлов должна быть подключена до запуска `DOWNLOAD_FILES` из `LauncherEngine`
+Успешное завершение `DOWNLOAD_FILES` не является подтверждением корректности локального состояния
+
+Корректность подтверждается повторным VERIFY_FILES
+
+D-6
+
+`DownloadFilesTask` не знает конкретных получателей событий. События публикуются через `EventBus`
+
+D-7
+
+Публикация `DownloadCompletedEvent` разрешена только после успешного завершения загрузки
+
+---
+
+## Связанные документы
+
+- `download-events.md` - контракт событий жизненного цикла загрузки
+- `verification-flow.md` - поток проверки файлов
+- `operation-model.md` - общая модель выполнения `Operation`

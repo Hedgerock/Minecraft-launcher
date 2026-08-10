@@ -58,6 +58,40 @@ class DefaultDownloadServiceTest {
     }
 
     @Test
+    void should_fail_when_downloaded_file_size_can_not_written(@TempDir Path tempDir) {
+        //given
+        FileEntry fileEntry = fileEntry("mods/file.jar", 12L, "http://file.jar");
+
+        DownloadPlan plan = new DownloadPlan(List.of(fileEntry));
+        Path gameDirectory = tempDir.resolve("game");
+        RecordingFileDownloader downloader = new RecordingFileDownloader();
+
+        downloader.setCreateFile(false);
+
+        DownloadService service = new DefaultDownloadService(
+                new FixedDirectoryProvider(gameDirectory),
+                downloader
+        );
+
+        //when
+
+        DownloadException exception = assertThrows(
+                DownloadException.class,
+                () -> service.download(plan)
+        );
+
+        //then
+        Path target = gameDirectory.resolve("mods/file.jar");
+
+        assertFalse(Files.exists(target));
+
+        assertEquals("http://file.jar", exception.getUrl());
+        assertTrue(exception.getMessage().contains("Failed to get file size"));
+        assertTrue(exception.getMessage().contains("mods/file.jar"));
+        assertInstanceOf(IOException.class, exception.getCause());
+    }
+
+    @Test
     void should_fail_when_downloaded_file_size_does_not_match_manifest_entry(@TempDir Path tempDir)
             throws IOException {
         //given

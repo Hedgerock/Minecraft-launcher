@@ -38,16 +38,10 @@ public class DefaultDownloadService implements DownloadService {
             long actualSize = Files.size(targetPath);
 
             if (actualSize != file.size()) {
-                throw new DownloadException(
-                        "Downloaded file size mismatch: " + file.path(),
-                        file.url()
-                );
+                throw DownloadException.sizeMismatch(file.url(), file.path());
             }
         } catch (IOException e) {
-            throw new DownloadException(
-                    "Failed to get file size: " + file.path(),
-                    file.url()
-            );
+            throw DownloadException.fileSizeReadFailed(file.url(), file.path(), e);
         }
 
     }

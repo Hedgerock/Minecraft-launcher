@@ -10,7 +10,7 @@ import java.util.List;
 
 public final class RecordingFileDownloader implements FileDownloader {
     private final boolean withException;
-    private final boolean createFile;
+    private boolean createFile;
     private final long fileSize;
 
     private final List<DownloadRequest> requests = new ArrayList<>();
@@ -21,6 +21,10 @@ public final class RecordingFileDownloader implements FileDownloader {
 
     public RecordingFileDownloader(boolean withException) {
         this(withException, true, 100L);
+    }
+
+    public void setCreateFile(boolean createFile) {
+        this.createFile = createFile;
     }
 
     public RecordingFileDownloader(boolean withException, boolean createFile, long fileSize) {

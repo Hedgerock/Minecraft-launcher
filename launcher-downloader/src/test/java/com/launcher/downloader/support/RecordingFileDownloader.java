@@ -2,19 +2,31 @@ package com.launcher.downloader.support;
 
 import com.launcher.downloader.download.FileDownloader;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class RecordingFileDownloader implements FileDownloader {
-    private boolean withException = false;
+    private final boolean withException;
+    private final boolean createFile;
+    private final long fileSize;
+
     private final List<DownloadRequest> requests = new ArrayList<>();
 
     public RecordingFileDownloader() {
+        this(false, true, 100L);
     }
 
     public RecordingFileDownloader(boolean withException) {
+        this(withException, true, 100L);
+    }
+
+    public RecordingFileDownloader(boolean withException, boolean createFile, long fileSize) {
         this.withException = withException;
+        this.createFile = createFile;
+        this.fileSize = fileSize;
     }
 
     public record DownloadRequest(String url, Path targetPath) {}
@@ -26,6 +38,19 @@ public final class RecordingFileDownloader implements FileDownloader {
         }
 
         requests.add(new DownloadRequest(url, targetPath));
+
+        if (createFile) {
+            createFile(targetPath);
+        }
+    }
+
+    private void createFile(Path targetPath) {
+        try {
+            Files.createDirectories(targetPath.getParent());
+            Files.write(targetPath, new byte[(int) fileSize]);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<DownloadRequest> getRequests() {

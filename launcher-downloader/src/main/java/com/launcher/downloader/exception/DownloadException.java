@@ -10,6 +10,11 @@ public class DownloadException extends RuntimeException {
         this.url = url;
     }
 
+    public DownloadException(String message, String url) {
+        super(message);
+        this.url = url;
+    }
+
     public String getUrl() {
         return url;
     }

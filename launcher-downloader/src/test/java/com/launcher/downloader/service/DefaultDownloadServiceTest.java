@@ -2,11 +2,17 @@ package com.launcher.downloader.service;
 
 import com.launcher.core.download.DownloadPlan;
 import com.launcher.core.download.DownloadService;
+import com.launcher.downloader.exception.DownloadException;
 import com.launcher.downloader.support.FixedDirectoryProvider;
 import com.launcher.downloader.support.RecordingFileDownloader;
+import com.launcher.downloader.support.WritingFileDownloader;
 import com.launcher.model.manifest.FileEntry;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -24,9 +30,69 @@ class DefaultDownloadServiceTest {
     }
 
     @Test
-    void should_download_each_file_to_game_directory() {
+    void should_continue_when_downloaded_file_size_matches_manifest_entry(@TempDir Path tempDir) throws IOException {
         //given
-        Path gameDirectory = Path.of("/game");
+        String content = "Hello test";
+
+        FileEntry fileEntry = fileEntry(
+                "mods/file.jar",
+                content.getBytes(StandardCharsets.UTF_8).length,
+                "http://file.jar"
+        );
+
+        DownloadPlan plan = new DownloadPlan(List.of(fileEntry));
+        Path gameDirectory = tempDir.resolve("game");
+
+        DownloadService service = new DefaultDownloadService(
+                new FixedDirectoryProvider(gameDirectory),
+                new WritingFileDownloader(content)
+        );
+        //when
+        service.download(plan);
+
+        //then
+        Path target = gameDirectory.resolve("mods/file.jar");
+
+        assertTrue(Files.exists(target));
+        assertEquals(content, Files.readString(target));
+    }
+
+    @Test
+    void should_fail_when_downloaded_file_size_does_not_match_manifest_entry(@TempDir Path tempDir)
+            throws IOException {
+        //given
+        FileEntry fileEntry = fileEntry("mods/file.jar", 12L, "http://file.jar");
+
+        DownloadPlan plan = new DownloadPlan(List.of(fileEntry));
+        Path gameDirectory = tempDir.resolve("game");
+
+        DownloadService service = new DefaultDownloadService(
+                new FixedDirectoryProvider(gameDirectory),
+                new WritingFileDownloader("Hello test")
+        );
+
+        //when
+
+        DownloadException exception = assertThrows(
+                DownloadException.class,
+                () -> service.download(plan)
+        );
+
+        //then
+        Path target = gameDirectory.resolve("mods/file.jar");
+
+        assertTrue(Files.exists(target));
+        assertEquals(10L, Files.size(target));
+        assertEquals("http://file.jar", exception.getUrl());
+        assertTrue(exception.getMessage().contains("Downloaded file size mismatch"));
+        assertTrue(exception.getMessage().contains("mods/file.jar"));
+
+    }
+
+    @Test
+    void should_download_each_file_to_game_directory(@TempDir Path tempDir) {
+        //given
+        Path gameDirectory = tempDir.resolve("game");
         RecordingFileDownloader downloader = new RecordingFileDownloader();
         DownloadService service = new DefaultDownloadService(
                 new FixedDirectoryProvider(gameDirectory),
@@ -34,7 +100,7 @@ class DefaultDownloadServiceTest {
         );
 
         FileEntry firstFile = fileEntry("first.jar", 100L, "http://first.jar");
-        FileEntry secondFile = fileEntry("second.jar", 200L, "http://second.jar");
+        FileEntry secondFile = fileEntry("second.jar", 100L, "http://second.jar");
 
         DownloadPlan plan = new DownloadPlan(List.of(firstFile, secondFile));
 
@@ -50,9 +116,9 @@ class DefaultDownloadServiceTest {
     }
 
     @Test
-    void should_create_target_path_from_game_directory_and_file_path() {
+    void should_create_target_path_from_game_directory_and_file_path(@TempDir Path tempDir) {
         //given
-        Path gameDirectory = Path.of("/game");
+        Path gameDirectory = tempDir.resolve("game");
         RecordingFileDownloader downloader = new RecordingFileDownloader();
         DownloadService service = new DefaultDownloadService(
                 new FixedDirectoryProvider(gameDirectory),
@@ -67,7 +133,7 @@ class DefaultDownloadServiceTest {
         service.download(plan);
 
         //then
-        Path actualPath = Path.of("/game/mods/current-mode.jar");
+        Path actualPath = gameDirectory.resolve("mods/current-mode.jar");
 
         assertEquals(
                 actualPath,

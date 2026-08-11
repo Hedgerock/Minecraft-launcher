@@ -1,4 +1,10 @@
 @startuml
+
+' Historical note:
+' This diagram describes an earlier architecture snapshot
+' Current verification flow uses VerificationPlan, FileVerifier and HashService
+' See docs/examples/verification-flow.md and docs/contracts/file-verifier.md
+
 VerificationService --> FileVerifier: verify(file)
 FileVerifier --> FileStorage: exists(path)
 FileStorage --> FileVerifier: true

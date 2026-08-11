@@ -1,5 +1,10 @@
 @startuml
 
+' Historical note:
+' This diagram describes an earlier architecture snapshot
+' Current verification flow uses VerificationPlan, FileVerifier and HashService
+' See docs/examples/verification-flow.md and docs/contracts/file-verifier.md
+
 class LaunchContext
 class Configuration
 class Manifest

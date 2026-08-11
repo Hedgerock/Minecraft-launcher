@@ -9,7 +9,7 @@ import com.launcher.core.task.LauncherTask;
 
 import java.util.List;
 
-public class FailingWithoutMessageOperation extends LaunchOperation {
+public final class FailingWithoutMessageOperation extends LaunchOperation {
 
     public FailingWithoutMessageOperation(
             LaunchContext launchContext,

@@ -9,7 +9,7 @@ import com.launcher.core.task.LauncherTask;
 
 import java.util.List;
 
-public class EventPublishingOperation extends LaunchOperation {
+public final class EventPublishingOperation extends LaunchOperation {
 
     private final OperationResult result;
 

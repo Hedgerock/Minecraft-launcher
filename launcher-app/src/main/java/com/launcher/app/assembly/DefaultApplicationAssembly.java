@@ -50,6 +50,7 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
                 services.manifestService(),
                 services.verificationService(),
                 services.downloadService(),
+                services.directoryService(),
                 builder,
                 launcherInfrastructure.eventBus()
         );

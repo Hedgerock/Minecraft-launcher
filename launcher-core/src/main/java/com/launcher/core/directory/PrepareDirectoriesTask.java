@@ -17,7 +17,7 @@ public class PrepareDirectoriesTask implements LauncherTask {
 
     @Override
     public LauncherState state() {
-        return null;
+        return LauncherState.PREPARING_GAME;
     }
 
     @Override

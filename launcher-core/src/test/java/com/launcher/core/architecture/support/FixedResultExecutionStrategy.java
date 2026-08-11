@@ -7,7 +7,7 @@ import com.launcher.core.task.LauncherTask;
 
 import java.util.List;
 
-public class FixedResultExecutionStrategy implements ExecutionStrategy {
+public final class FixedResultExecutionStrategy implements ExecutionStrategy {
 
     private final OperationResult result;
 

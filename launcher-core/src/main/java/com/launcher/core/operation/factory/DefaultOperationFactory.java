@@ -9,6 +9,7 @@ import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.impl.*;
 import com.launcher.core.operation.type.OperationType;
+import com.launcher.core.storage.service.DirectoryService;
 import com.launcher.core.verification.VerificationService;
 
 public class DefaultOperationFactory implements OperationFactory {
@@ -17,17 +18,20 @@ public class DefaultOperationFactory implements OperationFactory {
     private final DownloadService downloadService;
     private final EventBus eventBus;
     private final DownloadPlanBuilder downloadPlanBuilder;
+    private final DirectoryService directoryService;
 
     public DefaultOperationFactory(
             ManifestService service,
             VerificationService verificationService,
             DownloadService downloadService,
+            DirectoryService directoryService,
             DownloadPlanBuilder downloadPlanBuilder,
             EventBus eventBus
     ) {
         this.service = service;
         this.verificationService = verificationService;
         this.downloadService = downloadService;
+        this.directoryService = directoryService;
         this.downloadPlanBuilder = downloadPlanBuilder;
         this.eventBus = eventBus;
     }
@@ -49,6 +53,8 @@ public class DefaultOperationFactory implements OperationFactory {
                     new BuildDownloadPlanOperation(context, executionStrategy, eventBus, downloadPlanBuilder);
             case DOWNLOAD_FILES ->
                     new DownloadFilesOperation(context, executionStrategy, eventBus, downloadService);
+            case PREPARE_DIRECTORIES ->
+                    new PrepareDirectoriesOperation(context, executionStrategy, eventBus, directoryService);
         };
     }
 }

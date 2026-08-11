@@ -117,6 +117,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - LauncherEngine now runs VERIFY_FILES after LOAD_MANIFEST during launch
 - LaunchContext now includes a DownloadPlan
 - Aligned download flow and download events documentation with the implemented downloader behavior
+- Aligned module boundary documentation with the current launcher-core and launcher-app responsibilities
 
 ### Removed
 

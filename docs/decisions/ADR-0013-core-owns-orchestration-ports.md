@@ -2,7 +2,7 @@
 
 ## Статус
 
-Proposed
+Accepted
 
 ## Контекст
 
@@ -11,10 +11,14 @@ Proposed
 
 Для выполнения операции `LOAD_MANIFEST` ядру нужен контракт загрузки манифеста
 
-Сейчас `ManifestService` находится в `launcher-api` рядом с HTTP-клиентом, mapper-ом и конекретной
+Изначально `ManifestService` находился в `launcher-api` рядом с HTTP-клиентом, mapper-ом и конкретной
 реализацией `HttpManifestService`
 
-Из-за этого `launcher-core` зависит от `launcher-api` широе, чем требуется для оркестрации
+Такое расположение приводило к тому, что `launcher-core` зависел от `launcher-api` шире, чем требовалось
+оркестрации
+
+В результате переноса `ManifestService` принадлежит `launcher-core` и используется ядром как порт для оркестрации
+
 
 ## Решение
 
@@ -24,17 +28,21 @@ Proposed
 
 `launcher-app` остается композиционным корнем и связывает порт с конкретной реализацией
 
+`ManifestService` находится в `launcher-core`, а `HttpManifestService` остается конкретной реализацией адаптера
+`launcher-api`
+
 ## Последствия
 
-`ManifestService` должен быть перенесен из `launcher-api` в `launcher-core` в пакет `port`
+`ManifestService` перенесен из `launcher-api` в `launcher-core` в пакет `port`
 
 `launcher-api` больше не должен быть обязательной зависимостью `launcher-core` только ради контракта
 загрузки манифеста
 
-`HttpManifestService` остается в `launcher-api` и реализует порт ядра
+`HttpManifestService` остается в `launcher-api` и реализует порт `ManifestService` принадлежащий `launcher-core`
 
-Архитектурный тест `launcher-core boundary` может быть расширен запретом на зависимость от `launcher-api`
-после завершения переноса
+Composition root отвечает за связывание порта с конкретной реализацией
+
+Архитектурная граница `launcher-core` запрещает зависимость от `launcher-api`
 
 ## Отложено
 

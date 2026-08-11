@@ -1,9 +1,10 @@
 package com.launcher.core.architecture.operation;
 
 import com.launcher.core.architecture.support.FixedResultExecutionStrategy;
-import com.launcher.core.architecture.support.RecordVerificationService;
-import com.launcher.core.architecture.support.RecordingDownloadService;
-import com.launcher.core.architecture.support.RecordingManifestService;
+import com.launcher.core.architecture.support.recording.RecordVerificationService;
+import com.launcher.core.architecture.support.recording.RecordingDirectoryService;
+import com.launcher.core.architecture.support.recording.RecordingDownloadService;
+import com.launcher.core.architecture.support.recording.RecordingManifestService;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.event.EventBus;
@@ -49,6 +50,7 @@ class OperationFactoryTest {
                 manifestService,
                 new RecordVerificationService(getVerificationPlan()),
                 new RecordingDownloadService(),
+                new RecordingDirectoryService(),
                 builder,
                 eventBus
         );
@@ -150,4 +152,24 @@ class OperationFactoryTest {
         //then
         assertInstanceOf(DownloadFilesOperation.class, operation);
     }
+
+    @Test
+    void should_create_prepare_directories_operation_for_prepare_directories_type() {
+        //given
+        ManifestService service = new RecordingManifestService();
+        EventBus eventBus = new EventBus();
+        LaunchContext context = getContext();
+        DefaultOperationFactory factory = getDefaultOperationFactory(service, eventBus);
+
+        //when
+        LaunchOperation operation = factory.create(
+                OperationType.PREPARE_DIRECTORIES,
+                context,
+                new FixedResultExecutionStrategy(OperationResult.success())
+        );
+
+        //then
+        assertInstanceOf(PrepareDirectoriesOperation.class, operation);
+    }
+
 }

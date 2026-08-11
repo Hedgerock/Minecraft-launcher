@@ -1,4 +1,4 @@
-package com.launcher.core.architecture.support;
+package com.launcher.core.architecture.support.recording;
 
 import com.launcher.core.event.EventBus;
 import com.launcher.core.execution.ExecutionStrategy;
@@ -8,7 +8,7 @@ import com.launcher.core.operation.factory.OperationFactory;
 import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.operation.impl.RepairOperation;
 
-public class RecordingOperationFactory implements OperationFactory {
+public final class RecordingOperationFactory implements OperationFactory {
     public static final String RECORDING_EVENT_NAME = "OperationFactory";
 
     private final RecordingEvents recordingEvents;

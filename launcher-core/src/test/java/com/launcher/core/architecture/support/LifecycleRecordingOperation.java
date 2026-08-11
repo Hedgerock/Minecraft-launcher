@@ -1,5 +1,6 @@
 package com.launcher.core.architecture.support;
 
+import com.launcher.core.architecture.support.recording.RecordingEvents;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;

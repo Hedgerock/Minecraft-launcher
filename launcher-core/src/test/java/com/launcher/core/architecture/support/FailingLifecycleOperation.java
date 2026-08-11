@@ -1,5 +1,6 @@
 package com.launcher.core.architecture.support;
 
+import com.launcher.core.architecture.support.recording.RecordingEvents;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;
@@ -10,7 +11,7 @@ import com.launcher.core.task.LauncherTask;
 
 import java.util.List;
 
-public class FailingLifecycleOperation extends LaunchOperation {
+public final class FailingLifecycleOperation extends LaunchOperation {
     public static final String BEFORE_EXECUTE = "beforeExecute";
     public static final String CREATE_TASK = "createTask";
     public static final String FINALIZE_OPERATION = "finalizeOperation";

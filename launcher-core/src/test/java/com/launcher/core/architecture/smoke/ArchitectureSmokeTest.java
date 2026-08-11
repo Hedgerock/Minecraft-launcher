@@ -1,8 +1,8 @@
 package com.launcher.core.architecture.smoke;
 
-import com.launcher.core.architecture.support.RecordingEvents;
-import com.launcher.core.architecture.support.RecordingExecutionStrategy;
-import com.launcher.core.architecture.support.RecordingOperationFactory;
+import com.launcher.core.architecture.support.recording.RecordingEvents;
+import com.launcher.core.architecture.support.recording.RecordingExecutionStrategy;
+import com.launcher.core.architecture.support.recording.RecordingOperationFactory;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.launch.LaunchContext;

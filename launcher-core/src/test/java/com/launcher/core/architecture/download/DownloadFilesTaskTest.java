@@ -1,7 +1,7 @@
 package com.launcher.core.architecture.download;
 
-import com.launcher.core.architecture.support.RecordingDownloadService;
-import com.launcher.core.architecture.support.RecordingEventBus;
+import com.launcher.core.architecture.support.recording.RecordingDownloadService;
+import com.launcher.core.architecture.support.recording.RecordingEventBus;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadFilesTask;
 import com.launcher.core.download.DownloadPlan;

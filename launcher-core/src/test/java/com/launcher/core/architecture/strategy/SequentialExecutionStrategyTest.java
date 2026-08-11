@@ -1,7 +1,7 @@
 package com.launcher.core.architecture.strategy;
 
-import com.launcher.core.architecture.support.RecordingEvents;
-import com.launcher.core.architecture.support.RecordingLauncherTask;
+import com.launcher.core.architecture.support.recording.RecordingEvents;
+import com.launcher.core.architecture.support.recording.RecordingLauncherTask;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.execution.SequentialExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;

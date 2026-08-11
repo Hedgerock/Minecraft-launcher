@@ -1,4 +1,4 @@
-package com.launcher.core.architecture.support;
+package com.launcher.core.architecture.support.recording;
 
 import com.launcher.core.event.Event;
 import com.launcher.core.event.EventBus;
@@ -6,7 +6,7 @@ import com.launcher.core.event.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecordingEventBus extends EventBus {
+public final class RecordingEventBus extends EventBus {
 
     private final List<Object> events = new ArrayList<>();
 

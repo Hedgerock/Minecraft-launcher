@@ -1,6 +1,6 @@
 package com.launcher.core.architecture.verification;
 
-import com.launcher.core.architecture.support.RecordVerificationService;
+import com.launcher.core.architecture.support.recording.RecordVerificationService;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.result.Result;

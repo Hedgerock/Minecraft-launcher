@@ -1,4 +1,4 @@
-package com.launcher.core.architecture.support;
+package com.launcher.core.architecture.support.recording;
 
 import com.launcher.core.event.EventBus;
 import com.launcher.core.state.LauncherState;
@@ -7,7 +7,7 @@ import com.launcher.core.state.LauncherStateMachine;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecordingLauncherStateMachine extends LauncherStateMachine {
+public final class RecordingLauncherStateMachine extends LauncherStateMachine {
 
     private final List<LauncherState> transitions = new ArrayList<>();
 

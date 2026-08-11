@@ -1,9 +1,9 @@
-package com.launcher.core.architecture.support;
+package com.launcher.core.architecture.support.recording;
 
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.model.manifest.Manifest;
 
-public class RecordingManifestService implements ManifestService {
+public final class RecordingManifestService implements ManifestService {
 
     @Override
     public Manifest loadManifest() {

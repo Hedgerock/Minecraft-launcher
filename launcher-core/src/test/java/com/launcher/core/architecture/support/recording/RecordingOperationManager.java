@@ -1,4 +1,4 @@
-package com.launcher.core.architecture.support;
+package com.launcher.core.architecture.support.recording;
 
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.OperationManager;

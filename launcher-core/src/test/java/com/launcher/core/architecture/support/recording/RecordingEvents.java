@@ -1,4 +1,4 @@
-package com.launcher.core.architecture.support;
+package com.launcher.core.architecture.support.recording;
 
 import java.util.ArrayList;
 import java.util.List;

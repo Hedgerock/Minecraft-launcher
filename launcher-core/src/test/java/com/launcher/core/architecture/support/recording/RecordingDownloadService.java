@@ -1,9 +1,9 @@
-package com.launcher.core.architecture.support;
+package com.launcher.core.architecture.support.recording;
 
 import com.launcher.core.download.DownloadPlan;
 import com.launcher.core.download.DownloadService;
 
-public class RecordingDownloadService implements DownloadService {
+public final class RecordingDownloadService implements DownloadService {
     private boolean withError = false;
     private DownloadPlan downloadPlan;
 

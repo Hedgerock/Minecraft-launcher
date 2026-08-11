@@ -1,8 +1,8 @@
 package com.launcher.core.architecture.support.fixture;
 
 import com.launcher.core.LauncherEngine;
-import com.launcher.core.architecture.support.RecordingLauncherStateMachine;
-import com.launcher.core.architecture.support.RecordingOperationManager;
+import com.launcher.core.architecture.support.recording.RecordingLauncherStateMachine;
+import com.launcher.core.architecture.support.recording.RecordingOperationManager;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlan;
 import com.launcher.core.download.DownloadPlanBuilder;

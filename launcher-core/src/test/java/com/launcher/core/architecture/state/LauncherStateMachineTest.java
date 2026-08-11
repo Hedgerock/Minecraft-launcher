@@ -1,6 +1,6 @@
 package com.launcher.core.architecture.state;
 
-import com.launcher.core.architecture.support.RecordingLauncherStateMachine;
+import com.launcher.core.architecture.support.recording.RecordingLauncherStateMachine;
 import com.launcher.core.architecture.support.fixture.LauncherFlowFixture;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.operation.type.OperationType;

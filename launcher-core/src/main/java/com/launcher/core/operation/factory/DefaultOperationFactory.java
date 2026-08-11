@@ -2,6 +2,7 @@ package com.launcher.core.operation.factory;
 
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.download.DownloadService;
+import com.launcher.core.game.GameService;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.execution.ExecutionStrategy;
@@ -19,12 +20,14 @@ public class DefaultOperationFactory implements OperationFactory {
     private final EventBus eventBus;
     private final DownloadPlanBuilder downloadPlanBuilder;
     private final DirectoryService directoryService;
+    private final GameService gameService;
 
     public DefaultOperationFactory(
             ManifestService service,
             VerificationService verificationService,
             DownloadService downloadService,
             DirectoryService directoryService,
+            GameService gameService,
             DownloadPlanBuilder downloadPlanBuilder,
             EventBus eventBus
     ) {
@@ -34,6 +37,7 @@ public class DefaultOperationFactory implements OperationFactory {
         this.directoryService = directoryService;
         this.downloadPlanBuilder = downloadPlanBuilder;
         this.eventBus = eventBus;
+        this.gameService = gameService;
     }
 
     @Override
@@ -55,6 +59,8 @@ public class DefaultOperationFactory implements OperationFactory {
                     new DownloadFilesOperation(context, executionStrategy, eventBus, downloadService);
             case PREPARE_DIRECTORIES ->
                     new PrepareDirectoriesOperation(context, executionStrategy, eventBus, directoryService);
+            case LAUNCH_GAME ->
+                new LaunchGameOperation(context, executionStrategy, eventBus, gameService);
         };
     }
 }

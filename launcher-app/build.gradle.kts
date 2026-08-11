@@ -19,6 +19,7 @@ dependencies {
     implementation(project(":launcher-storage"))
     implementation(project(":launcher-verification"))
     implementation(project(":launcher-downloader"))
+    implementation(project(":launcher-game"))
 }
 
 tasks.test {

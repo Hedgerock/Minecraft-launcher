@@ -51,6 +51,7 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
                 services.verificationService(),
                 services.downloadService(),
                 services.directoryService(),
+                services.gameService(),
                 builder,
                 launcherInfrastructure.eventBus()
         );

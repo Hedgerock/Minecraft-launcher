@@ -9,6 +9,7 @@ import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.app.service.LauncherServices;
 import com.launcher.core.download.DownloadService;
+import com.launcher.core.game.GameService;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.directory.LocalDirectoryProvider;
@@ -18,6 +19,7 @@ import com.launcher.core.verification.VerificationService;
 import com.launcher.downloader.download.DefaultFileDownloader;
 import com.launcher.downloader.download.FileDownloader;
 import com.launcher.downloader.service.DefaultDownloadService;
+import com.launcher.game.service.DefaultGameService;
 import com.launcher.storage.file.FileMetadataReader;
 import com.launcher.storage.file.LocalFileMetadataReader;
 import com.launcher.storage.hash.HashService;
@@ -70,6 +72,10 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
         return new DefaultVerificationService(directoryProvider, fileVerifier);
     }
 
+    private GameService createGameService() {
+        return new DefaultGameService();
+    }
+
     @Override
     public LauncherServices createServices() {
         DirectoryProvider directoryProvider = new LocalDirectoryProvider(configuration);
@@ -79,7 +85,8 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
                 createManifestService(),
                 createVerificationService(directoryProvider),
                 createDirectoryService(directoryProvider),
-                createDownloadService(directoryProvider)
+                createDownloadService(directoryProvider),
+                createGameService()
         );
     }
 }

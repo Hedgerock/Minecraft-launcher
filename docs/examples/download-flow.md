@@ -9,13 +9,26 @@
 
 ## Текущий статус
 
+Если первичный `VerificationPlan` валиден, `LauncherEngine` запускает `PREPARE_DIRECTORIES` без построения
+`DownloadPlan`
+
+После успешной подготовки директорий launcher переходит в `RUNNING`
+
+В случае когда `VerificationPlan` невалиден, `LauncherEngine` запускает `BUILD_DOWNLOAD_PLAN`
+
 `LauncherEngine` запускает `DOWNLOAD_FILES` после успешного построения `DownloadPlan`
+
+Если при построении `DownloadPlan` произошла ошибка `LauncherEngine` переходит в `FAILED`
 
 `DownloadFilesTask` выполняет загрузку через `DownloadService` и публикует специализированные события
 жизненного цикла загрузки
 
 После `DOWNLOAD_FILES` `LauncherEngine` повторно запускает `VERIFY_FILES`, потому что загрузка файла
 сама по себе не доказывает корректность локального состояния
+
+Если повторный `VerificationPlan` валиден, `LauncherEngine` запускает `PREPARE_DIRECTORIES`
+
+После успешной подготовки директорий launcher переходит в `RUNNING`
 
 ---
 
@@ -52,7 +65,7 @@ LauncherEngine
 
 ## Этапы
 
-### 1.Анализ `VerificationPlan`
+### 1. Анализ `VerificationPlan`
 
 `DownloadPlanBuilder` получает `VerificationPlan` и выбирает файлы со статусами 
 
@@ -62,24 +75,24 @@ LauncherEngine
 
 Файлы со статусом `VALID` не попадают в `DownloadPlan`
 
-### 2.Построение `DownloadPlan`
+### 2. Построение `DownloadPlan`
 
 `BuildDownloadPlanTask` сохраняет построенный `DownloadPlan` в `LaunchContext`
 
-### 3.Выполнение загрузки
+### 3. Выполнение загрузки
 
 `DownloadFilesTask` получает `DownloadPlan` из `LaunchContext` и передает его в `DownloadService`
 
 `DefaultDownloadService` получает `game directory` через `DirectoryProvider`, строит целевой путь для каждого файла
 относительно `game directory` и передает `url` и `targetPath` в `FileDownloader`
 
-### 4.Загрузка отдельного файла
+### 4. Загрузка отдельного файла
 
 `FileDownloader` загружает файл во временный файл после успешной загрузки перемещает его в целевой `targetPath`
 
 При ошибке временный файл удаляется, а ошибка передается вызывающему коду
 
-### 5.Повторная проверка
+### 5. Повторная проверка
 
 После успешного `DOWNLOAD_FILES` `LauncherEngine` повторно запускает `VERIFY_FILES`
 
@@ -152,6 +165,6 @@ D-7
 
 ## Связанные документы
 
-- `download-events.md` - контракт событий жизненного цикла загрузки
-- `verification-flow.md` - поток проверки файлов
-- `operation-model.md` - общая модель выполнения `Operation`
+- [`download-events.md`](../event-flow/download-events.md) - контракт событий жизненного цикла загрузки
+- [`verification-flow.md`](verification-flow.md) - поток проверки файлов
+- [`operation-model.md`](../architecture/operation/operation-model.md) - общая модель выполнения `Operation`

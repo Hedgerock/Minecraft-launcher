@@ -121,6 +121,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Marked early ADRs as historical where implementation details changed after the operation model migration
 - Aligned verification flow documentation with the current VerificationPlan terminology
 - Marked outdated verification diagrams as historical architecture snapshots
+- Aligned launcher lifecycle documentation with the prepare directories launch flow
 
 ### Removed
 

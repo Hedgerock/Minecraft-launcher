@@ -57,10 +57,14 @@ L-5
 Если `VerificationPlan` содержит файлы, требующие загрузки, `LauncherEngine` запускает 
 `BUILD_DOWNLOAD_PLAN`, затем `DOWNLOAD_FILES`, затем повторно запускает `VERIFY_FILES`
 
-Если повторная проверка успешна и новый `VerificationPlan` валиден, launcher переходит в `RUNNING`
-
 Если построение `DownloadPlan`, загрузка файлов или повторная проверка завершается ошибкой, launcher 
-переходит в `FAILED` 
+переходит в `FAILED`
+
+Если повторная проверка успешна и новый `VerificationPlan` валиден, `LauncherEngine` запускает `PREPARE_DIRECTORIES`
+
+После успешной подготовки директории launcher переходит в `RUNNING`
+
+Если `PREPARE_DIRECTORIES` завершается ошибкой, launcher переходит в `FAILED`
 
 ## Обоснование Проекта
 

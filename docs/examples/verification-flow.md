@@ -1,92 +1,159 @@
-# Verification Flow
+# Поток верификации
 
 ## Цель 
 
-Описать последовательность проверки локального состояния игровых файлов 
-перед выполнением DownloadOperation
+Описать последовательность проверки локального состояния игровых файлов перед выбором
+следующего шага `LauncherEngine`
+
+Проверка определяет, соответствует ли локальное состояние файлов ожидаемому состоянию
+описанному в `Manifest`
+
+---
 
 ## Предусловия
 
-- Manifest успешно загружен
-- OperationContext создан
-- VerificationOperation инициализирован
+- `Manifest` успешно загружен
+- `LaunchContext` создан
+- `VERIFY_FILES` запущена через `OperationManager`
+
+---
 
 ## Последовательность
 
 ```text
 LauncherEngine
-    -> OperationManager
-    -> VerificationOperation
-    -> VerifyFilesTask
-    -> VerificationService
-    -> FileVerifier
-    -> VerificationPlan
+    -> VERIFY_FILES
+        -> VerificationOperation
+            -> VerifyFilesTask
+                -> VerificationService
+                    -> DefaultVerificationService
+                        -> FileVerifier
+                            -> HashService
+                            -> FileVerificationResult
+                        -> VerificationPlan
+                -> LaunchContext
+                    -> VerificationPlan
 ```
+---
 
 ## Этапы
 
-### 1.Инициализация
+### 1. Получение `Manifest`
 
-- Создается OperationContext
-- Публикуется VerificationStarted
+`VerifyFilesTask` получает `Manifest` из `LaunchContext`
 
-### 2.Проверка файлов (для каждого файла)
+`VerifyFilesTask` передает `Manifest` в `VerificationService`
 
-- Существует ли
-- Соответствует ли размер
-- Совпадает ли хеш
+### 2. Проверка файлов
 
-### 3.Формирование отчета
+`VerificationService` координирует проверку файлов
 
-Создается immutable VerificationReport
+`FileVerifier` выполняет проверку отдельного файла
 
-В отчет попадают только игровые результаты проверки
+Для каждого файла определяется его состояние, включая
 
-### 4.Телеметрия
+- Существует ли файл
+- Соответствует ли размер ожидаемому значению
+- Совпадает ли checksum
 
-Создается TelemetryReport
+Операция с checksum выполняется через `HashService`
 
-Фиксируется:
+`FileVerifier` формирует `FileVerificationResult` для каждого проверяемого файла
 
-- Количество проверенных файлов
-- Длительность
-- Число повреждений
-- Число отсутствующих файлов
+### 3. Формирование `VerificationPlan`
 
-### 5.Завершение
+`VerificationService` формирует `VerificationPlan`, содержащий результаты проверки файлов
 
-- Публикуется VerificationCompleted
-- Возвращается Result.success(...) или Result.failure(...)
+`VerificationPlan` является неизменяемой моделью результата проверки
+
+`VerifyFilesTask` сохраняет `VerificationPlan` в `LaunchContext`
+
+### 4. Использование результата
+
+`LauncherEngine` получает `VerificationPlan` из `LaunchContext`
+
+`VerificationPlan.isValid()` используется для выбора следующего шага
+
+Если план валиден
+
+```text
+VERIFY_FILES
+    -> VerificationPlan.isValid()
+        -> RUNNING
+```
+
+Если план невалиден
+
+```text
+VERIFY_FILES
+    -> VerificationPlan.isValid()
+        -> BUILD_DOWNLOAD_PLAN
+```
+
+После загрузки файлов `LauncherEngine` повторно запускает `VERIFY_FILES`
+
+Повторная проверка необходима для подтверждения фактической корректности локального состояния
+
+### 5. Завершение
+
+`VerifyFilesTask` возвращает результат выполнения через `Result`
+
+При успешном выполнении проверки операция завершается с `Result.success(...)`
+
+Ошибки выполнения проверки возвращаются через `Result.failure(...)`
+
+События жизненного цикла операции публикуются `LaunchOperation` через `EventBus`
 
 ## Компоненты
 
-- OperationManager
-- VerificationOperation
-- VerificationService
-- FileVerifier
-- FileStorage
-- VerificationReport
-- TelemetryReport
+- `OperationManager`
+- `VerifyFilesTask`
+- `VerificationService`
+- `DefaultVerificationService`
+- `FileVerifier`
+- `HashService`
+- `FileVerificationResult`
+- `VerificationPlan`
+- `LaunchContext`
 
 ## Результат
 
-Если все файлы корректны, DownloadOperation может быть пропущена
+Если `VerificationPlan.isValid()` возвращает `true`, `LauncherEngine` может пропустить этап построения
+`DownloadPlan` и перейти к `RUNNING`
 
-Если обнаружены проблемы, DownloadOperation получает список файлов для восстановления
+Если `VerificationPlan.isValid()` возвращает `false`, `LauncherEngine` запускает `BUILD_DOWNLOAD_PLAN`
+
+После успешной загрузки файлов `VERIFY_FILES` выполняется повторно
+
+Только валидный результат повторной проверки позволяет перейти к `RUNNING`
 
 ## Инварианты
 
 V-1
-Проверка не изменяет локальные файлы
+
+Верификация не изменяет локальные файлы
 
 V-2
-VerificationReport является неизменяемым
+
+`VerificationPlan` содержит результаты проверки файлов и является неизменяемой моделью
 
 V-3
-Telemetry не влияет на результат проверки
+
+`VerificationPlan.isValid()` используется `LauncherEngine` для выбора следуюущего шага жизненного цикла
 
 V-4
-VerificationOperation завершается только после формирования полного отчета
+
+`VerifyFilesTask` получает `Manifest` из `LaunchContext` и сохраняет сформированный `VerificationPlan` 
+обратно в `LaunchContext`
+
+V-5
+
+`VerificationService` координирует проверку множества файлов и не отвечает за изменение локального состояния
+
+V-6
+
+Повторная проверка после `DOWNLOAD_FILES` обязательна для подтверждения корректности восстановленного локального
+состояния
 
 
 

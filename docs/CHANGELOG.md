@@ -119,6 +119,7 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Aligned download flow and download events documentation with the implemented downloader behavior
 - Aligned module boundary documentation with the current launcher-core and launcher-app responsibilities
 - Marked early ADRs as historical where implementation details changed after the operation model migration
+- Aligned verification flow documentation with the current VerificationPlan terminology
 
 ### Removed
 

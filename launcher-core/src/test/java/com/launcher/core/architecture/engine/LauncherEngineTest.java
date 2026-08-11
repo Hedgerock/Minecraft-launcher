@@ -28,6 +28,122 @@ class LauncherEngineTest {
     }
 
     @Test
+    void should_prepare_directories_before_running_when_files_are_valid() {
+        //given
+        VerificationPlan validVerificationPlan =
+                LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.VALID);
+
+        launcherFlowFixture
+                .operationSucceeds(OperationType.LOAD_MANIFEST)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(validVerificationPlan)
+                .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                //when
+                .launch();
+
+        //then
+        assertEquals(
+                List.of(
+                        OperationType.LOAD_MANIFEST,
+                        OperationType.VERIFY_FILES,
+                        OperationType.PREPARE_DIRECTORIES
+                ),
+                launcherFlowFixture.getExecutedOperations()
+        );
+
+        assertEquals(
+                LauncherState.RUNNING,
+                launcherFlowFixture.getCurrentState()
+        );
+    }
+
+    @Test
+    void should_prepare_directories_before_running_when_downloaded_files_are_valid() {
+        //given
+        VerificationPlan notValidVerificationPlan =
+                LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.MISSING);
+
+        VerificationPlan validVerificationPlan =
+                LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
+
+        DownloadPlan downloadPlan = LauncherFlowFixture.downloadPlan(notValidVerificationPlan);
+
+        launcherFlowFixture
+                .operationSucceeds(OperationType.LOAD_MANIFEST)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(notValidVerificationPlan)
+                .operationSucceeds(OperationType.BUILD_DOWNLOAD_PLAN)
+                .buildDownloadPlanReturns(downloadPlan)
+                .operationSucceeds(OperationType.DOWNLOAD_FILES)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(validVerificationPlan)
+                .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+        //when
+                .launch();
+
+        //then
+        assertEquals(
+                List.of(
+                        OperationType.LOAD_MANIFEST,
+                        OperationType.VERIFY_FILES,
+                        OperationType.BUILD_DOWNLOAD_PLAN,
+                        OperationType.DOWNLOAD_FILES,
+                        OperationType.VERIFY_FILES,
+                        OperationType.PREPARE_DIRECTORIES
+                ),
+                launcherFlowFixture.getExecutedOperations()
+        );
+
+        assertEquals(
+                LauncherState.RUNNING,
+                launcherFlowFixture.getCurrentState()
+        );
+    }
+
+    @Test
+    void should_transition_to_failed_when_prepare_directories_failed() {
+        //given
+        VerificationPlan notValidVerificationPlan =
+                LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.MISSING);
+
+        VerificationPlan validVerificationPlan =
+                LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
+
+        DownloadPlan downloadPlan = LauncherFlowFixture.downloadPlan(notValidVerificationPlan);
+
+        launcherFlowFixture
+                .operationSucceeds(OperationType.LOAD_MANIFEST)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(notValidVerificationPlan)
+                .operationSucceeds(OperationType.BUILD_DOWNLOAD_PLAN)
+                .buildDownloadPlanReturns(downloadPlan)
+                .operationSucceeds(OperationType.DOWNLOAD_FILES)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(validVerificationPlan)
+                .operationFailed(OperationType.PREPARE_DIRECTORIES, "Failed to prepare directories")
+        //when
+                .launch();
+
+        //then
+        assertEquals(
+                List.of(
+                        OperationType.LOAD_MANIFEST,
+                        OperationType.VERIFY_FILES,
+                        OperationType.BUILD_DOWNLOAD_PLAN,
+                        OperationType.DOWNLOAD_FILES,
+                        OperationType.VERIFY_FILES,
+                        OperationType.PREPARE_DIRECTORIES
+                ),
+                launcherFlowFixture.getExecutedOperations()
+        );
+
+        assertEquals(
+                LauncherState.FAILED,
+                launcherFlowFixture.getCurrentState()
+        );
+    }
+
+    @Test
     void should_transition_to_failed_when_verification_after_download_is_failed() {
         //given
         VerificationPlan notValidVerificationPlan =
@@ -135,8 +251,6 @@ class LauncherEngineTest {
     @Test
     void should_verify_files_again_after_download_files_succeeded() {
         //given
-        VerificationPlan validVerificationPlan =
-                LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
         VerificationPlan notValidVerificationPlan =
                 LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.MISSING);
 
@@ -149,12 +263,11 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.BUILD_DOWNLOAD_PLAN)
                 .buildDownloadPlanReturns(downloadPlan)
                 .operationSucceeds(OperationType.DOWNLOAD_FILES)
-                .verifyFilesReturns(validVerificationPlan)
         //when
-                .launch();
+                .failOperationAndLaunch (OperationType.VERIFY_FILES);
 
         //then
-        assertEquals(List.of(
+        assertEquals( List.of(
                 OperationType.LOAD_MANIFEST,
                 OperationType.VERIFY_FILES,
                 OperationType.BUILD_DOWNLOAD_PLAN,
@@ -335,13 +448,14 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(verificationPlan)
         //when
-                .launch();
+                .failOperationAndLaunch(OperationType.PREPARE_DIRECTORIES);
 
         //then
         assertEquals(
                 List.of(
                         OperationType.LOAD_MANIFEST,
-                        OperationType.VERIFY_FILES
+                        OperationType.VERIFY_FILES,
+                        OperationType.PREPARE_DIRECTORIES
                 ),
                 launcherFlowFixture.getExecutedOperations()
         );
@@ -365,7 +479,8 @@ class LauncherEngineTest {
         assertEquals(
                 List.of(
                         OperationType.LOAD_MANIFEST,
-                        OperationType.VERIFY_FILES
+                        OperationType.VERIFY_FILES,
+                        OperationType.PREPARE_DIRECTORIES
                 ),
                 launcherFlowFixture.getExecutedOperations()
         );

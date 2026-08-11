@@ -23,7 +23,7 @@ public class LauncherEngine {
     public void launch(LauncherConfiguration configuration) {
         LaunchContext context = new LaunchContext(configuration);
 
-        if (!executeOperation(
+        if (operationFailed(
                 LauncherState.LOADING_MANIFEST,
                 OperationType.LOAD_MANIFEST,
                 context
@@ -32,7 +32,7 @@ public class LauncherEngine {
         }
 
 
-        if (!executeOperation(
+        if (operationFailed(
                 LauncherState.VERIFYING_FILES,
                 OperationType.VERIFY_FILES,
                 context
@@ -47,50 +47,56 @@ public class LauncherEngine {
             return;
         }
 
-        if (verificationPlan.isValid()) {
-            stateMachine.transition(LauncherState.RUNNING);
-            return;
+        if (!verificationPlan.isValid()) {
+
+            if (operationFailed(
+                    LauncherState.BUILDING_DOWNLOAD_PLAN,
+                    OperationType.BUILD_DOWNLOAD_PLAN,
+                    context
+            )) {
+                return;
+            }
+
+            if (operationFailed(
+                    LauncherState.DOWNLOADING,
+                    OperationType.DOWNLOAD_FILES,
+                    context
+            )) {
+                return;
+            }
+
+            if (operationFailed(
+                    LauncherState.VERIFYING_FILES,
+                    OperationType.VERIFY_FILES,
+                    context
+            )) {
+                return;
+            }
+
+            VerificationPlan downloadedVerificationPlan = getVerificationPlanOrFail(context);
+
+            if (downloadedVerificationPlan == null) {
+                return;
+            }
+
+            if (!downloadedVerificationPlan.isValid()) {
+                stateMachine.transition(LauncherState.FAILED);
+                return;
+            }
         }
 
-        if (!executeOperation(
-                LauncherState.BUILDING_DOWNLOAD_PLAN,
-                OperationType.BUILD_DOWNLOAD_PLAN,
+        if (operationFailed(
+                LauncherState.PREPARING_GAME,
+                OperationType.PREPARE_DIRECTORIES,
                 context
         )) {
             return;
         }
 
-        if (!executeOperation(
-                LauncherState.DOWNLOADING,
-                OperationType.DOWNLOAD_FILES,
-                context
-        )) {
-            return;
-        }
-
-        if (!executeOperation(
-                LauncherState.VERIFYING_FILES,
-                OperationType.VERIFY_FILES,
-                context
-        )) {
-            return;
-        }
-
-        VerificationPlan downloadedVerificationPlan = getVerificationPlanOrFail(context);
-
-        if (downloadedVerificationPlan == null) {
-            return;
-        }
-
-        if (downloadedVerificationPlan.isValid()) {
-            stateMachine.transition(LauncherState.RUNNING);
-            return;
-        }
-
-        stateMachine.transition(LauncherState.FAILED);
+        stateMachine.transition(LauncherState.RUNNING);
     }
 
-    private boolean executeOperation(
+    private boolean operationFailed(
             LauncherState state,
             OperationType type,
             LaunchContext context
@@ -102,10 +108,10 @@ public class LauncherEngine {
 
         if (!result.isSuccess()) {
             stateMachine.transition(LauncherState.FAILED);
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private VerificationPlan getVerificationPlanOrFail(LaunchContext context) {

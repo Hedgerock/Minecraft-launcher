@@ -93,6 +93,14 @@ public class LauncherEngine {
             return;
         }
 
+        if (operationFailed(
+                LauncherState.LAUNCHING,
+                OperationType.LAUNCH_GAME,
+                context
+        )) {
+            return;
+        }
+
         stateMachine.transition(LauncherState.RUNNING);
     }
 

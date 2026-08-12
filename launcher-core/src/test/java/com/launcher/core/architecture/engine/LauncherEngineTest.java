@@ -28,6 +28,122 @@ class LauncherEngineTest {
     }
 
     @Test
+    void should_transition_to_failed_when_launch_game_failed() {
+        //given
+        VerificationPlan validVerificationPlan =
+                LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
+        VerificationPlan notValidVerificationPlan =
+                LauncherFlowFixture.verificationPlan("invalid.jar", VerificationStatus.MISSING);
+
+        launcherFlowFixture
+                .operationSucceeds(OperationType.LOAD_MANIFEST)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(notValidVerificationPlan)
+                .operationSucceeds(OperationType.BUILD_DOWNLOAD_PLAN)
+                .buildDownloadPlanReturns(LauncherFlowFixture.downloadPlan(notValidVerificationPlan))
+                .operationSucceeds(OperationType.DOWNLOAD_FILES)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(validVerificationPlan)
+                .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationFailed(OperationType.LAUNCH_GAME, "Failed to launch game")
+                //when
+                .launch();
+
+        //then
+        assertEquals(
+                List.of(
+                        OperationType.LOAD_MANIFEST,
+                        OperationType.VERIFY_FILES,
+                        OperationType.BUILD_DOWNLOAD_PLAN,
+                        OperationType.DOWNLOAD_FILES,
+                        OperationType.VERIFY_FILES,
+                        OperationType.PREPARE_DIRECTORIES,
+                        OperationType.LAUNCH_GAME
+                ),
+                launcherFlowFixture.getExecutedOperations()
+        );
+
+        assertEquals(
+                LauncherState.FAILED,
+                launcherFlowFixture.getCurrentState()
+        );
+    }
+
+    @Test
+    void should_launch_game_before_running_when_downloaded_files_are_valid() {
+        //given
+        VerificationPlan validVerificationPlan =
+                LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.VALID);
+        VerificationPlan notValidVerificationPlan =
+                LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.MISSING);
+
+        launcherFlowFixture
+                .operationSucceeds(OperationType.LOAD_MANIFEST)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(notValidVerificationPlan)
+                .operationSucceeds(OperationType.BUILD_DOWNLOAD_PLAN)
+                .buildDownloadPlanReturns(LauncherFlowFixture.downloadPlan(notValidVerificationPlan))
+                .operationSucceeds(OperationType.DOWNLOAD_FILES)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(validVerificationPlan)
+                .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.LAUNCH_GAME)
+                //when
+                .launch();
+
+        //then
+        assertEquals(
+                List.of(
+                        OperationType.LOAD_MANIFEST,
+                        OperationType.VERIFY_FILES,
+                        OperationType.BUILD_DOWNLOAD_PLAN,
+                        OperationType.DOWNLOAD_FILES,
+                        OperationType.VERIFY_FILES,
+                        OperationType.PREPARE_DIRECTORIES,
+                        OperationType.LAUNCH_GAME
+                ),
+                launcherFlowFixture.getExecutedOperations()
+        );
+
+        assertEquals(
+                LauncherState.RUNNING,
+                launcherFlowFixture.getCurrentState()
+        );
+    }
+
+    @Test
+    void should_launch_game_before_running_when_files_are_valid() {
+        //given
+        VerificationPlan validVerificationPlan =
+                LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.VALID);
+
+        launcherFlowFixture
+                .operationSucceeds(OperationType.LOAD_MANIFEST)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(validVerificationPlan)
+                .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.LAUNCH_GAME)
+                //when
+                .launch();
+
+        //then
+        assertEquals(
+                List.of(
+                        OperationType.LOAD_MANIFEST,
+                        OperationType.VERIFY_FILES,
+                        OperationType.PREPARE_DIRECTORIES,
+                        OperationType.LAUNCH_GAME
+                ),
+                launcherFlowFixture.getExecutedOperations()
+        );
+
+        assertEquals(
+                LauncherState.RUNNING,
+                launcherFlowFixture.getCurrentState()
+        );
+    }
+
+    @Test
     void should_prepare_directories_before_running_when_files_are_valid() {
         //given
         VerificationPlan validVerificationPlan =
@@ -38,7 +154,7 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
                 .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
-                //when
+        //when
                 .launch();
 
         //then
@@ -46,7 +162,8 @@ class LauncherEngineTest {
                 List.of(
                         OperationType.LOAD_MANIFEST,
                         OperationType.VERIFY_FILES,
-                        OperationType.PREPARE_DIRECTORIES
+                        OperationType.PREPARE_DIRECTORIES,
+                        OperationType.LAUNCH_GAME
                 ),
                 launcherFlowFixture.getExecutedOperations()
         );
@@ -89,7 +206,8 @@ class LauncherEngineTest {
                         OperationType.BUILD_DOWNLOAD_PLAN,
                         OperationType.DOWNLOAD_FILES,
                         OperationType.VERIFY_FILES,
-                        OperationType.PREPARE_DIRECTORIES
+                        OperationType.PREPARE_DIRECTORIES,
+                        OperationType.LAUNCH_GAME
                 ),
                 launcherFlowFixture.getExecutedOperations()
         );
@@ -480,7 +598,8 @@ class LauncherEngineTest {
                 List.of(
                         OperationType.LOAD_MANIFEST,
                         OperationType.VERIFY_FILES,
-                        OperationType.PREPARE_DIRECTORIES
+                        OperationType.PREPARE_DIRECTORIES,
+                        OperationType.LAUNCH_GAME
                 ),
                 launcherFlowFixture.getExecutedOperations()
         );

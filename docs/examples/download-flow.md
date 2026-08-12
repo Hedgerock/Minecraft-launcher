@@ -12,7 +12,8 @@
 Если первичный `VerificationPlan` валиден, `LauncherEngine` запускает `PREPARE_DIRECTORIES` без построения
 `DownloadPlan`
 
-После успешной подготовки директорий launcher переходит в `RUNNING`
+После успешной подготовки директорий `LauncherEngine` запускает `LAUNCH_GAME`, после чего, в случае успешного выполнения,
+`LauncherEngine` переходит в `RUNNING`
 
 В случае когда `VerificationPlan` невалиден, `LauncherEngine` запускает `BUILD_DOWNLOAD_PLAN`
 
@@ -28,7 +29,11 @@
 
 Если повторный `VerificationPlan` валиден, `LauncherEngine` запускает `PREPARE_DIRECTORIES`
 
-После успешной подготовки директорий launcher переходит в `RUNNING`
+После успешной подготовки директорий `LauncherEngine` запускает `LAUNCH_GAME`
+
+Если при `LAUNCH_GAME` произошла ошибка, `LauncherEngine` переходит в `FAILED`
+
+В случае успешного выполнения `LAUNCH_GAME` `LauncherEngine` переходит в `RUNNING`
 
 ---
 

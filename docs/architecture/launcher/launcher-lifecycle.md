@@ -62,9 +62,13 @@ L-5
 
 Если повторная проверка успешна и новый `VerificationPlan` валиден, `LauncherEngine` запускает `PREPARE_DIRECTORIES`
 
-После успешной подготовки директории launcher переходит в `RUNNING`
-
 Если `PREPARE_DIRECTORIES` завершается ошибкой, launcher переходит в `FAILED`
+
+После успешной подготовки директорий `LauncherEngine` запускает `LAUNCH_GAME`
+
+Если `LAUNCH_GAME` завершается с ошибкой, launcher переходит в `FAILED`
+
+После успешного `LAUNCH_GAME` launcher переходит в `RUNNING`
 
 ## Обоснование Проекта
 

@@ -119,13 +119,13 @@ VERIFY_FILES
 ## Результат
 
 Если `VerificationPlan.isValid()` возвращает `true`, `LauncherEngine` может пропустить этап построения
-`DownloadPlan` и перейти к `RUNNING`
+`DownloadPlan` и перейти сразу к `PREPARE_DIRECTORIES`, затем `LAUNCH_GAME` и затем в `RUNNING`
 
 Если `VerificationPlan.isValid()` возвращает `false`, `LauncherEngine` запускает `BUILD_DOWNLOAD_PLAN`
 
 После успешной загрузки файлов `VERIFY_FILES` выполняется повторно
 
-Только валидный результат повторной проверки позволяет перейти к `RUNNING`
+Только валидный результат повторной проверки позволяет перейти к следующему этапу жизненного цикла `LauncherEngine`
 
 ## Инварианты
 

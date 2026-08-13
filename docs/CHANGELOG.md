@@ -98,6 +98,8 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added launcher state transition tests for download execution flow
 - Added DownloadException in the launcher-downloader for file download failures
 - Added downloaded file size validation after each file download
+- Added GameLaunchPlan for describing game launch input
+- Added BUILD_GAME_LAUNCH_PLAN operation before game launch
 
 ### Changed
 
@@ -123,6 +125,8 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Marked outdated verification diagrams as historical architecture snapshots
 - Aligned launcher lifecycle documentation with the prepare directories launch flow
 - Aligned launcher lifecycle documentation with the launch game flow
+- LauncherEngine now builds GameLaunchPlan after preparing directories and before launching the game
+- GameService now receives GameLaunchPlan instead of launching without explicit launch input
 
 ### Removed
 

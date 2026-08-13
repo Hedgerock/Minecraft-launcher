@@ -14,18 +14,19 @@
 
 ## Таблица состояний
 
-| State                    | Responsibility                      |
-|--------------------------|-------------------------------------|
-| `IDLE`                   | Launcher запущен и ожидает действия |
-| `CHECKING_UPDATES`       | Проверка доступности новой версии   |
-| `LOADING_MANIFEST`       | Получение описания сборки           |
-| `VERIFYING_FILES`        | Проверка локального состояния       |
-| `BUILDING_DOWNLOAD_PLAN` | Построение плана загрузки           |
-| `DOWNLOADING`            | Получение недостающих ресурсов      |
-| `PREPARING_GAME`         | Подготовка окружения                |
-| `LAUNCHING`              | Запуск игрового процесса            |
-| `RUNNING`                | Игра запущена                       |
-| `FAILED`                 | Не удалось выполнять операцию       |
+| State                       | Responsibility                      |
+|-----------------------------|-------------------------------------|
+| `IDLE`                      | Launcher запущен и ожидает действия |
+| `CHECKING_UPDATES`          | Проверка доступности новой версии   |
+| `LOADING_MANIFEST`          | Получение описания сборки           |
+| `VERIFYING_FILES`           | Проверка локального состояния       |
+| `BUILDING_DOWNLOAD_PLAN`    | Построение плана загрузки           |
+| `DOWNLOADING`               | Получение недостающих ресурсов      |
+| `PREPARING_GAME`            | Подготовка окружения                |
+| `BUILDING_GAME_LAUNCH_PLAN` | Построение плана запуска игры       |
+| `LAUNCHING`                 | Запуск игрового процесса            |
+| `RUNNING`                   | Игра запущена                       |
+| `FAILED`                    | Не удалось выполнять операцию       |
 
 ## Инварианты
 
@@ -64,7 +65,11 @@ L-5
 
 Если `PREPARE_DIRECTORIES` завершается ошибкой, launcher переходит в `FAILED`
 
-После успешной подготовки директорий `LauncherEngine` запускает `LAUNCH_GAME`
+После успешной подготовки директорий `LauncherEngine` запускает `BUILD_GAME_LAUNCH_PLAN`
+
+Если `BUILD_GAME_LAUNCH_PLAN` завершается с ошибкой, launcher переходит в `FAILED`
+
+После успешного `BUILD_GAME_LAUNCH_PLAN` `LauncherEngine` запускает `LAUNCH_GAME`
 
 Если `LAUNCH_GAME` завершается с ошибкой, launcher переходит в `FAILED`
 

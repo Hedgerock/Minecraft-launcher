@@ -1,5 +1,7 @@
 @startuml
 
+' Simplified sequence
+
 actor User
 
 participant "Launcher UI" as UI

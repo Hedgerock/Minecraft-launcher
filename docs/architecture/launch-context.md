@@ -19,3 +19,5 @@ LoadManifestTask -> Manifest
 VerifyFilesTask -> VerificationPlan
 BuildDownloadPlanTask -> DownloadPlan
 DownloadFilesTask -> uses DownloadPlan
+BuildGameLaunchPlanTask -> GameLaunchPlan
+LaunchGameTask -> uses GameLaunchPlan

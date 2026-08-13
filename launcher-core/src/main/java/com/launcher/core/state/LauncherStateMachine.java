@@ -17,8 +17,6 @@ public class LauncherStateMachine {
     }
 
     public void transition(LauncherState nextState) {
-        System.out.println(currentState + " -> " + nextState);
-
         LauncherState previousState = currentState;
         currentState = nextState;
 

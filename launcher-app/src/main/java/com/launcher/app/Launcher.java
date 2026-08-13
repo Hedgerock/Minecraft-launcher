@@ -3,7 +3,6 @@ package com.launcher.app;
 import com.launcher.app.bootstrap.Bootstrap;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
-import com.launcher.core.launch.LaunchContext;
 
 import java.net.URI;
 import java.nio.file.Paths;

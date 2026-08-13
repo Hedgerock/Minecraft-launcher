@@ -28,7 +28,7 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
     public LauncherEngine createEngine() {
 
         LauncherInfrastructureFactory infrastructureFactory =
-                new DefaultLauncherInfrastructureFactory(launcherConfiguration);
+                new DefaultLauncherInfrastructureFactory();
 
         LauncherInfrastructure launcherInfrastructure = infrastructureFactory.createInfrastructure();
         OperationManager operationManager = createOperationManager(launcherInfrastructure);

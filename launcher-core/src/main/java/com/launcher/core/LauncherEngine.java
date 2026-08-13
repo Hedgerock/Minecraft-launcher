@@ -94,6 +94,14 @@ public class LauncherEngine {
         }
 
         if (operationFailed(
+                LauncherState.BUILDING_GAME_LAUNCH_PLAN,
+                OperationType.BUILD_GAME_LAUNCH_PLAN,
+                context
+        )) {
+            return;
+        }
+
+        if (operationFailed(
                 LauncherState.LAUNCHING,
                 OperationType.LAUNCH_GAME,
                 context

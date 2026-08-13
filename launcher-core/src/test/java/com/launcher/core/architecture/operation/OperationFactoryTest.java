@@ -122,6 +122,22 @@ class OperationFactoryTest {
     }
 
     @Test
+    void should_create_build_game_launch_plan_operation_for_build_game_launch_plan_type() {
+        //given
+        DefaultOperationFactory factory = operationFactoryFixture.getFactory();
+
+        //when
+        LaunchOperation operation = factory.create(
+                OperationType.BUILD_GAME_LAUNCH_PLAN,
+                context,
+                new FixedResultExecutionStrategy(OperationResult.success())
+        );
+
+        //then
+        assertInstanceOf(BuildGameLaunchPlanOperation.class, operation);
+    }
+
+    @Test
     void should_create_launch_game_operation_for_launch_game_type() {
         //given
         DefaultOperationFactory factory = operationFactoryFixture.getFactory();

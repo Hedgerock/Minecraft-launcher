@@ -86,7 +86,8 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
                 createVerificationService(directoryProvider),
                 createDirectoryService(directoryProvider),
                 createDownloadService(directoryProvider),
-                createGameService()
+                createGameService(),
+                directoryProvider
         );
     }
 }

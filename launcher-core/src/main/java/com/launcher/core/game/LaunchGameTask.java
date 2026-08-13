@@ -20,7 +20,13 @@ public class LaunchGameTask implements LauncherTask {
 
     @Override
     public Result execute(LaunchContext launchContext) {
-        gameService.launch();
+        GameLaunchPlan gameLaunchPlan = launchContext.getGameLaunchPlan();
+
+        if (gameLaunchPlan == null) {
+            return TaskResult.failure("Game launch plan not built");
+        }
+
+        gameService.launch(gameLaunchPlan);
 
         return TaskResult.success();
     }

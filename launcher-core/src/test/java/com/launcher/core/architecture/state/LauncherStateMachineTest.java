@@ -100,6 +100,7 @@ class LauncherStateMachineTest {
                         LauncherState.DOWNLOADING,
                         LauncherState.VERIFYING_FILES,
                         LauncherState.PREPARING_GAME,
+                        LauncherState.BUILDING_GAME_LAUNCH_PLAN,
                         LauncherState.LAUNCHING,
                         LauncherState.RUNNING
                 ),
@@ -114,6 +115,7 @@ class LauncherStateMachineTest {
                         OperationType.DOWNLOAD_FILES,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.BUILD_GAME_LAUNCH_PLAN,
                         OperationType.LAUNCH_GAME
                 ),
                 launcherFlowFixture.getExecutedOperations()
@@ -214,6 +216,7 @@ class LauncherStateMachineTest {
                         LauncherState.LOADING_MANIFEST,
                         LauncherState.VERIFYING_FILES,
                         LauncherState.PREPARING_GAME,
+                        LauncherState.BUILDING_GAME_LAUNCH_PLAN,
                         LauncherState.LAUNCHING,
                         LauncherState.RUNNING
                 ),
@@ -225,6 +228,7 @@ class LauncherStateMachineTest {
                         OperationType.LOAD_MANIFEST,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.BUILD_GAME_LAUNCH_PLAN,
                         OperationType.LAUNCH_GAME
                 ),
                 launcherFlowFixture.getExecutedOperations()

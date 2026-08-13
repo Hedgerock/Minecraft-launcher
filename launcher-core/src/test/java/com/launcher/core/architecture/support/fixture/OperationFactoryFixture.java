@@ -4,6 +4,8 @@ import com.launcher.core.architecture.support.recording.*;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.event.EventBus;
+import com.launcher.core.game.GameLaunchPlan;
+import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.operation.factory.DefaultOperationFactory;
@@ -18,6 +20,9 @@ public class OperationFactoryFixture {
     private final DefaultOperationFactory factory;
 
     public static final DownloadPlanBuilder builder = new DownloadPlanBuilder();
+    public static final GameLaunchPlanBuilder gameLaunchBuilder = new GameLaunchPlanBuilder(
+            new RecordingDirectoryProvider()
+    );
 
     public OperationFactoryFixture() {
         ManifestService service = new RecordingManifestService();
@@ -55,8 +60,11 @@ public class OperationFactoryFixture {
                 new RecordVerificationService(getVerificationPlan()),
                 new RecordingDownloadService(),
                 new RecordingDirectoryService(),
-                new RecordingGameService(),
+                new RecordingGameService(
+                        new GameLaunchPlan(Path.of("game"))
+                ),
                 builder,
+                gameLaunchBuilder,
                 eventBus
         );
     }

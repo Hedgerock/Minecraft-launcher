@@ -2,6 +2,7 @@ package com.launcher.core.operation.factory;
 
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.download.DownloadService;
+import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.core.game.GameService;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.event.EventBus;
@@ -19,6 +20,7 @@ public class DefaultOperationFactory implements OperationFactory {
     private final DownloadService downloadService;
     private final EventBus eventBus;
     private final DownloadPlanBuilder downloadPlanBuilder;
+    private final GameLaunchPlanBuilder gameLaunchPlanBuilder;
     private final DirectoryService directoryService;
     private final GameService gameService;
 
@@ -29,6 +31,7 @@ public class DefaultOperationFactory implements OperationFactory {
             DirectoryService directoryService,
             GameService gameService,
             DownloadPlanBuilder downloadPlanBuilder,
+            GameLaunchPlanBuilder gameLaunchPlanBuilder,
             EventBus eventBus
     ) {
         this.service = service;
@@ -36,6 +39,7 @@ public class DefaultOperationFactory implements OperationFactory {
         this.downloadService = downloadService;
         this.directoryService = directoryService;
         this.downloadPlanBuilder = downloadPlanBuilder;
+        this.gameLaunchPlanBuilder = gameLaunchPlanBuilder;
         this.eventBus = eventBus;
         this.gameService = gameService;
     }
@@ -59,6 +63,8 @@ public class DefaultOperationFactory implements OperationFactory {
                     new DownloadFilesOperation(context, executionStrategy, eventBus, downloadService);
             case PREPARE_DIRECTORIES ->
                     new PrepareDirectoriesOperation(context, executionStrategy, eventBus, directoryService);
+            case BUILD_GAME_LAUNCH_PLAN ->
+                    new BuildGameLaunchPlanOperation(context, executionStrategy, eventBus, gameLaunchPlanBuilder);
             case LAUNCH_GAME ->
                 new LaunchGameOperation(context, executionStrategy, eventBus, gameService);
         };

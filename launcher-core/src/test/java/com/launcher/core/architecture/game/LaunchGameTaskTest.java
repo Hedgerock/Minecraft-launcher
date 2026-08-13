@@ -2,8 +2,10 @@ package com.launcher.core.architecture.game;
 
 import com.launcher.core.architecture.support.recording.RecordingGameService;
 import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.game.LaunchGameTask;
 import com.launcher.core.launch.LaunchContext;
+import com.launcher.core.result.FailureResult;
 import com.launcher.core.result.Result;
 import com.launcher.core.result.SuccessResult;
 import com.launcher.core.state.LauncherState;
@@ -31,9 +33,44 @@ class LaunchGameTaskTest {
 
     @BeforeEach
     void setUp() {
-        recordingGameService = new RecordingGameService();
+        recordingGameService = new RecordingGameService(
+                new GameLaunchPlan(
+                        Path.of("game")
+                )
+        );
         gameTask = new LaunchGameTask(recordingGameService);
         context = getContext();
+    }
+
+    @Test
+    void should_transfer_game_launcher_plan_to_game_service() {
+        //given
+        context.setGameLaunchPlan(recordingGameService.getReceivedGameLaunchPlan());
+
+        //when
+        gameTask.execute(context);
+
+        //then
+        GameLaunchPlan expectedPlan = new GameLaunchPlan(
+            Path.of("game")
+        );
+
+        assertEquals(
+                expectedPlan,
+                recordingGameService.getReceivedGameLaunchPlan()
+        );
+    }
+
+    @Test
+    void should_return_failure_when_game_launch_plan_is_missing() {
+
+        //when
+        Result result = gameTask.execute(context);
+
+        //then
+        assertFalse(result.success());
+        assertInstanceOf(FailureResult.class, result);
+
     }
 
     @Test
@@ -50,6 +87,7 @@ class LaunchGameTaskTest {
 
     @Test
     void should_return_success_when_game_is_launched() {
+        context.setGameLaunchPlan(recordingGameService.getReceivedGameLaunchPlan());
 
         //when
         Result result = gameTask.execute(context);
@@ -61,6 +99,7 @@ class LaunchGameTaskTest {
 
     @Test
     void should_launch_game() {
+        context.setGameLaunchPlan(recordingGameService.getReceivedGameLaunchPlan());
 
         //when
         gameTask.execute(context);

@@ -7,5 +7,6 @@ public enum OperationType {
     BUILD_DOWNLOAD_PLAN,
     DOWNLOAD_FILES,
     PREPARE_DIRECTORIES,
+    BUILD_GAME_LAUNCH_PLAN,
     LAUNCH_GAME
 }

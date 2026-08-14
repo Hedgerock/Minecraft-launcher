@@ -19,6 +19,7 @@ import com.launcher.core.verification.VerificationService;
 import com.launcher.downloader.download.DefaultFileDownloader;
 import com.launcher.downloader.download.FileDownloader;
 import com.launcher.downloader.service.DefaultDownloadService;
+import com.launcher.game.process.ProcessBuilderGameProcessLauncher;
 import com.launcher.game.service.DefaultGameService;
 import com.launcher.storage.file.FileMetadataReader;
 import com.launcher.storage.file.LocalFileMetadataReader;
@@ -73,7 +74,9 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     }
 
     private GameService createGameService() {
-        return new DefaultGameService();
+        return new DefaultGameService(
+                new ProcessBuilderGameProcessLauncher()
+        );
     }
 
     @Override

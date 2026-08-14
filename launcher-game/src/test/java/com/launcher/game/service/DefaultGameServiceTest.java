@@ -1,29 +1,52 @@
 package com.launcher.game.service;
 
 import com.launcher.core.game.GameLaunchPlan;
-import com.launcher.core.game.GameService;
+import com.launcher.game.exception.GameLaunchException;
+import com.launcher.game.support.RecordingGameProcessLauncher;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DefaultGameServiceTest {
+    private GameLaunchPlan plan;
 
-    @Test
-    void should_launch_without_error_for_current_scaffold() {
-        //given
-        GameService service = new DefaultGameService();
-        GameLaunchPlan gameLaunchPlan = new GameLaunchPlan(
-                Path.of("current-game-path"),
+    @BeforeEach
+    void setUp() {
+        plan = new GameLaunchPlan(
+                Path.of("game"),
                 List.of("java", "TestMain")
         );
+    }
+
+    @Test
+    void should_propagate_game_launch_exception() {
+        RecordingGameProcessLauncher launcher = new RecordingGameProcessLauncher(true);
+        DefaultGameService launcherService = new DefaultGameService(launcher);
+
+        //when & then
+        assertThrows(
+                GameLaunchException.class,
+                () -> launcherService.launch(plan)
+        );
+
+    }
+
+    @Test
+    void should_pass_game_launch_plan_to_game_process_launcher() {
+        //given
+        RecordingGameProcessLauncher launcher = new RecordingGameProcessLauncher();
+        DefaultGameService service = new DefaultGameService(launcher);
+
+        //when
+        service.launch(plan);
 
         //then
-        assertDoesNotThrow(() -> service.launch(gameLaunchPlan));
-        assertInstanceOf(DefaultGameService.class, service);
+        assertEquals(launcher.getPlan(), plan);
 
     }
 

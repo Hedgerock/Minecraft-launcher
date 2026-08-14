@@ -1,5 +1,6 @@
 package com.launcher.api.manifest.mapper;
 
+import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 
@@ -15,7 +16,12 @@ public class JsonManifestMapper implements ManifestMapper {
                         "fabric",
                         "0.16.10"
                 ),
-                List.of()
+                List.of(),
+                new LaunchInfo(
+                        "MainClass",
+                        List.of(),
+                        List.of()
+                )
         );
     }
 }

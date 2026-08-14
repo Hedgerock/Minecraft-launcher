@@ -5,6 +5,7 @@ import java.util.List;
 public record Manifest(
         String minecraftVersion,
         LoaderInfo loader,
-        List<FileEntry> files
+        List<FileEntry> files,
+        LaunchInfo launchInfo
 ) {
 }

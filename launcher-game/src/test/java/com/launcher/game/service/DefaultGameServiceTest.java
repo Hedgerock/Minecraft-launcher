@@ -5,6 +5,7 @@ import com.launcher.core.game.GameService;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -16,7 +17,8 @@ class DefaultGameServiceTest {
         //given
         GameService service = new DefaultGameService();
         GameLaunchPlan gameLaunchPlan = new GameLaunchPlan(
-                Path.of("current-game-path")
+                Path.of("current-game-path"),
+                List.of("java", "TestMain")
         );
 
         //then

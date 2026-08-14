@@ -61,7 +61,10 @@ public class OperationFactoryFixture {
                 new RecordingDownloadService(),
                 new RecordingDirectoryService(),
                 new RecordingGameService(
-                        new GameLaunchPlan(Path.of("game"))
+                        new GameLaunchPlan(
+                                Path.of("game"),
+                                List.of("java", "TestMain")
+                        )
                 ),
                 builder,
                 gameLaunchBuilder,

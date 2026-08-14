@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +36,8 @@ class LaunchGameTaskTest {
     void setUp() {
         recordingGameService = new RecordingGameService(
                 new GameLaunchPlan(
-                        Path.of("game")
+                        Path.of("game"),
+                        List.of("java", "TestMain")
                 )
         );
         gameTask = new LaunchGameTask(recordingGameService);
@@ -52,7 +54,8 @@ class LaunchGameTaskTest {
 
         //then
         GameLaunchPlan expectedPlan = new GameLaunchPlan(
-            Path.of("game")
+            Path.of("game"),
+                List.of("java", "TestMain")
         );
 
         assertEquals(

@@ -11,6 +11,7 @@ import com.launcher.core.verification.model.FileVerificationResult;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.core.verification.model.VerificationStatus;
 import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,12 @@ class VerifyFilesTaskTest {
                         "Forge",
                         "1.0.0"
                 ),
-                List.of()
+                List.of(),
+                new LaunchInfo(
+                        "MainClass",
+                        List.of(),
+                        List.of()
+                )
         );
     }
 

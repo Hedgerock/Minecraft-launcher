@@ -71,6 +71,8 @@ L-5
 
 После успешного `BUILD_GAME_LAUNCH_PLAN` `LauncherEngine` запускает `LAUNCH_GAME`
 
+Во время `LAUNCH_GAME` `GameService` передает `GameLaunchPlan` в адаптер запуска процесса
+
 Если `LAUNCH_GAME` завершается с ошибкой, launcher переходит в `FAILED`
 
 После успешного `LAUNCH_GAME` launcher переходит в `RUNNING`
@@ -86,25 +88,14 @@ L-5
 
 Связанные документы
 
-- ADR-0003 Launcher Engine Responsibility
-- ADR-0005 Context Ownership (Deferred)
-- RFC-0002 Session Lifecycle Management
-- RFC-0003 Task Cancellation
+- [ADR-0003 Launcher Engine Responsibility](../../decisions/ADR-0003-launcher-engine-responsibility.md)
+- [ADR-0005 Context Ownership (Deferred)](../../decisions/ADR-0005-immutable-domain-model.md)
+- [RFC-0002 Session Lifecycle Management](../../rfc/RFC-0002-session-lifecycle-management.md)
+- [RFC-0003 Task Cancellation](../../rfc/RFC-0003-task-lifecycle.md)
 
 Диаграммы
 
-- launcher-lifecycle.puml
-- launcher-user-journey.puml
-- launcher-startup.puml
-- launch-sequence.puml
-
-
-
-
-
-
-
-
-
-
-
+- [launcher-lifecycle.puml](../../diagrams/launcher/launcher-lifecycle.puml)
+- [launcher-user-journey.puml](../../diagrams/launcher/launcher-user-journey.puml)
+- [launcher-startup.puml](../../diagrams/launcher/launcher-startup.puml)
+- [launch-sequence.puml](../../diagrams/launcher/launch-sequence.puml)

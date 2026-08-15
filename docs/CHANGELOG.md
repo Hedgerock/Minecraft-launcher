@@ -100,6 +100,9 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added downloaded file size validation after each file download
 - Added GameLaunchPlan for describing game launch input
 - Added BUILD_GAME_LAUNCH_PLAN operation before game launch
+- Added GameProcessLauncher abstraction for starting game processes
+- Added ProcessBuilder-based game process launcher
+- DefaultGameService now launches a process from GameLaunchPlan
 
 ### Changed
 

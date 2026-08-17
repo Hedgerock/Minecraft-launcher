@@ -40,6 +40,27 @@ Runtime-контекст текущего запуска Launcher
 
 Используется `GameLaunchPlanBuilder` для построения команды запуска
 
+### Manifest
+
+Описание сборки, полученное перед `verification flow`
+
+Содержит список файлов и `launch metadata`
+
+`files` является обязательным неизменяемым списком
+
+### FileEntry
+
+Описание одного файла из `Manifest`
+
+Содержит поля
+
+- `path`
+- `sha256`
+- `size`
+- `url`
+
+Используется `verification flow` и `download flow`
+
 ---
 
 ## Operations

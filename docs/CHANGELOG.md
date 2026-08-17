@@ -103,6 +103,8 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Added GameProcessLauncher abstraction for starting game processes
 - Added ProcessBuilder-based game process launcher
 - DefaultGameService now launches a process from GameLaunchPlan
+- Manifest now validates a file list before verification and download planning
+- FileEntry now validates path, hash, size and download URL metadata
 
 ### Changed
 

@@ -10,9 +10,12 @@ import com.launcher.core.result.FailureResult;
 import com.launcher.core.result.Result;
 import com.launcher.core.result.SuccessResult;
 import com.launcher.core.state.LauncherState;
+import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,6 +26,29 @@ class BuildGameLaunchPlanTaskTest {
     @BeforeEach
     void setUp() {
         context = OperationFactoryFixture.getContext();
+    }
+
+    @Test
+    void should_return_failure_when_launch_info_is_missing() {
+        //given
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchBuilder;
+        BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
+        context.setManifest(
+                new Manifest(
+                        "1.12.2",
+                        new LoaderInfo("fabric", "0.16.10"),
+                        List.of(),
+                        null
+
+                )
+        );
+
+        //when
+        Result result = task.execute(context);
+
+        //then
+        assertInstanceOf(FailureResult.class, result);
+        assertTrue(((FailureResult) result).getMessage().contains("Launch info not available"));
     }
 
     @Test

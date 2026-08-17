@@ -27,8 +27,11 @@ public class BuildGameLaunchPlanTask implements LauncherTask {
             return TaskResult.failure("Manifest not loaded");
         }
 
-        GameLaunchPlan gameLaunchPlan = gameLaunchPlanBuilder.build(manifest);
+        if (manifest.launchInfo() == null) {
+            return TaskResult.failure("Launch info not available");
+        }
 
+        GameLaunchPlan gameLaunchPlan = gameLaunchPlanBuilder.build(manifest);
         launchContext.setGameLaunchPlan(gameLaunchPlan);
         return TaskResult.success();
     }

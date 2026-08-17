@@ -3,6 +3,7 @@ package com.launcher.core.architecture.operation;
 import com.launcher.core.architecture.support.*;
 import com.launcher.core.architecture.support.recording.RecordVerificationService;
 import com.launcher.core.architecture.support.recording.RecordingDownloadService;
+import com.launcher.core.architecture.support.recording.RecordingEventBus;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.download.DownloadService;
@@ -10,10 +11,13 @@ import com.launcher.core.event.EventBus;
 import com.launcher.core.event.events.OperationCompletedEvent;
 import com.launcher.core.event.events.OperationFailedEvent;
 import com.launcher.core.event.events.OperationStartedEvent;
+import com.launcher.core.execution.SequentialExecutionStrategy;
+import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.impl.BuildDownloadPlanOperation;
 import com.launcher.core.operation.impl.DownloadFilesOperation;
+import com.launcher.core.operation.impl.LaunchGameOperation;
 import com.launcher.core.operation.impl.VerificationOperation;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.operation.type.OperationType;
@@ -41,6 +45,36 @@ class LaunchOperationEventPublishingTest {
         return new VerificationPlan(
                 List.of()
         );
+    }
+
+    @Test
+    void should_publish_failed_event_when_launch_game_failed() {
+        //given
+        RecordingEventBus eventBus = new RecordingEventBus();
+        LaunchContext context = getContext();
+        context.setGameLaunchPlan(
+                new GameLaunchPlan(
+                        Path.of("game-directory"),
+                        List.of("java", "TestMain")
+                )
+        );
+
+        LaunchOperation operation = new LaunchGameOperation(
+                context,
+                new SequentialExecutionStrategy(),
+                eventBus,
+                new FailingGameService()
+        );
+
+        //when
+        operation.execute();
+
+        //then
+        OperationFailedEvent event = eventBus.firstEventOfType(OperationFailedEvent.class);
+
+        assertEquals(OperationType.LAUNCH_GAME, event.operationType());
+        assertEquals("Game launch failed", event.errorMessage());
+
     }
 
     @Test

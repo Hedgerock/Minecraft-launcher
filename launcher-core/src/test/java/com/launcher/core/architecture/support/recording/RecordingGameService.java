@@ -5,16 +5,12 @@ import com.launcher.core.game.GameService;
 
 public final class RecordingGameService implements GameService {
     private boolean isLaunchCalled;
-    private final GameLaunchPlan receivedGameLaunchPlan;
-
-    public RecordingGameService(GameLaunchPlan receivedGameLaunchPlan) {
-        this.isLaunchCalled = false;
-        this.receivedGameLaunchPlan = receivedGameLaunchPlan;
-    }
+    private GameLaunchPlan receivedGameLaunchPlan;
 
     @Override
     public void launch(GameLaunchPlan plan) {
         isLaunchCalled = true;
+        this.receivedGameLaunchPlan = plan;
     }
 
     public boolean isLaunchCalled() {

@@ -47,7 +47,7 @@ public class GameLaunchPlanTest {
     }
 
     @Test
-    void should_reject_nul_command() {
+    void should_reject_null_command() {
         //when
         NullPointerException exception = assertThrows(
                 NullPointerException.class,

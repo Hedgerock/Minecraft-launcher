@@ -34,27 +34,26 @@ class LaunchGameTaskTest {
 
     @BeforeEach
     void setUp() {
-        recordingGameService = new RecordingGameService(
+        recordingGameService = new RecordingGameService();
+        gameTask = new LaunchGameTask(recordingGameService);
+        context = getContext();
+        context.setGameLaunchPlan(
                 new GameLaunchPlan(
-                        Path.of("game"),
+                        Path.of("game-directory"),
                         List.of("java", "TestMain")
                 )
         );
-        gameTask = new LaunchGameTask(recordingGameService);
-        context = getContext();
     }
 
     @Test
     void should_transfer_game_launcher_plan_to_game_service() {
-        //given
-        context.setGameLaunchPlan(recordingGameService.getReceivedGameLaunchPlan());
 
         //when
         gameTask.execute(context);
 
         //then
         GameLaunchPlan expectedPlan = new GameLaunchPlan(
-            Path.of("game"),
+            Path.of("game-directory"),
                 List.of("java", "TestMain")
         );
 
@@ -66,6 +65,7 @@ class LaunchGameTaskTest {
 
     @Test
     void should_return_failure_when_game_launch_plan_is_missing() {
+        context.setGameLaunchPlan(null);
 
         //when
         Result result = gameTask.execute(context);
@@ -90,7 +90,6 @@ class LaunchGameTaskTest {
 
     @Test
     void should_return_success_when_game_is_launched() {
-        context.setGameLaunchPlan(recordingGameService.getReceivedGameLaunchPlan());
 
         //when
         Result result = gameTask.execute(context);
@@ -102,7 +101,6 @@ class LaunchGameTaskTest {
 
     @Test
     void should_launch_game() {
-        context.setGameLaunchPlan(recordingGameService.getReceivedGameLaunchPlan());
 
         //when
         gameTask.execute(context);

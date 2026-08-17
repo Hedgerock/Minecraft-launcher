@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProcessBuilderGameProcessLauncherTest {
 
     @Test
-    void should_launch_process_with_command(@TempDir Path tempDir) {
+    void should_launch_process_with_command(@TempDir Path tempDir) throws Exception {
         //given
         GameLaunchPlan plan = new GameLaunchPlan(
                 tempDir,
@@ -32,9 +32,7 @@ class ProcessBuilderGameProcessLauncherTest {
         Process process = launcher.launch(plan);
 
         //then
-        assertTrue(process.isAlive() || process.exitValue() == 0);
-
-        process.destroy();
+        assertEquals(0, process.waitFor());
     }
 
     @Test

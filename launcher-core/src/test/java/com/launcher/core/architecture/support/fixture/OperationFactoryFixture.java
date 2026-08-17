@@ -4,7 +4,6 @@ import com.launcher.core.architecture.support.recording.*;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.event.EventBus;
-import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.manifest.ManifestService;
@@ -60,12 +59,7 @@ public class OperationFactoryFixture {
                 new RecordVerificationService(getVerificationPlan()),
                 new RecordingDownloadService(),
                 new RecordingDirectoryService(),
-                new RecordingGameService(
-                        new GameLaunchPlan(
-                                Path.of("game"),
-                                List.of("java", "TestMain")
-                        )
-                ),
+                new RecordingGameService(),
                 builder,
                 gameLaunchBuilder,
                 eventBus

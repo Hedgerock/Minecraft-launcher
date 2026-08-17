@@ -4,7 +4,7 @@ import com.launcher.core.LauncherEngine;
 import com.launcher.core.architecture.support.recording.RecordingLauncherStateMachine;
 import com.launcher.core.architecture.support.recording.RecordingOperationManager;
 import com.launcher.core.configuration.LauncherConfiguration;
-import com.launcher.core.download.DownloadPlan;
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.operation.type.OperationType;

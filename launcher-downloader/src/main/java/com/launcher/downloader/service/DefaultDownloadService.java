@@ -1,6 +1,6 @@
 package com.launcher.downloader.service;
 
-import com.launcher.core.download.DownloadPlan;
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.download.DownloadService;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.downloader.download.FileDownloader;

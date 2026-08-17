@@ -1,7 +1,7 @@
 package com.launcher.core.architecture.engine;
 
 import com.launcher.core.architecture.support.fixture.LauncherFlowFixture;
-import com.launcher.core.download.DownloadPlan;
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.state.LauncherState;

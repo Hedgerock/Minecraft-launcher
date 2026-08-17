@@ -1,5 +1,6 @@
 package com.launcher.core.download;
 
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.verification.model.FileVerificationResult;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.core.verification.model.VerificationStatus;

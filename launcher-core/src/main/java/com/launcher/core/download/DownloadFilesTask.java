@@ -1,5 +1,6 @@
 package com.launcher.core.download;
 
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.event.events.download.DownloadCompletedEvent;
 import com.launcher.core.event.events.download.DownloadProgressChangedEvent;

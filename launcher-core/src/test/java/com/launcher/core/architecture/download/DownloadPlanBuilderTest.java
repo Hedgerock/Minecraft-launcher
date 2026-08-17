@@ -1,6 +1,6 @@
 package com.launcher.core.architecture.download;
 
-import com.launcher.core.download.DownloadPlan;
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.verification.model.FileVerificationResult;
 import com.launcher.core.verification.model.VerificationPlan;

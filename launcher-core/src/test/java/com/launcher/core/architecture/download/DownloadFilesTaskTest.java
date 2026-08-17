@@ -4,7 +4,7 @@ import com.launcher.core.architecture.support.recording.RecordingDownloadService
 import com.launcher.core.architecture.support.recording.RecordingEventBus;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadFilesTask;
-import com.launcher.core.download.DownloadPlan;
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.event.events.download.DownloadCompletedEvent;
 import com.launcher.core.event.events.download.DownloadProgressChangedEvent;

@@ -1,5 +1,6 @@
 package com.launcher.core.download;
 
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.result.Result;
 import com.launcher.core.state.LauncherState;

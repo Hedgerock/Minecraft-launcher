@@ -1,7 +1,7 @@
 package com.launcher.core.launch;
 
 import com.launcher.core.configuration.LauncherConfiguration;
-import com.launcher.core.download.DownloadPlan;
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.model.manifest.Manifest;

@@ -105,6 +105,8 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - DefaultGameService now launches a process from GameLaunchPlan
 - Manifest now validates a file list before verification and download planning
 - FileEntry now validates path, hash, size and download URL metadata
+- Manifest-related models now validate the required file, loader and launch metadata
+- VerificationPlan and DownloadPlan now protect their file lists from null and external mutation
 
 ### Changed
 

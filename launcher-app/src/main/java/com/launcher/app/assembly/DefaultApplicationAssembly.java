@@ -11,6 +11,7 @@ import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.execution.SequentialExecutionStrategy;
+import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
 import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.core.operation.DefaultOperationManager;
 import com.launcher.core.operation.OperationManager;
@@ -47,7 +48,12 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
 
         LauncherServices services = servicesFactory.createServices();
         DownloadPlanBuilder builder = new DownloadPlanBuilder();
-        GameLaunchPlanBuilder launchPlanBuilder = new GameLaunchPlanBuilder(services.directoryProvider());
+        DefaultGameLaunchCommandBuilder launchCommandBuilder = new DefaultGameLaunchCommandBuilder();
+
+        GameLaunchPlanBuilder launchPlanBuilder = new GameLaunchPlanBuilder(
+                services.directoryProvider(),
+                launchCommandBuilder
+        );
 
         OperationFactory operationFactory = new DefaultOperationFactory(
                 services.manifestService(),

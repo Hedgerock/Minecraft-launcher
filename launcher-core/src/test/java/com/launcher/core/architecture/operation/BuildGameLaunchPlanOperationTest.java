@@ -4,6 +4,7 @@ import com.launcher.core.architecture.support.fixture.OperationFactoryFixture;
 import com.launcher.core.architecture.support.recording.RecordingDirectoryProvider;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.execution.SequentialExecutionStrategy;
+import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
 import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
@@ -43,7 +44,8 @@ class BuildGameLaunchPlanOperationTest {
                 new SequentialExecutionStrategy(),
                 new EventBus(),
                 new GameLaunchPlanBuilder(
-                        new RecordingDirectoryProvider()
+                        new RecordingDirectoryProvider(),
+                        new DefaultGameLaunchCommandBuilder()
                 )
         );
 

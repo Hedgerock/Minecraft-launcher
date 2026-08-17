@@ -1,10 +1,15 @@
 package com.launcher.core.verification.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public record VerificationPlan(
         List<FileVerificationResult> files
 ) {
+    public VerificationPlan {
+        Objects.requireNonNull(files, "files");
+        files = List.copyOf(files);
+    }
 
    public boolean isValid() {
        return files.stream()

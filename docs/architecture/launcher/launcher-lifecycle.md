@@ -67,6 +67,8 @@ L-5
 
 После успешной подготовки директорий `LauncherEngine` запускает `BUILD_GAME_LAUNCH_PLAN`
 
+Если `Manifest` не содержит `LaunchInfo`, `BUILD_GAME_LAUNCH_PLAN` завершается ошибкой, launcher переходит в `FAILED`
+
 Если `BUILD_GAME_LAUNCH_PLAN` завершается с ошибкой, launcher переходит в `FAILED`
 
 После успешного `BUILD_GAME_LAUNCH_PLAN` `LauncherEngine` запускает `LAUNCH_GAME`

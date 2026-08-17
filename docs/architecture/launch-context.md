@@ -16,6 +16,7 @@
 ## Артефакты
 
 LoadManifestTask -> Manifest
+Manifest -> LaunchInfo -> GameLaunchPlan
 VerifyFilesTask -> VerificationPlan
 BuildDownloadPlanTask -> DownloadPlan
 DownloadFilesTask -> uses DownloadPlan

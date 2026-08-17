@@ -130,6 +130,8 @@ Documentation future architectural extensions through ADR-0008-ADR-0011
 - Aligned launcher lifecycle documentation with the launch game flow
 - LauncherEngine now builds GameLaunchPlan after preparing directories and before launching the game
 - GameService now receives GameLaunchPlan instead of launching without explicit launch input
+- LaunchInfo now validates launch metadata before building GameLaunchPlan
+- BuildGameLaunchPlanTask now fails when manifest launch info is missing
 
 ### Removed
 

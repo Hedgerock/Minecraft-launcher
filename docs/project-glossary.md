@@ -32,6 +32,14 @@ Runtime-контекст текущего запуска Launcher
 
 `LaunchContext` передается только во время выполнения `execute(...)`
 
+### LaunchInfo
+
+Метаданные запуска игры из `Manifest`
+
+Содержит `main class`, `JVM arguments` и `game arguments`
+
+Используется `GameLaunchPlanBuilder` для построения команды запуска
+
 ---
 
 ## Operations

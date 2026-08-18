@@ -41,6 +41,17 @@ class GameLaunchPlanBuilderTest {
                 manifest.launchInfo(),
                 launchCommandBuilder.getLaunchInfo()
         );
+
+        assertEquals(
+                manifest.minecraftVersion(),
+                launchCommandBuilder.getLaunchVariables().versionName()
+        );
+
+        assertEquals(
+                directoryProvider.directories().game(),
+                launchCommandBuilder.getLaunchVariables().gameDirectory()
+        );
+
     }
 
 }

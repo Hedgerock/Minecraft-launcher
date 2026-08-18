@@ -9,6 +9,7 @@ import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.operation.factory.DefaultOperationFactory;
+import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.core.verification.model.VerificationPlan;
 
 import java.net.URI;
@@ -22,7 +23,9 @@ public class OperationFactoryFixture {
     public static final DownloadPlanBuilder builder = new DownloadPlanBuilder();
     public static final GameLaunchPlanBuilder gameLaunchBuilder = new GameLaunchPlanBuilder(
             new RecordingDirectoryProvider(),
-            new DefaultGameLaunchCommandBuilder()
+            new DefaultGameLaunchCommandBuilder(
+                    new DefaultLaunchArgumentResolver()
+            )
     );
 
     public OperationFactoryFixture() {

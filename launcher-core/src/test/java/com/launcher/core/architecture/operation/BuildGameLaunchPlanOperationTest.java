@@ -10,6 +10,7 @@ import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.impl.BuildGameLaunchPlanOperation;
 import com.launcher.core.operation.result.OperationResult;
+import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BuildGameLaunchPlanOperationTest {
     private LaunchContext context;
+
+    private LaunchOperation getLaunchOperation() {
+        return new BuildGameLaunchPlanOperation(
+                context,
+                new SequentialExecutionStrategy(),
+                new EventBus(),
+                new GameLaunchPlanBuilder(
+                        new RecordingDirectoryProvider(),
+                        new DefaultGameLaunchCommandBuilder(
+                                new DefaultLaunchArgumentResolver()
+                        )
+                )
+        );
+    }
 
     @BeforeEach
     void setUp() {
@@ -39,15 +54,7 @@ class BuildGameLaunchPlanOperationTest {
                 )
         );
 
-        LaunchOperation launchOperation = new BuildGameLaunchPlanOperation(
-                context,
-                new SequentialExecutionStrategy(),
-                new EventBus(),
-                new GameLaunchPlanBuilder(
-                        new RecordingDirectoryProvider(),
-                        new DefaultGameLaunchCommandBuilder()
-                )
-        );
+        LaunchOperation launchOperation = getLaunchOperation();
 
         //when
         OperationResult result = launchOperation.execute();

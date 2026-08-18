@@ -1,4 +1,4 @@
-# FileVerifier Contract
+# Контракт FileVerifier
 
 ## Ответственность
 

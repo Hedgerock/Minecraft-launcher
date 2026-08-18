@@ -1,27 +1,38 @@
 package com.launcher.api.manifest.mapper;
 
-import com.launcher.model.manifest.LaunchInfo;
-import com.launcher.model.manifest.LoaderInfo;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.launcher.api.manifest.exception.ManifestMappingException;
+import com.launcher.api.manifest.mapper.dto.ManifestJson;
 import com.launcher.model.manifest.Manifest;
 
-import java.util.List;
-
 public class JsonManifestMapper implements ManifestMapper {
+    private final ObjectMapper objectMapper;
+
+    public JsonManifestMapper() {
+        this(new ObjectMapper());
+    }
+
+    JsonManifestMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public Manifest map(String json) {
-        return new Manifest(
-                "1.21.1",
-                new LoaderInfo(
-                        "fabric",
-                        "0.16.10"
-                ),
-                List.of(),
-                new LaunchInfo(
-                        "MainClass",
-                        List.of(),
-                        List.of()
-                )
-        );
+        try {
+            ManifestJson manifestJson = objectMapper.readValue(json, ManifestJson.class);
+
+            return manifestJson.toManifest();
+        } catch (JsonProcessingException e) {
+            throw new ManifestMappingException(
+                    "Failed to parse manifest json",
+                    e
+            );
+        } catch (NullPointerException | IllegalArgumentException e) {
+            throw new ManifestMappingException(
+                    "Invalid manifest json",
+                    e
+            );
+        }
     }
 }

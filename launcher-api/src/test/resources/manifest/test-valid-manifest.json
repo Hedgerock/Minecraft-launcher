@@ -1,0 +1,20 @@
+{
+  "minecraftVersion": "1.21.1",
+  "loader": {
+    "type": "fabric",
+    "version": "0.16.10"
+  },
+  "files": [
+    {
+      "path": "mods/example.jar",
+      "sha256": "abc1234",
+      "size": 123456789,
+      "url": "https://localhost/files/mods/example.jar"
+    }
+  ],
+  "launchInfo": {
+    "mainClass": "net.minecraft.client.main.Main",
+    "jvmArgs": ["-Xmx2G"],
+    "gameArgs": ["--username", "Player"]
+  }
+}

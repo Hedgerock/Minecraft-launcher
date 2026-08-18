@@ -67,6 +67,30 @@ JSON manifest
 
 ---
 
+## Подстановка аргументов запуска
+
+`launchinfo.jvmargs` и `launchinfo.gameArgs` могут содержать поддерживаемые подстановки
+
+На текущем этапе поддерживается
+
+| Подстановка         | Значение                                          |
+|---------------------|---------------------------------------------------|
+| `${version_name}`   | Версия Minecraft из `Manifest.minecraftVersion`   |
+| `${game_directory}` | Путь к игровой дироектории из `DirectoryProvider` |
+
+Подстановки применяются во время построения команды запуска
+
+```text
+LaunchInfo
+    -> GameLaunchPlanBuilder
+        -> LaunchVariables
+            -> LaunchArgumentResolver
+                -> GameLaunchPlan.command
+```
+Неизвестные подстановки сохраняются без изменения
+
+---
+
 ## Валидация
 
 Базовая структурная валидация выполняется во время преобразования JSON

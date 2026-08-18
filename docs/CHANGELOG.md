@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Added launch argument placeholder resolution for game launch commands
+
 ---
 
 ## v0.3.0 – Launch Runtime Stabilization

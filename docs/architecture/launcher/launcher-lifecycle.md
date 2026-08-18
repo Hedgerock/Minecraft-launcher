@@ -67,6 +67,9 @@ L-5
 
 После успешной подготовки директорий `LauncherEngine` запускает `BUILD_GAME_LAUNCH_PLAN`
 
+Во время построения `GameLaunchPlan` launcher создает `LaunchVariables` и применяет поддерживаемые
+подстановки в `jvmArgs` и `gameArgs`
+
 Если `Manifest` не содержит `LaunchInfo`, `BUILD_GAME_LAUNCH_PLAN` завершается ошибкой, launcher переходит в `FAILED`
 
 Если `BUILD_GAME_LAUNCH_PLAN` завершается с ошибкой, launcher переходит в `FAILED`

@@ -9,13 +9,15 @@ public record ManifestJson(
         String minecraftVersion,
         LoaderJson loader,
         List<FileEntryJson> files,
-        LaunchInfoJson launchInfo
+        LaunchInfoJson launchInfo,
+        List<LibraryEntryJson> libraries
 ) {
 
     public ManifestJson {
         Objects.requireNonNull(loader, "loader");
         Objects.requireNonNull(files, "files");
         Objects.requireNonNull(launchInfo, "launchInfo");
+        Objects.requireNonNull(libraries, "libraries");
     }
 
     public Manifest toManifest() {
@@ -23,7 +25,8 @@ public record ManifestJson(
                 minecraftVersion,
                 loader.toLoaderInfo(),
                 files.stream().map(FileEntryJson::toFileEntry).toList(),
-                launchInfo.toLaunchInfo()
+                launchInfo.toLaunchInfo(),
+                libraries.stream().map(LibraryEntryJson::toLibraryEntry).toList()
         );
     }
 

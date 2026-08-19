@@ -112,6 +112,12 @@ class JsonManifestMapperTest {
         );
 
         assertEquals("java", launchInfo.javaExecutable());
+
+        assertEquals(1, manifest.libraries().size());
+        assertEquals(
+                "libraries/org/example/example.jar",
+                manifest.libraries().getFirst().path()
+        );
     }
 
     private String loadResource(String name) {

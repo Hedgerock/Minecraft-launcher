@@ -38,8 +38,8 @@ class BuildGameLaunchPlanTaskTest {
                         "1.12.2",
                         new LoaderInfo("fabric", "0.16.10"),
                         List.of(),
-                        null
-
+                        null,
+                        List.of()
                 )
         );
 

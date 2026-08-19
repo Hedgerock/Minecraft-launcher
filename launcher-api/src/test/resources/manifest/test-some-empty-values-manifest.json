@@ -15,5 +15,10 @@
     "mainClass": "net.minecraft.client.main.Main",
     "gameArgs": ["--username", "Player"],
     "javaExecutable": "java"
-  }
+  },
+  "libraries": [
+    {
+      "path": "libraries/org/example/example.jar"
+    }
+  ]
 }

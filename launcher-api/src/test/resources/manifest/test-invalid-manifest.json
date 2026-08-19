@@ -19,5 +19,10 @@
     "classpath": ["libraries/example.jar", "client.jar"],
     "someNewWeirdField": "someValue",
     "javaExecutable": "java"
-  }
+  },
+  "libraries": [
+    {
+      "path": "libraries/org/example/example.jar"
+    }
+  ]
 }

@@ -18,5 +18,10 @@
     "gameArgs": ["--username", "Player"],
     "classpath": ["libraries/example.jar", "client.jar"],
     "javaExecutable": "java"
-  }
+  },
+  "libraries": [
+    {
+      "path": "libraries/org/example/example.jar"
+    }
+  ]
 }

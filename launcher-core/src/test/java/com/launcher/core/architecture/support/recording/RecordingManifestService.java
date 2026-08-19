@@ -1,10 +1,7 @@
 package com.launcher.core.architecture.support.recording;
 
 import com.launcher.core.manifest.ManifestService;
-import com.launcher.model.manifest.FileEntry;
-import com.launcher.model.manifest.LaunchInfo;
-import com.launcher.model.manifest.LoaderInfo;
-import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.*;
 
 import java.util.List;
 
@@ -16,7 +13,16 @@ public final class RecordingManifestService implements ManifestService {
                 "${minecraft_version}",
                 loaderInfo(),
                 files(),
-                launchInfo()
+                launchInfo(),
+                libraries()
+        );
+    }
+
+    private List<LibraryEntry> libraries() {
+        return List.of(
+                new LibraryEntry(
+                        "libraries/org/example/example.jar"
+                )
         );
     }
 

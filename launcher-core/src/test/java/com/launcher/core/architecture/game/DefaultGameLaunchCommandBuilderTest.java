@@ -38,7 +38,7 @@ class DefaultGameLaunchCommandBuilderTest {
         //then
         assertEquals(
                 List.of(
-                        "java",
+                        "java-custom",
                         "first-jvm-argument",
                         "second-jvm-argument",
                         "-cp",
@@ -50,6 +50,11 @@ class DefaultGameLaunchCommandBuilderTest {
                         "test-directory"
                 ),
                 command
+        );
+
+        assertEquals(
+                "java-custom",
+                command.getFirst()
         );
 
     }

@@ -17,6 +17,7 @@
     "jvmArgs": ["-Xmx2G"],
     "gameArgs": ["--username", "Player"],
     "classpath": ["libraries/example.jar", "client.jar"],
-    "someNewWeirdField": "someValue"
+    "someNewWeirdField": "someValue",
+    "javaExecutable": "java"
   }
 }

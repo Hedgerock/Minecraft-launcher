@@ -19,7 +19,7 @@ public final class DefaultGameLaunchCommandBuilder implements GameLaunchCommandB
     public List<String> build(LaunchInfo launchInfo, LaunchVariables launchVariables) {
         List<String> command = new ArrayList<>();
 
-        command.add("java");
+        command.add(launchInfo.javaExecutable());
         command.addAll(launchArgumentResolver.resolve(launchInfo.jvmArgs(), launchVariables));
         command.add(launchInfo.mainClass());
         command.addAll(launchArgumentResolver.resolve(launchInfo.gameArgs(), launchVariables));

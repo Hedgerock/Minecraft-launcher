@@ -16,6 +16,7 @@
     "mainClass": "net.minecraft.client.main.Main",
     "jvmArgs": ["-Xmx2G"],
     "gameArgs": ["--username", "Player"],
-    "classpath": ["libraries/example.jar", "client.jar"]
+    "classpath": ["libraries/example.jar", "client.jar"],
+    "javaExecutable": "java"
   }
 }

@@ -13,6 +13,7 @@
   ],
   "launchInfo": {
     "mainClass": "net.minecraft.client.main.Main",
-    "gameArgs": ["--username", "Player"]
+    "gameArgs": ["--username", "Player"],
+    "javaExecutable": "java"
   }
 }

@@ -45,7 +45,8 @@ public final class RecordingManifestService implements ManifestService {
                 List.of(
                         "test-value.jar",
                         "test-value2.jar"
-                )
+                ),
+                "java-custom"
         );
     }
 

@@ -1,6 +1,7 @@
 package com.launcher.core.architecture.verification;
 
 import com.launcher.core.architecture.support.recording.RecordVerificationService;
+import com.launcher.core.architecture.support.recording.RecordingManifestService;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.result.Result;
@@ -11,8 +12,6 @@ import com.launcher.core.verification.model.FileVerificationResult;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.core.verification.model.VerificationStatus;
 import com.launcher.model.manifest.FileEntry;
-import com.launcher.model.manifest.LaunchInfo;
-import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 import org.junit.jupiter.api.Test;
 
@@ -40,20 +39,7 @@ class VerifyFilesTaskTest {
     }
 
     private Manifest getManifest() {
-        return new Manifest(
-                "1.12.2",
-                new LoaderInfo(
-                        "Forge",
-                        "1.0.0"
-                ),
-                List.of(),
-                new LaunchInfo(
-                        "MainClass",
-                        List.of("jvm", "arg1", "arg2"),
-                        List.of("--username", "Player", "--userRole"),
-                        List.of("test-value.jar")
-                )
-        );
+        return new RecordingManifestService().loadManifest();
     }
 
     private VerificationPlan getVerificationPlan() {

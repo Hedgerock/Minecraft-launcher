@@ -13,6 +13,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class DefaultGameClasspathBuilderTest {
     private final DefaultGameClasspathBuilder builder = new DefaultGameClasspathBuilder();
 
+    private LaunchInfo getLaunchInfo() {
+        return new LaunchInfo(
+                "MainClass",
+                List.of("-cp", "${classpath}"),
+                List.of("--username", "Player"),
+                List.of("libraries/example.jar", "client.jar"),
+                "java"
+        );
+    }
+
     @Test
     void should_reject_null_launch_info() {
         //given
@@ -30,12 +40,7 @@ class DefaultGameClasspathBuilderTest {
     @Test
     void should_reject_null_game_directory() {
         //given
-        LaunchInfo launchInfo = new LaunchInfo(
-                "MainClass",
-                List.of("-cp", "${classpath}"),
-                List.of("--username", "Player"),
-                List.of("libraries/example.jar", "client.jar")
-        );
+        LaunchInfo launchInfo = getLaunchInfo();
 
         //when & then
         NullPointerException exception = assertThrows(
@@ -49,12 +54,7 @@ class DefaultGameClasspathBuilderTest {
     @Test
     void should_build_game_classpath_from_launch_info_classpath_entry() {
         //given
-        LaunchInfo launchInfo = new LaunchInfo(
-                "MainClass",
-                List.of("-cp", "${classpath}"),
-                List.of("--username", "Player"),
-                List.of("libraries/example.jar", "client.jar")
-        );
+        LaunchInfo launchInfo = getLaunchInfo();
 
         Path gameDirectory = Path.of("game-directory");
 

@@ -8,7 +8,8 @@ public record LaunchInfoJson(
         String mainClass,
         List<String> jvmArgs,
         List<String> gameArgs,
-        List<String> classpath
+        List<String> classpath,
+        String javaExecutable
 ) {
 
     LaunchInfo toLaunchInfo() {
@@ -16,7 +17,8 @@ public record LaunchInfoJson(
                 mainClass,
                 jvmArgs,
                 gameArgs,
-                classpath
+                classpath,
+                javaExecutable
         );
     }
 

@@ -110,6 +110,8 @@ class JsonManifestMapperTest {
                 List.of("libraries/example.jar", "client.jar"),
                 launchInfo.classpath()
         );
+
+        assertEquals("java", launchInfo.javaExecutable());
     }
 
     private String loadResource(String name) {

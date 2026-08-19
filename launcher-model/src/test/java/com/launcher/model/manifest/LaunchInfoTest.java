@@ -11,20 +11,72 @@ import static org.junit.jupiter.api.Assertions.*;
 class LaunchInfoTest {
 
     @Test
+    void should_create_launch_info_with_java_executable() {
+        //given & when
+        LaunchInfo launchInfo = new LaunchInfo(
+                getDefaultMainClass(),
+                getDefaultJvmArgs(),
+                getDefaultGameArgs(),
+                getDefaultClasspath(),
+                getDefaultJavaExecutable()
+        );
+
+        //then
+        assertEquals("java", launchInfo.javaExecutable());
+    }
+
+    @Test
+    void should_reject_blank_java_executable() {
+        //when & then
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> new LaunchInfo(
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        getDefaultClasspath(),
+                        " "
+                )
+        );
+
+        assertTrue(exception.getMessage().contains("javaExecutable"));
+    }
+
+    @Test
+    void should_reject_null_java_executable() {
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new LaunchInfo(
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        getDefaultClasspath(),
+                        null
+                )
+        );
+
+        assertTrue(exception.getMessage().contains("javaExecutable"));
+    }
+
+    @Test
     void should_prevent_external_mutation_for_game_args() {
         //given
         String firstEntry = "classpath";
         String secondEntry = "arg1";
 
-        String mainClass = "MainClass";
-        List<String> jvmArgs = List.of("jvm", "arg1", "arg2");
         List<String> gameArgs = new ArrayList<>();
-        List<String> classpath = List.of("libraries/example.jar", "client.jar");
 
         gameArgs.add(firstEntry);
         gameArgs.add(secondEntry);
 
-        LaunchInfo launchInfo = new LaunchInfo(mainClass, jvmArgs, gameArgs, classpath);
+        LaunchInfo launchInfo = new LaunchInfo(
+                getDefaultMainClass(),
+                getDefaultJvmArgs(),
+                gameArgs,
+                getDefaultClasspath(),
+                getDefaultJavaExecutable()
+        );
 
         //when
         gameArgs.add("arg2");
@@ -47,15 +99,18 @@ class LaunchInfoTest {
         String firstEntry = "jvm";
         String secondEntry = "arg1";
 
-        String mainClass = "MainClass";
         List<String> jvmArgs = new ArrayList<>();
-        List<String> gameArgs = List.of("--username", "Player", "--userRole");
-        List<String> classpath = List.of("libraries/example.jar", "client.jar");
 
         jvmArgs.add(firstEntry);
         jvmArgs.add(secondEntry);
 
-        LaunchInfo launchInfo = new LaunchInfo(mainClass, jvmArgs, gameArgs, classpath);
+        LaunchInfo launchInfo = new LaunchInfo(
+                getDefaultMainClass(),
+                jvmArgs,
+                getDefaultGameArgs(),
+                getDefaultClasspath(),
+                getDefaultJavaExecutable()
+        );
 
         //when
         jvmArgs.add("admin");
@@ -78,16 +133,18 @@ class LaunchInfoTest {
         String firstEntry = "libraries/example.jar";
         String secondEntry = "client.jar";
 
-        String mainClass = "MainClass";
-        List<String> jvmArgs = List.of("jvm", "arg1", "arg2");
-        List<String> gameArgs = List.of("--username", "Player", "--userRole");
-
         List<String> classpath = new ArrayList<>();
 
         classpath.add(firstEntry);
         classpath.add(secondEntry);
 
-        LaunchInfo launchInfo = new LaunchInfo(mainClass, jvmArgs, gameArgs, classpath);
+        LaunchInfo launchInfo = new LaunchInfo(
+                getDefaultMainClass(),
+                getDefaultJvmArgs(),
+                getDefaultGameArgs(),
+                classpath,
+                getDefaultJavaExecutable()
+        );
 
         //when & then
         assertThrows(
@@ -105,16 +162,18 @@ class LaunchInfoTest {
         String firstEntry = "libraries/example.jar";
         String secondEntry = "client.jar";
 
-        String mainClass = "MainClass";
-        List<String> jvmArgs = List.of("jvm", "arg1", "arg2");
-        List<String> gameArgs = List.of("--username", "Player", "--userRole");
-
         List<String> classpath = new ArrayList<>();
 
         classpath.add(firstEntry);
         classpath.add(secondEntry);
 
-        LaunchInfo launchInfo = new LaunchInfo(mainClass, jvmArgs, gameArgs, classpath);
+        LaunchInfo launchInfo = new LaunchInfo(
+                getDefaultMainClass(),
+                getDefaultJvmArgs(),
+                getDefaultGameArgs(),
+                classpath,
+                getDefaultJavaExecutable()
+        );
 
         //when
         classpath.add("libraries/example2.jar");
@@ -134,9 +193,6 @@ class LaunchInfoTest {
     @Test
     void should_reject_null_value_in_classpath() {
         //given
-        String mainClass = "MainClass";
-        List<String> jvmArgs = List.of("jvm", "arg1", "arg2");
-        List<String> gameArgs = List.of("--username", "Player", "--userRole");
         List<String> classPathWithNullValue = new ArrayList<>();
 
         classPathWithNullValue.add("libraries/example.jar");
@@ -146,10 +202,11 @@ class LaunchInfoTest {
         assertThrows(
                 NullPointerException.class,
                 () -> new LaunchInfo(
-                        mainClass,
-                        jvmArgs,
-                        gameArgs,
-                        classPathWithNullValue
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        classPathWithNullValue,
+                        getDefaultJavaExecutable()
                 )
         );
     }
@@ -157,19 +214,17 @@ class LaunchInfoTest {
     @Test
     void should_reject_empty_classpath() {
         //given
-        String mainClass = "MainClass";
-        List<String> jvmArgs = List.of("jvm", "arg1", "arg2");
-        List<String> gameArgs = List.of("--username", "Player", "--userRole");
         List<String> emptyClasspath = Collections.emptyList();
 
         //when & then
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> new LaunchInfo(
-                        mainClass,
-                        jvmArgs,
-                        gameArgs,
-                        emptyClasspath
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        emptyClasspath,
+                        getDefaultJavaExecutable()
                 )
         );
 
@@ -180,19 +235,15 @@ class LaunchInfoTest {
 
     @Test
     void should_reject_null_classpath() {
-        //given
-        String mainClass = "MainClass";
-        List<String> jvmArgs = List.of("jvm", "arg1", "arg2");
-        List<String> gameArgs = List.of("--username", "Player", "--userRole");
-
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new LaunchInfo(
-                        mainClass,
-                        jvmArgs,
-                        gameArgs,
-                        null
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        null,
+                        getDefaultJavaExecutable()
                 )
         );
 
@@ -203,19 +254,15 @@ class LaunchInfoTest {
 
     @Test
     void should_reject_null_jvm_args() {
-        //given
-        String mainClass = "MainClass";
-        List<String> gameArgs = List.of("--username", "Player", "--userRole");
-        List<String> classpath = List.of("libraries/example.jar", "client.jar");
-
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new LaunchInfo(
-                        mainClass,
+                        getDefaultMainClass(),
                         null,
-                        gameArgs,
-                        classpath
+                        getDefaultGameArgs(),
+                        getDefaultClasspath(),
+                        getDefaultJavaExecutable()
                 )
         );
 
@@ -226,19 +273,15 @@ class LaunchInfoTest {
 
     @Test
     void should_reject_null_game_args() {
-        //given
-        String mainClass = "MainClass";
-        List<String> jvmArgs = List.of("jvm", "arg1", "arg2");
-        List<String> classpath = List.of("libraries/example.jar", "client.jar");
-
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new LaunchInfo(
-                        mainClass,
-                        jvmArgs,
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
                         null,
-                        classpath
+                        getDefaultClasspath(),
+                        getDefaultJavaExecutable()
                 )
         );
 
@@ -256,10 +299,13 @@ class LaunchInfoTest {
         jvmArgs.add("arg1");
         jvmArgs.add("arg2");
 
-        List<String> gameArgs = List.of("--username", "Player", "--userRole");
-        List<String> classpath = List.of("libraries/example.jar", "client.jar");
-
-        LaunchInfo launchInfo = new LaunchInfo("MainClass", jvmArgs, gameArgs, classpath);
+        LaunchInfo launchInfo = new LaunchInfo(
+                getDefaultMainClass(),
+                jvmArgs,
+                getDefaultGameArgs(),
+                getDefaultClasspath(),
+                getDefaultJavaExecutable()
+        );
 
         //when & then
         assertThrows(
@@ -278,10 +324,13 @@ class LaunchInfoTest {
         gameArgs.add("Player");
         gameArgs.add("--userRole");
 
-        List<String> jvmArgs = List.of("jvm", "arg1", "arg2");
-        List<String> classpath = List.of("libraries/example.jar", "client.jar");
-
-        LaunchInfo launchInfo = new LaunchInfo("MainClass", jvmArgs, gameArgs, classpath);
+        LaunchInfo launchInfo = new LaunchInfo(
+                getDefaultMainClass(),
+                getDefaultJvmArgs(),
+                gameArgs,
+                getDefaultClasspath(),
+                getDefaultJavaExecutable()
+        );
 
         //when & then
         assertThrows(
@@ -299,17 +348,15 @@ class LaunchInfoTest {
         jvmArgs.add("arg1");
         jvmArgs.add("arg2");
 
-        List<String> gameArgs = List.of("--username", "Player", "--userRole");
-        List<String> classpath = List.of("libraries/example.jar", "client.jar");
-
         //when & then
         assertThrows(
                 NullPointerException.class,
                 () -> new LaunchInfo(
-                        "MainClass",
+                        getDefaultMainClass(),
                         jvmArgs,
-                        gameArgs,
-                        classpath
+                        getDefaultGameArgs(),
+                        getDefaultClasspath(),
+                        getDefaultJavaExecutable()
                 )
         );
 
@@ -318,43 +365,36 @@ class LaunchInfoTest {
     @Test
     void should_reject_null_game_arg() {
         //given
-        String mainClass = "MainClass";
         List<String> gameArgs = new ArrayList<>();
-        List<String> jvmArgs = List.of("jvm", "arg1", "arg2");
 
         gameArgs.add(null);
         gameArgs.add("Player");
         gameArgs.add("--userRole");
 
-        List<String> classpath = List.of("libraries/example.jar", "client.jar");
-
         //when & then
         assertThrows(
                 NullPointerException.class,
                 () -> new LaunchInfo(
-                        mainClass,
-                        jvmArgs,
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
                         gameArgs,
-                        classpath
+                        getDefaultClasspath(),
+                        getDefaultJavaExecutable()
                 )
         );
     }
 
     @Test
     void should_reject_null_main_class() {
-        //given
-        List<String> jvmArgs = List.of("jvm", "arg1", "arg2");
-        List<String> gameArgs = List.of("--username", "User", "--userRole");
-        List<String> classpath = List.of("libraries/example.jar", "client.jar");
-
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new LaunchInfo(
                         null,
-                        jvmArgs,
-                        gameArgs,
-                        classpath
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        getDefaultClasspath(),
+                        getDefaultJavaExecutable()
                 )
         );
 
@@ -364,22 +404,40 @@ class LaunchInfoTest {
     @Test
     void should_reject_blank_main_class() {
         String blankMainClass = " ";
-        List<String> jvmArgs = List.of("jvm", "arg1", "arg2");
-        List<String> gameArgs = List.of("--username", "User", "--userRole");
-        List<String> classpath = List.of("libraries/example.jar", "client.jar");
 
         //when & then
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> new LaunchInfo(
                         blankMainClass,
-                        jvmArgs,
-                        gameArgs,
-                        classpath
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        getDefaultClasspath(),
+                        getDefaultJavaExecutable()
                 )
         );
 
         assertTrue(exception.getMessage()
                 .contains("mainClass must not be blank"));
+    }
+
+    private String getDefaultJavaExecutable() {
+        return "java";
+    }
+
+    private String getDefaultMainClass() {
+        return "MainClass";
+    }
+
+    private List<String> getDefaultJvmArgs() {
+        return List.of("jvm", "arg1", "arg2");
+    }
+
+    private List<String> getDefaultGameArgs() {
+        return List.of("--username", "Player", "--userRole");
+    }
+
+    private List<String> getDefaultClasspath() {
+        return List.of("libraries/example.jar", "client.jar");
     }
 }

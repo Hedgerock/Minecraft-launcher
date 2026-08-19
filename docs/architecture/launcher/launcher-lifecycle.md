@@ -70,6 +70,9 @@ L-5
 Во время построения `GameLaunchPlan` launcher создает `LaunchVariables` и применяет поддерживаемые
 подстановки в `jvmArgs` и `gameArgs`
 
+Также в процессе построения `GameLaunchPlan` строит `GameClasspath` из `launchinfo.classpath`, форматирует
+его и передает как значение подстановки `${classpath}`
+
 Если `Manifest` не содержит `LaunchInfo`, `BUILD_GAME_LAUNCH_PLAN` завершается ошибкой, launcher переходит в `FAILED`
 
 Если `BUILD_GAME_LAUNCH_PLAN` завершается с ошибкой, launcher переходит в `FAILED`

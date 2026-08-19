@@ -74,10 +74,27 @@ JSON manifest
 
 На текущем этапе поддерживается
 
-| Подстановка         | Значение                                         |
-|---------------------|--------------------------------------------------|
-| `${version_name}`   | Версия Minecraft из `Manifest.minecraftVersion`  |
-| `${game_directory}` | Путь к игровой директории из `DirectoryProvider` |
+| Подстановка         | Значение                                                 |
+|---------------------|----------------------------------------------------------|
+| `${version_name}`   | Версия Minecraft из `Manifest.minecraftVersion`          |
+| `${game_directory}` | Путь к игровой директории из `DirectoryProvider`         |
+| `${classpath}`      | Отформатированный classpath, построенный из `launchInfo` |
+
+`launchInfo.classpath` содержит минимальный список classpath entries текущей версии контракта манифетса
+
+Во время построения `GameLaunchPlan` значения из `launchinfo.classpath` преобразуются в `GameClasspath`,
+разрешаются относительно игровой директории и формируются в строку с использованием системного разделения путей
+
+```text
+launchInfo.classpath
+    -> GameClasspathBuilder
+        -> GameClasspath
+            -> ClasspathFormatter
+                -> LaunchVariables.classpath
+                    -> ${classpath}
+```
+
+Полная модель `libraries`, правила выбора natives и OS-specific зависимости пока не входят в контракт текущей версии
 
 Подстановки применяются во время построения команды запуска
 

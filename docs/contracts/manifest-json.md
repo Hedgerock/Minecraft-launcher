@@ -45,7 +45,8 @@ JSON manifest
     "mainClass": "net.minecraft.client.main.Main",
     "jvmArgs": ["-Xmx2G"],
     "gameArgs": ["--username", "Player"],
-    "classpath": ["libraries/example.jar", "client.jar"]
+    "classpath": ["libraries/example.jar", "client.jar"],
+    "javaExecutable": "java"
   }
 }
 ```
@@ -61,6 +62,8 @@ JSON manifest
 `files` преобразуется в список `FileEntry`
 
 `launchInfo` преобразуется в `LaunchInfo`
+
+`launchInfo.javaExecutable` используется как первый элемент команды запуска игры
 
 `JsonManifestMapper` не выполняет запуск, загрузку файлов или проверку хеша
 
@@ -123,13 +126,16 @@ LaunchInfo
 Если JSON невозможно прочитать или преобразовать в корректный `Manifest`, mapper завершает работу ошибкой
 `ManifestMappingException`
 
+`LaunchInfo` требует непустые значения `mainClass` и `javaExecutable` 
+
 ---
 
 ## Не входит в контракт текущей версии
 
 - Полная модель libraries
 - Построение `classpath` из libraries
-- Выбор Java runtime
+- Автоматический выбор Java runtime
+- Проверка существования Java executable на файловой системе
 - Правило подстановки переменных
 - Аргументы авторизации
 - Assets index

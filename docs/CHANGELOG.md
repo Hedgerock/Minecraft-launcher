@@ -3,6 +3,7 @@
 - Added launch argument placeholder resolution for game launch commands
 - Added classpath entries to launch info manifest metadata
 - Added classpath placeholder resolution for game launch commands 
+- Added configurable Java executable metadata for game launch commands
 
 ---
 

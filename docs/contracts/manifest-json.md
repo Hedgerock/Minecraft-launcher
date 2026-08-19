@@ -70,7 +70,7 @@ JSON manifest
 
 ## Подстановка аргументов запуска
 
-`launchinfo.jvmArgs` и `launchinfo.gameArgs` могут содержать поддерживаемые подстановки
+`launchInfo.jvmArgs` и `launchInfo.gameArgs` могут содержать поддерживаемые подстановки
 
 На текущем этапе поддерживается
 
@@ -80,10 +80,10 @@ JSON manifest
 | `${game_directory}` | Путь к игровой директории из `DirectoryProvider`         |
 | `${classpath}`      | Отформатированный classpath, построенный из `launchInfo` |
 
-`launchInfo.classpath` содержит минимальный список classpath entries текущей версии контракта манифетса
+`launchInfo.classpath` содержит минимальный список classpath entries текущей версии контракта манифеста
 
-Во время построения `GameLaunchPlan` значения из `launchinfo.classpath` преобразуются в `GameClasspath`,
-разрешаются относительно игровой директории и формируются в строку с использованием системного разделения путей
+Во время построения `GameLaunchPlan` значения из `launchInfo.classpath` преобразуются в `GameClasspath`,
+разрешаются относительно игровой директории и формируются в строку с использованием системного разделителя путей
 
 ```text
 launchInfo.classpath

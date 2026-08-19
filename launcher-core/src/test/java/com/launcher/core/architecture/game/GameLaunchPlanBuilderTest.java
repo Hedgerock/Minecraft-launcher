@@ -1,8 +1,6 @@
 package com.launcher.core.architecture.game;
 
-import com.launcher.core.architecture.support.recording.RecordingDirectoryProvider;
-import com.launcher.core.architecture.support.recording.RecordingDefaultGameLaunchCommandBuilder;
-import com.launcher.core.architecture.support.recording.RecordingManifestService;
+import com.launcher.core.architecture.support.recording.*;
 import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.model.manifest.Manifest;
@@ -19,7 +17,15 @@ class GameLaunchPlanBuilderTest {
         //given
         RecordingDirectoryProvider directoryProvider = new RecordingDirectoryProvider();
         RecordingDefaultGameLaunchCommandBuilder launchCommandBuilder = new RecordingDefaultGameLaunchCommandBuilder();
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(directoryProvider, launchCommandBuilder);
+        RecordingGameClasspathBuilder recordingGameClasspathBuilder = new RecordingGameClasspathBuilder();
+        RecordingClasspathFormatter recordingClasspathFormatter = new RecordingClasspathFormatter();
+
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+                directoryProvider,
+                launchCommandBuilder,
+                recordingGameClasspathBuilder,
+                recordingClasspathFormatter
+        );
 
         Manifest manifest = new RecordingManifestService().loadManifest();
 
@@ -52,6 +58,25 @@ class GameLaunchPlanBuilderTest {
                 launchCommandBuilder.getLaunchVariables().gameDirectory()
         );
 
+        assertEquals(
+                "path.to.not.BlankValue",
+                launchCommandBuilder.getLaunchVariables().classpath()
+        );
+
+        assertEquals(
+                manifest.launchInfo(),
+                recordingGameClasspathBuilder.getLaunchInfo()
+        );
+
+        assertEquals(
+                directoryProvider.directories().game(),
+                recordingGameClasspathBuilder.getGameDirectory()
+        );
+
+        assertEquals(
+                recordingGameClasspathBuilder.getGameClasspath(),
+                recordingClasspathFormatter.getGameClasspath()
+        );
     }
 
 }

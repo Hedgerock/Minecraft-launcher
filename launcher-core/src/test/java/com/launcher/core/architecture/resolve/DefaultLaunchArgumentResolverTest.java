@@ -20,8 +20,28 @@ class DefaultLaunchArgumentResolverTest {
                 "--gameDir",
                 "${game_directory}",
                 "--unknown",
-                "${unknown_placeholder}"
+                "${unknown_placeholder}",
+                "--cp",
+                "${classpath}"
         );
+    }
+
+    @Test
+    void should_resolve_classpath_placeholder() {
+        //given
+        List<String> arguments = getArguments();
+
+        LaunchVariables launchVariables = new LaunchVariables(
+                "1.12.1",
+                Path.of("game-path"),
+                "net.minecraft.launchwrapper.Launch"
+        );
+
+        //when
+        List<String> result = underTest.resolve(arguments, launchVariables);
+
+        //then
+        assertEquals("net.minecraft.launchwrapper.Launch", result.get(7));
     }
 
     @Test
@@ -33,7 +53,8 @@ class DefaultLaunchArgumentResolverTest {
 
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
-                Path.of("game-path")
+                Path.of("game-path"),
+                "net.minecraft.launchwrapper.Launch"
         );
 
         //when & then
@@ -62,7 +83,8 @@ class DefaultLaunchArgumentResolverTest {
         //given
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
-                Path.of("game-path")
+                Path.of("game-path"),
+                "net.minecraft.launchwrapper.Launch"
         );
 
         //when & then
@@ -81,7 +103,8 @@ class DefaultLaunchArgumentResolverTest {
 
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
-                Path.of("game-path")
+                Path.of("game-path"),
+                "net.minecraft.launchwrapper.Launch"
         );
 
         //when
@@ -100,7 +123,8 @@ class DefaultLaunchArgumentResolverTest {
 
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
-                Path.of("game-path")
+                Path.of("game-path"),
+                "net.minecraft.launchwrapper.Launch"
         );
 
         //when
@@ -117,7 +141,8 @@ class DefaultLaunchArgumentResolverTest {
 
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
-                Path.of("game-path")
+                Path.of("game-path"),
+                "net.minecraft.launchwrapper.Launch"
         );
 
         //when

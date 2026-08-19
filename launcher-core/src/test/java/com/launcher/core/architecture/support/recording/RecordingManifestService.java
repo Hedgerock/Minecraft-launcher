@@ -13,7 +13,7 @@ public final class RecordingManifestService implements ManifestService {
     @Override
     public Manifest loadManifest() {
         return new Manifest(
-                "1.12.2",
+                "${minecraft_version}",
                 loaderInfo(),
                 files(),
                 launchInfo()
@@ -32,11 +32,15 @@ public final class RecordingManifestService implements ManifestService {
                 "TestMain",
                 List.of(
                         "first-jvm-argument",
-                        "second-jvm-argument"
+                        "second-jvm-argument",
+                        "-cp",
+                        "${classpath}"
                 ),
                 List.of(
                         "first-game-argument",
-                        "second-game-argument"
+                        "second-game-argument",
+                        "-gameDir",
+                        "${game_directory}"
                 ),
                 List.of(
                         "test-value.jar",

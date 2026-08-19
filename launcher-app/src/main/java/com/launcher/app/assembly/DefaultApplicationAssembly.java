@@ -13,11 +13,16 @@ import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.execution.SequentialExecutionStrategy;
 import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
 import com.launcher.core.game.GameLaunchPlanBuilder;
+import com.launcher.core.game.builder.GameLaunchCommandBuilder;
+import com.launcher.core.game.classpath.builder.DefaultGameClasspathBuilder;
+import com.launcher.core.game.classpath.formatter.ClasspathFormatter;
+import com.launcher.core.game.classpath.formatter.DefaultClasspathFormatter;
 import com.launcher.core.operation.DefaultOperationManager;
 import com.launcher.core.operation.OperationManager;
 import com.launcher.core.operation.factory.DefaultOperationFactory;
 import com.launcher.core.operation.factory.OperationFactory;
 import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
+import com.launcher.core.resolve.LaunchArgumentResolver;
 import com.launcher.core.state.LauncherStateMachine;
 
 public class DefaultApplicationAssembly implements ApplicationAssembly {
@@ -40,6 +45,11 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
         return new LauncherEngine(stateMachine, operationManager);
     }
 
+    private GameLaunchCommandBuilder getLaunchCommandBuilder() {
+        LaunchArgumentResolver resolver = new DefaultLaunchArgumentResolver();
+
+        return new DefaultGameLaunchCommandBuilder(resolver);
+    }
 
     private OperationManager createOperationManager(LauncherInfrastructure launcherInfrastructure) {
         LauncherServicesFactory servicesFactory = new DefaultLauncherServiceFactory(
@@ -49,13 +59,16 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
 
         LauncherServices services = servicesFactory.createServices();
         DownloadPlanBuilder builder = new DownloadPlanBuilder();
-        DefaultGameLaunchCommandBuilder launchCommandBuilder = new DefaultGameLaunchCommandBuilder(
-                new DefaultLaunchArgumentResolver()
-        );
+
+        DefaultGameClasspathBuilder classpathBuilder = new DefaultGameClasspathBuilder();
+        ClasspathFormatter classpathFormatter = new DefaultClasspathFormatter();
+        GameLaunchCommandBuilder launchCommandBuilder = getLaunchCommandBuilder();
 
         GameLaunchPlanBuilder launchPlanBuilder = new GameLaunchPlanBuilder(
                 services.directoryProvider(),
-                launchCommandBuilder
+                launchCommandBuilder,
+                classpathBuilder,
+                classpathFormatter
         );
 
         OperationFactory operationFactory = new DefaultOperationFactory(

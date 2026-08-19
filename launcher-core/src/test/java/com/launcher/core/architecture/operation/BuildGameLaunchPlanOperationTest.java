@@ -6,6 +6,8 @@ import com.launcher.core.event.EventBus;
 import com.launcher.core.execution.SequentialExecutionStrategy;
 import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
 import com.launcher.core.game.GameLaunchPlanBuilder;
+import com.launcher.core.game.classpath.builder.DefaultGameClasspathBuilder;
+import com.launcher.core.game.classpath.formatter.DefaultClasspathFormatter;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
 import com.launcher.core.operation.impl.BuildGameLaunchPlanOperation;
@@ -32,7 +34,9 @@ class BuildGameLaunchPlanOperationTest {
                         new RecordingDirectoryProvider(),
                         new DefaultGameLaunchCommandBuilder(
                                 new DefaultLaunchArgumentResolver()
-                        )
+                        ),
+                        new DefaultGameClasspathBuilder(),
+                        new DefaultClasspathFormatter()
                 )
         );
     }

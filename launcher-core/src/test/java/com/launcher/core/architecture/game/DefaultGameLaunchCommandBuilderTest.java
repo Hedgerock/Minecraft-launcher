@@ -14,18 +14,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DefaultGameLaunchCommandBuilderTest {
 
+    private LaunchInfo getLaunchInfo() {
+        return new RecordingManifestService().loadManifest().launchInfo();
+    }
+
     @Test
     void should_build_command_from_launch_info() {
         //given
-        LaunchInfo launchInfo = new RecordingManifestService().loadManifest().launchInfo();
-
         DefaultGameLaunchCommandBuilder commandBuilder = new DefaultGameLaunchCommandBuilder(
                 new DefaultLaunchArgumentResolver()
         );
+        LaunchInfo launchInfo = getLaunchInfo();
 
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
-                Path.of("test-directory")
+                Path.of("test-directory"),
+                "classpath.to.CurrentClass"
         );
 
         //when
@@ -37,9 +41,13 @@ class DefaultGameLaunchCommandBuilderTest {
                         "java",
                         "first-jvm-argument",
                         "second-jvm-argument",
+                        "-cp",
+                        "classpath.to.CurrentClass",
                         "TestMain",
                         "first-game-argument",
-                        "second-game-argument"
+                        "second-game-argument",
+                        "-gameDir",
+                        "test-directory"
                 ),
                 command
         );

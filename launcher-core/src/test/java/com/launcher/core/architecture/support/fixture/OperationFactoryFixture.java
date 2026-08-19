@@ -6,6 +6,7 @@ import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
 import com.launcher.core.game.GameLaunchPlanBuilder;
+import com.launcher.core.game.classpath.builder.DefaultGameClasspathBuilder;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.operation.factory.DefaultOperationFactory;
@@ -25,7 +26,9 @@ public class OperationFactoryFixture {
             new RecordingDirectoryProvider(),
             new DefaultGameLaunchCommandBuilder(
                     new DefaultLaunchArgumentResolver()
-            )
+            ),
+            new DefaultGameClasspathBuilder(),
+            new RecordingClasspathFormatter()
     );
 
     public OperationFactoryFixture() {

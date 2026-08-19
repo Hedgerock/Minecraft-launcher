@@ -19,8 +19,10 @@ public final class DefaultLaunchArgumentResolver implements LaunchArgumentResolv
 
     private String resolve(String argument, LaunchVariables variables) {
         return argument
-                .replace("${version_name}", variables.versionName())
-                .replace("${game_directory}", variables.gameDirectory().toString());
+            .replace("${version_name}", variables.versionName())
+            .replace("${game_directory}", variables.gameDirectory().toString())
+            .replace("${classpath}", variables.classpath());
+
     }
 
 }

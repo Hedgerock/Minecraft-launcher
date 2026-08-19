@@ -21,7 +21,8 @@ class ManifestTest {
         return new LaunchInfo(
                 "MainClass",
                 List.of("jvm", "arg1", "arg2"),
-                List.of("classpath", "arg1", "arg2")
+                List.of("--username", "Player", "--userRole"),
+                List.of("libraries/example.jar", "client.jar")
         );
     }
 

@@ -14,24 +14,40 @@ public final class RecordingManifestService implements ManifestService {
     public Manifest loadManifest() {
         return new Manifest(
                 "1.12.2",
-                new LoaderInfo(
-                        "test-type",
-                        "1.7.10"
+                loaderInfo(),
+                files(),
+                launchInfo()
+        );
+    }
+
+    private LoaderInfo loaderInfo() {
+        return new LoaderInfo(
+                "test-type",
+                "1.7.10"
+        );
+    }
+
+    private LaunchInfo launchInfo() {
+        return new LaunchInfo(
+                "TestMain",
+                List.of(
+                        "first-jvm-argument",
+                        "second-jvm-argument"
                 ),
                 List.of(
-                        new FileEntry("test-path", "test-sha256", 123L, "test-url")
+                        "first-game-argument",
+                        "second-game-argument"
                 ),
-                new LaunchInfo(
-                        "TestMain",
-                        List.of(
-                                "first-jvm-argument",
-                                "second-jvm-argument"
-                        ),
-                        List.of(
-                                "first-game-argument",
-                                "second-game-argument"
-                        )
+                List.of(
+                        "test-value.jar",
+                        "test-value2.jar"
                 )
+        );
+    }
+
+    private List<FileEntry> files() {
+        return List.of(
+                new FileEntry("test-path", "test-sha256", 123L, "test-url")
         );
     }
 }

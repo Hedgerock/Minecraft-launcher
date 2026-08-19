@@ -49,8 +49,9 @@ class VerifyFilesTaskTest {
                 List.of(),
                 new LaunchInfo(
                         "MainClass",
-                        List.of(),
-                        List.of()
+                        List.of("jvm", "arg1", "arg2"),
+                        List.of("--username", "Player", "--userRole"),
+                        List.of("test-value.jar")
                 )
         );
     }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -91,8 +92,24 @@ class JsonManifestMapperTest {
         assertNotNull(launchInfo);
 
         assertEquals("net.minecraft.client.main.Main", launchInfo.mainClass());
+
         assertEquals(1, launchInfo.jvmArgs().size());
+        assertEquals(
+                List.of("-Xmx2G"),
+                launchInfo.jvmArgs()
+        );
+
         assertEquals(2, launchInfo.gameArgs().size());
+        assertEquals(
+                List.of("--username", "Player"),
+                launchInfo.gameArgs()
+        );
+
+        assertEquals(2, launchInfo.classpath().size());
+        assertEquals(
+                List.of("libraries/example.jar", "client.jar"),
+                launchInfo.classpath()
+        );
     }
 
     private String loadResource(String name) {

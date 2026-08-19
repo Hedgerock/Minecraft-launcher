@@ -15,6 +15,7 @@
   "launchInfo": {
     "mainClass": "net.minecraft.client.main.Main",
     "jvmArgs": ["-Xmx2G"],
-    "gameArgs": ["--username", "Player"]
+    "gameArgs": ["--username", "Player"],
+    "classpath": ["libraries/example.jar", "client.jar"]
   }
 }

@@ -41,10 +41,11 @@ JSON manifest
       "url": "https://localhost/files/mods/example.jar"
     }
   ],
-  "launch-info": {
+  "launchInfo": {
     "mainClass": "net.minecraft.client.main.Main",
     "jvmArgs": ["-Xmx2G"],
-    "gameArgs": ["--username", "Player"]
+    "gameArgs": ["--username", "Player"],
+    "classpath": ["libraries/example.jar", "client.jar"]
   }
 }
 ```
@@ -59,7 +60,7 @@ JSON manifest
 
 `files` преобразуется в список `FileEntry`
 
-`launch-info` преобразуется в `LaunchInfo`
+`launchInfo` преобразуется в `LaunchInfo`
 
 `JsonManifestMapper` не выполняет запуск, загрузку файлов или проверку хеша
 
@@ -69,14 +70,14 @@ JSON manifest
 
 ## Подстановка аргументов запуска
 
-`launchinfo.jvmargs` и `launchinfo.gameArgs` могут содержать поддерживаемые подстановки
+`launchinfo.jvmArgs` и `launchinfo.gameArgs` могут содержать поддерживаемые подстановки
 
 На текущем этапе поддерживается
 
-| Подстановка         | Значение                                          |
-|---------------------|---------------------------------------------------|
-| `${version_name}`   | Версия Minecraft из `Manifest.minecraftVersion`   |
-| `${game_directory}` | Путь к игровой дироектории из `DirectoryProvider` |
+| Подстановка         | Значение                                         |
+|---------------------|--------------------------------------------------|
+| `${version_name}`   | Версия Minecraft из `Manifest.minecraftVersion`  |
+| `${game_directory}` | Путь к игровой директории из `DirectoryProvider` |
 
 Подстановки применяются во время построения команды запуска
 
@@ -109,7 +110,8 @@ LaunchInfo
 
 ## Не входит в контракт текущей версии
 
-- Описание libraries/classpath
+- Полная модель libraries
+- Построение `classpath` из libraries
 - Выбор Java runtime
 - Правило подстановки переменных
 - Аргументы авторизации

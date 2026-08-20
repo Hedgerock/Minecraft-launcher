@@ -86,7 +86,7 @@ Runtime-контекст текущего запуска лаунчера
 
 Минимальное описание library из `Manifest`
 
-На текущем этапе содержит только `path`
+На текущем этапе содержит только `path`, а также используется как основной источник classpath entries
 
 Не описывает metadata, rules, classifiers или natives
 
@@ -187,9 +187,9 @@ Runtime-контекст текущего запуска лаунчера
 
 ### GameClasspathBuilder
 
-Компонент, строящий `GameClasspath` из launch metadata и игровой директории
+Компонент, строящий `GameClasspath` из `Manifest.libraries`
 
-На текущем этапе использует `launchInfo.classpath`
+Если `libraries` пустой, использует `launchInfo.classpath` как fallback для минимальных сценариев
 
 ### ClasspathFormatter
 

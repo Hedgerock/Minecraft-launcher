@@ -1,10 +1,16 @@
 ## Unreleased
 
+### Added
+
 - Added launch argument placeholder resolution for game launch commands
 - Added classpath entries to launch info manifest metadata
 - Added classpath placeholder resolution for game launch commands 
 - Added configurable Java executable metadata for game launch commands
 - Added minimal manifest library entries metadata
+
+### Changed
+
+- Changed game classpath building to prefer manifest libraries with launchInfo classpath fallback
 
 ---
 

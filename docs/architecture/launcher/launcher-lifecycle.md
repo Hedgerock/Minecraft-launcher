@@ -70,8 +70,10 @@ L-5
 Во время построения `GameLaunchPlan` launcher создает `LaunchVariables` и применяет поддерживаемые
 подстановки в `jvmArgs` и `gameArgs`
 
-Также в процессе построения `GameLaunchPlan` строит `GameClasspath` из `launchInfo.classpath`, форматирует
+Также в процессе построения `GameLaunchPlan` строит `GameClasspath` из `Manifest.libraries`, форматирует
 его и передает как значение подстановки `${classpath}`
+
+Если список `libraries` пустой, используется fallback `launchInfo.classpath`
 
 Первый элемент команды запуска берется из `launchInfo.javaExecutable`,
 

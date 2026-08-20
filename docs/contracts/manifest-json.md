@@ -84,16 +84,18 @@ JSON manifest
 
 На текущем этапе поддерживается
 
-| Подстановка         | Значение                                                 |
-|---------------------|----------------------------------------------------------|
-| `${version_name}`   | Версия Minecraft из `Manifest.minecraftVersion`          |
-| `${game_directory}` | Путь к игровой директории из `DirectoryProvider`         |
-| `${classpath}`      | Отформатированный classpath, построенный из `launchInfo` |
+| Подстановка         | Значение                                                                                    |
+|---------------------|---------------------------------------------------------------------------------------------|
+| `${version_name}`   | Версия Minecraft из `Manifest.minecraftVersion`                                             |
+| `${game_directory}` | Путь к игровой директории из `DirectoryProvider`                                            |
+| `${classpath}`      | Отформатированный classpath, построенный из `libraries` или fallback `launchInfo.classpath` |
 
-`launchInfo.classpath` содержит минимальный список classpath entries текущей версии контракта манифеста
+`libraries` является основным источником classpath entries
 
-Во время построения `GameLaunchPlan` значения из `launchInfo.classpath` преобразуются в `GameClasspath`,
-разрешаются относительно игровой директории и формируются в строку с использованием системного разделителя путей
+Если `libraries` пустой, launcher использует `launchInfo.classpath` как fallback для минимальных сценариев
+
+Во время построения `GameLaunchPlan` выбранный источник classpath преобразуются в `GameClasspath`,
+разрешается относительно игровой директории и формируются в строку с использованием системного разделителя путей
 
 ```text
 launchInfo.classpath
@@ -102,6 +104,10 @@ launchInfo.classpath
             -> ClasspathFormatter
                 -> LaunchVariables.classpath
                     -> ${classpath}
+                    
+fallback:
+    launchInfo.classpath
+        -> GameClasspathBuilder
 ```
 
 Полная модель `libraries`, правила выбора natives и OS-specific зависимости пока не входят в контракт текущей версии
@@ -136,14 +142,13 @@ LaunchInfo
 
 `LaunchInfo` требует непустые значения `mainClass` и `javaExecutable` 
 
-`Manifest` требует непустой список `libraries`, пустой список допустим для минимальных сценариев
+`Manifest` требует наличие списка `libraries`, пустой список допустим для минимальных сценариев
 
 ---
 
 ## Не входит в контракт текущей версии
 
 - Полная модель libraries с metadata, rules, classifiers и natives
-- Построение `classpath` из libraries
 - Автоматический выбор Java runtime
 - Проверка существования Java executable на файловой системе
 - Правило подстановки переменных

@@ -47,7 +47,12 @@ JSON manifest
     "gameArgs": ["--username", "Player"],
     "classpath": ["libraries/example.jar", "client.jar"],
     "javaExecutable": "java"
-  }
+  },
+  "libraries": [
+    {
+      "path": "libraries/org/example/example.jar"
+    }
+  ]
 }
 ```
 
@@ -62,6 +67,8 @@ JSON manifest
 `files` преобразуется в список `FileEntry`
 
 `launchInfo` преобразуется в `LaunchInfo`
+
+`libraries` преобразуется в список `LibraryEntry`
 
 `launchInfo.javaExecutable` используется как первый элемент команды запуска игры
 
@@ -122,17 +129,20 @@ LaunchInfo
 - `LoaderInfo`
 - `FileEntry`
 - `LaunchInfo`
+- `LibraryEntry`
 
 Если JSON невозможно прочитать или преобразовать в корректный `Manifest`, mapper завершает работу ошибкой
 `ManifestMappingException`
 
 `LaunchInfo` требует непустые значения `mainClass` и `javaExecutable` 
 
+`Manifest` требует непустой список `libraries`, пустой список допустим для минимальных сценариев
+
 ---
 
 ## Не входит в контракт текущей версии
 
-- Полная модель libraries
+- Полная модель libraries с metadata, rules, classifiers и natives
 - Построение `classpath` из libraries
 - Автоматический выбор Java runtime
 - Проверка существования Java executable на файловой системе

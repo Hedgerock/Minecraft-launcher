@@ -62,11 +62,12 @@ Runtime-контекст текущего запуска лаунчера
 
 Описание сборки, полученное перед `verification flow`
 
-Содержит список файлов и `launch metadata`
+Содержит список файлов, список libraries и `launch metadata`
 
 `files` является обязательным неизменяемым списком
 
 Связанный внешний контракт описан в [Контракт manifest JSON](contracts/manifest-json.md)
+
 
 ### FileEntry
 
@@ -80,6 +81,14 @@ Runtime-контекст текущего запуска лаунчера
 - `url`
 
 Используется `verification flow` и `download flow`
+
+### LibraryEntry
+
+Минимальное описание library из `Manifest`
+
+На текущем этапе содержит только `path`
+
+Не описывает metadata, rules, classifiers или natives
 
 ---
 

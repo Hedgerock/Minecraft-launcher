@@ -18,6 +18,16 @@ public final class RecordingManifestService implements ManifestService {
         );
     }
 
+    public Manifest loadManifestWithEmptyLibraries() {
+        return new Manifest(
+                "${minecraft_version}",
+                loaderInfo(),
+                files(),
+                launchInfo(),
+                List.of()
+        );
+    }
+
     private List<LibraryEntry> libraries() {
         return List.of(
                 new LibraryEntry(

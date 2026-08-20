@@ -64,8 +64,8 @@ class GameLaunchPlanBuilderTest {
         );
 
         assertEquals(
-                manifest.launchInfo(),
-                recordingGameClasspathBuilder.getLaunchInfo()
+                manifest,
+                recordingGameClasspathBuilder.getManifest()
         );
 
         assertEquals(

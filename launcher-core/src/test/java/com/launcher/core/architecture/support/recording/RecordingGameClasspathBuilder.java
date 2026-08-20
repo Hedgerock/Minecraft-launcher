@@ -2,21 +2,21 @@ package com.launcher.core.architecture.support.recording;
 
 import com.launcher.core.game.classpath.GameClasspath;
 import com.launcher.core.game.classpath.builder.GameClasspathBuilder;
-import com.launcher.model.manifest.LaunchInfo;
+import com.launcher.model.manifest.Manifest;
 
 import java.nio.file.Path;
 import java.util.List;
 
 public final class RecordingGameClasspathBuilder implements GameClasspathBuilder {
 
-    private LaunchInfo launchInfo;
+    private Manifest manifest;
     private Path gameDirectory;
     private GameClasspath gameClasspath;
 
     @Override
-    public GameClasspath build(LaunchInfo launchInfo, Path gameDirectory) {
+    public GameClasspath build(Manifest manifest, Path gameDirectory) {
         this.gameDirectory = gameDirectory;
-        this.launchInfo = launchInfo;
+        this.manifest = manifest;
 
         this.gameClasspath = new GameClasspath(
                 List.of(Path.of("current-path"))
@@ -25,8 +25,8 @@ public final class RecordingGameClasspathBuilder implements GameClasspathBuilder
         return gameClasspath;
     }
 
-    public LaunchInfo getLaunchInfo() {
-        return launchInfo;
+    public Manifest getManifest() {
+        return manifest;
     }
 
     public Path getGameDirectory() {

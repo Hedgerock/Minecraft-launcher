@@ -1,8 +1,9 @@
 package com.launcher.core.architecture.game.classpath.builder;
 
+import com.launcher.core.architecture.support.recording.RecordingManifestService;
 import com.launcher.core.game.classpath.GameClasspath;
 import com.launcher.core.game.classpath.builder.DefaultGameClasspathBuilder;
-import com.launcher.model.manifest.LaunchInfo;
+import com.launcher.model.manifest.Manifest;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -13,18 +14,38 @@ import static org.junit.jupiter.api.Assertions.*;
 class DefaultGameClasspathBuilderTest {
     private final DefaultGameClasspathBuilder builder = new DefaultGameClasspathBuilder();
 
-    private LaunchInfo getLaunchInfo() {
-        return new LaunchInfo(
-                "MainClass",
-                List.of("-cp", "${classpath}"),
-                List.of("--username", "Player"),
-                List.of("libraries/example.jar", "client.jar"),
-                "java"
+    private Manifest getManifestWithEmptyLibraries() {
+        return new RecordingManifestService().loadManifestWithEmptyLibraries();
+    }
+
+    private Manifest getManifest() {
+        return new RecordingManifestService().loadManifest();
+    }
+
+    @Test
+    void should_build_game_classpath_from_launch_info_classpath_when_libraries_are_empty() {
+        //given
+        Manifest manifest = getManifestWithEmptyLibraries();
+
+        Path gameDirectory = Path.of("game-directory");
+
+        //when
+        GameClasspath classpath = builder.build(manifest, gameDirectory);
+
+        //then
+        assertTrue(manifest.libraries().isEmpty());
+
+        assertEquals(
+                List.of(
+                        gameDirectory.resolve("test-value.jar"),
+                        gameDirectory.resolve("test-value2.jar")
+                ),
+                classpath.entries()
         );
     }
 
     @Test
-    void should_reject_null_launch_info() {
+    void should_reject_null_manifest() {
         //given
         Path gameDirectory = Path.of("game-directory");
 
@@ -34,38 +55,37 @@ class DefaultGameClasspathBuilderTest {
                 () -> builder.build(null, gameDirectory)
         );
 
-        assertTrue(exception.getMessage().contains("launchInfo"));
+        assertTrue(exception.getMessage().contains("manifest"));
     }
 
     @Test
     void should_reject_null_game_directory() {
         //given
-        LaunchInfo launchInfo = getLaunchInfo();
+        Manifest manifest = getManifest();
 
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> builder.build(launchInfo, null)
+                () -> builder.build(manifest, null)
         );
 
         assertTrue(exception.getMessage().contains("gameDirectory"));
     }
 
     @Test
-    void should_build_game_classpath_from_launch_info_classpath_entry() {
+    void should_build_game_classpath_from_manifest_libraries_classpath_entry() {
         //given
-        LaunchInfo launchInfo = getLaunchInfo();
+        Manifest manifest = getManifest();
 
         Path gameDirectory = Path.of("game-directory");
 
         //when
-        GameClasspath classpath = builder.build(launchInfo, gameDirectory);
+        GameClasspath classpath = builder.build(manifest, gameDirectory);
 
         //then
         assertEquals(
                 List.of(
-                        gameDirectory.resolve("libraries/example.jar"),
-                        gameDirectory.resolve("client.jar")
+                        gameDirectory.resolve("libraries/org/example/example.jar")
                 ),
                 classpath.entries()
         );

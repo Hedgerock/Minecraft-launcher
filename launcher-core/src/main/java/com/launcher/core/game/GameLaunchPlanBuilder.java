@@ -32,7 +32,7 @@ public final class GameLaunchPlanBuilder {
         Path gameDirectory = directoryProvider.directories().game();
 
         GameClasspath gameClasspath = gameClasspathBuilder.build(
-                manifest.launchInfo(),
+                manifest,
                 gameDirectory
         );
 

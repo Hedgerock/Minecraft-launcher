@@ -40,7 +40,7 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
 
     private ManifestService createManifestService() {
         ManifestClient manifestClient = new HttpManifestClient(
-                infrastructure.httpClient(),
+                infrastructure.launcherHttpClient(),
                 configuration.manifestUri()
         );
 

@@ -1,23 +1,20 @@
 package com.launcher.api.manifest.client;
 
-import com.launcher.api.http.HttpClient;
+import com.launcher.api.http.LauncherHttpClient;
 
 import java.net.URI;
 
 public class HttpManifestClient implements ManifestClient {
-    private final HttpClient httpClient;
+    private final LauncherHttpClient launcherHttpClient;
     private final URI manifestUri;
 
-    public HttpManifestClient(HttpClient httpClient, URI manifestUri) {
-        this.httpClient = httpClient;
+    public HttpManifestClient(LauncherHttpClient launcherHttpClient, URI manifestUri) {
+        this.launcherHttpClient = launcherHttpClient;
         this.manifestUri = manifestUri;
     }
 
     @Override
     public String download() {
-
-        System.out.println("Downloading manifest....");
-
-        return httpClient.get(this.manifestUri);
+        return launcherHttpClient.get(this.manifestUri);
     }
 }

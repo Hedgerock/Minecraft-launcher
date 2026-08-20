@@ -60,7 +60,7 @@
 
 Запрещенные примеры
 
-- `JavaHttpClient`
+- `JavaLauncherHttpClient`
 - `HttpManifestClient`
 - `JsonManifestMapper`
 - `HttpManifestService`

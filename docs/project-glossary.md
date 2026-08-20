@@ -92,6 +92,28 @@ Runtime-контекст текущего запуска лаунчера
 
 ---
 
+## HTTP
+
+### LauncherHttpClient
+
+Контракт HTTP-клиента внутри `launcher-api`
+
+Используется адаптерами API для получения внешних данных
+
+### JavaLauncherHttpClient
+
+Реализация `LauncherHttpClient` на основе стандартного Java HTTP Client
+
+Выполняет HTTP GET и возвращает тело ответа
+
+### HttpManifestClient
+
+Адаптер загрузки Manifest JSON по `manifestUri`
+
+Не преобразует JSON в доменную модель самостоятельно
+
+---
+
 ## Операции
 
 ### LaunchOperation

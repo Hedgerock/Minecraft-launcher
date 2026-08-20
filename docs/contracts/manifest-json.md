@@ -15,6 +15,12 @@
 
 `launcher-core` не зависит от JSON-формата и работает только с доменной моделью `Manifest`
 
+Получение manifest JSON по HTTP принадлежит модулю `launcher-api`
+
+`JavaLauncherHttpClient` выполняет HTTP GET и возвращает тело ответа как строку
+
+`HttpManifestClient` использует `LauncherHttpClient` для загрузки JSON по `manifestUri`
+
 ```text
 JSON manifest
     -> JsonManifestMapper
@@ -76,6 +82,10 @@ JSON manifest
 
 Его ответственность ограничена преобразованием внешнего JSON-контракта в доменную модель
 
+`JavaLauncherHttpClient` отвечает только за получение JSON-строки
+
+`JsonManifestMapper` отвечает только за преобразование JSON-строки в `Manifest`
+
 ---
 
 ## Подстановка аргументов запуска
@@ -98,7 +108,7 @@ JSON manifest
 разрешается относительно игровой директории и формируются в строку с использованием системного разделителя путей
 
 ```text
-launchInfo.classpath
+Manifest.libraries
     -> GameClasspathBuilder
         -> GameClasspath
             -> ClasspathFormatter

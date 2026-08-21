@@ -1,6 +1,5 @@
-package com.launcher.api.manifest.http;
+package com.launcher.api.http;
 
-import com.launcher.api.http.JavaLauncherHttpClient;
 import com.launcher.api.http.exception.HttpRequestException;
 import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.AfterEach;

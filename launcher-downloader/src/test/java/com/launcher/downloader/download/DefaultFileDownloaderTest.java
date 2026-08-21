@@ -1,6 +1,7 @@
 package com.launcher.downloader.download;
 
 import com.launcher.downloader.exception.DownloadException;
+import com.launcher.downloader.exception.DownloadExceptionReason;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -55,6 +56,10 @@ class DefaultFileDownloaderTest {
         );
 
         assertFalse(Files.exists(target));
+
+        assertEquals(DownloadExceptionReason.DOWNLOAD_FAILED, exception.getReason());
+        assertEquals(FAKE_URL, exception.getUrl());
+        assertTrue(exception.getPath().isEmpty());
     }
 
     @Test

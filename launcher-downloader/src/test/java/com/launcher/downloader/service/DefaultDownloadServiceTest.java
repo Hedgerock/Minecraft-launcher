@@ -3,6 +3,7 @@ package com.launcher.downloader.service;
 import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.download.DownloadService;
 import com.launcher.downloader.exception.DownloadException;
+import com.launcher.downloader.exception.DownloadExceptionReason;
 import com.launcher.downloader.support.FixedDirectoryProvider;
 import com.launcher.downloader.support.RecordingFileDownloader;
 import com.launcher.downloader.support.WritingFileDownloader;
@@ -86,8 +87,10 @@ class DefaultDownloadServiceTest {
         assertFalse(Files.exists(target));
 
         assertEquals("http://file.jar", exception.getUrl());
+        assertEquals(DownloadExceptionReason.SIZE_READ_FAILED, exception.getReason());
         assertTrue(exception.getMessage().contains("Failed to get file size"));
         assertTrue(exception.getMessage().contains("mods/file.jar"));
+        assertEquals("mods/file.jar", exception.getPath().orElseThrow());
         assertInstanceOf(IOException.class, exception.getCause());
     }
 
@@ -117,9 +120,12 @@ class DefaultDownloadServiceTest {
 
         assertTrue(Files.exists(target));
         assertEquals(10L, Files.size(target));
-        assertEquals("http://file.jar", exception.getUrl());
         assertTrue(exception.getMessage().contains("Downloaded file size mismatch"));
         assertTrue(exception.getMessage().contains("mods/file.jar"));
+
+        assertEquals(DownloadExceptionReason.SIZE_MISMATCH, exception.getReason());
+        assertEquals("http://file.jar", exception.getUrl());
+        assertEquals("mods/file.jar", exception.getPath().orElseThrow());
 
     }
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -15,6 +16,39 @@ import static org.junit.jupiter.api.Assertions.*;
 class DefaultFileDownloaderTest {
     private static final String TEST_FILE_CONTENT = "Hello test!";
     private static final String FAKE_URL = "not-a-url";
+
+    @Test
+    void should_delete_temporary_file_when_stream_fails_during_download(@TempDir Path tempDir) throws Exception {
+        //given
+        FileDownloader downloader = new DefaultFileDownloader(url -> new InputStream() {
+            private int reads;
+
+            @Override
+            public int read() throws IOException {
+                if (reads++ < 3) {
+                    return 'a';
+                }
+
+                throw new IOException("Failed to read");
+            }
+        });
+
+        Path target = tempDir.resolve("mods/test.jar");
+
+        //when
+        DownloadException exception = assertThrows(
+                DownloadException.class,
+                () -> downloader.download("test-url", target)
+        );
+
+        //then
+        assertEquals(DownloadExceptionReason.DOWNLOAD_FAILED, exception.getReason());
+        assertFalse(Files.exists(target));
+
+        try (Stream<Path> files = Files.list(target.getParent())) {
+            assertTrue(files.findAny().isEmpty());
+        }
+    }
 
     @Test
     void should_not_leave_partial_file_when_download_fails(@TempDir Path tempDir) throws IOException {

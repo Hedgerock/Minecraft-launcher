@@ -11,6 +11,15 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public class DefaultFileDownloader implements FileDownloader {
+    private final DownloadSource downloadSource;
+
+    public DefaultFileDownloader() {
+        this(url -> URI.create(url).toURL().openStream());
+    }
+
+    DefaultFileDownloader(DownloadSource downloadSource) {
+        this.downloadSource = downloadSource;
+    }
 
     @Override
     @SuppressWarnings("DataFlowIssue")
@@ -45,7 +54,7 @@ public class DefaultFileDownloader implements FileDownloader {
     }
 
     private void copyTempFile(String url, Path temporaryFile) throws IOException {
-        try(InputStream inputStream = URI.create(url).toURL().openStream()) {
+        try(InputStream inputStream = downloadSource.open(url)) {
             Files.copy(
                     inputStream,
                     temporaryFile,

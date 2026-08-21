@@ -15,6 +15,7 @@
 - Accepted the download planning architecture decision
 - Clarified downloader error handling documentation
 - Documented the current download progress event limitation
+- Documented the planned library metadata strategy
 
 ---
 

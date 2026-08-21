@@ -90,6 +90,9 @@ Runtime-контекст текущего запуска лаунчера
 
 Не описывает metadata, rules, classifiers или natives
 
+Может быть расширен physical metadata для восстановления library-файла, но остается отдельной моделью от
+`FileEntry`
+
 ---
 
 ## HTTP

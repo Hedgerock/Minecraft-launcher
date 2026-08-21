@@ -100,11 +100,19 @@ JSON manifest
 | `${game_directory}` | Путь к игровой директории из `DirectoryProvider`                                            |
 | `${classpath}`      | Отформатированный classpath, построенный из `libraries` или fallback `launchInfo.classpath` |
 
-`libraries` является основным источником classpath entries
+`libraries` является основным источником classpath entries и описывает библиотеки для построения classpath
+
+На текущем этапе `LibraryEntry` содержит только `path`
+
+Расширение `LibraryEntry` полями `sha256`, `size` и `url` должно выполняться отдельной итерацией
+
+Даже после добавления physical metadata `LibraryEntry` остается library-specific metadata и не заменяет `FileEntry`
+
+Включение `libraries` в verification/download flow является отдельным архитектурным решением
 
 Если `libraries` пустой, launcher использует `launchInfo.classpath` как fallback для минимальных сценариев
 
-Во время построения `GameLaunchPlan` выбранный источник classpath преобразуются в `GameClasspath`,
+Во время построения `GameLaunchPlan` выбранный источник classpath преобразуется в `GameClasspath`,
 разрешается относительно игровой директории и формируются в строку с использованием системного разделителя путей
 
 ```text

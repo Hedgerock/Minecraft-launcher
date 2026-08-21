@@ -22,8 +22,12 @@ class LauncherCoreBoundaryTest {
 
     private static final List<String> FORBIDDEN_IMPORTS = List.of(
             "import com.launcher.api.",
+            "import com.launcher.downloader.",
+            "import com.launcher.verification.",
+            "import com.launcher.game.",
             "import com.launcher.storage.file.LocalFileStorage;",
-            "import com.launcher.storage.file.LocalFileMetadataReader;"
+            "import com.launcher.storage.file.LocalFileMetadataReader;",
+            "import com.launcher.storage.hash.Sha256HashService;"
     );
 
     @Test

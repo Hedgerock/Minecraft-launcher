@@ -83,7 +83,10 @@ class HttpManifestLoadingIntegrationTest {
                     },
                     "libraries": [
                         {
-                            "path": "libraries/org/example/example.jar"
+                            "path": "libraries/org/example/example.jar",
+                            "sha256": "library-sha256",
+                            "size": 123,
+                            "url": "https://example.com/libraries/org/example/example.jar"
                         }
                     ]
                 }

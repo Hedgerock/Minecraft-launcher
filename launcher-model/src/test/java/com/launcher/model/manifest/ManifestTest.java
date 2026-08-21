@@ -9,12 +9,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ManifestTest {
 
+    private LibraryEntry getLibraryEntry(String path) {
+        return new LibraryEntry(
+                path,
+                "sha256-" + path,
+                123L,
+                "https://test-url.com/"+path
+        );
+    }
+
     @Test
     void should_create_immutable_libraries() {
         //given
         List<LibraryEntry> libraries = new ArrayList<>();
 
-        libraries.add(new LibraryEntry("libraries/example.jar"));
+        libraries.add(getLibraryEntry("libraries/example.jar"));
 
         Manifest manifest = new Manifest(
                 "1.12.2",
@@ -27,7 +36,7 @@ class ManifestTest {
         //when & then
         assertThrows(
                 UnsupportedOperationException.class,
-                () -> manifest.libraries().add(new LibraryEntry("libraries/example2.jar"))
+                () -> manifest.libraries().add(getLibraryEntry("libraries/example2.jar"))
         );
     }
 
@@ -36,7 +45,7 @@ class ManifestTest {
         //given
         List<LibraryEntry> libraries = new ArrayList<>();
 
-        libraries.add(new LibraryEntry("libraries/example.jar"));
+        libraries.add(getLibraryEntry("libraries/example.jar"));
 
         Manifest manifest = new Manifest(
                 "1.12.2",
@@ -47,7 +56,7 @@ class ManifestTest {
         );
 
         //when
-        libraries.add(new LibraryEntry("libraries/example2.jar"));
+        libraries.add(getLibraryEntry("libraries/example2.jar"));
 
         //then
         assertEquals(1, manifest.libraries().size());
@@ -158,7 +167,7 @@ class ManifestTest {
 
     private List<LibraryEntry> getLibraries() {
         return List.of(
-                new LibraryEntry("libraries/example.jar")
+                getLibraryEntry("libraries/example.jar")
         );
     }
 

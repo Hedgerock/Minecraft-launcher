@@ -3,6 +3,7 @@ package com.launcher.api.manifest.mapper;
 import com.launcher.api.manifest.exception.ManifestMappingException;
 import com.launcher.model.manifest.FileEntry;
 import com.launcher.model.manifest.LaunchInfo;
+import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.Manifest;
 import org.junit.jupiter.api.Test;
 
@@ -114,9 +115,24 @@ class JsonManifestMapperTest {
         assertEquals("java", launchInfo.javaExecutable());
 
         assertEquals(1, manifest.libraries().size());
+
+        LibraryEntry libraryEntry = manifest.libraries().getFirst();
+
         assertEquals(
                 "libraries/org/example/example.jar",
-                manifest.libraries().getFirst().path()
+                libraryEntry.path()
+        );
+        assertEquals(
+                "https://localhost/files/libraries/org/example/example.jar",
+                libraryEntry.url()
+        );
+        assertEquals(
+                "library-sha256",
+                libraryEntry.sha256()
+        );
+        assertEquals(
+                123456789L,
+                libraryEntry.size()
         );
     }
 

@@ -31,7 +31,10 @@ public final class RecordingManifestService implements ManifestService {
     private List<LibraryEntry> libraries() {
         return List.of(
                 new LibraryEntry(
-                        "libraries/org/example/example.jar"
+                        "libraries/org/example/example.jar",
+                        "sha256",
+                        123L,
+                        "https://example.com/example.jar"
                 )
         );
     }

@@ -13,6 +13,7 @@
 
 - Changed game classpath building to prefer manifest libraries with launchInfo classpath fallback
 - Accepted the download planning architecture decision
+- Clarified downloader error handling documentation
 
 ---
 

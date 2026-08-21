@@ -113,6 +113,34 @@ LauncherEngine
 
 ---
 
+## Модель ошибок загрузки
+
+Ошибки загрузки считаются техническими ошибками download-слоя
+
+`DefaultFileDownloader` преобразует ошибки получения данных, записи временного файла и 
+переноса файла в `DownloadException`
+
+`DefaultDownloadService` преобразует ошибки размера загруженного файла в `DownloadException`
+
+`DownloadFilesTask` не анализирует тип ошибки download-слоя. Он преобразует исключения в `Result.failure(...)`
+
+При ошибке загрузки:
+
+- `DownloadStartedEvent` может быть уже опубликован, если `DownloadPlan` был непустым
+- `DownloadProgressChangedEvent` не публикуется
+- `DownloadCompletedEvent` не публикуется
+- `LauncherEngine` переводит launcher в `FAILED`
+
+`DownloadException` должен сохранять исходную причину ошибки, если она доступна
+
+На текущем этапе ошибка загрузки содержит URL проблемного ресурса
+
+Более подробный структурированный контекст ошибки, например `path`, `targetPath` или тип download-ошибки, может быть
+добавлен отдельной итерацией
+
+---
+
+
 ## Компоненты
 
 - `OperationManager`
@@ -144,7 +172,7 @@ D-3
 
 D-4
 
-`FileDownloader` отвечает только за загрузку одного фалйа в указанный targetPath
+`FileDownloader` отвечает только за загрузку одного файла в указанный targetPath
 
 D-5
 

@@ -10,6 +10,15 @@
 
 ---
 
+## Текущий статус
+
+На текущем этапе verification flow работает с файлами из `Manifest.files`
+
+Участие `Manifest.libraries` в verification flow должно добавляться через общий resource-level 
+contract отдельной итерацией
+
+---
+
 ## Предусловия
 
 - `Manifest` успешно загружен

@@ -112,6 +112,16 @@ JSON manifest
 
 Если `libraries` пустой, launcher использует `launchInfo.classpath` как fallback для минимальных сценариев
 
+После добавления physical metadata `libraries` могут быть использованы как источник восстанавливаемых ресурсов
+
+Однако `LibraryEntry` не должен напрямую заменять `FileEntry`
+
+Для verification/download flow должен использоваться общий resource-level contract, который выражает только `path`,
+`sha256`, `size` и `url`
+
+`GameClasspathBuilder` продолжает использовать `LibraryEntry`, потому что построение classpath зависит от семантики
+`libraries`
+
 Во время построения `GameLaunchPlan` выбранный источник classpath преобразуется в `GameClasspath`,
 разрешается относительно игровой директории и формируются в строку с использованием системного разделителя путей
 

@@ -29,6 +29,11 @@
 
 После успешной повторной проверки `LauncherEngine` продолжает двигаться дальше по жизненному циклу [`launcher-lifecycle`](../architecture/launcher/launcher-lifecycle.md)
 
+На текущем этапе `DownloadPlan` строится из результатов проверки файлов
+
+Участие libraries в download flow должно появиться после введения общего resource-level contract
+для проверяемых и загружаемых ресурсов
+
 ---
 
 ## Предусловия

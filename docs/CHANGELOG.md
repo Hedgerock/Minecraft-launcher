@@ -16,6 +16,7 @@
 - Clarified downloader error handling documentation
 - Documented the current download progress event limitation
 - Documented the planned library metadata strategy
+- Documented the planned library verification strategy
 
 ---
 

@@ -17,6 +17,7 @@
 - Documented the current download progress event limitation
 - Documented the planned library metadata strategy
 - Documented the planned library verification strategy
+- Documented manifest resource projection
 
 ---
 

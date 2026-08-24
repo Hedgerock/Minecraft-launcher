@@ -34,6 +34,10 @@
 Участие libraries в download flow должно появиться после введения общего resource-level contract
 для проверяемых и загружаемых ресурсов
 
+`ManifestResources` может стать источником ресурсов для будущего построения verification/download flow
+
+На текущем этапе `DownloadPlan` продолжает строиться из результатов текущего verificataion flow
+
 ---
 
 ## Предусловия

@@ -17,6 +17,12 @@
 Участие `Manifest.libraries` в verification flow должно добавляться через общий resource-level 
 contract отдельной итерацией
 
+`ManifestResources` уже предоставляет resource-level projection для `Manifest.files` и `Manifest.libraries`
+
+На текущем этапе verification flow продолжает использовать текущий контракт проверки файлов
+
+Подключение `ManifestResources` к verification flow должно выполняться отдельной итерацией
+
 ---
 
 ## Предусловия

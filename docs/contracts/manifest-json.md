@@ -74,6 +74,14 @@ JSON manifest
 
 `launchInfo` преобразуется в `LaunchInfo`
 
+`ResourceEntry` является общей защитой уровня ресурсов для физической метадаты `path`, `sha256`, `size` и `url`
+
+`ManifestResources` строит список `ResourceEntry` из `Manifest.files` и `Manifest.libraries`
+
+`FileEntry` и `LibraryEntry` остаются manifest-specific моделями и не заменяются напрямую `ResourceEntry`
+
+На текущем этапе наличие `ManifestResorces` не означает, что verification/download flow уже использует `libraries`
+
 `libraries` преобразуется в список `LibraryEntry`
 
 `launchInfo.javaExecutable` используется как первый элемент команды запуска игры

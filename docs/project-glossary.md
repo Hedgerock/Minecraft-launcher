@@ -93,6 +93,22 @@ Runtime-контекст текущего запуска лаунчера
 Может быть расширен physical metadata для восстановления library-файла, но остается отдельной моделью от
 `FileEntry`
 
+### ResourceEntry
+
+Общая resource-level модель physical metadata ресурса из `Manifest`
+
+Содержит `path`, `sha256`, `size` и `url`
+
+Не содержит статуса проверки, плана загрузки или lifecycle-решений
+
+### ManifestResources
+
+Компонент доменной модели, который строит список `ResourceEntry` из `Manifest.files` и
+`Manifest.libraries`
+
+Сохраняет семантику исходных моделей: `FileEntry` и `LibraryEntry` продолжают использоваться в своих
+runtime-сценариях
+
 ---
 
 ## HTTP

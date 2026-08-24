@@ -2,13 +2,12 @@
 
 ## Текущий план
 
-- Определить стратегию участия `libraries` в verification/download flow
-- Ввести общий resource-level contract для verification/download flow
-- Подключить `Manifest.libraries` к verification flow через resource-level contract
-- Подключить `Manifest.libraries` к download planning через результаты verification
+- Подключить `ManifestResources` к verification flow отдельной итерацией
+- Подключить projection `ManifestResources` для `Manifest.files` и `Manifest.libraries`
 
 ---
 
 ## Выполнено
 
-Пока нет завершенных задач
+- Добавлена модель `ResourceEntry`
+- Добавлена projection `ManifestResources` для `Manifest.files` и `Manifest.libraries`

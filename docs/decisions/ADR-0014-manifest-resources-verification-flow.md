@@ -4,6 +4,9 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации 
+> `feat(verification): verify manifest resources`
+
 ---
 
 ## Контекст
@@ -22,7 +25,7 @@ Accepted
 
 Было принято решение ввести модель `ResourceEntry`
 
-Также была введена projection-модель `ManifestResources`, которая строит список `ResoourceEntry` из
+Также была введена projection-модель `ManifestResources`, которая строит список `ResourceEntry` из
 `Manifest.files` и `Manifest.libraries`
 
 На текущем этапе `DefaultVerificationService` все еще использует только `Manifest.files` и преобразует

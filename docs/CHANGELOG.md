@@ -8,6 +8,7 @@
 - Added configurable Java executable metadata for game launch commands
 - Added minimal manifest library entries metadata
 - Added real HTTP GET support for manifest loading
+- Added structured download failure context
 
 ### Changed
 

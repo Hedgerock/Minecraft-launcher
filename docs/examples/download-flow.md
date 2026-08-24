@@ -29,14 +29,12 @@
 
 После успешной повторной проверки `LauncherEngine` продолжает двигаться дальше по жизненному циклу [`launcher-lifecycle`](../architecture/launcher/launcher-lifecycle.md)
 
-На текущем этапе `DownloadPlan` строится из результатов проверки файлов
+На текущем этапе `DownloadPlan` строится из результатов проверки ресурсов
 
-Участие libraries в download flow должно появиться после введения общего resource-level contract
-для проверяемых и загружаемых ресурсов
+`VerificationPlan` формируется на основе `ManifestResources.from(...)`, поэтому `DownloadPlanBuilder` может включать в
+`DownloadPlan` невалидные ресурсы из `Manifest.files` и `Manifest.libraries`
 
-`ManifestResources` может стать источником ресурсов для будущего построения verification/download flow
-
-На текущем этапе `DownloadPlan` продолжает строиться из результатов текущего verification flow
+`DownloadPlan` содержит только ресурсы, требующие восстановления
 
 ---
 
@@ -44,7 +42,7 @@
 
 - `VERIFY_FILES` завершена успешно
 - В `LaunchContext` сохранен `VerificationPlan`
-- `VerificationPlan` содержит файлы, требующие восстановления
+- `VerificationPlan` содержит ресурсы, требующие восстановления
 - `BUILD_DOWNLOAD_PLAN` успешно построен
 - `DownloadPlan` сохранен в `LaunchContext`
 
@@ -75,13 +73,13 @@ LauncherEngine
 
 ### 1. Анализ `VerificationPlan`
 
-`DownloadPlanBuilder` получает `VerificationPlan` и выбирает файлы со статусами 
+`DownloadPlanBuilder` получает `VerificationPlan` и выбирает ресурсы со статусами
 
 - `MISSING`
 - `OUTDATED`
 - `CORRUPTED`
 
-Файлы со статусом `VALID` не попадают в `DownloadPlan`
+Ресурсы со статусом `VALID` не попадают в `DownloadPlan`
 
 ### 2. Построение `DownloadPlan`
 
@@ -169,7 +167,7 @@ LauncherEngine
 
 D-1
 
-`DownloadPlan` содержит только файлы, требующие восстановления
+`DownloadPlan` содержит только ресурсы, требующие восстановления
 
 D-2
 

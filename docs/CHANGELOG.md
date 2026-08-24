@@ -20,6 +20,7 @@
 - Documented manifest resource projection
 - Changed verification and download plan contracts to use resource entries
 - Documented the decision to use manifest resources as the verification flow source
+- Verification flow now uses manifest resources as its source
 
 ---
 

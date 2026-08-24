@@ -12,21 +12,12 @@
 
 ## Текущий статус
 
-На текущем этапе verification flow работает с файлами из `Manifest.files`
+На текущем этапе verification flow использует `ManifestResources.from(...)` как источник проверяемых
+ресурсов
 
-Архитектурно принято решение перевести verification flow на `ManifestResorces.from(...)`, чтобы
-единым источником проверяемых ресурсов стали `Manifest.files` и `Manifest.libraries`
+`ManifestResources` представляет resource-level projection для `Manifest.files` и `Manifest.libraries`
 
-Кодовое подключение `ManifestResources` к `DefaultVerificationService` выполняется отедльной итерацией
-
-Участие `Manifest.libraries` в verification flow должно добавляться через общий resource-level 
-contract отдельной итерацией
-
-`ManifestResources` уже предоставляет resource-level projection для `Manifest.files` и `Manifest.libraries`
-
-На текущем этапе verification flow продолжает использовать текущий контракт проверки файлов
-
-Подключение `ManifestResources` к verification flow должно выполняться отдельной итерацией
+Проверяемой единицей verification flow является `ResourceEntry`
 
 ---
 
@@ -82,7 +73,7 @@ LauncherEngine
 
 ### 3. Формирование `VerificationPlan`
 
-`VerificationService` формирует `VerificationPlan`, содержащий результаты проверки файлов
+`VerificationService` формирует `VerificationPlan`, содержащий результаты проверки ресурсов
 
 `VerificationPlan` является неизменяемой моделью результата проверки
 

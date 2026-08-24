@@ -1,5 +1,6 @@
 package com.launcher.downloader.exception;
 
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -8,40 +9,101 @@ public class DownloadException extends RuntimeException {
     private final String url;
     private final DownloadExceptionReason reason;
     private final String path;
+    private final Path targetPath;
 
-    DownloadException(DownloadExceptionReason reason, String message, String url, String path, Throwable cause) {
+    DownloadException(
+            DownloadExceptionReason reason,
+            String message,
+            String url,
+            String path,
+            Throwable cause,
+            Path targetPath
+    ) {
         super(message, cause);
         this.reason = Objects.requireNonNull(reason, "reason");
         this.url = Objects.requireNonNull(url, "url");
         this.path = path;
+        this.targetPath = targetPath;
     }
 
-    public DownloadException(String url, Throwable cause) {
-        this(
-                DownloadExceptionReason.DOWNLOAD_FAILED,
-                "Failed to download file: " + url,
-                url,
-                null,
-                cause
-        );
-    }
-
-    public static DownloadException sizeMismatch(String url, String path) {
+    public static DownloadException sizeMismatch(
+            String url,
+            String path,
+            Path targetPath
+    ) {
         return new DownloadException(
                 DownloadExceptionReason.SIZE_MISMATCH,
-                "Downloaded file size mismatch: " + path,
+                "Downloaded resource size mismatch: " + path,
                 url,
                 path,
-                null
+                null,
+                targetPath
         );
     }
 
-    public static DownloadException fileSizeReadFailed(String url, String path, Throwable cause) {
+    public DownloadException withPath(String path) {
         return new DownloadException(
-                DownloadExceptionReason.SIZE_READ_FAILED,
-                "Failed to get file size: " + path,
+                reason,
+                getMessage(),
                 url,
                 path,
+                getCause(),
+                targetPath
+        );
+    }
+
+    public static DownloadException sizeReadFailed(
+            String url,
+            String path,
+            Path targetPath,
+            Throwable cause
+    ) {
+        return new DownloadException(
+                DownloadExceptionReason.SIZE_READ_FAILED,
+                "Failed to get resource size: " + path,
+                url,
+                path,
+                cause,
+                targetPath
+        );
+    }
+
+    public static DownloadException downloadFailed(
+            String url,
+            String path,
+            Path targetPath,
+            Throwable cause
+    ) {
+        String pathMessage =
+                path != null
+                        ? " (" + path + ")"
+                        : "";
+
+        String message =
+                "Failed to download resource" +
+                        pathMessage +
+                        " from " +
+                        url;
+
+        return new DownloadException(
+                DownloadExceptionReason.DOWNLOAD_FAILED,
+                message,
+                url,
+                path,
+                cause,
+                targetPath
+        );
+    }
+
+    public static DownloadException downloadFailed(
+            String url,
+            Path targetPath,
+            Throwable cause
+    ) {
+        return downloadFailed(
+                url,
+                null,
+                targetPath,
                 cause
         );
     }
@@ -57,5 +119,9 @@ public class DownloadException extends RuntimeException {
 
     public Optional<String> getPath() {
         return Optional.ofNullable(path);
+    }
+
+    public Optional<Path> getTargetPath() {
+        return Optional.ofNullable(targetPath);
     }
 }

@@ -49,7 +49,7 @@ public class DefaultFileDownloader implements FileDownloader {
                 deleteTemporaryFileQuietly(temporaryFile);
             }
 
-            throw new DownloadException(url, e);
+            throw DownloadException.downloadFailed(url, targetPath, e);
         }
     }
 

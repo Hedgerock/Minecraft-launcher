@@ -1,6 +1,7 @@
 package com.launcher.downloader.support;
 
 import com.launcher.downloader.download.FileDownloader;
+import com.launcher.downloader.exception.DownloadException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,7 +39,11 @@ public final class RecordingFileDownloader implements FileDownloader {
     @Override
     public void download(String url, Path targetPath) {
         if (withException) {
-            throw new RuntimeException("Download failed");
+            throw DownloadException.downloadFailed(
+                    url,
+                    targetPath,
+                    new IOException("Download failed")
+            );
         }
 
         requests.add(new DownloadRequest(url, targetPath));

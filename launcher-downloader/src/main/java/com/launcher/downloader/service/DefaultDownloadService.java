@@ -24,24 +24,30 @@ public class DefaultDownloadService implements DownloadService {
     public void download(DownloadPlan plan) {
         Path gameDirectory = directoryProvider.directories().game();
 
-        for (ResourceEntry file : plan.resources()) {
-            Path targetPath = gameDirectory.resolve(file.path());
-            fileDownloader.download(file.url(), targetPath);
+        for (ResourceEntry resource : plan.resources()) {
+            Path targetPath = gameDirectory.resolve(resource.path());
 
-            validateFileSize(file, targetPath);
+            try {
+                fileDownloader.download(resource.url(), targetPath);
+            } catch (DownloadException exception) {
+                throw exception.withPath(resource.path());
+            }
+
+            validateResourceSize(resource, targetPath);
         }
     }
 
-    private void validateFileSize(ResourceEntry resource, Path targetPath) {
+    private void validateResourceSize(ResourceEntry resource, Path targetPath) {
 
         try {
             long actualSize = Files.size(targetPath);
 
             if (actualSize != resource.size()) {
-                throw DownloadException.sizeMismatch(resource.url(), resource.path());
+                throw DownloadException
+                        .sizeMismatch(resource.url(), resource.path(), targetPath);
             }
         } catch (IOException e) {
-            throw DownloadException.fileSizeReadFailed(resource.url(), resource.path(), e);
+            throw DownloadException.sizeReadFailed(resource.url(), resource.path(), targetPath, e);
         }
 
     }

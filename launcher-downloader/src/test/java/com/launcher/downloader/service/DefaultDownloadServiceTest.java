@@ -31,6 +31,34 @@ class DefaultDownloadServiceTest {
     }
 
     @Test
+    void should_include_resource_path_and_target_path_when_file_downloader_failed() {
+        //given
+        Path gameDirectory = Path.of("/game");
+        RecordingFileDownloader downloader = new RecordingFileDownloader(true);
+        DownloadService service = new DefaultDownloadService(
+                new FixedDirectoryProvider(gameDirectory),
+                downloader
+        );
+
+        ResourceEntry resourceEntry = getResourceEntry("mods/current-mode.jar", 100L, "http://file-entry.jar");
+
+        DownloadPlan plan = new DownloadPlan(List.of(resourceEntry));
+
+        //when
+        DownloadException exception = assertThrows(
+                DownloadException.class,
+                () -> service.download(plan)
+        );
+
+        //then
+        assertEquals(DownloadExceptionReason.DOWNLOAD_FAILED, exception.getReason());
+        assertEquals(resourceEntry.url(), exception.getUrl());
+        assertEquals(resourceEntry.path(), exception.getPath().orElseThrow());
+        assertEquals(gameDirectory.resolve("mods/current-mode.jar"), exception.getTargetPath().orElseThrow());
+        assertInstanceOf(IOException.class, exception.getCause());
+    }
+
+    @Test
     void should_continue_when_downloaded_file_size_matches_manifest_entry(@TempDir Path tempDir) throws IOException {
         //given
         String content = "Hello test";
@@ -59,11 +87,11 @@ class DefaultDownloadServiceTest {
     }
 
     @Test
-    void should_fail_when_downloaded_file_size_can_not_written(@TempDir Path tempDir) {
+    void should_fail_when_downloaded_resource_size_can_not_written(@TempDir Path tempDir) {
         //given
-        ResourceEntry fileEntry = getResourceEntry("mods/file.jar", 12L, "http://file.jar");
+        ResourceEntry resourceEntry = getResourceEntry("mods/file.jar", 12L, "http://file.jar");
 
-        DownloadPlan plan = new DownloadPlan(List.of(fileEntry));
+        DownloadPlan plan = new DownloadPlan(List.of(resourceEntry));
         Path gameDirectory = tempDir.resolve("game");
         RecordingFileDownloader downloader = new RecordingFileDownloader();
 
@@ -75,7 +103,6 @@ class DefaultDownloadServiceTest {
         );
 
         //when
-
         DownloadException exception = assertThrows(
                 DownloadException.class,
                 () -> service.download(plan)
@@ -88,19 +115,20 @@ class DefaultDownloadServiceTest {
 
         assertEquals("http://file.jar", exception.getUrl());
         assertEquals(DownloadExceptionReason.SIZE_READ_FAILED, exception.getReason());
-        assertTrue(exception.getMessage().contains("Failed to get file size"));
+        assertTrue(exception.getMessage().contains("Failed to get resource size: mods/file.jar"));
         assertTrue(exception.getMessage().contains("mods/file.jar"));
+        assertEquals(target, exception.getTargetPath().orElseThrow());
         assertEquals("mods/file.jar", exception.getPath().orElseThrow());
         assertInstanceOf(IOException.class, exception.getCause());
     }
 
     @Test
-    void should_fail_when_downloaded_file_size_does_not_match_manifest_entry(@TempDir Path tempDir)
+    void should_fail_when_downloaded_resource_size_does_not_match_manifest_entry(@TempDir Path tempDir)
             throws IOException {
         //given
-        ResourceEntry fileEntry = getResourceEntry("mods/file.jar", 12L, "http://file.jar");
+        ResourceEntry resourceEntry = getResourceEntry("mods/file.jar", 12L, "http://file.jar");
 
-        DownloadPlan plan = new DownloadPlan(List.of(fileEntry));
+        DownloadPlan plan = new DownloadPlan(List.of(resourceEntry));
         Path gameDirectory = tempDir.resolve("game");
 
         DownloadService service = new DefaultDownloadService(
@@ -120,12 +148,11 @@ class DefaultDownloadServiceTest {
 
         assertTrue(Files.exists(target));
         assertEquals(10L, Files.size(target));
-        assertTrue(exception.getMessage().contains("Downloaded file size mismatch"));
-        assertTrue(exception.getMessage().contains("mods/file.jar"));
-
+        assertTrue(exception.getMessage().contains("Downloaded resource size mismatch: mods/file.jar"));
         assertEquals(DownloadExceptionReason.SIZE_MISMATCH, exception.getReason());
-        assertEquals("http://file.jar", exception.getUrl());
-        assertEquals("mods/file.jar", exception.getPath().orElseThrow());
+        assertEquals(resourceEntry.url(), exception.getUrl());
+        assertEquals(resourceEntry.path(), exception.getPath().orElseThrow());
+        assertEquals(target, exception.getTargetPath().orElseThrow());
 
     }
 
@@ -199,7 +226,7 @@ class DefaultDownloadServiceTest {
 
         //then
         assertThrows(
-                RuntimeException.class,
+                DownloadException.class,
                 () -> service.download(plan)
         );
 

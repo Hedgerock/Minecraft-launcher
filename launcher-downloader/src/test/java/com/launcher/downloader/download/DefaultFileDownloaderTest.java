@@ -51,6 +51,27 @@ class DefaultFileDownloaderTest {
     }
 
     @Test
+    void should_include_target_path_when_download_failed(
+            @TempDir Path tempDir
+    ) {
+        //given
+        FileDownloader downloader = new DefaultFileDownloader();
+        Path targetPath = tempDir.resolve("mods/test.jar");
+
+        //when
+        DownloadException exception = assertThrows(
+                DownloadException.class,
+                () -> downloader.download(FAKE_URL, targetPath)
+        );
+
+        //then
+
+        assertEquals(DownloadExceptionReason.DOWNLOAD_FAILED, exception.getReason());
+        assertEquals(FAKE_URL, exception.getUrl());
+        assertEquals(targetPath, exception.getTargetPath().orElseThrow());
+    }
+
+    @Test
     void should_not_leave_partial_file_when_download_fails(@TempDir Path tempDir) throws IOException {
         //given
         FileDownloader downloader = new DefaultFileDownloader();
@@ -58,7 +79,7 @@ class DefaultFileDownloaderTest {
 
         //when
         assertThrows(
-                RuntimeException.class,
+                DownloadException.class,
                 () -> downloader.download(FAKE_URL, target)
         );
 
@@ -86,7 +107,7 @@ class DefaultFileDownloaderTest {
 
         //then
         assertTrue(
-                exception.getMessage().contains("Failed to download file: " + FAKE_URL)
+                exception.getMessage().contains("Failed to download resource")
         );
 
         assertFalse(Files.exists(target));

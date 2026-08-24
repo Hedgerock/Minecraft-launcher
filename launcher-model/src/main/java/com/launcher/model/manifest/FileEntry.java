@@ -9,15 +9,6 @@ public record FileEntry(
         String url
 ) {
 
-    public static ResourceEntry toResourceEntry(FileEntry fileEntry) {
-        return new ResourceEntry(
-                fileEntry.path(),
-                fileEntry.sha256(),
-                fileEntry.size(),
-                fileEntry.url()
-        );
-    }
-
     public FileEntry {
         Objects.requireNonNull(path, "path");
         Objects.requireNonNull(sha256, "sha256");

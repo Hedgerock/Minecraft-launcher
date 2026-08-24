@@ -12,6 +12,6 @@ FileVerifier --> FileStorage: size(path)
 FileStorage --> FileVerifier: size
 FileVerifier --> HashVerifier: calculateSha(path)
 HashVerifier --> FileVerifier: sha256
-FileVerifier --> FileVerificationResult: createResult(...)
-FileVerificationResult --> VerificationService
+FileVerifier --> ResourceVerificationResult: createResult(...)
+ResourceVerificationResult --> VerificationService
 @enduml

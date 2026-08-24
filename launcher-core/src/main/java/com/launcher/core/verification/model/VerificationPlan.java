@@ -4,15 +4,15 @@ import java.util.List;
 import java.util.Objects;
 
 public record VerificationPlan(
-        List<FileVerificationResult> files
+        List<ResourceVerificationResult> resources
 ) {
     public VerificationPlan {
-        Objects.requireNonNull(files, "files");
-        files = List.copyOf(files);
+        Objects.requireNonNull(resources, "resources");
+        resources = List.copyOf(resources);
     }
 
    public boolean isValid() {
-       return files.stream()
+       return resources.stream()
                .allMatch(file ->
                        file.status() == VerificationStatus.VALID
                );
@@ -32,8 +32,8 @@ public record VerificationPlan(
     }
 
     private boolean hasStatus(VerificationStatus status) {
-       return files.stream()
-               .anyMatch(file -> file.status() == status);
+       return resources.stream()
+               .anyMatch(resource -> resource.status() == status);
     }
 
 }

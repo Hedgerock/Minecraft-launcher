@@ -1,25 +1,25 @@
 package com.launcher.core.download;
 
 import com.launcher.core.download.model.DownloadPlan;
-import com.launcher.core.verification.model.FileVerificationResult;
+import com.launcher.core.verification.model.ResourceVerificationResult;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.core.verification.model.VerificationStatus;
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 
 import java.util.List;
 
 public final class DownloadPlanBuilder {
 
     public DownloadPlan build(VerificationPlan verificationPlan) {
-        List<FileEntry> files = verificationPlan.files().stream()
-                .filter(this::isNotValidFile)
-                .map(FileVerificationResult::file)
+        List<ResourceEntry> files = verificationPlan.resources().stream()
+                .filter(this::isNotValidResource)
+                .map(ResourceVerificationResult::resource)
                 .toList();
 
         return new DownloadPlan(files);
     }
 
-    private boolean isNotValidFile(FileVerificationResult file) {
-        return file.status() != VerificationStatus.VALID;
+    private boolean isNotValidResource(ResourceVerificationResult resource) {
+        return resource.status() != VerificationStatus.VALID;
     }
 }

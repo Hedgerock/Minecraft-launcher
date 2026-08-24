@@ -5,10 +5,10 @@ import com.launcher.core.download.BuildDownloadPlanTask;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.result.Result;
-import com.launcher.core.verification.model.FileVerificationResult;
+import com.launcher.core.verification.model.ResourceVerificationResult;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.core.verification.model.VerificationStatus;
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -38,13 +38,13 @@ class BuildDownloadPlanTaskTest {
     private VerificationPlan getVerificationPlan() {
         return new VerificationPlan(
             List.of(
-                    new FileVerificationResult(getFileEntry(), VerificationStatus.MISSING)
+                    new ResourceVerificationResult(getResourceEntry(), VerificationStatus.MISSING)
             )
         );
     }
 
-    private FileEntry getFileEntry() {
-        return new FileEntry(
+    private ResourceEntry getResourceEntry() {
+        return new ResourceEntry(
                 "missing-path.jar",
                 "sha256-missing-path.jar",
                 321L,
@@ -57,7 +57,7 @@ class BuildDownloadPlanTaskTest {
         //given
         LaunchContext context = getContext(true);
         BuildDownloadPlanTask planTask = new BuildDownloadPlanTask(builder);
-        List<FileEntry> expectedFiles = List.of(getFileEntry());
+        List<ResourceEntry> expectedFiles = List.of(getResourceEntry());
 
         //when
         Result result = planTask.execute(context);
@@ -66,7 +66,8 @@ class BuildDownloadPlanTaskTest {
         assertTrue(result.success());
         assertNotNull(context.getDownloadPlan());
 
-        List<FileEntry> actualFiles = context.getDownloadPlan().files();
+        List<ResourceEntry> actualFiles = context.getDownloadPlan().resources();
+
         assertEquals(expectedFiles, actualFiles);
     }
 

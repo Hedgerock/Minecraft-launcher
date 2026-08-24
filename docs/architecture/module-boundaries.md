@@ -139,7 +139,7 @@
 
 - `VerificationService`
 - `VerificationPlan`
-- `FileVerificationResult`
+- `ResourceVerificationResult`
 - `VerificationStatus`
 
 ### `launcher-verification` владеет

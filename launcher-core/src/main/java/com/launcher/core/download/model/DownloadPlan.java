@@ -1,21 +1,21 @@
 package com.launcher.core.download.model;
 
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 
 import java.util.List;
 import java.util.Objects;
 
 public record DownloadPlan(
-        List<FileEntry> files
+        List<ResourceEntry> resources
 ) {
 
     public DownloadPlan {
-        Objects.requireNonNull(files, "files");
+        Objects.requireNonNull(resources, "resources");
 
-        files = List.copyOf(files);
+        resources = List.copyOf(resources);
     }
     public boolean isEmpty() {
-        return files.isEmpty();
+        return resources.isEmpty();
     }
 
 }

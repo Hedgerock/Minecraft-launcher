@@ -8,11 +8,11 @@ import com.launcher.core.result.Result;
 import com.launcher.core.task.LauncherTask;
 import com.launcher.core.verification.VerificationService;
 import com.launcher.core.verification.VerifyFilesTask;
-import com.launcher.core.verification.model.FileVerificationResult;
+import com.launcher.core.verification.model.ResourceVerificationResult;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.core.verification.model.VerificationStatus;
-import com.launcher.model.manifest.FileEntry;
 import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.ResourceEntry;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -45,8 +45,8 @@ class VerifyFilesTaskTest {
     private VerificationPlan getVerificationPlan() {
         return new VerificationPlan(
                 List.of(
-                        new FileVerificationResult(
-                                new FileEntry(
+                        new ResourceVerificationResult(
+                                new ResourceEntry(
                                         "test_path",
                                         "sha256",
                                         123L,

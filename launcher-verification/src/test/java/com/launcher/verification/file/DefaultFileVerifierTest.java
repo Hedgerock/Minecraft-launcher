@@ -1,9 +1,9 @@
 package com.launcher.verification.file;
 
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 import com.launcher.storage.file.FileMetadataReader;
 import com.launcher.storage.hash.HashService;
-import com.launcher.core.verification.model.FileVerificationResult;
+import com.launcher.core.verification.model.ResourceVerificationResult;
 import com.launcher.core.verification.model.VerificationStatus;
 import com.launcher.verification.support.FixedHashService;
 import com.launcher.verification.support.FixedMetadataReader;
@@ -25,7 +25,7 @@ class DefaultFileVerifierTest {
         FileVerifier fileVerifier = new DefaultFileVerifier(metadataReader, hashService);
 
         //when
-        FileVerificationResult result = fileVerifier.verify(FILE_PATH, file());
+        ResourceVerificationResult result = fileVerifier.verify(FILE_PATH, resource());
 
         //then
         assertEquals(VerificationStatus.MISSING, result.status());
@@ -39,7 +39,7 @@ class DefaultFileVerifierTest {
         FileVerifier fileVerifier = new DefaultFileVerifier(metadataReader, hashService);
 
         //when
-        FileVerificationResult result = fileVerifier.verify(FILE_PATH, file());
+        ResourceVerificationResult result = fileVerifier.verify(FILE_PATH, resource());
 
         //then
         assertEquals(VerificationStatus.OUTDATED, result.status());
@@ -53,7 +53,7 @@ class DefaultFileVerifierTest {
         FileVerifier fileVerifier = new DefaultFileVerifier(metadataReader, hashService);
 
         //when
-        FileVerificationResult result = fileVerifier.verify(FILE_PATH, file());
+        ResourceVerificationResult result = fileVerifier.verify(FILE_PATH, resource());
 
         //then
         assertEquals(VerificationStatus.CORRUPTED, result.status());
@@ -67,14 +67,14 @@ class DefaultFileVerifierTest {
         FileVerifier fileVerifier = new DefaultFileVerifier(metadataReader, hashService);
 
         //when
-        FileVerificationResult result = fileVerifier.verify(FILE_PATH, file());
+        ResourceVerificationResult result = fileVerifier.verify(FILE_PATH, resource());
 
         //then
         assertEquals(VerificationStatus.VALID, result.status());
     }
 
-    private FileEntry file() {
-        return new FileEntry(
+    private ResourceEntry resource() {
+        return new ResourceEntry(
                 "test/a.jar",
                 "expected-sha256",
                 123L,

@@ -7,11 +7,11 @@
 ## Входные данные
 
 - Локальный путь к файлу
-- FileEntry из Manifest
+- ResourceEntry с ожидаемым `path`, `sha256`, `size` и `url`
 
 ## Выходные данные
 
-FileVerificationResult.
+ResourceVerificationResult
 
 ## Гарантии
 

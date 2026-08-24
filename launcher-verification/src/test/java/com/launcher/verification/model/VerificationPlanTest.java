@@ -1,9 +1,9 @@
 package com.launcher.verification.model;
 
-import com.launcher.core.verification.model.FileVerificationResult;
+import com.launcher.core.verification.model.ResourceVerificationResult;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.core.verification.model.VerificationStatus;
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class VerificationPlanTest {
 
     @Test
-    void should_be_valid_when_all_files_are_valid() {
+    void should_be_valid_when_all_resources_are_valid() {
         //given
         VerificationPlan plan = new VerificationPlan(
                 List.of(
@@ -31,7 +31,7 @@ class VerificationPlanTest {
     }
 
     @Test
-    void should_have_missing_files_when_any_file_is_missed() {
+    void should_have_missing_resources_when_any_file_is_missed() {
         //given
         VerificationPlan plan = new VerificationPlan(
                 List.of(
@@ -46,7 +46,7 @@ class VerificationPlanTest {
     }
 
     @Test
-    void should_have_outdated_files_when_any_file_is_outdated() {
+    void should_have_outdated_resources_when_any_file_is_outdated() {
         //given
         VerificationPlan plan = new VerificationPlan(
                 List.of(
@@ -61,7 +61,7 @@ class VerificationPlanTest {
     }
 
     @Test
-    void should_have_corrupted_files_when_any_file_is_corrupted() {
+    void should_have_corrupted_resources_when_any_file_is_corrupted() {
         //given
         VerificationPlan plan = new VerificationPlan(
                 List.of(
@@ -75,9 +75,9 @@ class VerificationPlanTest {
         assertTrue(plan.hasCorruptedFiles());
     }
 
-    private FileVerificationResult result(String path, VerificationStatus status) {
-        return new FileVerificationResult(
-                new FileEntry(
+    private ResourceVerificationResult result(String path, VerificationStatus status) {
+        return new ResourceVerificationResult(
+                new ResourceEntry(
                         path,
                         "sha256",
                         123L,

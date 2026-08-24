@@ -1,11 +1,11 @@
 package com.launcher.core.architecture.download;
 
-import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.download.DownloadPlanBuilder;
-import com.launcher.core.verification.model.FileVerificationResult;
+import com.launcher.core.download.model.DownloadPlan;
+import com.launcher.core.verification.model.ResourceVerificationResult;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.core.verification.model.VerificationStatus;
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,105 +16,105 @@ class DownloadPlanBuilderTest {
     private final DownloadPlanBuilder builder = new DownloadPlanBuilder();
     private VerificationPlan getVerificationPlan(
             VerificationStatus status,
-            FileEntry fileEntry
+            ResourceEntry resourceEntry
     ) {
         return new VerificationPlan(
-                List.of(new FileVerificationResult(fileEntry, status))
+                List.of(new ResourceVerificationResult(resourceEntry, status))
         );
     }
 
     @Test
-    void should_not_include_valid_files_in_download_plan() {
+    void should_not_include_valid_resources_in_download_plan() {
         //given
         VerificationPlan plan = getLoadedVerificationPlan();
-        FileEntry validFileEntry = getFileEntry("valid.jar");
+        ResourceEntry validFileEntry = getResourceEntry("valid.jar");
 
         //when
         DownloadPlan result = builder.build(plan);
 
         //then
         assertFalse(result.isEmpty());
-        assertEquals(3, result.files().size());
-        assertFalse(result.files().contains(validFileEntry));
+        assertEquals(3, result.resources().size());
+        assertFalse(result.resources().contains(validFileEntry));
     }
 
     @Test
-    void should_include_corrupted_files_in_download_plan() {
+    void should_include_corrupted_resources_in_download_plan() {
         //given
-        FileEntry corruptedFileEntry = getFileEntry("corrupted.jar");
+        ResourceEntry corruptedResourceEntry = getResourceEntry("corrupted.jar");
         VerificationPlan plan =
-                getVerificationPlan(VerificationStatus.CORRUPTED, corruptedFileEntry);
+                getVerificationPlan(VerificationStatus.CORRUPTED, corruptedResourceEntry);
 
         //when
         DownloadPlan result = builder.build(plan);
 
         //then
         assertFalse(result.isEmpty());
-        assertEquals(result.files(), List.of(corruptedFileEntry));
+        assertEquals(result.resources(), List.of(corruptedResourceEntry));
     }
 
     @Test
-    void should_include_outdated_files_in_download_plan() {
+    void should_include_outdated_resources_in_download_plan() {
         //given
-        FileEntry outdatedFileEntry = getFileEntry("outdated.jar");
+        ResourceEntry outdatedResourceEntry = getResourceEntry("outdated.jar");
         VerificationPlan plan =
-                getVerificationPlan(VerificationStatus.OUTDATED, outdatedFileEntry);
+                getVerificationPlan(VerificationStatus.OUTDATED, outdatedResourceEntry);
 
         //when
         DownloadPlan result = builder.build(plan);
 
         //then
         assertFalse(result.isEmpty());
-        assertEquals(result.files(), List.of(outdatedFileEntry));
+        assertEquals(result.resources(), List.of(outdatedResourceEntry));
     }
 
     @Test
-    void should_include_missing_files_in_download_plan() {
+    void should_include_missing_resources_in_download_plan() {
         //given
-        FileEntry missingFileEntry = getFileEntry("missing.jar");
+        ResourceEntry missingResourceEntry = getResourceEntry("missing.jar");
         VerificationPlan plan =
-                getVerificationPlan(VerificationStatus.MISSING, missingFileEntry);
+                getVerificationPlan(VerificationStatus.MISSING, missingResourceEntry);
 
         //when
         DownloadPlan result = builder.build(plan);
 
         //then
         assertFalse(result.isEmpty());
-        assertEquals(result.files(), List.of(missingFileEntry));
+        assertEquals(result.resources(), List.of(missingResourceEntry));
     }
 
     @Test
     void should_create_empty_download_plan_when_verification_plan_is_valid() {
         //given
-        FileEntry validFileEntry = getFileEntry("valid.jar");
+        ResourceEntry validResourceEntry = getResourceEntry("valid.jar");
         VerificationPlan plan =
-                getVerificationPlan(VerificationStatus.VALID, validFileEntry);
+                getVerificationPlan(VerificationStatus.VALID, validResourceEntry);
 
         //when
         DownloadPlan result = builder.build(plan);
 
         //then
         assertTrue(result.isEmpty());
-        assertTrue(result.files().isEmpty());
+        assertTrue(result.resources().isEmpty());
     }
     private VerificationPlan getLoadedVerificationPlan() {
-        FileEntry validFileEntry = getFileEntry("valid.jar");
-        FileEntry corruptedFileEntry = getFileEntry("corrupted.jar");
-        FileEntry outdatedFileEntry = getFileEntry("outdated.jar");
-        FileEntry missingFileEntry = getFileEntry("missing.jar");
+        ResourceEntry validResourceEntry = getResourceEntry("valid.jar");
+        ResourceEntry corruptedResourceEntry = getResourceEntry("corrupted.jar");
+        ResourceEntry outdatedResourceEntry = getResourceEntry("outdated.jar");
+        ResourceEntry missingResourceEntry = getResourceEntry("missing.jar");
 
         return new VerificationPlan(
                 List.of(
-                        new FileVerificationResult(validFileEntry, VerificationStatus.VALID),
-                        new FileVerificationResult(outdatedFileEntry, VerificationStatus.OUTDATED),
-                        new FileVerificationResult(corruptedFileEntry, VerificationStatus.CORRUPTED),
-                        new FileVerificationResult(missingFileEntry, VerificationStatus.MISSING)
+                        new ResourceVerificationResult(validResourceEntry, VerificationStatus.VALID),
+                        new ResourceVerificationResult(outdatedResourceEntry, VerificationStatus.OUTDATED),
+                        new ResourceVerificationResult(corruptedResourceEntry, VerificationStatus.CORRUPTED),
+                        new ResourceVerificationResult(missingResourceEntry, VerificationStatus.MISSING)
                 )
         );
     }
 
-    private FileEntry getFileEntry(String path) {
-        return new FileEntry(
+    private ResourceEntry getResourceEntry(String path) {
+        return new ResourceEntry(
                 path,
                 "sha256-" + path,
                 123L,

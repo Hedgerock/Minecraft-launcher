@@ -1,13 +1,13 @@
 package com.launcher.downloader.service;
 
-import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.download.DownloadService;
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.downloader.exception.DownloadException;
 import com.launcher.downloader.exception.DownloadExceptionReason;
 import com.launcher.downloader.support.FixedDirectoryProvider;
 import com.launcher.downloader.support.RecordingFileDownloader;
 import com.launcher.downloader.support.WritingFileDownloader;
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultDownloadServiceTest {
 
-    private FileEntry fileEntry(String path, long size, String url) {
-        return new FileEntry(
+    private ResourceEntry getResourceEntry(String path, long size, String url) {
+        return new ResourceEntry(
                 path,
                 "sha-" + path,
                 size,
@@ -35,7 +35,7 @@ class DefaultDownloadServiceTest {
         //given
         String content = "Hello test";
 
-        FileEntry fileEntry = fileEntry(
+        ResourceEntry fileEntry = getResourceEntry(
                 "mods/file.jar",
                 content.getBytes(StandardCharsets.UTF_8).length,
                 "http://file.jar"
@@ -61,7 +61,7 @@ class DefaultDownloadServiceTest {
     @Test
     void should_fail_when_downloaded_file_size_can_not_written(@TempDir Path tempDir) {
         //given
-        FileEntry fileEntry = fileEntry("mods/file.jar", 12L, "http://file.jar");
+        ResourceEntry fileEntry = getResourceEntry("mods/file.jar", 12L, "http://file.jar");
 
         DownloadPlan plan = new DownloadPlan(List.of(fileEntry));
         Path gameDirectory = tempDir.resolve("game");
@@ -98,7 +98,7 @@ class DefaultDownloadServiceTest {
     void should_fail_when_downloaded_file_size_does_not_match_manifest_entry(@TempDir Path tempDir)
             throws IOException {
         //given
-        FileEntry fileEntry = fileEntry("mods/file.jar", 12L, "http://file.jar");
+        ResourceEntry fileEntry = getResourceEntry("mods/file.jar", 12L, "http://file.jar");
 
         DownloadPlan plan = new DownloadPlan(List.of(fileEntry));
         Path gameDirectory = tempDir.resolve("game");
@@ -139,8 +139,8 @@ class DefaultDownloadServiceTest {
                 downloader
         );
 
-        FileEntry firstFile = fileEntry("first.jar", 100L, "http://first.jar");
-        FileEntry secondFile = fileEntry("second.jar", 100L, "http://second.jar");
+        ResourceEntry firstFile = getResourceEntry("first.jar", 100L, "http://first.jar");
+        ResourceEntry secondFile = getResourceEntry("second.jar", 100L, "http://second.jar");
 
         DownloadPlan plan = new DownloadPlan(List.of(firstFile, secondFile));
 
@@ -165,7 +165,7 @@ class DefaultDownloadServiceTest {
                 downloader
         );
 
-        FileEntry fileEntry = fileEntry("mods/current-mode.jar", 100L, "http://file-entry.jar");
+        ResourceEntry fileEntry = getResourceEntry("mods/current-mode.jar", 100L, "http://file-entry.jar");
 
         DownloadPlan plan = new DownloadPlan(List.of(fileEntry));
 
@@ -193,7 +193,7 @@ class DefaultDownloadServiceTest {
                 downloader
         );
 
-        FileEntry fileEntry = fileEntry("mods/current-mode.jar", 100L, "http://file-entry.jar");
+        ResourceEntry fileEntry = getResourceEntry("mods/current-mode.jar", 100L, "http://file-entry.jar");
 
         DownloadPlan plan = new DownloadPlan(List.of(fileEntry));
 

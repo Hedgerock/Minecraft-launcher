@@ -1,19 +1,19 @@
 package com.launcher.core.architecture.verification.model;
 
-import com.launcher.core.verification.model.FileVerificationResult;
+import com.launcher.core.verification.model.ResourceVerificationResult;
 import com.launcher.core.verification.model.VerificationStatus;
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class FileVerificationResultTest {
+class ResourceVerificationResultTest {
 
     @Test
     void should_reject_null_status() {
         //given
-        FileEntry fileEntry = new FileEntry(
+        ResourceEntry resourceEntry = new ResourceEntry(
                 "test",
                 "sha256",
                 123L,
@@ -23,8 +23,8 @@ class FileVerificationResultTest {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> new FileVerificationResult(
-                        fileEntry,
+                () -> new ResourceVerificationResult(
+                        resourceEntry,
                         null
                 )
         );
@@ -33,20 +33,20 @@ class FileVerificationResultTest {
     }
 
     @Test
-    void should_reject_null_file() {
+    void should_reject_null_resource() {
         //given
         VerificationStatus status = VerificationStatus.MISSING;
 
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> new FileVerificationResult(
+                () -> new ResourceVerificationResult(
                         null,
                         status
                 )
         );
 
-        assertTrue(exception.getMessage().contains("file"));
+        assertTrue(exception.getMessage().contains("resource"));
     }
 
 }

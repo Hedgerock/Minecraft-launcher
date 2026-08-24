@@ -44,7 +44,7 @@ LauncherEngine
                     -> DefaultVerificationService
                         -> FileVerifier
                             -> HashService
-                            -> FileVerificationResult
+                            -> ResourceVerificationResult
                         -> VerificationPlan
                 -> LaunchContext
                     -> VerificationPlan
@@ -73,7 +73,7 @@ LauncherEngine
 
 Операция с checksum выполняется через `HashService`
 
-`FileVerifier` формирует `FileVerificationResult` для каждого проверяемого файла
+`FileVerifier` формирует `ResourceVerificationResult` для каждого проверяемого файла
 
 ### 3. Формирование `VerificationPlan`
 
@@ -127,7 +127,7 @@ VERIFY_FILES
 - `DefaultVerificationService`
 - `FileVerifier`
 - `HashService`
-- `FileVerificationResult`
+- `ResourceVerificationResult`
 - `VerificationPlan`
 - `LaunchContext`
 

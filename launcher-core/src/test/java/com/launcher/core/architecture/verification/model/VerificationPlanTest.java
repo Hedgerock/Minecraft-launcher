@@ -1,9 +1,9 @@
 package com.launcher.core.architecture.verification.model;
 
-import com.launcher.core.verification.model.FileVerificationResult;
+import com.launcher.core.verification.model.ResourceVerificationResult;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.core.verification.model.VerificationStatus;
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,20 +14,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class VerificationPlanTest {
 
-    private FileEntry getFileEntry(String path) {
-        return new FileEntry(
+    private ResourceEntry getResourceEntry(String path) {
+        return new ResourceEntry(
                 path,
                 "sha256-" + path,
                 123L,
                 "http://test-path/" + path
         );
     }
-    private FileVerificationResult getFileVerificationResult(
-            FileEntry fileEntry,
+    private ResourceVerificationResult getResourceVerificationResult(
+            ResourceEntry resourceEntry,
             VerificationStatus status
     ) {
-        return new FileVerificationResult(
-                fileEntry,
+        return new ResourceVerificationResult(
+                resourceEntry,
                 status
         );
     }
@@ -35,14 +35,14 @@ class VerificationPlanTest {
     @Test
     void should_reject_null_result() {
         //given
-        List<FileVerificationResult> verificationResults = new ArrayList<>();
+        List<ResourceVerificationResult> verificationResults = new ArrayList<>();
 
         verificationResults
                 .add(null);
         verificationResults
                 .add(
-                        getFileVerificationResult(
-                                getFileEntry("file1.jar"),
+                        getResourceVerificationResult(
+                                getResourceEntry("file1.jar"),
                                 VerificationStatus.MISSING
                         )
                 );
@@ -55,21 +55,21 @@ class VerificationPlanTest {
     }
 
     @Test
-    void should_create_immutable_files() {
+    void should_create_immutable_resources() {
         //given
-        List<FileVerificationResult> verificationResults = new ArrayList<>();
+        List<ResourceVerificationResult> verificationResults = new ArrayList<>();
 
         verificationResults
                 .add(
-                        getFileVerificationResult(
-                                getFileEntry("file1.jar"),
+                        getResourceVerificationResult(
+                                getResourceEntry("file1.jar"),
                                 VerificationStatus.VALID
                         )
                 );
         verificationResults
                 .add(
-                        getFileVerificationResult(
-                                getFileEntry("file1.jar"),
+                        getResourceVerificationResult(
+                                getResourceEntry("file1.jar"),
                                 VerificationStatus.MISSING
                         )
                 );
@@ -80,9 +80,9 @@ class VerificationPlanTest {
         //when & then
         assertThrows(
                 UnsupportedOperationException.class,
-                () -> verificationPlan.files().add(
-                        getFileVerificationResult(
-                                getFileEntry("file3.jar"),
+                () -> verificationPlan.resources().add(
+                        getResourceVerificationResult(
+                                getResourceEntry("file3.jar"),
                                 VerificationStatus.CORRUPTED
                         )
                 )
@@ -90,14 +90,14 @@ class VerificationPlanTest {
     }
 
     @Test
-    void should_reject_null_files() {
+    void should_reject_null_resources() {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new VerificationPlan(null)
         );
 
-        assertTrue(exception.getMessage().contains("files"));
+        assertTrue(exception.getMessage().contains("resources"));
     }
 
 }

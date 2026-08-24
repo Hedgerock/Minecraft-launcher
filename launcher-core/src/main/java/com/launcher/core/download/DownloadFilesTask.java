@@ -10,7 +10,7 @@ import com.launcher.core.result.Result;
 import com.launcher.core.state.LauncherState;
 import com.launcher.core.task.LauncherTask;
 import com.launcher.core.task.TaskResult;
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 
 import java.util.List;
 
@@ -74,11 +74,11 @@ public class DownloadFilesTask implements LauncherTask {
     }
 
     private DownloadStartedEvent publishDownloadStartedEvent(DownloadPlan downloadPlan) {
-        List<FileEntry> files = downloadPlan.files();
+        List<ResourceEntry> files = downloadPlan.resources();
 
         int totalFiles = files.size();
         long totalBytes = files.stream()
-            .mapToLong(FileEntry::size)
+            .mapToLong(ResourceEntry::size)
             .sum();
 
         DownloadStartedEvent downloadStartedEvent = new DownloadStartedEvent(totalFiles, totalBytes);

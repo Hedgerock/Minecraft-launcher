@@ -4,16 +4,16 @@ import com.launcher.core.LauncherEngine;
 import com.launcher.core.architecture.support.recording.RecordingLauncherStateMachine;
 import com.launcher.core.architecture.support.recording.RecordingOperationManager;
 import com.launcher.core.configuration.LauncherConfiguration;
-import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.download.DownloadPlanBuilder;
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.state.LauncherState;
 import com.launcher.core.state.LauncherStateMachine;
-import com.launcher.core.verification.model.FileVerificationResult;
+import com.launcher.core.verification.model.ResourceVerificationResult;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.core.verification.model.VerificationStatus;
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 
 import java.net.URI;
 import java.nio.file.Path;
@@ -35,8 +35,8 @@ public final class LauncherFlowFixture {
     public static VerificationPlan verificationPlan(String path, VerificationStatus status) {
         return new VerificationPlan(
                 List.of(
-                        new FileVerificationResult(
-                                new FileEntry(
+                        new ResourceVerificationResult(
+                                new ResourceEntry(
                                         path,
                                         "sha256-" + path,
                                         321L,

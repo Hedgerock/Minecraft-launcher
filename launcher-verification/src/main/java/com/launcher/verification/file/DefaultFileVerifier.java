@@ -1,10 +1,10 @@
 package com.launcher.verification.file;
 
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.core.verification.model.ResourceVerificationResult;
+import com.launcher.core.verification.model.VerificationStatus;
+import com.launcher.model.manifest.ResourceEntry;
 import com.launcher.storage.file.FileMetadataReader;
 import com.launcher.storage.hash.HashService;
-import com.launcher.core.verification.model.FileVerificationResult;
-import com.launcher.core.verification.model.VerificationStatus;
 
 import java.nio.file.Path;
 
@@ -18,26 +18,26 @@ public class DefaultFileVerifier implements FileVerifier {
     }
 
     @Override
-    public FileVerificationResult verify(Path filePath, FileEntry file) {
+    public ResourceVerificationResult verify(Path filePath, ResourceEntry resourceEntry) {
 
         if (!metadataReader.exists(filePath)) {
-            return result(file, VerificationStatus.MISSING);
+            return result(resourceEntry, VerificationStatus.MISSING);
         }
 
-        if (metadataReader.size(filePath) != file.size()) {
-            return result(file, VerificationStatus.OUTDATED);
+        if (metadataReader.size(filePath) != resourceEntry.size()) {
+            return result(resourceEntry, VerificationStatus.OUTDATED);
         }
 
         String actualHash = hashService.sha256(filePath);
 
-        if (!actualHash.equals(file.sha256())) {
-            return result(file, VerificationStatus.CORRUPTED);
+        if (!actualHash.equals(resourceEntry.sha256())) {
+            return result(resourceEntry, VerificationStatus.CORRUPTED);
         }
 
-        return result(file, VerificationStatus.VALID);
+        return result(resourceEntry, VerificationStatus.VALID);
     }
 
-    private FileVerificationResult result(FileEntry fileEntry, VerificationStatus status) {
-        return new FileVerificationResult(fileEntry, status);
+    private ResourceVerificationResult result(ResourceEntry resourceEntry, VerificationStatus status) {
+        return new ResourceVerificationResult(resourceEntry, status);
     }
 }

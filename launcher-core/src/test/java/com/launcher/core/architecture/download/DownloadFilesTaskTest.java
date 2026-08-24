@@ -13,7 +13,7 @@ import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.result.FailureResult;
 import com.launcher.core.result.Result;
 import com.launcher.core.result.SuccessResult;
-import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.ResourceEntry;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DownloadFilesTaskTest {
     private long totalBytes(DownloadPlan plan) {
-        return plan.files().stream().mapToLong(FileEntry::size).sum();
+        return plan.resources().stream().mapToLong(ResourceEntry::size).sum();
     }
 
     @Test
@@ -99,7 +99,7 @@ class DownloadFilesTaskTest {
         //then
         DownloadCompletedEvent event = eventBus.firstEventOfType(DownloadCompletedEvent.class);
 
-        assertEquals(downloadPlan.files().size(), event.totalFiles());
+        assertEquals(downloadPlan.resources().size(), event.totalFiles());
         assertEquals(totalBytes(downloadPlan), event.totalBytes());
     }
 
@@ -120,8 +120,8 @@ class DownloadFilesTaskTest {
         //then
         DownloadProgressChangedEvent event = eventBus.firstEventOfType(DownloadProgressChangedEvent.class);
 
-        assertEquals(downloadPlan.files().size(), event.downloadedFiles());
-        assertEquals(downloadPlan.files().size(), event.totalFiles());
+        assertEquals(downloadPlan.resources().size(), event.downloadedFiles());
+        assertEquals(downloadPlan.resources().size(), event.totalFiles());
 
         assertEquals(totalBytes(downloadPlan), event.downloadedBytes());
         assertEquals(totalBytes(downloadPlan), event.totalBytes());
@@ -146,7 +146,7 @@ class DownloadFilesTaskTest {
 
         DownloadStartedEvent event = eventBus.firstEventOfType(DownloadStartedEvent.class);
 
-        assertEquals(downloadPlan.files().size(), event.totalFiles());
+        assertEquals(downloadPlan.resources().size(), event.totalFiles());
         assertEquals(totalBytes(downloadPlan), event.totalBytes());
     }
 
@@ -248,7 +248,7 @@ class DownloadFilesTaskTest {
     }
     private DownloadPlan getDownloadPlan() {
         return new DownloadPlan(
-                List.of(getFileEntry())
+                List.of(getResourceEntry())
         );
     }
 
@@ -256,13 +256,13 @@ class DownloadFilesTaskTest {
         return new DownloadPlan(List.of());
     }
 
-    private FileEntry getFileEntry() {
-        return getFileEntry("current_path.jar");
+    private ResourceEntry getResourceEntry() {
+        return getResourceEntry("current_path.jar");
     }
 
     @SuppressWarnings("SameParameterValue")
-    private FileEntry getFileEntry(String path) {
-        return new FileEntry(
+    private ResourceEntry getResourceEntry(String path) {
+        return new ResourceEntry(
                 path,
                 "sha256-" + path,
                 123L,

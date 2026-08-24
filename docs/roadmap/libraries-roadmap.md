@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Подключить `ManifestResources` к verification flow отдельной итерацией
+- Подключить `ManifestResources` к `DefaultVerificationService`
 
 ---
 
@@ -10,3 +10,4 @@
 
 - Добавлена модель `ResourceEntry`
 - Добавлена projection `ManifestResources` для `Manifest.files` и `Manifest.libraries`
+- Зафиксировано решение использовать `ManifestResources` как источник verification flow

@@ -14,6 +14,11 @@
 
 На текущем этапе verification flow работает с файлами из `Manifest.files`
 
+Архитектурно принято решение перевести verification flow на `ManifestResorces.from(...)`, чтобы
+единым источником проверяемых ресурсов стали `Manifest.files` и `Manifest.libraries`
+
+Кодовое подключение `ManifestResources` к `DefaultVerificationService` выполняется отедльной итерацией
+
 Участие `Manifest.libraries` в verification flow должно добавляться через общий resource-level 
 contract отдельной итерацией
 

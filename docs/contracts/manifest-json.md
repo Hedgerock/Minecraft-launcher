@@ -83,7 +83,7 @@ JSON manifest
 
 `FileEntry` и `LibraryEntry` остаются manifest-specific моделями и не заменяются напрямую `ResourceEntry`
 
-На текущем этапе наличие `ManifestResorces` не означает, что verification/download flow уже использует `libraries`
+На текущем этапе наличие `ManifestResources` не означает, что verification/download flow уже использует `libraries`
 
 `libraries` преобразуется в список `LibraryEntry`
 

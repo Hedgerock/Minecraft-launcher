@@ -36,7 +36,7 @@
 
 `ManifestResources` может стать источником ресурсов для будущего построения verification/download flow
 
-На текущем этапе `DownloadPlan` продолжает строиться из результатов текущего verificataion flow
+На текущем этапе `DownloadPlan` продолжает строиться из результатов текущего verification flow
 
 ---
 

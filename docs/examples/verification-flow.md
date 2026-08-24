@@ -155,7 +155,7 @@ V-2
 
 V-3
 
-`VerificationPlan.isValid()` используется `LauncherEngine` для выбора следуюущего шага жизненного цикла
+`VerificationPlan.isValid()` используется `LauncherEngine` для выбора следующего шага жизненного цикла
 
 V-4
 

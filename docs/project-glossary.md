@@ -86,9 +86,7 @@ Runtime-контекст текущего запуска лаунчера
 
 Минимальное описание library из `Manifest`
 
-На текущем этапе содержит только `path`, а также используется как основной источник classpath entries
-
-Не описывает metadata, rules, classifiers или natives
+На текущем этапе содержит поля `path`, `sha256`, `size` и `url` для работы с physical metadata
 
 Может быть расширен physical metadata для восстановления library-файла, но остается отдельной моделью от
 `FileEntry`

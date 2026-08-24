@@ -56,7 +56,10 @@ JSON manifest
   },
   "libraries": [
     {
-      "path": "libraries/org/example/example.jar"
+      "path": "libraries/org/example/example.jar",
+      "sha256": "535436571185ff3d2564aceead2dfece7bf7b69fc80ea0174a508b133110af2e",
+      "size": 987654321,
+      "url": "https://localhost/libraries/org/example/example.jar"
     }
   ]
 }
@@ -110,9 +113,7 @@ JSON manifest
 
 `libraries` является основным источником classpath entries и описывает библиотеки для построения classpath
 
-На текущем этапе `LibraryEntry` содержит только `path`
-
-Расширение `LibraryEntry` полями `sha256`, `size` и `url` должно выполняться отдельной итерацией
+На текущем этапе `LibraryEntry` содержит `path`, `sha256`, `size` и `url`
 
 Даже после добавления physical metadata `LibraryEntry` остается library-specific metadata и не заменяет `FileEntry`
 

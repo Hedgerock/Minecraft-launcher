@@ -118,7 +118,8 @@ JSON manifest
 
 Даже после добавления physical metadata `LibraryEntry` остается library-specific metadata и не заменяет `FileEntry`
 
-Включение `libraries` в verification/download flow является отдельным архитектурным решением
+Включение `libraries` в verification/download flow зафиксировано отдельным архитектурным решением и реализовано через
+`ManifestResources`
 
 Если `libraries` пустой, launcher использует `launchInfo.classpath` как fallback для минимальных сценариев
 

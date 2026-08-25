@@ -144,8 +144,8 @@ LauncherEngine
 
 - `reason`
 - `url`
-- `resource path`, если ошибка связана с `ResourceEntry`
-- `target path`, если ошибка связана с локальным файлом
+- `path`, если ошибка связана с `ResourceEntry`
+- `targetPath`, если ошибка связана с локальным файлом
 - `cause`, если исходная причина доступна
 
 ---

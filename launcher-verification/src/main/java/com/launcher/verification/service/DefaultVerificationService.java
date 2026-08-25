@@ -32,7 +32,7 @@ public class DefaultVerificationService implements VerificationService {
     }
 
     private ResourceVerificationResult verifyResource(ResourceEntry resource) {
-        Path filePath = directoryProvider.directories().launcher().resolve(resource.path());
+        Path filePath = directoryProvider.directories().game().resolve(resource.path());
 
         return fileVerifier.verify(filePath, resource);
     }

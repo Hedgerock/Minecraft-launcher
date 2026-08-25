@@ -9,14 +9,14 @@ public final class FixedDirectoryProvider implements DirectoryProvider {
 
     private final LauncherDirectories directories;
 
-    public FixedDirectoryProvider(Path launcherDirectory) {
+    public FixedDirectoryProvider(Path launcherDirectory, Path gameDirectory) {
         this.directories = new LauncherDirectories(
                 launcherDirectory,
-                launcherDirectory,
-                launcherDirectory.resolve("mods"),
-                launcherDirectory.resolve("libraries"),
-                launcherDirectory.resolve("versions"),
-                launcherDirectory.resolve("assets"),
+                gameDirectory,
+                gameDirectory.resolve("mods"),
+                gameDirectory.resolve("libraries"),
+                gameDirectory.resolve("versions"),
+                gameDirectory.resolve("assets"),
                 Path.of("runtime"),
                 Path.of("logs"),
                 Path.of("downloads")

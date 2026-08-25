@@ -27,7 +27,8 @@ class DefaultVerificationServiceTest {
     void setUp() {
         recordingFileVerifier = new RecordingFileVerifier();
         FixedDirectoryProvider fixedDirectoryProvider = new FixedDirectoryProvider(
-                Path.of("launcher-directory")
+                Path.of("launcher-directory"),
+                Path.of("game-directory")
         );
 
         defaultVerificationService = new DefaultVerificationService(
@@ -36,14 +37,14 @@ class DefaultVerificationServiceTest {
     }
 
     @Test
-    void should_resolve_resource_path_against_launcher_directory() {
+    void should_resolve_resource_path_against_game_directory() {
         //given
-        Path launcherDirectory = Path.of("launcher-directory");
+        Path gameDirectory = Path.of("game-directory");
         Manifest manifest = recordingManifest.getManifest();
 
         List<ResourceEntry> resources = ManifestResources.from(manifest);
         List<Path> expectedPaths = resources.stream()
-                .map(resource -> launcherDirectory.resolve(resource.path()))
+                .map(resource -> gameDirectory.resolve(resource.path()))
                 .toList();
 
         //when

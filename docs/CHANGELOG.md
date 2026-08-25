@@ -11,6 +11,7 @@
 - Added structured download failure context
 - Documented the decision to use manifest resources as the verification flow source
 - Documented the minimal library metadata scope
+- Documented resource path safety rules
 
 ### Changed
 

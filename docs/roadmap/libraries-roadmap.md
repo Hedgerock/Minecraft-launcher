@@ -2,7 +2,9 @@
 
 ## Текущий план
 
-- Будущий шаг будет определен после ревизии verification/download flow
+- Уточнить семантику минимальной модели `libraries`
+- Определить границы поддержки natives, classifiers и rules
+- Подготовить следующий шаг развития manifest library realism
 
 ---
 

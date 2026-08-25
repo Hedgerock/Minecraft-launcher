@@ -2,9 +2,7 @@
 
 ## Текущий план
 
-- Уточнить семантику минимальной модели `libraries`
-- Определить границы поддержки natives, classifiers и rules
-- Подготовить следующий шаг развития manifest library realism
+- Определить следующий runtime realism шаг после минимальной library metadata модели
 
 ---
 
@@ -14,3 +12,4 @@
 - Добавлена projection `ManifestResources` для `Manifest.files` и `Manifest.libraries`
 - Зафиксировано решение использовать `ManifestResources` как источник verification flow
 - Подключен `ManifestResources` к verification flow
+- Зафиксирован минимальный scope library metadata

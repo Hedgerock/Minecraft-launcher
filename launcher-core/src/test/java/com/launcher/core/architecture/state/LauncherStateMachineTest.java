@@ -73,7 +73,7 @@ class LauncherStateMachineTest {
     }
 
     @Test
-    void should_transition_through_download_flow_when_files_are_missing_and_download_succeeds() {
+    void should_transition_through_download_flow_when_resources_are_missing_and_download_succeeds() {
         //given
         VerificationPlan invalidPlan = LauncherFlowFixture
                 .verificationPlan("current-file.jar", VerificationStatus.MISSING);
@@ -157,7 +157,7 @@ class LauncherStateMachineTest {
     }
 
     @Test
-    void should_transition_to_failed_when_download_files_failed() {
+    void should_transition_to_failed_when_download_resources_failed() {
         //given
         VerificationPlan invalidPlan =
                 LauncherFlowFixture.verificationPlan("current-file.jar", VerificationStatus.MISSING);
@@ -199,7 +199,7 @@ class LauncherStateMachineTest {
     }
 
     @Test
-    void should_transition_to_running_without_download_when_files_are_valid() {
+    void should_transition_to_running_without_download_when_resources_are_valid() {
         //given
         VerificationPlan verificationPlan =
                 LauncherFlowFixture.verificationPlan("current-file.jar", VerificationStatus.VALID);

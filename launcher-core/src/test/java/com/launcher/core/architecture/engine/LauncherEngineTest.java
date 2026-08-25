@@ -150,7 +150,7 @@ class LauncherEngineTest {
     }
 
     @Test
-    void should_launch_game_before_running_when_downloaded_files_are_valid() {
+    void should_launch_game_before_running_when_downloaded_resources_are_valid() {
         //given
         VerificationPlan validVerificationPlan =
                 LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.VALID);
@@ -193,7 +193,7 @@ class LauncherEngineTest {
     }
 
     @Test
-    void should_launch_game_before_running_when_files_are_valid() {
+    void should_launch_game_before_running_when_resources_are_valid() {
         //given
         VerificationPlan validVerificationPlan =
                 LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.VALID);
@@ -226,7 +226,7 @@ class LauncherEngineTest {
     }
 
     @Test
-    void should_prepare_directories_before_running_when_files_are_valid() {
+    void should_prepare_directories_before_running_when_resources_are_valid() {
         //given
         VerificationPlan validVerificationPlan =
                 LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.VALID);
@@ -258,7 +258,7 @@ class LauncherEngineTest {
     }
 
     @Test
-    void should_prepare_directories_before_running_when_downloaded_files_are_valid() {
+    void should_prepare_directories_before_running_when_downloaded_resources_are_valid() {
         //given
         VerificationPlan notValidVerificationPlan =
                 LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.MISSING);
@@ -398,7 +398,7 @@ class LauncherEngineTest {
     }
 
     @Test
-    void should_transition_to_failed_when_download_files_failed() {
+    void should_transition_to_failed_when_download_resources_failed() {
         //given
         VerificationPlan notValidVerificationPlan =
                 LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.MISSING);
@@ -423,7 +423,7 @@ class LauncherEngineTest {
     }
 
     @Test
-    void should_transition_to_running_when_downloaded_files_are_valid() {
+    void should_transition_to_running_when_downloaded_resources_are_valid() {
         //given
         VerificationPlan validVerificationPlan =
                 LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
@@ -451,7 +451,7 @@ class LauncherEngineTest {
     }
 
     @Test
-    void should_verify_files_again_after_download_files_succeeded() {
+    void should_verify_resources_again_after_download_resources_succeeded() {
         //given
         VerificationPlan notValidVerificationPlan =
                 LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.MISSING);
@@ -479,7 +479,7 @@ class LauncherEngineTest {
     }
 
     @Test
-    void should_download_files_when_verification_plan_is_not_valid() {
+    void should_download_resources_when_verification_plan_is_not_valid() {
         //given
         VerificationPlan notValidVerificationPlan =
                 LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.MISSING);
@@ -560,7 +560,7 @@ class LauncherEngineTest {
 
 
     @Test
-    void should_execute_load_manifest_then_verify_files_when_launch_started() {
+    void should_execute_load_manifest_then_verify_resources_when_launch_started() {
         //given
         launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
@@ -597,7 +597,7 @@ class LauncherEngineTest {
     }
 
     @Test
-    void should_transition_to_failed_when_verify_files_failed() {
+    void should_transition_to_failed_when_verify_resources_failed() {
         //given
         launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
@@ -665,7 +665,7 @@ class LauncherEngineTest {
     }
 
     @Test
-    void should_transition_to_running_when_manifest_loaded_and_files_are_valid() {
+    void should_transition_to_running_when_manifest_loaded_and_resources_are_valid() {
         //given
         VerificationPlan verificationPlan =
                 LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);

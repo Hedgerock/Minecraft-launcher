@@ -2,6 +2,8 @@ package com.launcher.app.service.factory;
 
 import com.launcher.api.manifest.client.HttpManifestClient;
 import com.launcher.api.manifest.client.ManifestClient;
+import com.launcher.api.manifest.library.DefaultRuntimeLibrarySelector;
+import com.launcher.api.manifest.library.RuntimeLibrarySelector;
 import com.launcher.api.manifest.mapper.JsonManifestMapper;
 import com.launcher.api.manifest.mapper.ManifestMapper;
 import com.launcher.api.manifest.service.HttpManifestService;
@@ -52,8 +54,8 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
                 infrastructure.launcherHttpClient(),
                 configuration.manifestUri()
         );
-
-        ManifestMapper manifestMapper = new JsonManifestMapper();
+        RuntimeLibrarySelector runtimeLibrarySelector = new DefaultRuntimeLibrarySelector();
+        ManifestMapper manifestMapper = new JsonManifestMapper(runtimeLibrarySelector);
         return new HttpManifestService(
                 manifestClient,
                 manifestMapper

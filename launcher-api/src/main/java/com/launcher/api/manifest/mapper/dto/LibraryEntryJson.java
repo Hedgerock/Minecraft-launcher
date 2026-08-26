@@ -1,6 +1,6 @@
 package com.launcher.api.manifest.mapper.dto;
 
-import com.launcher.model.manifest.LibraryEntry;
+import com.launcher.model.manifest.RuntimeLibraryMetadata;
 
 public record LibraryEntryJson(
         String path,
@@ -8,8 +8,8 @@ public record LibraryEntryJson(
         long size,
         String url
 ) {
-    LibraryEntry toLibraryEntry() {
-        return new LibraryEntry(
+    RuntimeLibraryMetadata toRuntimeLibraryMetadata() {
+        return new RuntimeLibraryMetadata(
                 path,
                 sha256,
                 size,

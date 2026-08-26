@@ -1,6 +1,7 @@
 package com.launcher.api.manifest.mapper;
 
 import com.launcher.api.manifest.exception.ManifestMappingException;
+import com.launcher.api.manifest.library.DefaultRuntimeLibrarySelector;
 import com.launcher.model.manifest.FileEntry;
 import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.manifest.LibraryEntry;
@@ -16,7 +17,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonManifestMapperTest {
-    private final JsonManifestMapper mapper = new JsonManifestMapper();
+    private final JsonManifestMapper mapper = new JsonManifestMapper(
+            new DefaultRuntimeLibrarySelector()
+    );
 
     @Test
     void should_fail_when_required_manifest_field_is_missing() {

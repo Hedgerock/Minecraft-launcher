@@ -2,6 +2,7 @@ package com.launcher.api.manifest;
 
 import com.launcher.api.http.JavaLauncherHttpClient;
 import com.launcher.api.manifest.client.HttpManifestClient;
+import com.launcher.api.manifest.library.DefaultRuntimeLibrarySelector;
 import com.launcher.api.manifest.mapper.JsonManifestMapper;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.Manifest;
@@ -40,11 +41,9 @@ class HttpManifestLoadingIntegrationTest {
         server.start();
 
         try {
-            URI manifestUri = new URI("http://localhost:" + server.getAddress().getPort() + "/manifest.json");
-
-            JavaLauncherHttpClient httpClient = new JavaLauncherHttpClient();
-            HttpManifestClient manifestClient = new HttpManifestClient(httpClient, manifestUri);
-            JsonManifestMapper manifestMapper = new JsonManifestMapper();
+            MapperAndClient mapperAndClient = prepareMapperAndClient(server);
+            var manifestClient = mapperAndClient.client();
+            var manifestMapper = mapperAndClient.mapper();
 
             //when
             String json = manifestClient.download();
@@ -64,6 +63,23 @@ class HttpManifestLoadingIntegrationTest {
             server.stop(0);
         }
     }
+
+    private MapperAndClient prepareMapperAndClient(HttpServer server) throws Exception {
+        URI manifestUri = new URI("http://localhost:" + server.getAddress().getPort() + "/manifest.json");
+
+        JavaLauncherHttpClient httpClient = new JavaLauncherHttpClient();
+        HttpManifestClient manifestClient = new HttpManifestClient(httpClient, manifestUri);
+        JsonManifestMapper manifestMapper = new JsonManifestMapper(
+                new DefaultRuntimeLibrarySelector()
+        );
+
+        return new MapperAndClient(manifestClient, manifestMapper);
+    }
+
+    private record MapperAndClient(
+            HttpManifestClient client,
+            JsonManifestMapper mapper
+    ) {}
 
     private String getManifestJson() {
         return """

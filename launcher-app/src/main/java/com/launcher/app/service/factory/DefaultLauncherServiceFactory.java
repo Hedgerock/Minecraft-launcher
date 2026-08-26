@@ -5,14 +5,13 @@ import com.launcher.api.manifest.client.ManifestClient;
 import com.launcher.api.manifest.mapper.JsonManifestMapper;
 import com.launcher.api.manifest.mapper.ManifestMapper;
 import com.launcher.api.manifest.service.HttpManifestService;
-import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.app.service.LauncherServices;
+import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadService;
 import com.launcher.core.game.GameService;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.resource.ResourcePathResolver;
-import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.directory.LocalDirectoryProvider;
 import com.launcher.core.storage.service.DefaultDirectoryService;
@@ -34,10 +33,16 @@ import com.launcher.verification.service.DefaultVerificationService;
 public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     private final LauncherConfiguration configuration;
     private final LauncherInfrastructure infrastructure;
+    private final ResourcePathResolver resourcePathResolver;
 
-    public DefaultLauncherServiceFactory(LauncherConfiguration configuration, LauncherInfrastructure infrastructure) {
+    public DefaultLauncherServiceFactory(
+            LauncherConfiguration configuration,
+            LauncherInfrastructure infrastructure,
+            ResourcePathResolver resourcePathResolver
+    ) {
         this.configuration = configuration;
         this.infrastructure = infrastructure;
+        this.resourcePathResolver = resourcePathResolver;
     }
 
     private ManifestService createManifestService() {
@@ -88,7 +93,6 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     @Override
     public LauncherServices createServices() {
         DirectoryProvider directoryProvider = new LocalDirectoryProvider(configuration);
-        ResourcePathResolver resourcePathResolver = new SafeResourcePathResolver();
 
         return new LauncherServices(
                 createManifestService(),

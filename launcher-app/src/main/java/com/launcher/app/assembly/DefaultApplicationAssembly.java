@@ -15,6 +15,7 @@ import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
 import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.core.game.builder.GameLaunchCommandBuilder;
 import com.launcher.core.game.classpath.builder.DefaultGameClasspathBuilder;
+import com.launcher.core.game.classpath.builder.GameClasspathBuilder;
 import com.launcher.core.game.classpath.formatter.ClasspathFormatter;
 import com.launcher.core.game.classpath.formatter.DefaultClasspathFormatter;
 import com.launcher.core.operation.DefaultOperationManager;
@@ -23,6 +24,8 @@ import com.launcher.core.operation.factory.DefaultOperationFactory;
 import com.launcher.core.operation.factory.OperationFactory;
 import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.core.resolve.LaunchArgumentResolver;
+import com.launcher.core.resource.ResourcePathResolver;
+import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.state.LauncherStateMachine;
 
 public class DefaultApplicationAssembly implements ApplicationAssembly {
@@ -51,16 +54,22 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
         return new DefaultGameLaunchCommandBuilder(resolver);
     }
 
+    private GameClasspathBuilder getClasspathBuilder(ResourcePathResolver resourcePathResolver) {
+        return new DefaultGameClasspathBuilder(resourcePathResolver);
+    }
+
     private OperationManager createOperationManager(LauncherInfrastructure launcherInfrastructure) {
+        ResourcePathResolver resourcePathResolver = new SafeResourcePathResolver();
         LauncherServicesFactory servicesFactory = new DefaultLauncherServiceFactory(
                 launcherConfiguration,
-                launcherInfrastructure
+                launcherInfrastructure,
+                resourcePathResolver
         );
 
         LauncherServices services = servicesFactory.createServices();
         DownloadPlanBuilder builder = new DownloadPlanBuilder();
 
-        DefaultGameClasspathBuilder classpathBuilder = new DefaultGameClasspathBuilder();
+        GameClasspathBuilder classpathBuilder = getClasspathBuilder(resourcePathResolver);
         ClasspathFormatter classpathFormatter = new DefaultClasspathFormatter();
         GameLaunchCommandBuilder launchCommandBuilder = getLaunchCommandBuilder();
 

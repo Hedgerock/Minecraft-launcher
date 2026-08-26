@@ -11,6 +11,7 @@ import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.operation.factory.DefaultOperationFactory;
 import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
+import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.verification.model.VerificationPlan;
 
 import java.net.URI;
@@ -27,7 +28,9 @@ public class OperationFactoryFixture {
             new DefaultGameLaunchCommandBuilder(
                     new DefaultLaunchArgumentResolver()
             ),
-            new DefaultGameClasspathBuilder(),
+            new DefaultGameClasspathBuilder(
+                    new SafeResourcePathResolver()
+            ),
             new RecordingClasspathFormatter()
     );
 

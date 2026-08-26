@@ -13,7 +13,6 @@ import com.launcher.core.game.GameService;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.storage.directory.DirectoryProvider;
-import com.launcher.core.storage.directory.LocalDirectoryProvider;
 import com.launcher.core.storage.service.DefaultDirectoryService;
 import com.launcher.core.storage.service.DirectoryService;
 import com.launcher.core.verification.VerificationService;
@@ -34,15 +33,18 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     private final LauncherConfiguration configuration;
     private final LauncherInfrastructure infrastructure;
     private final ResourcePathResolver resourcePathResolver;
+    private final DirectoryProvider directoryProvider;
 
     public DefaultLauncherServiceFactory(
             LauncherConfiguration configuration,
             LauncherInfrastructure infrastructure,
-            ResourcePathResolver resourcePathResolver
+            ResourcePathResolver resourcePathResolver,
+            DirectoryProvider directoryProvider
     ) {
         this.configuration = configuration;
         this.infrastructure = infrastructure;
         this.resourcePathResolver = resourcePathResolver;
+        this.directoryProvider = directoryProvider;
     }
 
     private ManifestService createManifestService() {
@@ -92,15 +94,13 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
 
     @Override
     public LauncherServices createServices() {
-        DirectoryProvider directoryProvider = new LocalDirectoryProvider(configuration);
 
         return new LauncherServices(
                 createManifestService(),
                 createVerificationService(directoryProvider, resourcePathResolver),
                 createDirectoryService(directoryProvider),
                 createDownloadService(directoryProvider, resourcePathResolver),
-                createGameService(),
-                directoryProvider
+                createGameService()
         );
     }
 }

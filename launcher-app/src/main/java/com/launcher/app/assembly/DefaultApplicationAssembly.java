@@ -27,6 +27,8 @@ import com.launcher.core.resolve.LaunchArgumentResolver;
 import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.state.LauncherStateMachine;
+import com.launcher.core.storage.directory.DirectoryProvider;
+import com.launcher.core.storage.directory.LocalDirectoryProvider;
 
 public class DefaultApplicationAssembly implements ApplicationAssembly {
     private final LauncherConfiguration launcherConfiguration;
@@ -60,10 +62,12 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
 
     private OperationManager createOperationManager(LauncherInfrastructure launcherInfrastructure) {
         ResourcePathResolver resourcePathResolver = new SafeResourcePathResolver();
+        DirectoryProvider directoryProvider = new LocalDirectoryProvider(launcherConfiguration);
         LauncherServicesFactory servicesFactory = new DefaultLauncherServiceFactory(
                 launcherConfiguration,
                 launcherInfrastructure,
-                resourcePathResolver
+                resourcePathResolver,
+                directoryProvider
         );
 
         LauncherServices services = servicesFactory.createServices();
@@ -74,7 +78,7 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
         GameLaunchCommandBuilder launchCommandBuilder = getLaunchCommandBuilder();
 
         GameLaunchPlanBuilder launchPlanBuilder = new GameLaunchPlanBuilder(
-                services.directoryProvider(),
+                directoryProvider,
                 launchCommandBuilder,
                 classpathBuilder,
                 classpathFormatter

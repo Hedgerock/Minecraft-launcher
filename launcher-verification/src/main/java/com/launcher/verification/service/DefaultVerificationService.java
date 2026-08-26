@@ -1,5 +1,6 @@
 package com.launcher.verification.service;
 
+import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.verification.VerificationService;
 import com.launcher.core.verification.model.ResourceVerificationResult;
@@ -15,10 +16,16 @@ import java.util.List;
 public class DefaultVerificationService implements VerificationService {
     private final DirectoryProvider directoryProvider;
     private final FileVerifier fileVerifier;
+    private final ResourcePathResolver resourcePathResolver;
 
-    public DefaultVerificationService(DirectoryProvider directoryProvider, FileVerifier fileVerifier) {
+    public DefaultVerificationService(
+            DirectoryProvider directoryProvider,
+            FileVerifier fileVerifier,
+            ResourcePathResolver resourcePathResolver
+    ) {
         this.directoryProvider = directoryProvider;
         this.fileVerifier = fileVerifier;
+        this.resourcePathResolver = resourcePathResolver;
     }
 
     @Override
@@ -32,7 +39,10 @@ public class DefaultVerificationService implements VerificationService {
     }
 
     private ResourceVerificationResult verifyResource(ResourceEntry resource) {
-        Path filePath = directoryProvider.directories().game().resolve(resource.path());
+        Path gameDirectory = directoryProvider.directories().game();
+        String resourcePath = resource.path();
+
+        Path filePath = resourcePathResolver.resolve(gameDirectory, resourcePath);
 
         return fileVerifier.verify(filePath, resource);
     }

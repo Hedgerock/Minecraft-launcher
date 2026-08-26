@@ -11,6 +11,8 @@ import com.launcher.app.service.LauncherServices;
 import com.launcher.core.download.DownloadService;
 import com.launcher.core.game.GameService;
 import com.launcher.core.manifest.ManifestService;
+import com.launcher.core.resource.ResourcePathResolver;
+import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.directory.LocalDirectoryProvider;
 import com.launcher.core.storage.service.DefaultDirectoryService;
@@ -58,19 +60,23 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
         );
     }
 
-    private DownloadService createDownloadService(DirectoryProvider directoryProvider) {
+    private DownloadService createDownloadService(
+            DirectoryProvider directoryProvider,
+            ResourcePathResolver resourcePathResolver
+    ) {
         FileDownloader downloader = new DefaultFileDownloader();
-        return new DefaultDownloadService(directoryProvider, downloader);
+        return new DefaultDownloadService(directoryProvider, downloader, resourcePathResolver);
     }
 
-    private VerificationService createVerificationService(DirectoryProvider directoryProvider) {
+    private VerificationService createVerificationService(
+            DirectoryProvider directoryProvider,
+            ResourcePathResolver resourcePathResolver
+    ) {
         FileMetadataReader metadataReader = new LocalFileMetadataReader();
         HashService hashService = new Sha256HashService();
-
         FileVerifier fileVerifier = new DefaultFileVerifier(metadataReader, hashService);
 
-
-        return new DefaultVerificationService(directoryProvider, fileVerifier);
+        return new DefaultVerificationService(directoryProvider, fileVerifier, resourcePathResolver);
     }
 
     private GameService createGameService() {
@@ -82,13 +88,13 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     @Override
     public LauncherServices createServices() {
         DirectoryProvider directoryProvider = new LocalDirectoryProvider(configuration);
-
+        ResourcePathResolver resourcePathResolver = new SafeResourcePathResolver();
 
         return new LauncherServices(
                 createManifestService(),
-                createVerificationService(directoryProvider),
+                createVerificationService(directoryProvider, resourcePathResolver),
                 createDirectoryService(directoryProvider),
-                createDownloadService(directoryProvider),
+                createDownloadService(directoryProvider, resourcePathResolver),
                 createGameService(),
                 directoryProvider
         );

@@ -6,8 +6,11 @@ import com.launcher.downloader.exception.DownloadException;
 import com.launcher.downloader.exception.DownloadExceptionReason;
 import com.launcher.downloader.support.FixedDirectoryProvider;
 import com.launcher.downloader.support.RecordingFileDownloader;
+import com.launcher.downloader.support.RecordingResourcePathResolver;
 import com.launcher.downloader.support.WritingFileDownloader;
+import com.launcher.downloader.support.model.TestDownloadServiceResourcePathResolverRecord;
 import com.launcher.model.manifest.ResourceEntry;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -16,10 +19,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultDownloadServiceTest {
+    private RecordingResourcePathResolver resourcePathResolver;
 
     private ResourceEntry getResourceEntry(String path, long size, String url) {
         return new ResourceEntry(
@@ -30,6 +35,67 @@ class DefaultDownloadServiceTest {
         );
     }
 
+    @BeforeEach
+    void setUp() {
+        resourcePathResolver = new RecordingResourcePathResolver(Path.of("resolved/test-file.jar"));
+    }
+
+    @Test
+    void should_pass_resolved_path_file_downloader(@TempDir Path tempDir) {
+        //given
+        Path gameDirectory = tempDir.resolve("game");
+        Path resolvedPath = tempDir.resolve("resolved/test-file.jar");
+        RecordingFileDownloader downloader = new RecordingFileDownloader();
+
+        resourcePathResolver.setWithReturnResolvedPath();
+        resourcePathResolver.setResolvedPath(resolvedPath);
+
+
+        DownloadService service = new DefaultDownloadService(
+                new FixedDirectoryProvider(gameDirectory),
+                downloader,
+                resourcePathResolver
+        );
+
+        ResourceEntry resourceEntry = getResourceEntry("mods/current-mode.jar", 100L, "http://file-entry.jar");
+
+        //when
+        service.download(new DownloadPlan(List.of(resourceEntry)));
+
+        //then
+        assertEquals(resolvedPath, downloader.getRequests().getFirst().targetPath());
+    }
+
+    @Test
+    void should_pass_game_directory_and_resource_path_to_resource_path_resolver(@TempDir Path tempDir) {
+        //given
+        Path gameDirectory = tempDir.resolve("game");
+        RecordingFileDownloader downloader = new RecordingFileDownloader();
+
+        DownloadService service = new DefaultDownloadService(
+                new FixedDirectoryProvider(gameDirectory),
+                downloader,
+                resourcePathResolver
+        );
+
+        ResourceEntry resourceEntry = getResourceEntry("mods/current-mode.jar", 100L, "http://file-entry.jar");
+
+        DownloadPlan plan = new DownloadPlan(List.of(resourceEntry));
+        List<TestDownloadServiceResourcePathResolverRecord> expectedCalls = Stream.of(resourceEntry)
+                .map(resource ->
+                        new TestDownloadServiceResourcePathResolverRecord(gameDirectory, resource.path()
+                        )
+                )
+                .toList();
+
+        //when
+        service.download(plan);
+
+        //then
+        assertEquals(expectedCalls, resourcePathResolver.getResourcePathResolverRecords());
+
+    }
+
     @Test
     void should_include_resource_path_and_target_path_when_file_downloader_failed() {
         //given
@@ -37,7 +103,8 @@ class DefaultDownloadServiceTest {
         RecordingFileDownloader downloader = new RecordingFileDownloader(true);
         DownloadService service = new DefaultDownloadService(
                 new FixedDirectoryProvider(gameDirectory),
-                downloader
+                downloader,
+                resourcePathResolver
         );
 
         ResourceEntry resourceEntry = getResourceEntry("mods/current-mode.jar", 100L, "http://file-entry.jar");
@@ -74,7 +141,8 @@ class DefaultDownloadServiceTest {
 
         DownloadService service = new DefaultDownloadService(
                 new FixedDirectoryProvider(gameDirectory),
-                new WritingFileDownloader(content)
+                new WritingFileDownloader(content),
+                resourcePathResolver
         );
         //when
         service.download(plan);
@@ -99,7 +167,8 @@ class DefaultDownloadServiceTest {
 
         DownloadService service = new DefaultDownloadService(
                 new FixedDirectoryProvider(gameDirectory),
-                downloader
+                downloader,
+                resourcePathResolver
         );
 
         //when
@@ -133,7 +202,8 @@ class DefaultDownloadServiceTest {
 
         DownloadService service = new DefaultDownloadService(
                 new FixedDirectoryProvider(gameDirectory),
-                new WritingFileDownloader("Hello test")
+                new WritingFileDownloader("Hello test"),
+                resourcePathResolver
         );
 
         //when
@@ -163,7 +233,8 @@ class DefaultDownloadServiceTest {
         RecordingFileDownloader downloader = new RecordingFileDownloader();
         DownloadService service = new DefaultDownloadService(
                 new FixedDirectoryProvider(gameDirectory),
-                downloader
+                downloader,
+                resourcePathResolver
         );
 
         ResourceEntry firstFile = getResourceEntry("first.jar", 100L, "http://first.jar");
@@ -189,7 +260,8 @@ class DefaultDownloadServiceTest {
         RecordingFileDownloader downloader = new RecordingFileDownloader();
         DownloadService service = new DefaultDownloadService(
                 new FixedDirectoryProvider(gameDirectory),
-                downloader
+                downloader,
+                resourcePathResolver
         );
 
         ResourceEntry fileEntry = getResourceEntry("mods/current-mode.jar", 100L, "http://file-entry.jar");
@@ -217,7 +289,8 @@ class DefaultDownloadServiceTest {
         RecordingFileDownloader downloader = new RecordingFileDownloader(true);
         DownloadService service = new DefaultDownloadService(
                 new FixedDirectoryProvider(gameDirectory),
-                downloader
+                downloader,
+                resourcePathResolver
         );
 
         ResourceEntry fileEntry = getResourceEntry("mods/current-mode.jar", 100L, "http://file-entry.jar");
@@ -239,7 +312,8 @@ class DefaultDownloadServiceTest {
         RecordingFileDownloader downloader = new RecordingFileDownloader();
         DownloadService service = new DefaultDownloadService(
                 new FixedDirectoryProvider(gameDirectory),
-                downloader
+                downloader,
+                resourcePathResolver
         );
 
         DownloadPlan plan = new DownloadPlan(List.of());

@@ -2,6 +2,7 @@ package com.launcher.downloader.service;
 
 import com.launcher.core.download.DownloadService;
 import com.launcher.core.download.model.DownloadPlan;
+import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.downloader.download.FileDownloader;
 import com.launcher.downloader.exception.DownloadException;
@@ -14,10 +15,16 @@ import java.nio.file.Path;
 public class DefaultDownloadService implements DownloadService {
     private final DirectoryProvider directoryProvider;
     private final FileDownloader fileDownloader;
+    private final ResourcePathResolver resourcePathResolver;
 
-    public DefaultDownloadService(DirectoryProvider directoryProvider, FileDownloader fileDownloader) {
+    public DefaultDownloadService(
+            DirectoryProvider directoryProvider,
+            FileDownloader fileDownloader,
+            ResourcePathResolver resourcePathResolver
+    ) {
         this.directoryProvider = directoryProvider;
         this.fileDownloader = fileDownloader;
+        this.resourcePathResolver = resourcePathResolver;
     }
 
     @Override
@@ -25,7 +32,8 @@ public class DefaultDownloadService implements DownloadService {
         Path gameDirectory = directoryProvider.directories().game();
 
         for (ResourceEntry resource : plan.resources()) {
-            Path targetPath = gameDirectory.resolve(resource.path());
+            String resourcePath = resource.path();
+            Path targetPath = resourcePathResolver.resolve(gameDirectory, resourcePath);
 
             try {
                 fileDownloader.download(resource.url(), targetPath);

@@ -12,6 +12,7 @@
 - Documented the decision to use manifest resources as the verification flow source
 - Documented the minimal library metadata scope
 - Documented resource path safety rules
+- Added safe resource path resolution through a shared `ResourсePathResolver`
 
 ### Changed
 
@@ -24,6 +25,7 @@
 - Documented manifest resource projection
 - Changed verification and download plan contracts to use resource entries
 - Verification flow now uses manifest resources as its source
+- Verification and download services now resolve manifest resource paths through the shared safe resolver
 
 ---
 

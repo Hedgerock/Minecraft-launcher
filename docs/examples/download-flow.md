@@ -36,8 +36,6 @@
 
 `DownloadPlan` содержит только ресурсы, требующие восстановления
 
----
-
 ## Предусловия
 
 - `VERIFY_FILES` завершена успешно
@@ -45,6 +43,23 @@
 - `VerificationPlan` содержит ресурсы, требующие восстановления
 - `BUILD_DOWNLOAD_PLAN` успешно построен
 - `DownloadPlan` сохранен в `LaunchContext`
+
+---
+
+
+## Разрешение локального пути ресурса
+
+Download flow не строит `targetPath` напрямую через
+
+```java
+gameDirectory.resolve(resource.path())
+```
+
+Перед скачиванием локальный путь ресурса разрешается через общий `ResourcePathResolver`, который
+проверяет, что путь из manifest остается внутри `gameDirectory`
+
+После успешного разрешения пути `DefaultDownloadService` передает безопасный `targetPath` в `FileDownloader`,
+а затем выполняет проверку размера скачанного ресурса
 
 ---
 
@@ -89,8 +104,8 @@ LauncherEngine
 
 `DownloadFilesTask` получает `DownloadPlan` из `LaunchContext` и передает его в `DownloadService`
 
-`DefaultDownloadService` получает `game directory` через `DirectoryProvider`, строит целевой путь для каждого файла
-относительно `game directory` и передает `url` и `targetPath` в `FileDownloader`
+`DefaultDownloadService` получает `game directory` через `DirectoryProvider`, разрешает локальный путь каждого ресурса
+через `ResourcePathResolver` и передает `url` и безопасный `targetPath` в `FileDownloader`
 
 ### 4. Загрузка отдельного файла
 

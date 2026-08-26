@@ -91,6 +91,19 @@ Runtime-контекст текущего запуска лаунчера
 Может быть расширен physical metadata для восстановления library-файла, но остается отдельной моделью от
 `FileEntry`
 
+### RuntimeLibraryMetadata
+
+Промежуточная модель library metadata, получения из manifest JSON до выбора runtime-compatible `LibraryEntry`
+
+На текущем этапе содержит минимальную физическую метадату `path`, `sha256`, `size` и `url`
+
+### RuntimeLibrarySelector
+
+Компонент, выбирающий `LibraryEntry` из `RuntimeLibraryMetadata`
+
+На текущем этапе выполняет прямое преобразование metadata в `LibraryEntry`, но является точкой
+расширения для будущих OS-specific rules, classifiers и natives
+
 ### ResourceEntry
 
 Общая resource-level модель physical metadata ресурса из `Manifest`

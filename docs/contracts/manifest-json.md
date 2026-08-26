@@ -23,9 +23,10 @@
 
 ```text
 JSON manifest
-    -> JsonManifestMapper
-        -> Manifest
-            -> LauncherEngine
+    -> ManifestJson
+        -> RuntimeLibrarySelector
+            -> LibraryEntry
+                -> Manifest
 ```
 
 ---
@@ -86,7 +87,13 @@ JSON manifest
 На текущем этапе `ManifestResources` используется как источник verification flow, поэтому `Manifest.files` 
 и `Manifest.libraries` участвуют в verification/download lifecycle через общий `ResourceEntry` контракт
 
-`libraries` преобразуется в список `LibraryEntry`
+`libraries` сначала преобразуется в список `RuntimeLibraryMetadata`
+
+Затем `RuntimeLibrarySelector` выбирает runtime-compatible `LibraryEntry` для текущего минимального
+runtime-сценария
+
+На текущем этапе default selector выполняет прямое преобразование `RuntimeLibraryMetadata` в `LibraryEntry`, без
+OS-specific rules, classifiers и natives
 
 `launchInfo.javaExecutable` используется как первый элемент команды запуска игры
 

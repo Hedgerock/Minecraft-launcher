@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Спроектировать отдельный шаг runtime library selection перед формированием `libraryEntry`
+- Развить runtime library selection OS-specific rules, classifiers и natives
 
 ---
 
@@ -14,3 +14,4 @@
 - Подключен `ManifestResources` к verification flow
 - Зафиксирован минимальный scope library metadata
 - Зафиксирована граница runtime metadata для `libraries`
+- Добавлен seam runtime library selection перед формированием `LibraryEntry`

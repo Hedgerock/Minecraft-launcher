@@ -14,6 +14,7 @@
 - Documented resource path safety rules
 - Added safe resource path resolution through a shared `ResourсePathResolver`
 - Documented the boundary between raw library manifest metadata and selected runtime library entries
+- Added a runtime library selection between manifest JSON library metadata and selected `LibraryEntry` models
 
 ### Changed
 
@@ -29,6 +30,8 @@
 - Verification and download services now resolve manifest resource paths through the shared safe resolver
 - Changed game classpath building to resolve classpath entries through the shared safe `ResourcePathResolver`
 - Moved `DirectoryProvider` ownership from `LauncherServices` to application assembly
+- Changed manifest JSON mapping to convert library JSON into `RuntimeLibraryMetadata` before 
+  selecting runtime `LibraryEntry` models
 
 ---
 

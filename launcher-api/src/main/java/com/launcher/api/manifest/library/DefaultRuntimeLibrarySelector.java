@@ -1,5 +1,6 @@
 package com.launcher.api.manifest.library;
 
+import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
 
@@ -18,11 +19,13 @@ public final class DefaultRuntimeLibrarySelector implements RuntimeLibrarySelect
     }
 
     private LibraryEntry toLibraryEntry(RuntimeLibraryMetadata library) {
+        LibraryArtifactMetadata artifact = library.artifact();
+
         return new LibraryEntry(
-                library.path(),
-                library.sha256(),
-                library.size(),
-                library.url()
+                artifact.path(),
+                artifact.sha256(),
+                artifact.size(),
+                artifact.url()
         );
     }
 }

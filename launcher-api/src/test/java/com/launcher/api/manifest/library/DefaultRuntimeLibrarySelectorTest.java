@@ -1,5 +1,6 @@
 package com.launcher.api.manifest.library;
 
+import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
 import org.junit.jupiter.api.Test;
@@ -66,10 +67,12 @@ class DefaultRuntimeLibrarySelectorTest {
     @SuppressWarnings("SameParameterValue")
     private RuntimeLibraryMetadata getRuntimeLibraryMetadata(String path) {
         return new RuntimeLibraryMetadata(
-                path,
-                "sha256",
-                100L,
-                "https://example.com/" + path
+                new LibraryArtifactMetadata(
+                        path,
+                        "sha256",
+                        100L,
+                        "https://example.com/" + path
+                )
         );
     }
 

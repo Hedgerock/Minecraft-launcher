@@ -13,6 +13,7 @@
 - Documented the minimal library metadata scope
 - Documented resource path safety rules
 - Added safe resource path resolution through a shared `ResourсePathResolver`
+- Documented the boundary between raw library manifest metadata and selected runtime library entries
 
 ### Changed
 

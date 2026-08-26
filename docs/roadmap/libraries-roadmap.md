@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Определить следующий runtime realism шаг после минимальной library metadata модели
+- Спроектировать отдельный шаг runtime library selection перед формированием `libraryEntry`
 
 ---
 
@@ -13,3 +13,4 @@
 - Зафиксировано решение использовать `ManifestResources` как источник verification flow
 - Подключен `ManifestResources` к verification flow
 - Зафиксирован минимальный scope library metadata
+- Зафиксирована граница runtime metadata для `libraries`

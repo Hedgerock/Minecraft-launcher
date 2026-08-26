@@ -134,7 +134,15 @@ JSON manifest
 `libraries`
 
 Во время построения `GameLaunchPlan` выбранный источник classpath преобразуется в `GameClasspath`,
-разрешается относительно игровой директории и формируются в строку с использованием системного разделителя путей
+разрешается относительно игровой директории и форматируются в строку с использованием системного разделителя путей
+
+Перед добавлением в `GameClasspath` каждый classpath entry разрешается через общий `ResourcePathResolver` относительно
+игровой директории
+
+Это правило применяется как к `Manifest.libraries`, так и к fallback `launchInfo.classpath`
+
+`GameClasspathBuilder` не выполняет прямой `gameDirectory.resolve(...)`, а делегирует построение локального
+пути общему resolver-у
 
 ```text
 Manifest.libraries

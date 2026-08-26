@@ -26,6 +26,8 @@
 - Changed verification and download plan contracts to use resource entries
 - Verification flow now uses manifest resources as its source
 - Verification and download services now resolve manifest resource paths through the shared safe resolver
+- Changed game classpath building to resolve classpath entries through the shared safe `ResourcePathResolver`
+- Moved `DirectoryProvider` ownership from `LauncherServices` to application assembly
 
 ---
 

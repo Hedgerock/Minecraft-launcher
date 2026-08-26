@@ -230,6 +230,16 @@ runtime-сценариях
 
 Если `libraries` пустой, использует `launchInfo.classpath` как fallback для минимальных сценариев
 
+При построении локальных classpath paths использует `ResourcePathResolver`, чтобы не дублировать правила
+безопасного разрешения manifest paths
+
+### ResourcePathResolver
+
+Общий компонент безопасного разрешения пути `Manifest` относительно базовой директории
+
+Используется verification, download и classpath building, когда путь `Manifest` нужно преобразовать
+в локальный `Path`
+
 ### ClasspathFormatter
 
 Компонент, преобразующий `GameClasspath` в строку classpath для команды запуска

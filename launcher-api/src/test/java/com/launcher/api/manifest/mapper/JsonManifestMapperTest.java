@@ -10,6 +10,8 @@ import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
+import com.launcher.model.manifest.rules.LibraryRule;
+import com.launcher.model.manifest.rules.LibraryRuleAction;
 import com.launcher.model.runtime.OperatingSystem;
 import com.launcher.model.runtime.RuntimeEnvironment;
 import org.junit.jupiter.api.Test;
@@ -39,6 +41,54 @@ class JsonManifestMapperTest {
     }
 
     @Test
+    void should_map_empty_list_of_library_rules_from_manifest_json_when_rules_are_null() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest-without-library-rules.json");
+
+        //when
+        mapper.map(json);
+
+        //then
+        assertTrue(selector.getLibraries().getFirst().rules().isEmpty());
+    }
+
+    @Test
+    void should_map_library_rules_from_manifest_json() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest.json");
+
+        //when
+        mapper.map(json);
+
+        LibraryRule firstRule = selector.getLibraries().getFirst().rules().getFirst();
+        LibraryRule secondRule = selector.getLibraries().getFirst().rules().getLast();
+
+        assertEquals(
+                LibraryRuleAction.ALLOW,
+                firstRule.action()
+        );
+
+        assertEquals(
+                LibraryRuleAction.DISALLOW,
+                secondRule.action()
+        );
+
+        assertEquals(
+                OperatingSystem.WINDOWS,
+                firstRule.operatingSystem()
+        );
+
+        assertEquals(
+                OperatingSystem.MACOS,
+                secondRule.operatingSystem()
+        );
+    }
+
+    @Test
     void should_pass_environment_and_runtime_libraries_metadata_to_selector() {
         //given
         RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
@@ -57,7 +107,10 @@ class JsonManifestMapperTest {
                                 123456789L,
                                 "https://localhost/files/libraries/org/example/example.jar"
                         ),
-                        List.of()
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.DISALLOW, OperatingSystem.MACOS)
+                        )
                 )
         ), selector.getLibraries());
 

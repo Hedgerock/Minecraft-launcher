@@ -21,7 +21,17 @@
       "path": "libraries/org/example/example.jar",
       "sha256": "library-sha256",
       "size": 123456789,
-      "url": "https://localhost/files/libraries/org/example/example.jar"
+      "url": "https://localhost/files/libraries/org/example/example.jar",
+      "rules": [
+        {
+          "action": "allow",
+          "os": "windows"
+        },
+        {
+          "action": "disallow",
+          "os": "macos"
+        }
+      ]
     }
   ]
 }

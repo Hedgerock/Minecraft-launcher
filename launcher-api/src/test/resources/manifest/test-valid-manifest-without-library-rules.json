@@ -17,7 +17,6 @@
     "jvmArgs": ["-Xmx2G"],
     "gameArgs": ["--username", "Player"],
     "classpath": ["libraries/example.jar", "client.jar"],
-    "someNewWeirdField": "someValue",
     "javaExecutable": "java"
   },
   "libraries": [
@@ -25,17 +24,7 @@
       "path": "libraries/org/example/example.jar",
       "sha256": "library-sha256",
       "size": 123456789,
-      "url": "https://localhost/files/libraries/org/example/example.jar",
-      "rules": [
-        {
-          "action": "allow",
-          "os": "windows"
-        },
-        {
-          "action": "disallow",
-          "os": "macos"
-        }
-      ]
+      "url": "https://localhost/files/libraries/org/example/example.jar"
     }
   ]
 }

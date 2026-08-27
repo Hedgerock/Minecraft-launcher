@@ -9,12 +9,22 @@ public record LibraryEntryJson(
         String path,
         String sha256,
         long size,
-        String url
+        String url,
+        List<LibraryRuleJson> rules
 ) {
+
+    public LibraryEntryJson {
+        rules = rules == null
+                ? List.of()
+                : List.copyOf(rules);
+    }
+
     RuntimeLibraryMetadata toRuntimeLibraryMetadata() {
         return new RuntimeLibraryMetadata(
                 toLibraryArtifactMetadata(),
-                List.of()
+                rules.stream()
+                        .map(LibraryRuleJson::toLibraryRule)
+                        .toList()
         );
     }
 

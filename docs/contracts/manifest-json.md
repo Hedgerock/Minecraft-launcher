@@ -64,7 +64,13 @@ RuntimeEnvironment
       "path": "libraries/org/example/example.jar",
       "sha256": "535436571185ff3d2564aceead2dfece7bf7b69fc80ea0174a508b133110af2e",
       "size": 987654321,
-      "url": "https://localhost/libraries/org/example/example.jar"
+      "url": "https://localhost/libraries/org/example/example.jar",
+      "rules": [
+        {
+          "action": "allow",
+          "os": "windows"
+        }
+      ]
     }
   ]
 }
@@ -111,11 +117,22 @@ RuntimeEnvironment
 
 На текущем этапе `RuntimeEnvironment` содержит только `OperatingSystem`
 
-`DefaultRuntimeLibrarySelector` пока не использует `OperatingSystem` для фильтрации, но контракт уже подготовлен
-для будущих OS-specific rules, classifiers и natives
+`RuntimeLibraryMetadata` также может содержать список `LibraryRule`
 
-На текущем этапе default selector использует основной `LibraryArtifactMetadata` и выполняет прямое преобразование
-artifact metadata в `LibraryEntry`, без OS-specific rules, classifiers и natives
+Отсутствие `rules` означает, что library доступна для любого `RuntimeEnvironment`
+
+Если `rules` указаны, `DefaultRuntimeLibrarySelector` выбирает library на основе текущего
+`RuntimeEnvironment.operatingSystem`
+
+Селектор учитывает только правила, совпадающие с текущей `OperatingSystem`
+
+Если совпадающих правил несколько, применяется последнее совпадающее правило
+
+Library включается в итоговый `Manifest.libraries`, если последнее совпадающее правило имеет
+`action` `ALLOW`
+
+Library исключается из итогового `Manifest.libraries`, если совпадающих правил нет или последнее
+совпадающее правило имеет `action` `DISALLOW`
 
 `launchInfo.javaExecutable` используется как первый элемент команды запуска игры
 
@@ -224,7 +241,10 @@ LaunchInfo
 
 ## Не входит в контракт текущей версии
 
-- Полная модель libraries с metadata, rules, classifiers и natives
+- Полная модель libraries с classifiers и natives
+- Правила без OS
+- Правила на основе features
+- Правила на основе architecture
 - Автоматический выбор Java runtime
 - Проверка существования Java executable на файловой системе
 - Правило подстановки переменных

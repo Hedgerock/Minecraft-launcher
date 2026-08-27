@@ -20,6 +20,7 @@
 - Added minimal runtime environment model for library selection
 - Added `RuntimeEnvironmentProvider` and system-based runtime environment detection
 - Added minimal OS-specific library rules for runtime library selection
+- Added manifest JSON mapping for OS-specific library rules
 
 ### Changed
 
@@ -38,7 +39,8 @@
 - Changed manifest JSON mapping to convert library JSON into `RuntimeLibraryMetadata` before 
   selecting runtime `LibraryEntry` models
 - Changed `RuntimeLibraryMetadata` to reference `LibraryArtifactMetadata` instead of storing artifact fields directly
-- Changed runtime library selection to receive `RuntimeEnvironment` without changing selection behavior
+- Changed runtime library selection to receive `RuntimeEnvironment` as an explicit input
+- Changed runtime library selection to filter libraries by OS-specific rules
 
 ---
 

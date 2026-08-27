@@ -115,9 +115,9 @@ runtime-сценариях
 
 Промежуточная модель library metadata, полученная из manifest JSON до выбора runtime-compatible `LibraryEntry`
 
-На текущем этапе содержит основной `LibraryArtifactMetadata`
+На текущем этапе содержит основной `LibraryArtifactMetadata` и список `LibraryRule`
 
-В будущих итерациях может быть расширена rules, classifiers и natives metadata
+В будущих итерациях может быть расширена classifiers и natives metadata
 
 ### LibraryArtifactMetadata
 
@@ -127,12 +127,27 @@ runtime-сценариях
 
 Используется `RuntimeLibrarySelector` для формирования выбранного `LibraryEntry`
 
+### LibraryRule
+
+Правило выбора library для конкретной операционной системы
+
+Содержит действие выбора и `OperatingSystem`
+
+### LibraryRuleAction
+
+Действие правила выбора library
+
+На текущем этапе содержит значения `ALLOW` и `DISALLOW`
+
 ### RuntimeLibrarySelector
 
 Компонент, выбирающий `LibraryEntry` из `RuntimeLibraryMetadata` для заданного `RuntimeEnvironment`
 
-На текущем этапе получает runtime environment, но выполняет прямое преобразование metadata в `LibraryEntry`
-без OS-specific фильтрации
+На текущем этапе учитывает минимальные OS-specific library rules
+
+Если rules отсутствуют, library считается доступной для любого runtime environment
+
+Если rules есть, selector выбирает library на основе последней rule, совпадающей с текущей `OperatingSystem`
 
 ### OperatingSystem
 

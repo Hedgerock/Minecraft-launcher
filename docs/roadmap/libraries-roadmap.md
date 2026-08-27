@@ -2,8 +2,6 @@
 
 ## Текущий план
 
-- Ввести минимальные OS-specific library rules
-- Подключить OS-specific rules к `RuntimeLibrarySelector`
 - Развить runtime library selection для classifiers и natives
 
 ---
@@ -22,3 +20,7 @@
 - Введена минимальная модель `RuntimeEnvironment`
 - `RuntimeEnvironment` передан в runtime library selection без изменения текущего поведения
 - Добавлен `RuntimeEnvironmentProvider` для определения текущего runtime environment
+- Зафиксированы минимальные OS-specific library rules
+- Добавлены модели `LibraryRule` и `LibraryRuleAction`
+- Manifest JSON mapping преобразует library rules в `RuntimeLibraryMetadata`
+- `RuntimeLibrarySelector` выбирает libraries с учетом текущей `OperatingSystem`

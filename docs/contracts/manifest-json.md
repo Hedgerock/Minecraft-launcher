@@ -103,7 +103,7 @@ JSON manifest
 
 Затем `RuntimeLibrarySelector` выбирает runtime-compatible `LibraryEntry` на основе `RuntimeLibraryMetadata`
 
-На текущем этапе default selector использует основной `LibraryArtifactMetadata` и выполняет прямое преобразовние
+На текущем этапе default selector использует основной `LibraryArtifactMetadata` и выполняет прямое преобразование
 artifact metadata в `LibraryEntry`, без OS-specific rules, classifiers и natives 
 
 `launchInfo.javaExecutable` используется как первый элемент команды запуска игры

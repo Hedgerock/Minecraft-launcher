@@ -93,7 +93,7 @@ Runtime-контекст текущего запуска лаунчера
 
 ### RuntimeLibraryMetadata
 
-Промежуточная модель library metadata, получения из manifest JSON до выбора runtime-compatible `LibraryEntry`
+Промежуточная модель library metadata, полученная из manifest JSON до выбора runtime-compatible `LibraryEntry`
 
 На текущем этапе содержит основной `LibraryArtifactMetadata`
 

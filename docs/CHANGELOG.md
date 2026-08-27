@@ -15,7 +15,7 @@
 - Added safe resource path resolution through a shared `ResourсePathResolver`
 - Documented the boundary between raw library manifest metadata and selected runtime library entries
 - Added a runtime library selection between manifest JSON library metadata and selected `LibraryEntry` models
-- Added `LibraryArifactMetadata` to separate downloadable library artifact metadata from runtime library metadata
+- Added `LibraryArtifactMetadata` to separate downloadable library artifact metadata from runtime library metadata
 
 ### Changed
 

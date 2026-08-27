@@ -26,9 +26,11 @@ JSON manifest
     -> ManifestJson
         -> RuntimeLibraryMetadata
             -> LibraryArtifactMetadata
-                -> RuntimeLibrarySelector
-                    -> LibraryEntry
-                        -> Manifest
+            
+RuntimeEnvironment
+    -> RuntimeLibrarySelector
+        -> LibraryEntry
+            -> Manifest
 ```
 
 ---
@@ -102,6 +104,13 @@ JSON manifest
 - `url`
 
 Затем `RuntimeLibrarySelector` выбирает runtime-compatible `LibraryEntry` на основе `RuntimeLibraryMetadata`
+
+`RuntimeLibrarySelector` получает `RuntimeEnvironment` как входные данные
+
+На текущем этапе `RuntimeEnvironment` содержит только `OperatingSystem`
+
+`DefaultRuntimeLibrarySelector` пока не использует `OperatingSystem` для фильтрации, но контракт уже подготовлен
+для будущих OS-specific rules, classifiers и natives
 
 На текущем этапе default selector использует основной `LibraryArtifactMetadata` и выполняет прямое преобразование
 artifact metadata в `LibraryEntry`, без OS-specific rules, classifiers и natives 

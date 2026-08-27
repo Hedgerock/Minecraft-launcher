@@ -91,6 +91,26 @@ Runtime-контекст текущего запуска лаунчера
 Может быть расширен physical metadata для восстановления library-файла, но остается отдельной моделью от
 `FileEntry`
 
+### ResourceEntry
+
+Общая resource-level модель physical metadata ресурса из `Manifest`
+
+Содержит `path`, `sha256`, `size` и `url`
+
+Не содержит статуса проверки, плана загрузки или lifecycle-решений
+
+### ManifestResources
+
+Компонент доменной модели, который строит список `ResourceEntry` из `Manifest.files` и
+`Manifest.libraries`
+
+Сохраняет семантику исходных моделей: `FileEntry` и `LibraryEntry` продолжают использоваться в своих
+runtime-сценариях
+
+---
+
+## Runtime
+
 ### RuntimeLibraryMetadata
 
 Промежуточная модель library metadata, полученная из manifest JSON до выбора runtime-compatible `LibraryEntry`
@@ -109,26 +129,25 @@ Runtime-контекст текущего запуска лаунчера
 
 ### RuntimeLibrarySelector
 
-Компонент, выбирающий `LibraryEntry` из `RuntimeLibraryMetadata`
+Компонент, выбирающий `LibraryEntry` из `RuntimeLibraryMetadata` для заданного `RuntimeEnvironment`
 
-На текущем этапе выполняет прямое преобразование metadata в `LibraryEntry`, но является точкой
-расширения для будущих OS-specific rules, classifiers и natives
+На текущем этапе получает runtime environment, но выполняет прямое преобразование metadata в `LibraryEntry`
+без OS-specific фильтрации
 
-### ResourceEntry
+### OperatingSystem
 
-Общая resource-level модель physical metadata ресурса из `Manifest`
+Доменное перечисление поддерживаемых операционных систем для runtime selection
 
-Содержит `path`, `sha256`, `size` и `url`
+На текущем этапе содержит минимальный набор значений, необходимый для будущего выбора OS-specific
+library artifacts
 
-Не содержит статуса проверки, плана загрузки или lifecycle-решений
+### RuntimeEnvironment
 
-### ManifestResources
+Доменная модель runtime environment, для которого выполняется выбор runtime-compatible libraries
 
-Компонент доменной модели, который строит список `ResourceEntry` из `Manifest.files` и
-`Manifest.libraries`
+На текущем этапе содержит `OperatingSystem`
 
-Сохраняет семантику исходных моделей: `FileEntry` и `LibraryEntry` продолжают использоваться в своих
-runtime-сценариях
+Не определяет текущую OS самостоятельно и не зависит от системных API
 
 ---
 

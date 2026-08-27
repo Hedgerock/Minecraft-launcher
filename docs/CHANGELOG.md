@@ -17,6 +17,7 @@
 - Added a runtime library selection between manifest JSON library metadata and selected `LibraryEntry` models
 - Added `LibraryArtifactMetadata` to separate downloadable library artifact metadata from runtime library metadata
 - Documented the runtime environment boundary for future library selection
+- Added minimal runtime environment model for library selection
 
 ### Changed
 
@@ -35,6 +36,7 @@
 - Changed manifest JSON mapping to convert library JSON into `RuntimeLibraryMetadata` before 
   selecting runtime `LibraryEntry` models
 - Changed `RuntimeLibraryMetadata` to reference `LibraryArtifactMetadata` instead of storing artifact fields directly
+- Changed runtime library selection to receive `RuntimeEnvironment` without changing selection behavior
 
 ---
 

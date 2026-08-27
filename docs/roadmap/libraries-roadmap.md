@@ -2,6 +2,8 @@
 
 ## Текущий план
 
+- Ввести минимальную модель `RuntimeEnvironment`
+- Передать `RuntimeEnvironment` в runtime library selection без изменения текущего поведения
 - Развить runtime library selection для OS-specific rules, classifiers и natives
 
 ---
@@ -16,3 +18,4 @@
 - Зафиксирована граница runtime metadata для `libraries`
 - Добавлен seam runtime library selection перед формированием `LibraryEntry`
 - Artifact metadata выделена в отдельную модель `LibraryArtifactMetadata`
+- Зафиксирована граница runtime environment для будущего library selection

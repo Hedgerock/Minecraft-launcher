@@ -16,6 +16,7 @@
 - Documented the boundary between raw library manifest metadata and selected runtime library entries
 - Added a runtime library selection between manifest JSON library metadata and selected `LibraryEntry` models
 - Added `LibraryArtifactMetadata` to separate downloadable library artifact metadata from runtime library metadata
+- Documented the runtime environment boundary for future library selection
 
 ### Changed
 

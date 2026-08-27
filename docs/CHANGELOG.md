@@ -21,6 +21,7 @@
 - Added `RuntimeEnvironmentProvider` and system-based runtime environment detection
 - Added minimal OS-specific library rules for runtime library selection
 - Added manifest JSON mapping for OS-specific library rules
+- Documented library classifiers and natives boundary for library selection
 
 ### Changed
 

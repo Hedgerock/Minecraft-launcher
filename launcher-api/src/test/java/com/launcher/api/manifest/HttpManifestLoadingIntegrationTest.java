@@ -6,6 +6,8 @@ import com.launcher.api.manifest.library.DefaultRuntimeLibrarySelector;
 import com.launcher.api.manifest.mapper.JsonManifestMapper;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.Manifest;
+import com.launcher.model.runtime.OperatingSystem;
+import com.launcher.model.runtime.RuntimeEnvironment;
 import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.Test;
 
@@ -70,7 +72,8 @@ class HttpManifestLoadingIntegrationTest {
         JavaLauncherHttpClient httpClient = new JavaLauncherHttpClient();
         HttpManifestClient manifestClient = new HttpManifestClient(httpClient, manifestUri);
         JsonManifestMapper manifestMapper = new JsonManifestMapper(
-                new DefaultRuntimeLibrarySelector()
+                new DefaultRuntimeLibrarySelector(),
+                new RuntimeEnvironment(OperatingSystem.WINDOWS)
         );
 
         return new MapperAndClient(manifestClient, manifestMapper);

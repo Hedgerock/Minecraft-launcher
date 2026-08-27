@@ -2,10 +2,16 @@ package com.launcher.api.manifest.mapper;
 
 import com.launcher.api.manifest.exception.ManifestMappingException;
 import com.launcher.api.manifest.library.DefaultRuntimeLibrarySelector;
+import com.launcher.api.manifest.library.RuntimeLibrarySelector;
+import com.launcher.api.manifest.support.RecordingRuntimeLibrarySelector;
 import com.launcher.model.manifest.FileEntry;
 import com.launcher.model.manifest.LaunchInfo;
+import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.RuntimeLibraryMetadata;
+import com.launcher.model.runtime.OperatingSystem;
+import com.launcher.model.runtime.RuntimeEnvironment;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -17,13 +23,50 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonManifestMapperTest {
-    private final JsonManifestMapper mapper = new JsonManifestMapper(
-            new DefaultRuntimeLibrarySelector()
-    );
+
+    private JsonManifestMapper getMapper(RuntimeLibrarySelector runtimeLibrarySelector) {
+        return new JsonManifestMapper(
+                runtimeLibrarySelector,
+                new RuntimeEnvironment(OperatingSystem.WINDOWS)
+        );
+    }
+
+    private JsonManifestMapper getMapper() {
+        return getMapper(new DefaultRuntimeLibrarySelector());
+    }
+
+    @Test
+    void should_pass_environment_and_runtime_libraries_metadata_to_selector() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest.json");
+
+        //when
+        mapper.map(json);
+
+        //then
+        assertEquals(List.of(
+                new RuntimeLibraryMetadata(
+                        new LibraryArtifactMetadata(
+                                "libraries/org/example/example.jar",
+                                "library-sha256",
+                                123456789L,
+                                "https://localhost/files/libraries/org/example/example.jar"
+                        )
+                )
+        ), selector.getLibraries());
+
+        assertEquals(
+                OperatingSystem.WINDOWS,
+                selector.getEnvironment().operatingSystem()
+        );
+    }
 
     @Test
     void should_fail_when_required_manifest_field_is_missing() {
         //given
+        JsonManifestMapper mapper = getMapper();
         String json = loadResource("manifest/test-some-empty-values-manifest.json");
 
         //then
@@ -36,6 +79,7 @@ class JsonManifestMapperTest {
     @Test
     void should_return_immutable_file_entries_from_manifest_json() {
         //given
+        JsonManifestMapper mapper = getMapper();
         String json = loadResource("manifest/test-valid-manifest.json");
         FileEntry candidate = new FileEntry(
                 "new-path",
@@ -57,6 +101,7 @@ class JsonManifestMapperTest {
     @Test
     void should_throw_exception_when_manifest_is_invalid() {
         //given
+        JsonManifestMapper mapper = getMapper();
         String json = loadResource("manifest/test-invalid-manifest.json");
 
         //when & then
@@ -72,6 +117,7 @@ class JsonManifestMapperTest {
     @Test
     void should_map_valid_manifest() {
         //given
+        JsonManifestMapper mapper = getMapper();
         String json = loadResource("manifest/test-valid-manifest.json");
 
         //when

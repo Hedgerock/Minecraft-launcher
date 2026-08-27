@@ -3,6 +3,8 @@ package com.launcher.api.manifest.library;
 import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
+import com.launcher.model.runtime.OperatingSystem;
+import com.launcher.model.runtime.RuntimeEnvironment;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -12,6 +14,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultRuntimeLibrarySelectorTest {
     private final RuntimeLibrarySelector selector = new DefaultRuntimeLibrarySelector();
+    private final RuntimeEnvironment environment = new RuntimeEnvironment(OperatingSystem.WINDOWS);
+
+    @Test
+    void should_reject_null_environment() {
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> selector.select(List.of(), null)
+        );
+
+        assertTrue(exception.getMessage().contains("environment"));
+    }
 
     @Test
     void should_reject_null_value_in_list_of_libraries() {
@@ -22,7 +36,7 @@ class DefaultRuntimeLibrarySelectorTest {
         //when & then
         assertThrows(
                 NullPointerException.class,
-                () -> selector.select(libraries)
+                () -> selector.select(libraries, environment)
         );
     }
 
@@ -31,7 +45,7 @@ class DefaultRuntimeLibrarySelectorTest {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> selector.select(null)
+                () -> selector.select(null, environment)
         );
 
         assertTrue(exception.getMessage().contains("libraries"));
@@ -40,7 +54,7 @@ class DefaultRuntimeLibrarySelectorTest {
     @Test
     void should_return_empty_list_when_runtime_library_metadata_is_empty() {
         //given & when
-        List<LibraryEntry> result = selector.select(List.of());
+        List<LibraryEntry> result = selector.select(List.of(), environment);
 
         //then
         assertEquals(
@@ -55,7 +69,7 @@ class DefaultRuntimeLibrarySelectorTest {
         RuntimeLibraryMetadata runtimeLibraryMetadata = getRuntimeLibraryMetadata("libraries/example.jar");
 
         //when
-        List<LibraryEntry> result = selector.select(List.of(runtimeLibraryMetadata));
+        List<LibraryEntry> result = selector.select(List.of(runtimeLibraryMetadata), environment);
 
         //then
         assertEquals(

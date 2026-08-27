@@ -29,6 +29,8 @@ import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.state.LauncherStateMachine;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.directory.LocalDirectoryProvider;
+import com.launcher.model.runtime.OperatingSystem;
+import com.launcher.model.runtime.RuntimeEnvironment;
 
 public class DefaultApplicationAssembly implements ApplicationAssembly {
     private final LauncherConfiguration launcherConfiguration;
@@ -63,11 +65,17 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
     private OperationManager createOperationManager(LauncherInfrastructure launcherInfrastructure) {
         ResourcePathResolver resourcePathResolver = new SafeResourcePathResolver();
         DirectoryProvider directoryProvider = new LocalDirectoryProvider(launcherConfiguration);
+
+        RuntimeEnvironment runtimeEnvironment = new RuntimeEnvironment(
+                OperatingSystem.WINDOWS
+        );
+
         LauncherServicesFactory servicesFactory = new DefaultLauncherServiceFactory(
                 launcherConfiguration,
                 launcherInfrastructure,
                 resourcePathResolver,
-                directoryProvider
+                directoryProvider,
+                runtimeEnvironment
         );
 
         LauncherServices services = servicesFactory.createServices();

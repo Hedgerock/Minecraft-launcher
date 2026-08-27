@@ -23,6 +23,7 @@ import com.launcher.downloader.download.FileDownloader;
 import com.launcher.downloader.service.DefaultDownloadService;
 import com.launcher.game.process.ProcessBuilderGameProcessLauncher;
 import com.launcher.game.service.DefaultGameService;
+import com.launcher.model.runtime.RuntimeEnvironment;
 import com.launcher.storage.file.FileMetadataReader;
 import com.launcher.storage.file.LocalFileMetadataReader;
 import com.launcher.storage.hash.HashService;
@@ -36,17 +37,20 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     private final LauncherInfrastructure infrastructure;
     private final ResourcePathResolver resourcePathResolver;
     private final DirectoryProvider directoryProvider;
+    private final RuntimeEnvironment environment;
 
     public DefaultLauncherServiceFactory(
             LauncherConfiguration configuration,
             LauncherInfrastructure infrastructure,
             ResourcePathResolver resourcePathResolver,
-            DirectoryProvider directoryProvider
+            DirectoryProvider directoryProvider,
+            RuntimeEnvironment environment
     ) {
         this.configuration = configuration;
         this.infrastructure = infrastructure;
         this.resourcePathResolver = resourcePathResolver;
         this.directoryProvider = directoryProvider;
+        this.environment = environment;
     }
 
     private ManifestService createManifestService() {
@@ -55,7 +59,10 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
                 configuration.manifestUri()
         );
         RuntimeLibrarySelector runtimeLibrarySelector = new DefaultRuntimeLibrarySelector();
-        ManifestMapper manifestMapper = new JsonManifestMapper(runtimeLibrarySelector);
+
+        ManifestMapper manifestMapper =
+                new JsonManifestMapper(runtimeLibrarySelector, environment);
+
         return new HttpManifestService(
                 manifestClient,
                 manifestMapper

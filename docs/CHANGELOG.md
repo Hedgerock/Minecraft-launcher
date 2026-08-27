@@ -19,6 +19,7 @@
 - Documented the runtime environment boundary for future library selection
 - Added minimal runtime environment model for library selection
 - Added `RuntimeEnvironmentProvider` and system-based runtime environment detection
+- Added minimal OS-specific library rules for runtime library selection
 
 ### Changed
 

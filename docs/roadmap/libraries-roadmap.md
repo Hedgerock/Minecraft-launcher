@@ -2,7 +2,9 @@
 
 ## Текущий план
 
-- Развить runtime library selection для OS-specific rules, classifiers и natives
+- Ввести минимальные OS-specific library rules
+- Подключить OS-specific rules к `RuntimeLibrarySelector`
+- Развить runtime library selection для classifiers и natives
 
 ---
 

@@ -56,7 +56,8 @@ class JsonManifestMapperTest {
                                 "library-sha256",
                                 123456789L,
                                 "https://localhost/files/libraries/org/example/example.jar"
-                        )
+                        ),
+                        List.of()
                 )
         ), selector.getLibraries());
 

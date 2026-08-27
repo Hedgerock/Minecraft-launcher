@@ -86,7 +86,8 @@ class DefaultRuntimeLibrarySelectorTest {
                         "sha256",
                         100L,
                         "https://example.com/" + path
-                )
+                ),
+                List.of()
         );
     }
 

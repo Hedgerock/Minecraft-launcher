@@ -3,6 +3,8 @@ package com.launcher.api.manifest.mapper.dto;
 import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
 
+import java.util.List;
+
 public record LibraryEntryJson(
         String path,
         String sha256,
@@ -11,7 +13,8 @@ public record LibraryEntryJson(
 ) {
     RuntimeLibraryMetadata toRuntimeLibraryMetadata() {
         return new RuntimeLibraryMetadata(
-                toLibraryArtifactMetadata()
+                toLibraryArtifactMetadata(),
+                List.of()
         );
     }
 

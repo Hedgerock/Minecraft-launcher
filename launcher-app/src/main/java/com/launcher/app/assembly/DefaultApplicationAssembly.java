@@ -11,8 +11,8 @@ import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.execution.SequentialExecutionStrategy;
-import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
 import com.launcher.core.game.GameLaunchPlanBuilder;
+import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
 import com.launcher.core.game.builder.GameLaunchCommandBuilder;
 import com.launcher.core.game.classpath.builder.DefaultGameClasspathBuilder;
 import com.launcher.core.game.classpath.builder.GameClasspathBuilder;
@@ -26,11 +26,11 @@ import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.core.resolve.LaunchArgumentResolver;
 import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.resource.SafeResourcePathResolver;
+import com.launcher.core.runtime.RuntimeEnvironmentProvider;
+import com.launcher.core.runtime.SystemRuntimeEnvironmentProvider;
 import com.launcher.core.state.LauncherStateMachine;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.directory.LocalDirectoryProvider;
-import com.launcher.model.runtime.OperatingSystem;
-import com.launcher.model.runtime.RuntimeEnvironment;
 
 public class DefaultApplicationAssembly implements ApplicationAssembly {
     private final LauncherConfiguration launcherConfiguration;
@@ -65,17 +65,14 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
     private OperationManager createOperationManager(LauncherInfrastructure launcherInfrastructure) {
         ResourcePathResolver resourcePathResolver = new SafeResourcePathResolver();
         DirectoryProvider directoryProvider = new LocalDirectoryProvider(launcherConfiguration);
-
-        RuntimeEnvironment runtimeEnvironment = new RuntimeEnvironment(
-                OperatingSystem.WINDOWS
-        );
+        RuntimeEnvironmentProvider environmentProvider = new SystemRuntimeEnvironmentProvider();
 
         LauncherServicesFactory servicesFactory = new DefaultLauncherServiceFactory(
                 launcherConfiguration,
                 launcherInfrastructure,
                 resourcePathResolver,
                 directoryProvider,
-                runtimeEnvironment
+                environmentProvider
         );
 
         LauncherServices services = servicesFactory.createServices();

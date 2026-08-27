@@ -73,7 +73,7 @@ class HttpManifestLoadingIntegrationTest {
         HttpManifestClient manifestClient = new HttpManifestClient(httpClient, manifestUri);
         JsonManifestMapper manifestMapper = new JsonManifestMapper(
                 new DefaultRuntimeLibrarySelector(),
-                new RuntimeEnvironment(OperatingSystem.WINDOWS)
+                () -> new RuntimeEnvironment(OperatingSystem.WINDOWS)
         );
 
         return new MapperAndClient(manifestClient, manifestMapper);

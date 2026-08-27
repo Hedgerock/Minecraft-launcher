@@ -6,8 +6,8 @@ import com.launcher.api.manifest.exception.ManifestMappingException;
 import com.launcher.api.manifest.library.RuntimeLibrarySelector;
 import com.launcher.api.manifest.mapper.dto.ManifestJson;
 import com.launcher.api.manifest.mapper.dto.ManifestJsonConverter;
+import com.launcher.core.runtime.RuntimeEnvironmentProvider;
 import com.launcher.model.manifest.Manifest;
-import com.launcher.model.runtime.RuntimeEnvironment;
 
 import java.util.Objects;
 
@@ -15,17 +15,17 @@ public class JsonManifestMapper implements ManifestMapper {
     private final ObjectMapper objectMapper;
     private final RuntimeLibrarySelector librarySelector;
     private final ManifestJsonConverter converter;
-    private final RuntimeEnvironment environment;
+    private final RuntimeEnvironmentProvider runtimeEnvironmentProvider;
 
     public JsonManifestMapper(
             RuntimeLibrarySelector librarySelector,
-            RuntimeEnvironment environment
+            RuntimeEnvironmentProvider runtimeEnvironmentProvider
     ) {
         this(
                 new ObjectMapper(),
                 Objects.requireNonNull(librarySelector, "librarySelector"),
                 new ManifestJsonConverter(),
-                environment
+                runtimeEnvironmentProvider
         );
     }
 
@@ -33,12 +33,12 @@ public class JsonManifestMapper implements ManifestMapper {
             ObjectMapper objectMapper,
             RuntimeLibrarySelector librarySelector,
             ManifestJsonConverter converter,
-            RuntimeEnvironment environment
+            RuntimeEnvironmentProvider runtimeEnvironmentProvider
     ) {
         this.objectMapper = Objects.requireNonNull(objectMapper, "objectMapper");
         this.librarySelector = Objects.requireNonNull(librarySelector, "librarySelector");
         this.converter = Objects.requireNonNull(converter, "converter");
-        this.environment = Objects.requireNonNull(environment, "environment");
+        this.runtimeEnvironmentProvider = Objects.requireNonNull(runtimeEnvironmentProvider, "runtimeEnvironmentProvider");
     }
 
     @Override
@@ -46,7 +46,11 @@ public class JsonManifestMapper implements ManifestMapper {
         try {
             ManifestJson manifestJson = objectMapper.readValue(json, ManifestJson.class);
 
-            return converter.toManifest(manifestJson, librarySelector, environment);
+            return converter.toManifest(
+                    manifestJson,
+                    librarySelector,
+                    runtimeEnvironmentProvider.current()
+            );
         } catch (JsonProcessingException e) {
             throw new ManifestMappingException(
                     "Failed to parse manifest json",

@@ -20,7 +20,6 @@ dependencies {
     implementation(project(":launcher-verification"))
     implementation(project(":launcher-downloader"))
     implementation(project(":launcher-game"))
-    implementation(project(":launcher-model"))
 }
 
 tasks.test {

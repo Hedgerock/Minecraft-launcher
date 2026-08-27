@@ -14,6 +14,7 @@ import com.launcher.core.download.DownloadService;
 import com.launcher.core.game.GameService;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.resource.ResourcePathResolver;
+import com.launcher.core.runtime.RuntimeEnvironmentProvider;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.service.DefaultDirectoryService;
 import com.launcher.core.storage.service.DirectoryService;
@@ -23,7 +24,6 @@ import com.launcher.downloader.download.FileDownloader;
 import com.launcher.downloader.service.DefaultDownloadService;
 import com.launcher.game.process.ProcessBuilderGameProcessLauncher;
 import com.launcher.game.service.DefaultGameService;
-import com.launcher.model.runtime.RuntimeEnvironment;
 import com.launcher.storage.file.FileMetadataReader;
 import com.launcher.storage.file.LocalFileMetadataReader;
 import com.launcher.storage.hash.HashService;
@@ -37,20 +37,20 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     private final LauncherInfrastructure infrastructure;
     private final ResourcePathResolver resourcePathResolver;
     private final DirectoryProvider directoryProvider;
-    private final RuntimeEnvironment environment;
+    private final RuntimeEnvironmentProvider environmentProvider;
 
     public DefaultLauncherServiceFactory(
             LauncherConfiguration configuration,
             LauncherInfrastructure infrastructure,
             ResourcePathResolver resourcePathResolver,
             DirectoryProvider directoryProvider,
-            RuntimeEnvironment environment
+            RuntimeEnvironmentProvider environmentProvider
     ) {
         this.configuration = configuration;
         this.infrastructure = infrastructure;
         this.resourcePathResolver = resourcePathResolver;
         this.directoryProvider = directoryProvider;
-        this.environment = environment;
+        this.environmentProvider = environmentProvider;
     }
 
     private ManifestService createManifestService() {
@@ -61,7 +61,10 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
         RuntimeLibrarySelector runtimeLibrarySelector = new DefaultRuntimeLibrarySelector();
 
         ManifestMapper manifestMapper =
-                new JsonManifestMapper(runtimeLibrarySelector, environment);
+                new JsonManifestMapper(
+                        runtimeLibrarySelector,
+                        environmentProvider
+                );
 
         return new HttpManifestService(
                 manifestClient,

@@ -3,6 +3,8 @@ package com.launcher.api.manifest.library;
 import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
+import com.launcher.model.manifest.rules.LibraryRule;
+import com.launcher.model.manifest.rules.LibraryRuleAction;
 import com.launcher.model.runtime.OperatingSystem;
 import com.launcher.model.runtime.RuntimeEnvironment;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,127 @@ import static org.junit.jupiter.api.Assertions.*;
 class DefaultRuntimeLibrarySelectorTest {
     private final RuntimeLibrarySelector selector = new DefaultRuntimeLibrarySelector();
     private final RuntimeEnvironment environment = new RuntimeEnvironment(OperatingSystem.WINDOWS);
+
+    @Test
+    void should_ignore_non_matching_rules_when_resolving_last_matching_rule() {
+        //given
+        List<RuntimeLibraryMetadata> libraries = List.of(
+                getRuntimeLibraryMetadata(
+                        "libraries/example.jar",
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.DISALLOW, OperatingSystem.LINUX)
+                        )
+                ),
+                getRuntimeLibraryMetadata(
+                        "libraries/example2.jar",
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.DISALLOW, OperatingSystem.LINUX),
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.MACOS)
+                        )
+                )
+        );
+
+        //when
+        List<LibraryEntry> result = selector.select(libraries, environment);
+
+        //then
+        assertEquals(
+                List.of(
+                        getLibraryEntry("libraries/example.jar"),
+                        getLibraryEntry("libraries/example2.jar")
+                ),
+                result
+        );
+    }
+
+    @Test
+    void should_include_library_without_rules() {
+        //given
+        List<RuntimeLibraryMetadata> libraries = List.of(
+                getRuntimeLibraryMetadata("libraries/example.jar"),
+                getRuntimeLibraryMetadata("libraries/example2.jar")
+        );
+
+        //when
+        List<LibraryEntry> result = selector.select(libraries, environment);
+
+        //then
+        assertEquals(
+                List.of(
+                        getLibraryEntry("libraries/example.jar"),
+                        getLibraryEntry("libraries/example2.jar")
+                ),
+                result
+        );
+    }
+
+    @Test
+    void should_include_library_when_last_matching_rule_allows_current_os() {
+        //given
+        List<RuntimeLibraryMetadata> libraries = List.of(
+                getRuntimeLibraryMetadata(
+                        "libraries/example.jar",
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.DISALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.WINDOWS)
+                        )
+                ),
+                getRuntimeLibraryMetadata("libraries/example2.jar")
+        );
+
+        //when
+        List<LibraryEntry> result = selector.select(libraries, environment);
+
+        //then
+        assertEquals(
+                List.of(
+                        getLibraryEntry("libraries/example.jar"),
+                        getLibraryEntry("libraries/example2.jar")
+                ),
+                result
+        );
+    }
+
+    @Test
+    void should_exclude_library_when_last_matching_rule_disallows_current_os() {
+        //given
+        List<RuntimeLibraryMetadata> libraries = List.of(
+                getRuntimeLibraryMetadata(
+                        "libraries/example.jar",
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.DISALLOW, OperatingSystem.WINDOWS)
+                        )
+                )
+        );
+
+        //when
+        List<LibraryEntry> result = selector.select(libraries, environment);
+
+        //then
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void should_exclude_library_when_rules_exist_but_no_rule_matches_current_os() {
+        //given
+        List<RuntimeLibraryMetadata> libraries = List.of(
+                getRuntimeLibraryMetadata(
+                        "libraries/example.jar",
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.LINUX)
+                        )
+                )
+        );
+
+        //when
+        List<LibraryEntry> result = selector.select(libraries, environment);
+
+        //then
+        assertTrue(result.isEmpty());
+    }
 
     @Test
     void should_reject_null_environment() {
@@ -78,7 +201,6 @@ class DefaultRuntimeLibrarySelectorTest {
         );
     }
 
-    @SuppressWarnings("SameParameterValue")
     private RuntimeLibraryMetadata getRuntimeLibraryMetadata(String path) {
         return new RuntimeLibraryMetadata(
                 new LibraryArtifactMetadata(
@@ -91,7 +213,18 @@ class DefaultRuntimeLibrarySelectorTest {
         );
     }
 
-    @SuppressWarnings("SameParameterValue")
+    private RuntimeLibraryMetadata getRuntimeLibraryMetadata(String path, List<LibraryRule> rules) {
+        return new RuntimeLibraryMetadata(
+                new LibraryArtifactMetadata(
+                        path,
+                        "sha256",
+                        100L,
+                        "https://example.com/" + path
+                ),
+                rules
+        );
+    }
+
     private LibraryEntry getLibraryEntry(String path) {
         return new LibraryEntry(
                 path,

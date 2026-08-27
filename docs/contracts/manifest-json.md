@@ -107,13 +107,15 @@ RuntimeEnvironment
 
 `RuntimeLibrarySelector` получает `RuntimeEnvironment` как входные данные
 
+Текущий `RuntimeEnvironment` предоставляется через `RuntimeEnvironmentProvider`
+
 На текущем этапе `RuntimeEnvironment` содержит только `OperatingSystem`
 
 `DefaultRuntimeLibrarySelector` пока не использует `OperatingSystem` для фильтрации, но контракт уже подготовлен
 для будущих OS-specific rules, classifiers и natives
 
 На текущем этапе default selector использует основной `LibraryArtifactMetadata` и выполняет прямое преобразование
-artifact metadata в `LibraryEntry`, без OS-specific rules, classifiers и natives 
+artifact metadata в `LibraryEntry`, без OS-specific rules, classifiers и natives
 
 `launchInfo.javaExecutable` используется как первый элемент команды запуска игры
 

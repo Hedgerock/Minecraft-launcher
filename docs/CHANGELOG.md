@@ -18,6 +18,7 @@
 - Added `LibraryArtifactMetadata` to separate downloadable library artifact metadata from runtime library metadata
 - Documented the runtime environment boundary for future library selection
 - Added minimal runtime environment model for library selection
+- Added `RuntimeEnvironmentProvider` and system-based runtime environment detection
 
 ### Changed
 

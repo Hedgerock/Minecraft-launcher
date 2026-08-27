@@ -19,3 +19,4 @@
 - Зафиксирована граница runtime environment для будущего library selection
 - Введена минимальная модель `RuntimeEnvironment`
 - `RuntimeEnvironment` передан в runtime library selection без изменения текущего поведения
+- Добавлен `RuntimeEnvironmentProvider` для определения текущего runtime environment

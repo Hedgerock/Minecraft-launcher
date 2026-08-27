@@ -149,6 +149,20 @@ library artifacts
 
 Не определяет текущую OS самостоятельно и не зависит от системных API
 
+### RuntimeEnvironmentProvider
+
+Компонент, предоставляющий текущий `RuntimeEnvironment`
+
+Не выбирает libraries самостоятельно, а только предоставляет окружение runtime selection
+
+### SystemRuntimeEnvironmentProvider
+
+Реализация `RuntimeEnvironmentProvider`, определяющая `OperatingSystem` на основе системного
+свойства `os.name`
+
+Используется composition root для передачи текущего runtime environment в
+manifest mapping и runtime library selection
+
 ---
 
 ## HTTP

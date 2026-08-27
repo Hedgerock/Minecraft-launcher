@@ -24,9 +24,11 @@
 ```text
 JSON manifest
     -> ManifestJson
-        -> RuntimeLibrarySelector
-            -> LibraryEntry
-                -> Manifest
+        -> RuntimeLibraryMetadata
+            -> LibraryArtifactMetadata
+                -> RuntimeLibrarySelector
+                    -> LibraryEntry
+                        -> Manifest
 ```
 
 ---
@@ -89,11 +91,20 @@ JSON manifest
 
 `libraries` сначала преобразуется в список `RuntimeLibraryMetadata`
 
-Затем `RuntimeLibrarySelector` выбирает runtime-compatible `LibraryEntry` для текущего минимального
-runtime-сценария
+Каждая `RuntimeLibraryMetadata` содержит `LibraryArtifactMetadata`, описывающий downloadable artifact
+библиотеки
 
-На текущем этапе default selector выполняет прямое преобразование `RuntimeLibraryMetadata` в `LibraryEntry`, без
-OS-specific rules, classifiers и natives
+`LibraryArtifactMetadata` содержит физическую метадату
+
+- `path`
+- `sha256`
+- `size`
+- `url`
+
+Затем `RuntimeLibrarySelector` выбирает runtime-compatible `LibraryEntry` на основе `RuntimeLibraryMetadata`
+
+На текущем этапе default selector использует основной `LibraryArtifactMetadata` и выполняет прямое преобразовние
+artifact metadata в `LibraryEntry`, без OS-specific rules, classifiers и natives 
 
 `launchInfo.javaExecutable` используется как первый элемент команды запуска игры
 
@@ -141,7 +152,7 @@ OS-specific rules, classifiers и natives
 `libraries`
 
 Во время построения `GameLaunchPlan` выбранный источник classpath преобразуется в `GameClasspath`,
-разрешается относительно игровой директории и форматируются в строку с использованием системного разделителя путей
+разрешается относительно игровой директории и форматируется в строку с использованием системного разделителя путей
 
 Перед добавлением в `GameClasspath` каждый classpath entry разрешается через общий `ResourcePathResolver` относительно
 игровой директории

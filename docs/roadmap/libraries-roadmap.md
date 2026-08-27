@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Развить runtime library selection OS-specific rules, classifiers и natives
+- Развить runtime library selection для OS-specific rules, classifiers и natives
 
 ---
 
@@ -15,3 +15,4 @@
 - Зафиксирован минимальный scope library metadata
 - Зафиксирована граница runtime metadata для `libraries`
 - Добавлен seam runtime library selection перед формированием `LibraryEntry`
+- Artifact metadata выделена в отдельную модель `LibraryArtifactMetadata`

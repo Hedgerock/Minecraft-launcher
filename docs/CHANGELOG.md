@@ -15,6 +15,7 @@
 - Added safe resource path resolution through a shared `ResourсePathResolver`
 - Documented the boundary between raw library manifest metadata and selected runtime library entries
 - Added a runtime library selection between manifest JSON library metadata and selected `LibraryEntry` models
+- Added `LibraryArifactMetadata` to separate downloadable library artifact metadata from runtime library metadata
 
 ### Changed
 
@@ -32,6 +33,7 @@
 - Moved `DirectoryProvider` ownership from `LauncherServices` to application assembly
 - Changed manifest JSON mapping to convert library JSON into `RuntimeLibraryMetadata` before 
   selecting runtime `LibraryEntry` models
+- Changed `RuntimeLibraryMetadata` to reference `LibraryArtifactMetadata` instead of storing artifact fields directly
 
 ---
 

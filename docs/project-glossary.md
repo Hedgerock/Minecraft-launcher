@@ -95,7 +95,17 @@ Runtime-контекст текущего запуска лаунчера
 
 Промежуточная модель library metadata, получения из manifest JSON до выбора runtime-compatible `LibraryEntry`
 
-На текущем этапе содержит минимальную физическую метадату `path`, `sha256`, `size` и `url`
+На текущем этапе содержит основной `LibraryArtifactMetadata`
+
+В будущих итерациях может быть расширена rules, classifiers и natives metadata
+
+### LibraryArtifactMetadata
+
+Модель downloadable artifact metadata для library
+
+Содержит `path`, `sha256`, `size` и `url`
+
+Используется `RuntimeLibrarySelector` для формирования выбранного `LibraryEntry`
 
 ### RuntimeLibrarySelector
 

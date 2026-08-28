@@ -50,6 +50,7 @@
 - Changed runtime library selection to filter libraries by OS-specific rules
 - Changed `RuntimeLibraryMetadata` to include classifiers and natives metadata
 - Changed runtime library selection to include native classifier artifacts for the current runtime operating system
+- Changed runtime library selection to return `RuntimeLibrarySelection` with separated libraries and native artifacts
 
 ---
 

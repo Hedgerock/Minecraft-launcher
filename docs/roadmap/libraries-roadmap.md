@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Определить источник selected native artifacts для построения `NativeExtractionPlan`
+- Реализовать построение `NativeExtractionPlan` из `RuntimeLibrarySelection.nativeArtifacts`
 
 ---
 
@@ -34,3 +34,5 @@
 - Добавлена директория `natives` в `LauncherDirectories`
 - Подготовка директорий теперь создает директорию `natives` для будущей распаковки native artifacts
 - Добавлена модель `NativeExtractionPlan` для будущей распаковки selected native artifacts
+- Источником selected native artifacts для будущего `NativeExtractionPlan` стала модель `RuntimeLibrarySelection`
+- `RuntimeLibrarySelector` теперь возвращает разделение selected libraries и native artifacts

@@ -24,6 +24,7 @@
 - Documented library classifiers and natives boundary for library selection
 - Added `LibraryClassifiersMetadata` for library classifier artifacts
 - Added `LibraryNativesMetadata` for native classifier mapping
+- Added manifest JSON mapping for library classifiers and natives metadata
 
 ### Changed
 

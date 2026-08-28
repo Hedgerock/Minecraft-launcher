@@ -70,7 +70,18 @@ RuntimeEnvironment
           "action": "allow",
           "os": "windows"
         }
-      ]
+      ],
+      "classifiers": {
+        "natives-windows": {
+          "path": "natives-windows.jar",
+          "sha256": "natives-windows-sha256",
+          "size": 123456789,
+          "url": "https://localhost/files/libraries/org/example/example/natives-windows.jar"
+        }
+      },
+      "natives": {
+        "windows": "natives-windows"
+      }
     }
   ]
 }
@@ -100,7 +111,7 @@ RuntimeEnvironment
 `libraries` сначала преобразуется в список `RuntimeLibraryMetadata`
 
 Каждая `RuntimeLibraryMetadata` содержит `LibraryArtifactMetadata`, описывающий downloadable artifact
-библиотеки
+библиотеки, список `rules`, `classifiers` и `natives` metadata
 
 `LibraryArtifactMetadata` содержит физическую метадату
 
@@ -108,6 +119,12 @@ RuntimeEnvironment
 - `sha256`
 - `size`
 - `url`
+
+`classifiers` преобразуется в `LibraryClassifiersMetadata`
+
+`natives` преобразуется в `LibraryNativesMetadata`
+
+Отсутствие `clasifiers` и `natives` означает пустые metadata
 
 Затем `RuntimeLibrarySelector` выбирает runtime-compatible `LibraryEntry` на основе `RuntimeLibraryMetadata`
 

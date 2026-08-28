@@ -4,6 +4,10 @@
 
 Accepted
 
+> Примечание: после принятия решения модель classifiers/natives metadata, JSON mapping
+> и выбор native artifact для текущей `OperatingSystem` были реализованы отдельными
+> итерациями
+
 ---
 
 ## Контекст
@@ -78,8 +82,6 @@ Verification/download flow остается стабильным
 
 ## Не входит в решение
 
-- Реализация classifiers
-- Реализация natives mapping
 - Распаковка natives
 - Extract/exclude rules
 - Автоматический выбор Java runtime

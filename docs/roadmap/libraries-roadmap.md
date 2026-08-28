@@ -2,7 +2,8 @@
 
 ## Текущий план
 
-- Расширить runtime library selection выбором native artifact для текущей `OperatingSystem`
+- Уточнить дальнейшую обработку выбранных native artifacts: загрузка как обычных libraries уже поддержана
+  распаковка natives остается отдельной будущей итерацией
 
 ---
 
@@ -29,3 +30,4 @@
 - Добавлена минимальная модель `LibraryNativesMetadata`
 - Classifiers и natives metadata подключены к `RuntimeLibraryMetadata`
 - Manifest JSON mapping преобразует classifiers и natives metadata в `RuntimeLibraryMetadata`
+- Расширен runtime library selection выбором native artifact для текущей `OperatingSystem`

@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Спроектировать минимальный контракт native extraction после download lifecycle
+- Определить источник selected native artifacts для построения `NativeExtractionPlan`
 
 ---
 
@@ -33,3 +33,4 @@
 - Зафиксирована граница обработки выбранных native artifacts после runtime library selection
 - Добавлена директория `natives` в `LauncherDirectories`
 - Подготовка директорий теперь создает директорию `natives` для будущей распаковки native artifacts
+- Добавлена модель `NativeExtractionPlan` для будущей распаковки selected native artifacts

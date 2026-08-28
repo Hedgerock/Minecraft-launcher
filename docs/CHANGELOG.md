@@ -27,6 +27,7 @@
 - Added manifest JSON mapping for library classifiers and natives metadata
 - Documented the native artifact processing boundary
 - Added launcher natives directory preparation
+- Added native extraction plan model
 
 ### Changed
 

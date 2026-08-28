@@ -14,6 +14,7 @@ public final class RecordingDirectoryProvider implements DirectoryProvider {
                 Path.of("launcher/game"),
                 Path.of("launcher/mods"),
                 Path.of("launcher/libraries"),
+                Path.of("launcher/natives"),
                 Path.of("launcher/versions"),
                 Path.of("assets"),
                 Path.of("runtime"),

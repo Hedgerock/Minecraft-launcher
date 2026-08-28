@@ -25,6 +25,7 @@ class DefaultDirectoryServiceTest {
         Path modsDirectory = Path.of("custom/mods");
         Path assetsDirectory = Path.of("custom/assets");
         Path librariesDirectory = Path.of("custom/libraries");
+        Path nativesDirectory = Path.of("custom/natives");
         Path downloadsDirectory = Path.of("custom/downloads");
         Path versionsDirectory = Path.of("custom/versions");
         Path runtimeDirectory = Path.of("custom/runtime");
@@ -37,6 +38,7 @@ class DefaultDirectoryServiceTest {
                         gameDirectory,
                         modsDirectory,
                         librariesDirectory,
+                        nativesDirectory,
                         versionsDirectory,
                         assetsDirectory,
                         runtimeDirectory,
@@ -61,6 +63,7 @@ class DefaultDirectoryServiceTest {
                        modsDirectory,
                        assetsDirectory,
                        librariesDirectory,
+                       nativesDirectory,
                        downloadsDirectory,
                        versionsDirectory,
                        runtimeDirectory,
@@ -94,6 +97,7 @@ class DefaultDirectoryServiceTest {
                         Path.of("launcher/mods"),
                         Path.of("assets"),
                         Path.of("launcher/libraries"),
+                        Path.of("launcher/natives"),
                         Path.of("downloads"),
                         Path.of("launcher/versions"),
                         Path.of("runtime"),

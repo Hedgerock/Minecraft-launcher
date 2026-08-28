@@ -14,6 +14,7 @@ public final class FixedDirectoryProvider implements DirectoryProvider {
                 gameDirectory,
                 gameDirectory.resolve("mods"),
                 gameDirectory.resolve("libraries"),
+                gameDirectory.resolve("natives"),
                 gameDirectory.resolve("versions"),
                 gameDirectory.resolve("assets"),
                 Path.of("runtime"),

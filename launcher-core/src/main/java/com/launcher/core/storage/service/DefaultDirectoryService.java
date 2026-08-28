@@ -28,6 +28,7 @@ public class DefaultDirectoryService implements DirectoryService {
         create(launcherDirectories.mods());
         create(launcherDirectories.assets());
         create(launcherDirectories.libraries());
+        create(launcherDirectories.natives());
         create(launcherDirectories.downloads());
         create(launcherDirectories.versions());
         create(launcherDirectories.runtime());

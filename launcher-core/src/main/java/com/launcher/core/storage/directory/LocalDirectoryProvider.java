@@ -17,12 +17,12 @@ public class LocalDirectoryProvider implements DirectoryProvider {
                 game,
                 game.resolve("mods"),
                 game.resolve("libraries"),
+                game.resolve("natives"),
                 game.resolve("versions"),
                 game.resolve("assets"),
                 launcher.resolve("runtime"),
                 launcher.resolve("logs"),
                 launcher.resolve("downloads")
-
         );
     }
 

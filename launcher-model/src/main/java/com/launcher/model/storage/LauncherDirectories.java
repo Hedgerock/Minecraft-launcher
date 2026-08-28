@@ -7,6 +7,7 @@ public record LauncherDirectories(
         Path game,
         Path mods,
         Path libraries,
+        Path natives,
         Path versions,
         Path assets,
         Path runtime,

@@ -310,9 +310,10 @@ class JsonManifestMapperTest {
 
         assertEquals("java", launchInfo.javaExecutable());
 
-        assertEquals(1, manifest.libraries().size());
+        assertEquals(2, manifest.libraries().size());
 
         LibraryEntry libraryEntry = manifest.libraries().getFirst();
+        LibraryEntry secondLibraryEntry = manifest.libraries().getLast();
 
         assertEquals(
                 "libraries/org/example/example.jar",
@@ -329,6 +330,23 @@ class JsonManifestMapperTest {
         assertEquals(
                 123456789L,
                 libraryEntry.size()
+        );
+
+        assertEquals(
+                "natives-windows.jar",
+                secondLibraryEntry.path()
+        );
+        assertEquals(
+                "https://localhost/files/libraries/org/example/example/natives-windows.jar",
+                secondLibraryEntry.url()
+        );
+        assertEquals(
+                "natives-windows-sha256",
+                secondLibraryEntry.sha256()
+        );
+        assertEquals(
+                123456789L,
+                secondLibraryEntry.size()
         );
     }
 

@@ -3,6 +3,8 @@ package com.launcher.api.manifest.library;
 import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
+import com.launcher.model.manifest.classifiers.LibraryClassifiersMetadata;
+import com.launcher.model.manifest.natives.LibraryNativesMetadata;
 import com.launcher.model.manifest.rules.LibraryRule;
 import com.launcher.model.manifest.rules.LibraryRuleAction;
 import com.launcher.model.runtime.OperatingSystem;
@@ -11,12 +13,182 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultRuntimeLibrarySelectorTest {
     private final RuntimeLibrarySelector selector = new DefaultRuntimeLibrarySelector();
     private final RuntimeEnvironment environment = new RuntimeEnvironment(OperatingSystem.WINDOWS);
+
+    @Test
+    void should_fail_when_native_classifier_is_mapped_but_classifier_artifact_is_missing() {
+        //given
+        Map<String, LibraryArtifactMetadata> classifiers = Map.of(
+                "natives-windows",
+                new LibraryArtifactMetadata(
+                        "native-windows-path.jar",
+                        "sha256",
+                        100L,
+                        "https://example.com/native-windows-path.jar"
+                )
+        );
+
+        Map<OperatingSystem, String> natives = Map.of(
+                OperatingSystem.WINDOWS,
+                "invalid-classifier"
+        );
+
+        List<RuntimeLibraryMetadata> libraries = List.of(
+                getRuntimeLibraryMetadata(
+                        "libraries/example.jar",
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.DISALLOW, OperatingSystem.LINUX)
+                        ),
+                        classifiers,
+                        natives
+                )
+        );
+
+        //when & then
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> selector.select(libraries, environment)
+        );
+
+        assertTrue(exception.getMessage().contains("Native classifier artifact not found: invalid-classifier"));
+    }
+
+    @Test
+    void should_not_include_native_artifact_when_library_is_excluded_by_rules() {
+        //given
+        Map<String, LibraryArtifactMetadata> classifiers = Map.of(
+                "natives-windows",
+                new LibraryArtifactMetadata(
+                        "native-windows-path.jar",
+                        "sha256",
+                        100L,
+                        "https://example.com/native-windows-path.jar"
+                )
+        );
+
+        Map<OperatingSystem, String> natives = Map.of(
+                OperatingSystem.WINDOWS,
+                "natives-windows"
+        );
+
+        List<RuntimeLibraryMetadata> libraries = List.of(
+                getRuntimeLibraryMetadata(
+                        "libraries/example.jar",
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.DISALLOW, OperatingSystem.WINDOWS)
+                        ),
+                        classifiers,
+                        natives
+                )
+        );
+
+        //when
+        List<LibraryEntry> result = selector.select(libraries, environment);
+
+        //then
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void should_not_include_native_artifact_when_current_operating_system_is_not_mapped() {
+        //given
+        Map<String, LibraryArtifactMetadata> classifiers = Map.of(
+                "natives-windows",
+                new LibraryArtifactMetadata(
+                        "native-windows-path.jar",
+                        "sha256",
+                        100L,
+                        "https://example.com/native-windows-path.jar"
+                )
+        );
+
+        Map<OperatingSystem, String> natives = Map.of(
+                OperatingSystem.LINUX,
+                "natives-linux"
+        );
+
+        List<RuntimeLibraryMetadata> libraries = List.of(
+                getRuntimeLibraryMetadata(
+                        "libraries/example.jar",
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.DISALLOW, OperatingSystem.MACOS)
+                        ),
+                        classifiers,
+                        natives
+                )
+        );
+
+        //when
+        List<LibraryEntry> result = selector.select(libraries, environment);
+
+        //then
+        assertEquals(
+                List.of(
+                        getLibraryEntry("libraries/example.jar")
+                ),
+                result
+        );
+    }
+
+    @Test
+    void should_include_native_artifact_for_current_operating_system() {
+        //given
+        Map<String, LibraryArtifactMetadata> classifiers = Map.of(
+                "natives-windows",
+                new LibraryArtifactMetadata(
+                        "native-windows-path.jar",
+                        "sha256",
+                        100L,
+                        "https://example.com/native-windows-path.jar"
+                )
+        );
+
+        Map<OperatingSystem, String> natives = Map.of(
+                OperatingSystem.WINDOWS,
+                "natives-windows"
+        );
+
+        List<RuntimeLibraryMetadata> libraries = List.of(
+                getRuntimeLibraryMetadata(
+                        "libraries/example.jar",
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.DISALLOW, OperatingSystem.LINUX)
+                        ),
+                        classifiers,
+                        natives
+                ),
+                getRuntimeLibraryMetadata(
+                        "libraries/example2.jar",
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.DISALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.MACOS)
+                        )
+                )
+        );
+
+        //when
+        List<LibraryEntry> result = selector.select(libraries, environment);
+
+        //then
+        assertEquals(
+                List.of(
+                        getLibraryEntry("libraries/example.jar"),
+                        getLibraryEntry("native-windows-path.jar")
+                ),
+                result
+        );
+    }
 
     @Test
     void should_ignore_non_matching_rules_when_resolving_last_matching_rule() {
@@ -214,6 +386,21 @@ class DefaultRuntimeLibrarySelectorTest {
     }
 
     private RuntimeLibraryMetadata getRuntimeLibraryMetadata(String path, List<LibraryRule> rules) {
+        return getRuntimeLibraryMetadata(
+                path,
+                rules,
+                Map.of(),
+                Map.of()
+        );
+    }
+
+
+    private RuntimeLibraryMetadata getRuntimeLibraryMetadata(
+            String path,
+            List<LibraryRule> rules,
+            Map<String, LibraryArtifactMetadata> classifiers,
+            Map<OperatingSystem, String> natives
+    ) {
         return new RuntimeLibraryMetadata(
                 new LibraryArtifactMetadata(
                         path,
@@ -221,9 +408,12 @@ class DefaultRuntimeLibrarySelectorTest {
                         100L,
                         "https://example.com/" + path
                 ),
-                rules
+                rules,
+                new LibraryClassifiersMetadata(classifiers),
+                new LibraryNativesMetadata(natives)
         );
     }
+
 
     private LibraryEntry getLibraryEntry(String path) {
         return new LibraryEntry(

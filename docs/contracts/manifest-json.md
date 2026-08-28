@@ -73,8 +73,8 @@ RuntimeEnvironment
       ],
       "classifiers": {
         "natives-windows": {
-          "path": "natives-windows.jar",
-          "sha256": "natives-windows-sha256",
+          "path": "libraries/org/example/example/natives-windows.jar",
+          "sha256": "0a25f1fc0a064dcfb819195351e236343acc842edb439dd2e3339e9e48980fb4",
           "size": 123456789,
           "url": "https://localhost/files/libraries/org/example/example/natives-windows.jar"
         }
@@ -220,7 +220,8 @@ fallback:
         -> GameClasspathBuilder
 ```
 
-Полная модель `libraries`, правила выбора natives и OS-specific зависимости пока не входят в контракт текущей версии
+Модель `libraries` поддерживает OS-specific rules, classifiers и natives metadata на уровне JSON mapping
+и runtime library selection
 
 Подстановки применяются во время построения команды запуска
 
@@ -258,7 +259,6 @@ LaunchInfo
 
 ## Не входит в контракт текущей версии
 
-- Полная модель libraries с classifiers и natives
 - Правила без OS
 - Правила на основе features
 - Правила на основе architecture

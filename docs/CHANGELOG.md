@@ -26,6 +26,7 @@
 - Added `LibraryNativesMetadata` for native classifier mapping
 - Added manifest JSON mapping for library classifiers and natives metadata
 - Documented the native artifact processing boundary
+- Added launcher natives directory preparation
 
 ### Changed
 

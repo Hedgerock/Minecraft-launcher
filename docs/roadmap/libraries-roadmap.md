@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Подготовить модель или контракт для будущей распаковки native artifacts после download lifecycle
+- Спроектировать минимальный контракт native extraction после download lifecycle
 
 ---
 
@@ -31,3 +31,5 @@
 - Manifest JSON mapping преобразует classifiers и natives metadata в `RuntimeLibraryMetadata`
 - Расширен runtime library selection выбором native artifact для текущей `OperatingSystem`
 - Зафиксирована граница обработки выбранных native artifacts после runtime library selection
+- Добавлена директория `natives` в `LauncherDirectories`
+- Подготовка директорий теперь создает директорию `natives` для будущей распаковки native artifacts

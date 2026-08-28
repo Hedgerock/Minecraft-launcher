@@ -44,6 +44,7 @@
 - Changed `RuntimeLibraryMetadata` to reference `LibraryArtifactMetadata` instead of storing artifact fields directly
 - Changed runtime library selection to receive `RuntimeEnvironment` as an explicit input
 - Changed runtime library selection to filter libraries by OS-specific rules
+- Changed `RuntimeLibraryMetadata` to include classifiers and natives metadata
 
 ---
 

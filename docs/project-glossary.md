@@ -115,9 +115,10 @@ runtime-сценариях
 
 Промежуточная модель library metadata, полученная из manifest JSON до выбора runtime-compatible `LibraryEntry`
 
-На текущем этапе содержит основной `LibraryArtifactMetadata` и список `LibraryRule`
+На текущем этапе содержит основной `LibraryArtifactMetadata`, список `LibraryRule`, `LibraryClassifiersMetadata`
+и `LibraryNativesMetadata`
 
-В будущих итерациях может быть расширена classifiers и natives metadata
+Описывает metadata library до выбора итогового runtime-compatible `LibraryEntry`
 
 ### LibraryArtifactMetadata
 

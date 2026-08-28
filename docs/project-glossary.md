@@ -127,6 +127,18 @@ runtime-сценариях
 
 Используется `RuntimeLibrarySelector` для формирования выбранного `LibraryEntry`
 
+### LibraryClassifiersMetadata
+
+Модель metadata, описывающая classifier artifacts library до выбора runtime-compatible `LibraryEntry`
+
+Содержит mapping между `classifierName` и `LibraryArtifactMetadata`
+
+### LibraryNativesMetadata
+
+Модель metadata, описывающая соответствие `OperatingSystem` и имени classifier для native artifact
+
+Используется как часть будущего выбора native library artifact
+
 ### LibraryRule
 
 Правило выбора library для конкретной операционной системы

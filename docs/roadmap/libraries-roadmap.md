@@ -2,8 +2,7 @@
 
 ## Текущий план
 
-- Ввести минимальную модель classifiers metadata
-- Ввести минимальную модель natives mapping
+- Подключить classifiers и natives metadata к `RuntimeLibraryMetadata`
 - Подключить classifiers и natives mapping к manifest JSON mapping
 - Расширить runtime library selection выбором native artifact для текущей `OperatingSystem`
 
@@ -28,3 +27,5 @@
 - Manifest JSON mapping преобразует library rules в `RuntimeLibraryMetadata`
 - `RuntimeLibrarySelector` выбирает libraries с учетом текущей `OperatingSystem`
 - Зафиксирована граница classifiers и natives metadata для library selection
+- Добавлена минимальная модель `LibraryClassifiersMetadata`
+- Добавлена минимальная модель `LibraryNativesMetadata`

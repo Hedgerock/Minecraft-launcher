@@ -22,6 +22,8 @@
 - Added minimal OS-specific library rules for runtime library selection
 - Added manifest JSON mapping for OS-specific library rules
 - Documented library classifiers and natives boundary for library selection
+- Added `LibraryClassifiersMetadata` for library classifier artifacts
+- Added `LibraryNativesMetadata` for native classifier mapping
 
 ### Changed
 

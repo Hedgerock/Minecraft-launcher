@@ -2,8 +2,7 @@
 
 ## Текущий план
 
-- Уточнить дальнейшую обработку выбранных native artifacts: загрузка как обычных libraries уже поддержана
-  распаковка natives остается отдельной будущей итерацией
+- Подготовить модель или контракт для будущей распаковки native artifacts после download lifecycle
 
 ---
 
@@ -31,3 +30,4 @@
 - Classifiers и natives metadata подключены к `RuntimeLibraryMetadata`
 - Manifest JSON mapping преобразует classifiers и natives metadata в `RuntimeLibraryMetadata`
 - Расширен runtime library selection выбором native artifact для текущей `OperatingSystem`
+- Зафиксирована граница обработки выбранных native artifacts после runtime library selection

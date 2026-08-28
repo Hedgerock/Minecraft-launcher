@@ -10,6 +10,8 @@ import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
+import com.launcher.model.manifest.classifiers.LibraryClassifiersMetadata;
+import com.launcher.model.manifest.natives.LibraryNativesMetadata;
 import com.launcher.model.manifest.rules.LibraryRule;
 import com.launcher.model.manifest.rules.LibraryRuleAction;
 import com.launcher.model.runtime.OperatingSystem;
@@ -21,6 +23,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,6 +41,93 @@ class JsonManifestMapperTest {
 
     private JsonManifestMapper getMapper() {
         return getMapper(new DefaultRuntimeLibrarySelector());
+    }
+
+    private LibraryArtifactMetadata getLibraryArtifactMetadata(OperatingSystem operatingSystem) {
+        return switch (operatingSystem) {
+            case WINDOWS ->
+                new LibraryArtifactMetadata(
+                        "natives-windows.jar",
+                        "natives-windows-sha256",
+                        123456789L,
+                        "https://localhost/files/libraries/org/example/example/natives-windows.jar"
+                );
+            case MACOS ->
+                new LibraryArtifactMetadata(
+                        "natives-osx.jar",
+                        "natives-osx-sha256",
+                        123456789L,
+                        "https://localhost/files/libraries/org/example/example/natives-osx.jar"
+                );
+            case LINUX ->
+                new LibraryArtifactMetadata(
+                        "natives-linux.jar",
+                        "natives-linux-sha256",
+                        123456789L,
+                        "https://localhost/files/libraries/org/example/example/natives-linux.jar"
+                );
+        };
+    }
+
+    @Test
+    void should_map_empty_classifiers_and_natives_when_fields_are_null() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest-without-classifiers-and-natives.json");
+
+        //when
+        mapper.map(json);
+
+        //then
+        assertTrue(selector.getLibraries().getFirst().classifiers().isEmpty());
+        assertTrue(selector.getLibraries().getFirst().natives().isEmpty());
+    }
+
+    @Test
+    void should_map_library_natives_from_manifest_json() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest.json");
+
+        //when
+        mapper.map(json);
+
+        //then
+        Map<OperatingSystem, String> natives = Map.of(
+                OperatingSystem.WINDOWS, "natives-windows",
+                OperatingSystem.MACOS, "natives-osx",
+                OperatingSystem.LINUX, "natives-linux"
+        );
+
+        LibraryNativesMetadata nativesMetadata = new LibraryNativesMetadata(natives);
+
+        assertEquals(nativesMetadata, selector.getLibraries().getFirst().natives());
+    }
+
+    @Test
+    void should_map_library_classifiers_from_manifest_json() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest.json");
+
+        //when
+        mapper.map(json);
+
+        //then
+
+        Map<String, LibraryArtifactMetadata> classifiers = Map.of(
+                "natives-windows", getLibraryArtifactMetadata(OperatingSystem.WINDOWS),
+                "natives-osx", getLibraryArtifactMetadata(OperatingSystem.MACOS),
+                "natives-linux", getLibraryArtifactMetadata(OperatingSystem.LINUX)
+        );
+
+        LibraryClassifiersMetadata classifiersMetadata = new LibraryClassifiersMetadata(classifiers);
+
+        assertEquals(classifiersMetadata, selector.getLibraries().getFirst().classifiers());
+
     }
 
     @Test
@@ -93,7 +183,7 @@ class JsonManifestMapperTest {
         //given
         RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
         JsonManifestMapper mapper = getMapper(selector);
-        String json = loadResource("manifest/test-valid-manifest.json");
+        String json = loadResource("manifest/test-valid-manifest-without-classifiers-and-natives.json");
 
         //when
         mapper.map(json);

@@ -31,7 +31,32 @@
           "action": "disallow",
           "os": "macos"
         }
-      ]
+      ],
+      "classifiers": {
+        "natives-windows": {
+          "path": "natives-windows.jar",
+          "sha256": "natives-windows-sha256",
+          "size": 123456789,
+          "url": "https://localhost/files/libraries/org/example/example/natives-windows.jar"
+        },
+        "natives-linux": {
+          "path": "natives-linux.jar",
+          "sha256": "natives-linux-sha256",
+          "size": 123456789,
+          "url": "https://localhost/files/libraries/org/example/example/natives-linux.jar"
+        },
+        "natives-osx": {
+          "path": "natives-osx.jar",
+          "sha256": "natives-osx-sha256",
+          "size": 123456789,
+          "url": "https://localhost/files/libraries/org/example/example/natives-osx.jar"
+        }
+      },
+      "natives": {
+        "windows": "natives-windows",
+        "linux": "natives-linux",
+        "macos": "natives-osx"
+      }
     }
   ]
 }

@@ -3,6 +3,7 @@ package com.launcher.api.manifest.library;
 import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
+import com.launcher.model.manifest.RuntimeLibrarySelection;
 import com.launcher.model.manifest.rules.LibraryRuleAction;
 import com.launcher.model.runtime.RuntimeEnvironment;
 
@@ -13,17 +14,48 @@ import java.util.stream.Stream;
 public final class DefaultRuntimeLibrarySelector implements RuntimeLibrarySelector {
 
     @Override
-    public List<LibraryEntry> select(
+    public RuntimeLibrarySelection select(
             List<RuntimeLibraryMetadata> libraries,
             RuntimeEnvironment environment
     ) {
         Objects.requireNonNull(libraries, "libraries");
         Objects.requireNonNull(environment, "environment");
 
+        List<RuntimeLibraryMetadata> selectedLibraries = getSelectedLibraries(libraries, environment);
+        List<LibraryEntry> librariesList = getLibraries(selectedLibraries);
+        List<LibraryEntry> nativeArtifacts = getNativeArtifacts(selectedLibraries, environment);
+
+        return new RuntimeLibrarySelection(
+                librariesList,
+                nativeArtifacts
+        );
+    }
+
+    private List<LibraryEntry> getNativeArtifacts(
+            List<RuntimeLibraryMetadata> selectedLibraries,
+            RuntimeEnvironment environment
+    ) {
+        return selectedLibraries.stream()
+                .flatMap(library -> selectedNativeArtifacts(library, environment))
+                .map(this::toLibraryEntry)
+                .toList();
+    }
+
+    private List<LibraryEntry> getLibraries(
+            List<RuntimeLibraryMetadata> selectedLibraries
+    ) {
+        return selectedLibraries.stream()
+                .map(RuntimeLibraryMetadata::artifact)
+                .map(this::toLibraryEntry)
+                .toList();
+    }
+
+    private List<RuntimeLibraryMetadata> getSelectedLibraries(
+            List<RuntimeLibraryMetadata> libraries,
+            RuntimeEnvironment environment
+    ) {
         return libraries.stream()
                 .filter(library -> shouldSelect(library, environment))
-                .flatMap(library -> selectedArtifacts(library, environment))
-                .map(this::toLibraryEntry)
                 .toList();
     }
 
@@ -42,18 +74,14 @@ public final class DefaultRuntimeLibrarySelector implements RuntimeLibrarySelect
                 .orElse(false);
     }
 
-    private Stream<LibraryArtifactMetadata> selectedArtifacts(
+    private Stream<LibraryArtifactMetadata> selectedNativeArtifacts(
             RuntimeLibraryMetadata library,
             RuntimeEnvironment environment
     ) {
-        Stream<LibraryArtifactMetadata> mainArtifact = Stream.of(library.artifact());
-
-        Stream<LibraryArtifactMetadata> nativeArtifact = library.natives()
+        return library.natives()
                 .classifierFor(environment.operatingSystem())
                 .map(classifierName -> resolveClassifierArtifact(library, classifierName))
                 .stream();
-
-        return Stream.concat(mainArtifact, nativeArtifact);
     }
 
     private LibraryArtifactMetadata resolveClassifierArtifact(

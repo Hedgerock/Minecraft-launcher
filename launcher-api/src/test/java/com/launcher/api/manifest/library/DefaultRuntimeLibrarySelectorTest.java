@@ -3,6 +3,7 @@ package com.launcher.api.manifest.library;
 import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
+import com.launcher.model.manifest.RuntimeLibrarySelection;
 import com.launcher.model.manifest.classifiers.LibraryClassifiersMetadata;
 import com.launcher.model.manifest.natives.LibraryNativesMetadata;
 import com.launcher.model.manifest.rules.LibraryRule;
@@ -91,10 +92,11 @@ class DefaultRuntimeLibrarySelectorTest {
         );
 
         //when
-        List<LibraryEntry> result = selector.select(libraries, environment);
+        RuntimeLibrarySelection result = selector.select(libraries, environment);
 
         //then
-        assertTrue(result.isEmpty());
+        assertTrue(result.libraries().isEmpty());
+        assertTrue(result.nativeArtifacts().isEmpty());
     }
 
     @Test
@@ -128,15 +130,17 @@ class DefaultRuntimeLibrarySelectorTest {
         );
 
         //when
-        List<LibraryEntry> result = selector.select(libraries, environment);
+        RuntimeLibrarySelection result = selector.select(libraries, environment);
 
         //then
         assertEquals(
                 List.of(
                         getLibraryEntry("libraries/example.jar")
                 ),
-                result
+                result.libraries()
         );
+
+        assertTrue(result.nativeArtifacts().isEmpty());
     }
 
     @Test
@@ -178,15 +182,21 @@ class DefaultRuntimeLibrarySelectorTest {
         );
 
         //when
-        List<LibraryEntry> result = selector.select(libraries, environment);
+        RuntimeLibrarySelection result = selector.select(libraries, environment);
 
         //then
         assertEquals(
                 List.of(
-                        getLibraryEntry("libraries/example.jar"),
                         getLibraryEntry("native-windows-path.jar")
                 ),
-                result
+                result.nativeArtifacts()
+        );
+
+        assertEquals(
+                List.of(
+                        getLibraryEntry("libraries/example.jar")
+                ),
+                result.libraries()
         );
     }
 
@@ -212,7 +222,7 @@ class DefaultRuntimeLibrarySelectorTest {
         );
 
         //when
-        List<LibraryEntry> result = selector.select(libraries, environment);
+        RuntimeLibrarySelection result = selector.select(libraries, environment);
 
         //then
         assertEquals(
@@ -220,7 +230,7 @@ class DefaultRuntimeLibrarySelectorTest {
                         getLibraryEntry("libraries/example.jar"),
                         getLibraryEntry("libraries/example2.jar")
                 ),
-                result
+                result.libraries()
         );
     }
 
@@ -233,7 +243,7 @@ class DefaultRuntimeLibrarySelectorTest {
         );
 
         //when
-        List<LibraryEntry> result = selector.select(libraries, environment);
+        RuntimeLibrarySelection result = selector.select(libraries, environment);
 
         //then
         assertEquals(
@@ -241,7 +251,7 @@ class DefaultRuntimeLibrarySelectorTest {
                         getLibraryEntry("libraries/example.jar"),
                         getLibraryEntry("libraries/example2.jar")
                 ),
-                result
+                result.libraries()
         );
     }
 
@@ -260,7 +270,7 @@ class DefaultRuntimeLibrarySelectorTest {
         );
 
         //when
-        List<LibraryEntry> result = selector.select(libraries, environment);
+        RuntimeLibrarySelection result = selector.select(libraries, environment);
 
         //then
         assertEquals(
@@ -268,7 +278,7 @@ class DefaultRuntimeLibrarySelectorTest {
                         getLibraryEntry("libraries/example.jar"),
                         getLibraryEntry("libraries/example2.jar")
                 ),
-                result
+                result.libraries()
         );
     }
 
@@ -286,10 +296,10 @@ class DefaultRuntimeLibrarySelectorTest {
         );
 
         //when
-        List<LibraryEntry> result = selector.select(libraries, environment);
+        RuntimeLibrarySelection result = selector.select(libraries, environment);
 
         //then
-        assertTrue(result.isEmpty());
+        assertTrue(result.libraries().isEmpty());
     }
 
     @Test
@@ -305,10 +315,10 @@ class DefaultRuntimeLibrarySelectorTest {
         );
 
         //when
-        List<LibraryEntry> result = selector.select(libraries, environment);
+        RuntimeLibrarySelection result = selector.select(libraries, environment);
 
         //then
-        assertTrue(result.isEmpty());
+        assertTrue(result.libraries().isEmpty());
     }
 
     @Test
@@ -349,13 +359,10 @@ class DefaultRuntimeLibrarySelectorTest {
     @Test
     void should_return_empty_list_when_runtime_library_metadata_is_empty() {
         //given & when
-        List<LibraryEntry> result = selector.select(List.of(), environment);
+        RuntimeLibrarySelection result = selector.select(List.of(), environment);
 
         //then
-        assertEquals(
-                List.of(),
-                result
-        );
+        assertTrue(result.libraries().isEmpty());
     }
 
     @Test
@@ -364,12 +371,12 @@ class DefaultRuntimeLibrarySelectorTest {
         RuntimeLibraryMetadata runtimeLibraryMetadata = getRuntimeLibraryMetadata("libraries/example.jar");
 
         //when
-        List<LibraryEntry> result = selector.select(List.of(runtimeLibraryMetadata), environment);
+        RuntimeLibrarySelection result = selector.select(List.of(runtimeLibraryMetadata), environment);
 
         //then
         assertEquals(
                 List.of(getLibraryEntry("libraries/example.jar")),
-                result
+                result.libraries()
         );
     }
 

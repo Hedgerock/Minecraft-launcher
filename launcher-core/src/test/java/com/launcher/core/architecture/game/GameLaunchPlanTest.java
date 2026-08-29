@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GameLaunchPlanTest {
+class GameLaunchPlanTest {
 
     @Test
     void should_create_immutable_command() {

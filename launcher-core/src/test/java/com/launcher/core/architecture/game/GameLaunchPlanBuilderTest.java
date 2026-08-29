@@ -1,6 +1,10 @@
 package com.launcher.core.architecture.game;
 
-import com.launcher.core.architecture.support.recording.*;
+import com.launcher.core.architecture.support.recording.RecordingClasspathFormatter;
+import com.launcher.core.architecture.support.recording.RecordingDefaultGameLaunchCommandBuilder;
+import com.launcher.core.architecture.support.recording.RecordingDirectoryProvider;
+import com.launcher.core.architecture.support.recording.RecordingGameClasspathBuilder;
+import com.launcher.core.architecture.support.recording.RecordingManifestService;
 import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.model.manifest.Manifest;

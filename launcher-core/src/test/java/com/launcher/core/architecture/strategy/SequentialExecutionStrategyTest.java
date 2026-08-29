@@ -29,6 +29,7 @@ class SequentialExecutionStrategyTest {
                 )
         );
     }
+
     private RecordingLauncherTask success(
             RecordingEvents events,
             String name
@@ -40,14 +41,12 @@ class SequentialExecutionStrategyTest {
         );
     }
 
-    @SuppressWarnings("all")
     private RecordingLauncherTask failure(
-            RecordingEvents events,
-            String name
+            RecordingEvents events
     ) {
         return new RecordingLauncherTask(
                 events,
-                name,
+                "Task-2",
                 new FailureResult("failure")
         );
     }
@@ -98,7 +97,7 @@ class SequentialExecutionStrategyTest {
         RecordingEvents events = new RecordingEvents();
         List<LauncherTask> tasks = List.of(
                 success(events, "Task-1"),
-                failure(events, "Task-2"),
+                failure(events),
                 success(events, "Task-3")
         );
         LaunchContext context = getContext();

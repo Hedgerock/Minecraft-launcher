@@ -34,7 +34,7 @@ class BuildGameLaunchPlanTaskTest {
     @Test
     void should_return_failure_when_launch_info_is_missing() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchBuilder;
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
         context.setManifest(
                 new Manifest(
@@ -57,7 +57,7 @@ class BuildGameLaunchPlanTaskTest {
     @Test
     void should_return_failure_when_manifest_not_loaded() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchBuilder;
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
 
         //when
@@ -70,7 +70,7 @@ class BuildGameLaunchPlanTaskTest {
     @Test
     void should_return_build_game_launch_plan_state() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchBuilder;
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
 
         //then
@@ -80,7 +80,7 @@ class BuildGameLaunchPlanTaskTest {
     @Test
     void should_return_success_result_when_game_launch_plan_is_built() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchBuilder;
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
         Manifest manifest = (manifestService.loadManifest()).manifest();
         context.setManifest(manifest);
@@ -96,7 +96,7 @@ class BuildGameLaunchPlanTaskTest {
     @Test
     void should_save_game_launch_plan_in_launch_context() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchBuilder;
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
         Manifest manifest = (manifestService.loadManifest()).manifest();
         context.setManifest(manifest);

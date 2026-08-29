@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FileEntryTest {
+class FileEntryTest {
 
     @Test
     void should_reject_negative_size() {

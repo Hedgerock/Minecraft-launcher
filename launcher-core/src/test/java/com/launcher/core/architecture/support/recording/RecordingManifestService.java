@@ -1,7 +1,13 @@
 package com.launcher.core.architecture.support.recording;
 
 import com.launcher.core.manifest.ManifestService;
-import com.launcher.model.manifest.*;
+import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.LaunchInfo;
+import com.launcher.model.manifest.LibraryEntry;
+import com.launcher.model.manifest.LoaderInfo;
+import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.ManifestLoadResult;
+import com.launcher.model.manifest.RuntimeLibrarySelection;
 
 import java.util.List;
 

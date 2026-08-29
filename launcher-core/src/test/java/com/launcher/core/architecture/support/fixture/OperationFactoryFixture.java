@@ -1,6 +1,12 @@
 package com.launcher.core.architecture.support.fixture;
 
-import com.launcher.core.architecture.support.recording.*;
+import com.launcher.core.architecture.support.recording.RecordVerificationService;
+import com.launcher.core.architecture.support.recording.RecordingClasspathFormatter;
+import com.launcher.core.architecture.support.recording.RecordingDirectoryProvider;
+import com.launcher.core.architecture.support.recording.RecordingDirectoryService;
+import com.launcher.core.architecture.support.recording.RecordingDownloadService;
+import com.launcher.core.architecture.support.recording.RecordingGameService;
+import com.launcher.core.architecture.support.recording.RecordingManifestService;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.event.EventBus;
@@ -22,17 +28,22 @@ public class OperationFactoryFixture {
 
     private final DefaultOperationFactory factory;
 
-    public static final DownloadPlanBuilder builder = new DownloadPlanBuilder();
-    public static final GameLaunchPlanBuilder gameLaunchBuilder = new GameLaunchPlanBuilder(
-            new RecordingDirectoryProvider(),
-            new DefaultGameLaunchCommandBuilder(
-                    new DefaultLaunchArgumentResolver()
-            ),
-            new DefaultGameClasspathBuilder(
-                    new SafeResourcePathResolver()
-            ),
-            new RecordingClasspathFormatter()
-    );
+    public static DownloadPlanBuilder downloadPlanBuilder() {
+        return new DownloadPlanBuilder();
+    }
+
+    public static GameLaunchPlanBuilder gameLaunchPlanBuilder() {
+        return new GameLaunchPlanBuilder(
+                new RecordingDirectoryProvider(),
+                new DefaultGameLaunchCommandBuilder(
+                        new DefaultLaunchArgumentResolver()
+                ),
+                new DefaultGameClasspathBuilder(
+                        new SafeResourcePathResolver()
+                ),
+                new RecordingClasspathFormatter()
+        );
+    }
 
     public OperationFactoryFixture() {
         ManifestService service = new RecordingManifestService();
@@ -71,8 +82,8 @@ public class OperationFactoryFixture {
                 new RecordingDownloadService(),
                 new RecordingDirectoryService(),
                 new RecordingGameService(),
-                builder,
-                gameLaunchBuilder,
+                downloadPlanBuilder(),
+                gameLaunchPlanBuilder(),
                 eventBus
         );
     }

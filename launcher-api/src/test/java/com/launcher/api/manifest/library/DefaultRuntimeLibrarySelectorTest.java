@@ -357,12 +357,13 @@ class DefaultRuntimeLibrarySelectorTest {
     }
 
     @Test
-    void should_return_empty_list_when_runtime_library_metadata_is_empty() {
+    void should_return_empty_selection_when_runtime_library_metadata_is_empty() {
         //given & when
         RuntimeLibrarySelection result = selector.select(List.of(), environment);
 
         //then
         assertTrue(result.libraries().isEmpty());
+        assertTrue(result.nativeArtifacts().isEmpty());
     }
 
     @Test

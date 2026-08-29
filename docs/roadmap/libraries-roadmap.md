@@ -2,7 +2,8 @@
 
 ## Текущий план
 
-- Определить способ сохранения `RuntimeLibrarySelection` после загрузки manifest для будущей native extraction
+- Сохранить `RuntimeLibrarySelection` после загрузки manifest для будущей native extraction
+- Провести stabilization pass по library/native selection flow перед добавлением новых возможностей
 
 ---
 
@@ -38,3 +39,4 @@
 - `RuntimeLibrarySelector` теперь возвращает разделение selected libraries и native artifacts
 - Добавлен `NativeExtractionPlanBuilder`, который строит `NativeExtractionPlan`
   из `RuntimeLibrarySelection.nativeArtifacts`
+- Зафиксирована граница результата загрузки manifest для сохранения `RuntimeLibrarySelection`

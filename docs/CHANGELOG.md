@@ -29,6 +29,7 @@
 - Added launcher natives directory preparation
 - Added native extraction plan model
 - Added native extraction plan builder
+- Documented the manifest load result boundary
 
 ### Changed
 

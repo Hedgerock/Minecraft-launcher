@@ -51,7 +51,8 @@ L-5
 Завершение `Operation` всегда приводит систему в согласованное состояние 
 (`RUNNING`, `FAILED` или `IDLE` в зависимости от сценария)
 
-После успешной загрузки `manifest` `LauncherEngine` переходит к `VERIFYING_FILES`
+После успешной загрузки `manifest` `LauncherEngine` сохраняет в `LaunchContext` `Manifest` и `RuntimeLibrarySelection`,
+затем переходит к `VERIFYING_FILES`
 
 Если первичный `VerificationPlan` невалиден, `LauncherEngine` переходит к построению `DownloadPlan`
 

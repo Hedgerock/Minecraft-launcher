@@ -111,6 +111,15 @@ runtime-сценариях
 
 ## Runtime
 
+### RuntimeLibrarySelection
+
+Модель результата runtime library selection
+
+Содержит отдельно обычные selected libraries и selected native artifacts
+
+Используется после загрузки manifest для сохранения результата selection в `LaunchContext`
+и построения `NativeExtractionPlan`
+
 ### RuntimeLibraryMetadata
 
 Промежуточная модель library metadata, полученная из manifest JSON до выбора runtime-compatible `LibraryEntry`
@@ -138,7 +147,7 @@ runtime-сценариях
 
 Модель metadata, описывающая соответствие `OperatingSystem` и имени classifier для native artifact
 
-Используется как часть будущего выбора native library artifact
+Используется при выборе native artifact для текущей `OperatingSystem`
 
 ### LibraryRule
 
@@ -154,7 +163,7 @@ runtime-сценариях
 
 ### RuntimeLibrarySelector
 
-Компонент, выбирающий `LibraryEntry` из `RuntimeLibraryMetadata` для заданного `RuntimeEnvironment`
+Компонент, формирующий `RuntimeLibrarySelection` из `RuntimeLibraryMetadata` для заданного `RuntimeEnvironment`
 
 На текущем этапе учитывает минимальные OS-specific library rules
 
@@ -166,8 +175,7 @@ runtime-сценариях
 
 Доменное перечисление поддерживаемых операционных систем для runtime selection
 
-На текущем этапе содержит минимальный набор значений, необходимый для будущего выбора OS-specific
-library artifacts
+На текущем этапе содержит минимальный набор значений, необходимый для OS-specific library и native artifact selection
 
 ### RuntimeEnvironment
 

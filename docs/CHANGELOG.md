@@ -12,7 +12,7 @@
 - Documented the decision to use manifest resources as the verification flow source
 - Documented the minimal library metadata scope
 - Documented resource path safety rules
-- Added safe resource path resolution through a shared `ResourсePathResolver`
+- Added safe resource path resolution through a shared `ResourcePathResolver`
 - Documented the boundary between raw library manifest metadata and selected runtime library entries
 - Added a runtime library selection between manifest JSON library metadata and selected `LibraryEntry` models
 - Added `LibraryArtifactMetadata` to separate downloadable library artifact metadata from runtime library metadata
@@ -30,7 +30,7 @@
 - Added native extraction plan model
 - Added native extraction plan builder
 - Documented the manifest load result boundary
-- Added `ManifestLoadResult` from preserving runtime library selection after manifest loading
+- Added `ManifestLoadResult` for preserving runtime library selection after manifest loading
 
 ### Changed
 

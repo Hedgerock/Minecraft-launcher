@@ -36,6 +36,10 @@
 
 `DownloadPlan` содержит только ресурсы, требующие восстановления
 
+На текущем этапе `Manifest.libraries` может содержать compatibility projection
+из `RuntimeLibrarySelection.selectedArtifacts()`, поэтому flow не различает обычные libraries и
+selected native artifacts
+
 ## Предусловия
 
 - `VERIFY_FILES` завершена успешно

@@ -4,6 +4,10 @@
 
 Accepted
 
+> Примечание: решение реализовано: `ManifestLoadResult` введен, `RuntimeLibrarySelection`
+> сохраняется в `LaunchContext`, а `NativeExtractionPlanBuilder` использует
+> `RuntimeLibrarySelection.nativeArtifacts()`
+
 ---
 
 ## Контекст

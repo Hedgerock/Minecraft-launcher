@@ -4,6 +4,10 @@
 
 Accepted
 
+> Примечание: после принятия решения были добавлены директория `natives`,
+> `NativeExtractionPlan` и `NativeExtractionPlanBuilder`
+> Сама распаковка natives и operation `EXTRACT_NATIVES` остаются вне текущей реализации
+
 ---
 
 ## Контекст
@@ -76,7 +80,7 @@ native artifacts, а не с raw JSON metadata
 
 `ManifestResources` продолжает работать только с ресурсами, которые нужно проверить или загрузить
 
-Verification/download flow не различает обычные libraries и native libraries
+Verification/download flow не различает обычные libraries и selected native artifacts
 
 Будущая native extraction должна быть добавлена после download lifecycle, но до построения или
 выполнения game launch command

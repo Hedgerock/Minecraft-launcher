@@ -124,9 +124,14 @@ RuntimeEnvironment
 
 `natives` преобразуется в `LibraryNativesMetadata`
 
-Отсутствие `clasifiers` и `natives` означает пустые metadata
+Отсутствие `classifiers` и `natives` означает пустые metadata
 
-Затем `RuntimeLibrarySelector` выбирает runtime-compatible `LibraryEntry` на основе `RuntimeLibraryMetadata`
+Затем `RuntimeLibrarySelector` формирует `RuntimeLibrarySelection` на основе `RuntimeLibraryMetadata`
+
+`RuntimeLibrarySelection` разделяет выбранные обычные libraries и selected native artifacts
+
+Для совместимости текущего verification/download flow `Manifest.libraries` содержит compatibility projection
+через `RuntimeLibrarySelection.selectedArtifacts()`
 
 `RuntimeLibrarySelector` получает `RuntimeEnvironment` как входные данные
 
@@ -145,10 +150,10 @@ RuntimeEnvironment
 
 Если совпадающих правил несколько, применяется последнее совпадающее правило
 
-Library включается в итоговый `Manifest.libraries`, если последнее совпадающее правило имеет
+Library включается в `RuntimeLibrarySelection.libraries`, если последнее совпадающее правило имеет
 `action` `ALLOW`
 
-Library исключается из итогового `Manifest.libraries`, если совпадающих правил нет или последнее
+Library исключается из `RuntimeLibrarySelection.libraries`, если совпадающих правил нет или последнее
 совпадающее правило имеет `action` `DISALLOW`
 
 `launchInfo.javaExecutable` используется как первый элемент команды запуска игры
@@ -267,7 +272,8 @@ LaunchInfo
 - Правило подстановки переменных
 - Аргументы авторизации
 - Assets index
-- Natives
+- Распаковка natives
+- Использование natives directory в launch arguments
 - Loader-specific правила запуска
 
 Данные поля должны появляться отдельными итерациями после появления подтвержденных runtime-сценариев

@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Провести stabilization pass по library/native selection flow перед добавлением новых возможностей
+- Внедрить новое поведение в уже существующий game classpath
 
 ---
 
@@ -41,3 +41,5 @@
 - Зафиксирована граница результата загрузки manifest для сохранения `RuntimeLibrarySelection`
 - Добавлена модель `ManifestLoadResult` для результата загрузки manifest
 - `RuntimeLibrarySelection` сохраняется в `LaunchContext` после загрузки manifest
+- Произведен stabilization pass по library/native selection flow перед добавлением новых возможностей
+- Зафиксировано решение об использовании `RuntimeLibrarySelection.libraries` как источник game classpath

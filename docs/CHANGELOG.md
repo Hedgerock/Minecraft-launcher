@@ -31,6 +31,7 @@
 - Added native extraction plan builder
 - Documented the manifest load result boundary
 - Added `ManifestLoadResult` for preserving runtime library selection after manifest loading
+- Documented decision regarding game classpath source
 
 ### Changed
 
@@ -55,6 +56,7 @@
 - Changed runtime library selection to include native classifier artifacts for the current runtime operating system
 - Changed runtime library selection to return `RuntimeLibrarySelection` with separated libraries and native artifacts
 - Changed manifest loading to store `RuntimeLibrarySelection` in `LaunchContext`
+- Clarified game classpath source documentation
 
 ---
 

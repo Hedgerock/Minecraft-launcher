@@ -30,6 +30,7 @@
 - Added native extraction plan model
 - Added native extraction plan builder
 - Documented the manifest load result boundary
+- Added `ManifestLoadResult` from preserving runtime library selection after manifest loading
 
 ### Changed
 
@@ -53,6 +54,7 @@
 - Changed `RuntimeLibraryMetadata` to include classifiers and natives metadata
 - Changed runtime library selection to include native classifier artifacts for the current runtime operating system
 - Changed runtime library selection to return `RuntimeLibrarySelection` with separated libraries and native artifacts
+- Changed manifest loading to store `RuntimeLibrarySelection` in `LaunchContext`
 
 ---
 

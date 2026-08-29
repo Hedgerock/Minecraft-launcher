@@ -28,6 +28,7 @@
 - Documented the native artifact processing boundary
 - Added launcher natives directory preparation
 - Added native extraction plan model
+- Added native extraction plan builder
 
 ### Changed
 

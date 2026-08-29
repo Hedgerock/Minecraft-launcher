@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Реализовать построение `NativeExtractionPlan` из `RuntimeLibrarySelection.nativeArtifacts`
+- Определить способ сохранения `RuntimeLibrarySelection` после загрузки manifest для будущей native extraction
 
 ---
 
@@ -36,3 +36,5 @@
 - Добавлена модель `NativeExtractionPlan` для будущей распаковки selected native artifacts
 - Источником selected native artifacts для будущего `NativeExtractionPlan` стала модель `RuntimeLibrarySelection`
 - `RuntimeLibrarySelector` теперь возвращает разделение selected libraries и native artifacts
+- Добавлен `NativeExtractionPlanBuilder`, который строит `NativeExtractionPlan`
+  из `RuntimeLibrarySelection.nativeArtifacts`

@@ -39,7 +39,7 @@ class VerifyFilesTaskTest {
     }
 
     private Manifest getManifest() {
-        return new RecordingManifestService().loadManifest();
+        return new RecordingManifestService().loadManifest().manifest();
     }
 
     private VerificationPlan getVerificationPlan() {

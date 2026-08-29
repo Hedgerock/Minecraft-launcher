@@ -24,7 +24,7 @@ class DefaultGameClasspathBuilderTest {
     }
 
     private Manifest getManifest() {
-        return new RecordingManifestService().loadManifest();
+        return new RecordingManifestService().loadManifest().manifest();
     }
 
     @BeforeEach
@@ -97,7 +97,8 @@ class DefaultGameClasspathBuilderTest {
         //then
         List<TestDefaultGameClasspathBuilderResourcePathResolverRecord> expectedRecords = getRecords(
                 gameDirectory,
-                "libraries/org/example/example.jar"
+                "libraries/org/example/example.jar",
+                "libraries/org/example/natives/example-natives.jar"
         );
 
         assertEquals(
@@ -169,7 +170,8 @@ class DefaultGameClasspathBuilderTest {
         //then
         assertEquals(
                 List.of(
-                        gameDirectory.resolve("libraries/org/example/example.jar")
+                        gameDirectory.resolve("libraries/org/example/example.jar"),
+                        gameDirectory.resolve("libraries/org/example/natives/example-natives.jar")
                 ),
                 classpath.entries()
         );

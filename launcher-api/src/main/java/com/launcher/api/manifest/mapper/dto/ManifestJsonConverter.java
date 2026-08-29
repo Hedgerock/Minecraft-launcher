@@ -2,6 +2,7 @@ package com.launcher.api.manifest.mapper.dto;
 
 import com.launcher.api.manifest.library.RuntimeLibrarySelector;
 import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
 import com.launcher.model.runtime.RuntimeEnvironment;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public final class ManifestJsonConverter {
 
-    public Manifest toManifest(
+    public ManifestLoadResult toManifestLoadResult(
             ManifestJson manifestJson,
             RuntimeLibrarySelector librarySelector,
             RuntimeEnvironment environment
@@ -21,7 +22,7 @@ public final class ManifestJsonConverter {
 
         RuntimeLibrarySelection selection = librarySelector.select(libraries, environment);
 
-        return new Manifest(
+        Manifest manifest = new Manifest(
                 manifestJson.minecraftVersion(),
                 manifestJson.loader().toLoaderInfo(),
                 manifestJson.files().stream()
@@ -29,6 +30,11 @@ public final class ManifestJsonConverter {
                         .toList(),
                 manifestJson.launchInfo().toLaunchInfo(),
                 selection.selectedArtifacts()
+        );
+
+        return new ManifestLoadResult(
+                manifest,
+                selection
         );
     }
 

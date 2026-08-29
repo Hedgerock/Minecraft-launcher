@@ -5,10 +5,12 @@ import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.RuntimeLibrarySelection;
 
 public class LaunchContext {
 
     private Manifest manifest;
+    private RuntimeLibrarySelection runtimeLibrarySelection;
     private final LauncherConfiguration launcherConfiguration;
     private VerificationPlan verificationPlan;
     private DownloadPlan downloadPlan;
@@ -25,6 +27,15 @@ public class LaunchContext {
     public LaunchContext setManifest(Manifest manifest) {
         this.manifest = manifest;
         return this;
+    }
+
+    public LaunchContext setRuntimeLibrarySelection(RuntimeLibrarySelection runtimeLibrarySelection) {
+        this.runtimeLibrarySelection = runtimeLibrarySelection;
+        return this;
+    }
+
+    public RuntimeLibrarySelection getRuntimeLibrarySelection() {
+        return runtimeLibrarySelection;
     }
 
     public VerificationPlan getVerificationPlan() {

@@ -1,9 +1,9 @@
 package com.launcher.core.manifest;
 
-import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.ManifestLoadResult;
 
 public interface ManifestService {
 
-    Manifest loadManifest();
+    ManifestLoadResult loadManifest();
 
 }

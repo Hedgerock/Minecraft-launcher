@@ -8,13 +8,23 @@ import java.util.List;
 public final class RecordingManifestService implements ManifestService {
 
     @Override
-    public Manifest loadManifest() {
-        return new Manifest(
+    public ManifestLoadResult loadManifest() {
+        RuntimeLibrarySelection runtimeLibrarySelection = new RuntimeLibrarySelection(
+                libraries(),
+                natives()
+        );
+
+        Manifest manifest = new Manifest(
                 "${minecraft_version}",
                 loaderInfo(),
                 files(),
                 launchInfo(),
-                libraries()
+                runtimeLibrarySelection.selectedArtifacts()
+        );
+
+        return new ManifestLoadResult(
+                manifest,
+                runtimeLibrarySelection
         );
     }
 
@@ -35,6 +45,17 @@ public final class RecordingManifestService implements ManifestService {
                         "sha256",
                         123L,
                         "https://example.com/example.jar"
+                )
+        );
+    }
+
+    private List<LibraryEntry> natives() {
+        return List.of(
+                new LibraryEntry(
+                        "libraries/org/example/natives/example-natives.jar",
+                        "sha256-natives",
+                        123L,
+                        "https://example.com/example-natives.jar"
                 )
         );
     }

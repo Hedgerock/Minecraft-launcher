@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class DefaultGameLaunchCommandBuilderTest {
 
     private LaunchInfo getLaunchInfo() {
-        return new RecordingManifestService().loadManifest().launchInfo();
+        return new RecordingManifestService().loadManifest().manifest().launchInfo();
     }
 
     @Test

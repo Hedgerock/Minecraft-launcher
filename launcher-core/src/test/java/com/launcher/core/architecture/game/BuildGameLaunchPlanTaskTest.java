@@ -17,7 +17,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BuildGameLaunchPlanTaskTest {
     private LaunchContext context;
@@ -79,7 +82,7 @@ class BuildGameLaunchPlanTaskTest {
         //given
         GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchBuilder;
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
-        Manifest manifest = manifestService.loadManifest();
+        Manifest manifest = (manifestService.loadManifest()).manifest();
         context.setManifest(manifest);
 
         //when
@@ -95,7 +98,7 @@ class BuildGameLaunchPlanTaskTest {
         //given
         GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchBuilder;
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
-        Manifest manifest = manifestService.loadManifest();
+        Manifest manifest = (manifestService.loadManifest()).manifest();
         context.setManifest(manifest);
 
         //when

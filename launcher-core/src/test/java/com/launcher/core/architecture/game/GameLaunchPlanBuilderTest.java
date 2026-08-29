@@ -27,7 +27,7 @@ class GameLaunchPlanBuilderTest {
                 recordingClasspathFormatter
         );
 
-        Manifest manifest = new RecordingManifestService().loadManifest();
+        Manifest manifest = new RecordingManifestService().loadManifest().manifest();
 
         //when
         GameLaunchPlan gameLaunchPlan = gameLaunchPlanBuilder.build(manifest);

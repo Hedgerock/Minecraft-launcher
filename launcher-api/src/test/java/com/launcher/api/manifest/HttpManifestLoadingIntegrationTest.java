@@ -49,7 +49,7 @@ class HttpManifestLoadingIntegrationTest {
 
             //when
             String json = manifestClient.download();
-            Manifest manifest = manifestMapper.map(json);
+            Manifest manifest = (manifestMapper.map(json)).manifest();
 
             //then
             assertEquals("1.12.2", manifest.minecraftVersion());

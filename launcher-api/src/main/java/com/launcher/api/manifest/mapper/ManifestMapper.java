@@ -1,9 +1,9 @@
 package com.launcher.api.manifest.mapper;
 
-import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.ManifestLoadResult;
 
 public interface ManifestMapper {
 
-    Manifest map(String json);
+    ManifestLoadResult map(String json);
 
 }

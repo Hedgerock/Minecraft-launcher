@@ -3,7 +3,7 @@ package com.launcher.api.manifest.service;
 import com.launcher.api.manifest.client.ManifestClient;
 import com.launcher.api.manifest.mapper.ManifestMapper;
 import com.launcher.core.manifest.ManifestService;
-import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.ManifestLoadResult;
 
 public class HttpManifestService implements ManifestService {
 
@@ -16,7 +16,7 @@ public class HttpManifestService implements ManifestService {
     }
 
     @Override
-    public Manifest loadManifest() {
+    public ManifestLoadResult loadManifest() {
         String json = this.manifestClient.download();
 
         return manifestMapper.map(json);

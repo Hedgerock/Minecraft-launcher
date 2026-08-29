@@ -7,7 +7,7 @@ import com.launcher.api.manifest.library.RuntimeLibrarySelector;
 import com.launcher.api.manifest.mapper.dto.ManifestJson;
 import com.launcher.api.manifest.mapper.dto.ManifestJsonConverter;
 import com.launcher.core.runtime.RuntimeEnvironmentProvider;
-import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.ManifestLoadResult;
 
 import java.util.Objects;
 
@@ -42,11 +42,11 @@ public class JsonManifestMapper implements ManifestMapper {
     }
 
     @Override
-    public Manifest map(String json) {
+    public ManifestLoadResult map(String json) {
         try {
             ManifestJson manifestJson = objectMapper.readValue(json, ManifestJson.class);
 
-            return converter.toManifest(
+            return converter.toManifestLoadResult(
                     manifestJson,
                     librarySelector,
                     runtimeEnvironmentProvider.current()

@@ -10,6 +10,7 @@ import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
+import com.launcher.model.manifest.RuntimeLibrarySelection;
 import com.launcher.model.manifest.classifiers.LibraryClassifiersMetadata;
 import com.launcher.model.manifest.natives.LibraryNativesMetadata;
 import com.launcher.model.manifest.rules.LibraryRule;
@@ -236,7 +237,7 @@ class JsonManifestMapperTest {
         );
 
         //when
-        Manifest manifest = mapper.map(json);
+        Manifest manifest = mapper.map(json).manifest();
 
         //then
         assertThrows(
@@ -262,13 +263,46 @@ class JsonManifestMapperTest {
     }
 
     @Test
+    void should_map_valid_runtime_library_selection() {
+        //given
+        JsonManifestMapper mapper = getMapper();
+        String json = loadResource("manifest/test-valid-manifest.json");
+
+        //when
+        RuntimeLibrarySelection runtimeLibrarySelection = mapper.map(json).runtimeLibrarySelection();
+
+        //then
+        assertEquals(
+                new RuntimeLibrarySelection(
+                        List.of(
+                                new LibraryEntry(
+                                        "libraries/org/example/example.jar",
+                                        "library-sha256",
+                                        123456789L,
+                                        "https://localhost/files/libraries/org/example/example.jar"
+                                )
+                        ),
+                        List.of(
+                                new LibraryEntry(
+                                        "natives-windows.jar",
+                                        "natives-windows-sha256",
+                                        123456789L,
+                                        "https://localhost/files/libraries/org/example/example/natives-windows.jar"
+                                )
+                        )
+                ),
+                runtimeLibrarySelection
+        );
+    }
+
+    @Test
     void should_map_valid_manifest() {
         //given
         JsonManifestMapper mapper = getMapper();
         String json = loadResource("manifest/test-valid-manifest.json");
 
         //when
-        Manifest manifest = mapper.map(json);
+        Manifest manifest = mapper.map(json).manifest();
 
         //then
         assertNotNull(manifest);

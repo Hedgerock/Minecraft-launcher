@@ -100,6 +100,7 @@ class LauncherStateMachineTest {
                         LauncherState.DOWNLOADING,
                         LauncherState.VERIFYING_FILES,
                         LauncherState.PREPARING_GAME,
+                        LauncherState.EXTRACTING_NATIVES,
                         LauncherState.BUILDING_GAME_LAUNCH_PLAN,
                         LauncherState.LAUNCHING,
                         LauncherState.RUNNING
@@ -115,6 +116,7 @@ class LauncherStateMachineTest {
                         OperationType.DOWNLOAD_FILES,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
                         OperationType.BUILD_GAME_LAUNCH_PLAN,
                         OperationType.LAUNCH_GAME
                 ),
@@ -216,6 +218,7 @@ class LauncherStateMachineTest {
                         LauncherState.LOADING_MANIFEST,
                         LauncherState.VERIFYING_FILES,
                         LauncherState.PREPARING_GAME,
+                        LauncherState.EXTRACTING_NATIVES,
                         LauncherState.BUILDING_GAME_LAUNCH_PLAN,
                         LauncherState.LAUNCHING,
                         LauncherState.RUNNING
@@ -228,6 +231,7 @@ class LauncherStateMachineTest {
                         OperationType.LOAD_MANIFEST,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
                         OperationType.BUILD_GAME_LAUNCH_PLAN,
                         OperationType.LAUNCH_GAME
                 ),

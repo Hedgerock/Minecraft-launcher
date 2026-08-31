@@ -18,6 +18,7 @@ import com.launcher.core.game.classpath.builder.DefaultGameClasspathBuilder;
 import com.launcher.core.game.classpath.builder.GameClasspathBuilder;
 import com.launcher.core.game.classpath.formatter.ClasspathFormatter;
 import com.launcher.core.game.classpath.formatter.DefaultClasspathFormatter;
+import com.launcher.core.natives.NativeExtractionPlanBuilder;
 import com.launcher.core.operation.DefaultOperationManager;
 import com.launcher.core.operation.OperationManager;
 import com.launcher.core.operation.factory.DefaultOperationFactory;
@@ -32,7 +33,7 @@ import com.launcher.core.state.LauncherStateMachine;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.directory.LocalDirectoryProvider;
 
-public class DefaultApplicationAssembly implements ApplicationAssembly {
+public final class DefaultApplicationAssembly implements ApplicationAssembly {
     private final LauncherConfiguration launcherConfiguration;
 
     public DefaultApplicationAssembly(LauncherConfiguration launcherConfiguration) {
@@ -89,14 +90,19 @@ public class DefaultApplicationAssembly implements ApplicationAssembly {
                 classpathFormatter
         );
 
+        NativeExtractionPlanBuilder nativeExtractionPlanBuilder =
+                new NativeExtractionPlanBuilder(directoryProvider);
+
         OperationFactory operationFactory = new DefaultOperationFactory(
                 services.manifestService(),
                 services.verificationService(),
                 services.downloadService(),
                 services.directoryService(),
                 services.gameService(),
+                services.nativeExtractionService(),
                 builder,
                 launchPlanBuilder,
+                nativeExtractionPlanBuilder,
                 launcherInfrastructure.eventBus()
         );
 

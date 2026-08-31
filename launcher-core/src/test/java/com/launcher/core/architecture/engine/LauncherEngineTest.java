@@ -28,7 +28,124 @@ class LauncherEngineTest {
     }
 
     @Test
-    void should_build_game_launch_plan_after_prepare_directories_operation() {
+    void should_transition_to_failed_when_extract_natives_failed() {
+        //given
+        VerificationPlan notValidVerificationPlan =
+                LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.MISSING);
+        VerificationPlan validVerificationPlan =
+                LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
+
+        launcherFlowFixture
+                .operationSucceeds(OperationType.LOAD_MANIFEST)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(notValidVerificationPlan)
+                .operationSucceeds(OperationType.BUILD_DOWNLOAD_PLAN)
+                .buildDownloadPlanReturns(LauncherFlowFixture.downloadPlan(notValidVerificationPlan))
+                .operationSucceeds(OperationType.DOWNLOAD_FILES)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(validVerificationPlan)
+                .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationFailed(OperationType.EXTRACT_NATIVES, "Failed to extract natives")
+        //when
+                .launch();
+
+        //then
+
+        assertEquals(
+                List.of(
+                        OperationType.LOAD_MANIFEST,
+                        OperationType.VERIFY_FILES,
+                        OperationType.BUILD_DOWNLOAD_PLAN,
+                        OperationType.DOWNLOAD_FILES,
+                        OperationType.VERIFY_FILES,
+                        OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES
+                ),
+                launcherFlowFixture.getExecutedOperations()
+        );
+
+        assertEquals(LauncherState.FAILED, launcherFlowFixture.getCurrentState());
+    }
+
+    @Test
+    void should_extract_natives_after_prepare_directories_when_download_resources_are_valid() {
+        //given
+        VerificationPlan notValidVerificationPlan =
+                LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.MISSING);
+        VerificationPlan validVerificationPlan =
+                LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
+
+        launcherFlowFixture
+                .operationSucceeds(OperationType.LOAD_MANIFEST)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(notValidVerificationPlan)
+                .operationSucceeds(OperationType.BUILD_DOWNLOAD_PLAN)
+                .buildDownloadPlanReturns(LauncherFlowFixture.downloadPlan(notValidVerificationPlan))
+                .operationSucceeds(OperationType.DOWNLOAD_FILES)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(validVerificationPlan)
+                .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.EXTRACT_NATIVES)
+                .operationSucceeds(OperationType.BUILD_GAME_LAUNCH_PLAN)
+                .operationSucceeds(OperationType.LAUNCH_GAME)
+        //when
+                .launch();
+
+        //then
+
+        assertEquals(
+                List.of(
+                        OperationType.LOAD_MANIFEST,
+                        OperationType.VERIFY_FILES,
+                        OperationType.BUILD_DOWNLOAD_PLAN,
+                        OperationType.DOWNLOAD_FILES,
+                        OperationType.VERIFY_FILES,
+                        OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
+                        OperationType.BUILD_GAME_LAUNCH_PLAN,
+                        OperationType.LAUNCH_GAME
+                ),
+                launcherFlowFixture.getExecutedOperations()
+        );
+
+        assertEquals(LauncherState.RUNNING, launcherFlowFixture.getCurrentState());
+    }
+
+    @Test
+    void should_extract_natives_after_prepare_directories_when_resources_are_valid() {
+        //given
+        VerificationPlan validVerificationPlan =
+                LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
+
+        launcherFlowFixture
+                .operationSucceeds(OperationType.LOAD_MANIFEST)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(validVerificationPlan)
+                .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.EXTRACT_NATIVES)
+                .operationSucceeds(OperationType.BUILD_GAME_LAUNCH_PLAN)
+                .operationSucceeds(OperationType.LAUNCH_GAME)
+        //when
+                .launch();
+
+        //when
+        assertEquals(
+                List.of(
+                        OperationType.LOAD_MANIFEST,
+                        OperationType.VERIFY_FILES,
+                        OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
+                        OperationType.BUILD_GAME_LAUNCH_PLAN,
+                        OperationType.LAUNCH_GAME
+                ),
+                launcherFlowFixture.getExecutedOperations()
+        );
+
+        assertEquals(LauncherState.RUNNING, launcherFlowFixture.getCurrentState());
+    }
+
+    @Test
+    void should_build_game_launch_plan_after_extract_natives_operation() {
         //given
         VerificationPlan validVerificationPlan =
                 LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
@@ -45,6 +162,7 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
                 .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.EXTRACT_NATIVES)
                 //when
                 .failOperationAndLaunch(OperationType.BUILD_GAME_LAUNCH_PLAN);
 
@@ -57,6 +175,7 @@ class LauncherEngineTest {
                         OperationType.DOWNLOAD_FILES,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
                         OperationType.BUILD_GAME_LAUNCH_PLAN
                 ),
                 launcherFlowFixture.getExecutedOperations()
@@ -82,6 +201,7 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
                 .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.EXTRACT_NATIVES)
                 .operationFailed(OperationType.BUILD_GAME_LAUNCH_PLAN, "Failed to build game launch plan")
                 //when
                 .launch();
@@ -95,6 +215,7 @@ class LauncherEngineTest {
                         OperationType.DOWNLOAD_FILES,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
                         OperationType.BUILD_GAME_LAUNCH_PLAN
                 ),
                 launcherFlowFixture.getExecutedOperations()
@@ -124,6 +245,8 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
                 .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.EXTRACT_NATIVES)
+                .operationSucceeds(OperationType.BUILD_GAME_LAUNCH_PLAN)
                 .operationFailed(OperationType.LAUNCH_GAME, "Failed to launch game")
                 //when
                 .launch();
@@ -137,6 +260,7 @@ class LauncherEngineTest {
                         OperationType.DOWNLOAD_FILES,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
                         OperationType.BUILD_GAME_LAUNCH_PLAN,
                         OperationType.LAUNCH_GAME
                 ),
@@ -167,6 +291,8 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
                 .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.EXTRACT_NATIVES)
+                .operationSucceeds(OperationType.BUILD_GAME_LAUNCH_PLAN)
                 .operationSucceeds(OperationType.LAUNCH_GAME)
                 //when
                 .launch();
@@ -180,6 +306,7 @@ class LauncherEngineTest {
                         OperationType.DOWNLOAD_FILES,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
                         OperationType.BUILD_GAME_LAUNCH_PLAN,
                         OperationType.LAUNCH_GAME
                 ),
@@ -203,6 +330,8 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
                 .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.EXTRACT_NATIVES)
+                .operationSucceeds(OperationType.BUILD_GAME_LAUNCH_PLAN)
                 .operationSucceeds(OperationType.LAUNCH_GAME)
                 //when
                 .launch();
@@ -213,6 +342,7 @@ class LauncherEngineTest {
                         OperationType.LOAD_MANIFEST,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
                         OperationType.BUILD_GAME_LAUNCH_PLAN,
                         OperationType.LAUNCH_GAME
                 ),
@@ -236,6 +366,8 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
                 .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.EXTRACT_NATIVES)
+                .operationSucceeds(OperationType.BUILD_GAME_LAUNCH_PLAN)
         //when
                 .launch();
 
@@ -245,6 +377,7 @@ class LauncherEngineTest {
                         OperationType.LOAD_MANIFEST,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
                         OperationType.BUILD_GAME_LAUNCH_PLAN,
                         OperationType.LAUNCH_GAME
                 ),
@@ -278,6 +411,8 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
                 .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.EXTRACT_NATIVES)
+                .operationSucceeds(OperationType.BUILD_GAME_LAUNCH_PLAN)
         //when
                 .launch();
 
@@ -290,6 +425,7 @@ class LauncherEngineTest {
                         OperationType.DOWNLOAD_FILES,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
                         OperationType.BUILD_GAME_LAUNCH_PLAN,
                         OperationType.LAUNCH_GAME
                 ),
@@ -323,6 +459,8 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
                 .operationFailed(OperationType.PREPARE_DIRECTORIES, "Failed to prepare directories")
+                .operationSucceeds(OperationType.EXTRACT_NATIVES)
+                .operationSucceeds(OperationType.BUILD_GAME_LAUNCH_PLAN)
         //when
                 .launch();
 
@@ -674,6 +812,10 @@ class LauncherEngineTest {
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(verificationPlan)
+                .operationSucceeds(OperationType.PREPARE_DIRECTORIES)
+                .operationSucceeds(OperationType.EXTRACT_NATIVES)
+                .operationSucceeds(OperationType.BUILD_GAME_LAUNCH_PLAN)
+                .operationSucceeds(OperationType.LAUNCH_GAME)
         //when
                 .launch();
 
@@ -683,6 +825,7 @@ class LauncherEngineTest {
                         OperationType.LOAD_MANIFEST,
                         OperationType.VERIFY_FILES,
                         OperationType.PREPARE_DIRECTORIES,
+                        OperationType.EXTRACT_NATIVES,
                         OperationType.BUILD_GAME_LAUNCH_PLAN,
                         OperationType.LAUNCH_GAME
                 ),

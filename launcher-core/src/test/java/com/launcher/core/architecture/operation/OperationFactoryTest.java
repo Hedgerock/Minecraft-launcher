@@ -8,6 +8,7 @@ import com.launcher.core.operation.factory.DefaultOperationFactory;
 import com.launcher.core.operation.impl.BuildDownloadPlanOperation;
 import com.launcher.core.operation.impl.BuildGameLaunchPlanOperation;
 import com.launcher.core.operation.impl.DownloadFilesOperation;
+import com.launcher.core.operation.impl.ExtractNativesOperation;
 import com.launcher.core.operation.impl.LaunchGameOperation;
 import com.launcher.core.operation.impl.LoadManifestOperation;
 import com.launcher.core.operation.impl.PrepareDirectoriesOperation;
@@ -126,6 +127,22 @@ class OperationFactoryTest {
 
         //then
         assertInstanceOf(PrepareDirectoriesOperation.class, operation);
+    }
+
+    @Test
+    void should_create_extract_natives_operation_for_extract_natives_type() {
+        //given
+        DefaultOperationFactory factory = operationFactoryFixture.getFactory();
+
+        //when
+        LaunchOperation operation = factory.create(
+                OperationType.EXTRACT_NATIVES,
+                context,
+                new FixedResultExecutionStrategy(OperationResult.success())
+        );
+
+        //then
+        assertInstanceOf(ExtractNativesOperation.class, operation);
     }
 
     @Test

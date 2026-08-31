@@ -7,6 +7,7 @@ import com.launcher.core.architecture.support.recording.RecordingDirectoryServic
 import com.launcher.core.architecture.support.recording.RecordingDownloadService;
 import com.launcher.core.architecture.support.recording.RecordingGameService;
 import com.launcher.core.architecture.support.recording.RecordingManifestService;
+import com.launcher.core.architecture.support.recording.RecordingNativeExtractionService;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.event.EventBus;
@@ -15,6 +16,7 @@ import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.core.game.classpath.builder.DefaultGameClasspathBuilder;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.manifest.ManifestService;
+import com.launcher.core.natives.NativeExtractionPlanBuilder;
 import com.launcher.core.operation.factory.DefaultOperationFactory;
 import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.core.resource.SafeResourcePathResolver;
@@ -43,6 +45,10 @@ public class OperationFactoryFixture {
                 ),
                 new RecordingClasspathFormatter()
         );
+    }
+
+    public static NativeExtractionPlanBuilder nativeExtractionPlanBuilder() {
+        return new NativeExtractionPlanBuilder(new RecordingDirectoryProvider());
     }
 
     public OperationFactoryFixture() {
@@ -82,8 +88,10 @@ public class OperationFactoryFixture {
                 new RecordingDownloadService(),
                 new RecordingDirectoryService(),
                 new RecordingGameService(),
+                new RecordingNativeExtractionService(),
                 downloadPlanBuilder(),
                 gameLaunchPlanBuilder(),
+                nativeExtractionPlanBuilder(),
                 eventBus
         );
     }

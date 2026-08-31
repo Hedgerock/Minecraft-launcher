@@ -9,10 +9,12 @@ import com.launcher.api.manifest.mapper.ManifestMapper;
 import com.launcher.api.manifest.service.HttpManifestService;
 import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.app.service.LauncherServices;
+import com.launcher.app.service.UnsupportedNativeExtractionService;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadService;
 import com.launcher.core.game.GameService;
 import com.launcher.core.manifest.ManifestService;
+import com.launcher.core.natives.NativeExtractionService;
 import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.runtime.RuntimeEnvironmentProvider;
 import com.launcher.core.storage.directory.DirectoryProvider;
@@ -32,7 +34,7 @@ import com.launcher.verification.file.DefaultFileVerifier;
 import com.launcher.verification.file.FileVerifier;
 import com.launcher.verification.service.DefaultVerificationService;
 
-public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
+public final class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     private final LauncherConfiguration configuration;
     private final LauncherInfrastructure infrastructure;
     private final ResourcePathResolver resourcePathResolver;
@@ -98,6 +100,10 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
         return new DefaultVerificationService(directoryProvider, fileVerifier, resourcePathResolver);
     }
 
+    private NativeExtractionService createNativeExtractionService() {
+        return new UnsupportedNativeExtractionService();
+    }
+
     private GameService createGameService() {
         return new DefaultGameService(
                 new ProcessBuilderGameProcessLauncher()
@@ -112,7 +118,8 @@ public class DefaultLauncherServiceFactory implements LauncherServicesFactory {
                 createVerificationService(directoryProvider, resourcePathResolver),
                 createDirectoryService(directoryProvider),
                 createDownloadService(directoryProvider, resourcePathResolver),
-                createGameService()
+                createGameService(),
+                createNativeExtractionService()
         );
     }
 }

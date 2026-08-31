@@ -9,7 +9,7 @@ import com.launcher.core.state.LauncherState;
 import com.launcher.core.state.LauncherStateMachine;
 import com.launcher.core.verification.model.VerificationPlan;
 
-public class LauncherEngine {
+public final class LauncherEngine {
 
     private final LauncherStateMachine stateMachine;
     private final OperationManager operationManager;
@@ -88,6 +88,14 @@ public class LauncherEngine {
         if (operationFailed(
                 LauncherState.PREPARING_GAME,
                 OperationType.PREPARE_DIRECTORIES,
+                context
+        )) {
+            return;
+        }
+
+        if (operationFailed(
+                LauncherState.EXTRACTING_NATIVES,
+                OperationType.EXTRACT_NATIVES,
                 context
         )) {
             return;

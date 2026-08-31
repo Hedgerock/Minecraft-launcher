@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Спроектировать реализацию native extraction service
+- Реализовать `NativeExtractionService` в отдельном модуле `launcher-natives`
 
 ---
 
@@ -47,3 +47,4 @@
 - Обновлена документация после изменения источника game classpath
 - Зафиксирована граница `EXTRACT_NATIVES` как отдельной operation после `PREPARE_DIRECTORIES`
 - `EXTRACT_NATIVES` добавлена в launcher lifecycle после `PREPARE_DIRECTORIES`
+- Зафиксировано решение о реализации `NativeExtractionService`

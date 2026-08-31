@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Реализовать `NativeExtractionService` в отдельном модуле `launcher-natives`
+- Провести ревизию native extraction flow перед следующим решением
 
 ---
 
@@ -48,3 +48,5 @@
 - Зафиксирована граница `EXTRACT_NATIVES` как отдельной operation после `PREPARE_DIRECTORIES`
 - `EXTRACT_NATIVES` добавлена в launcher lifecycle после `PREPARE_DIRECTORIES`
 - Зафиксировано решение о реализации `NativeExtractionService`
+- `NativeExtractionService` реализован в отдельном модуле `launcher-natives`
+- `launcher-app` подключает `DefaultNativeExtractionService` через composition root

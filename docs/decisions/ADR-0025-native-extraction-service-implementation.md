@@ -4,6 +4,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `feat(natives): add native extraction service`
+
 ---
 
 ## Контекст

@@ -165,6 +165,7 @@ launcher-app
 - `launcher-storage`
 - `launcher-verification`
 - `launcher-downloader`
+- `launcher-natives`
 - `launcher-game`
 - `launcher-ui`
 

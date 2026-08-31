@@ -35,6 +35,7 @@
 - Documented the native extraction operation boundary
 - Added `EXTRACT_NATIVES` operation to launcher lifecycle
 - Documented native extraction service implementation boundary
+- Added `DefaultNativeExtractionService` in `launcher-natives`
 
 ### Changed
 

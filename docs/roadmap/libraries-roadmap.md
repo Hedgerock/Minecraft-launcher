@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Провести ревизию library/native flow перед следующим архитектурным решением
+- Реализовать `EXTRACT_NATIVES` как отдельную operation после `PREPARE_DIRECTORIES`
 
 ---
 
@@ -45,3 +45,4 @@
 - Зафиксировано решение об использовании `RuntimeLibrarySelection.libraries` как источника game classpath
 - Game classpath теперь строится из `RuntimeLibrarySelection.libraries`, а не из `Manifest.libraries`
 - Обновлена документация после изменения источника game classpath
+- Зафиксирована граница `EXTRACT_NATIVES` как отдельной operation после `PREPARE_DIRECTORIES`

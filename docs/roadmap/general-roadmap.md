@@ -7,3 +7,4 @@
 ## Выполнено
 
 - Правила безопасности `ResourceEntry.path` зафиксированы в [ADR-0016](../decisions/ADR-0016-resource-path-safety.md) и реализованы через общий `ResourcePathResolver`
+- Введен минимальный quality gate для проверки кода и документации

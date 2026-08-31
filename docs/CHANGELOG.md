@@ -32,6 +32,7 @@
 - Documented the manifest load result boundary
 - Added `ManifestLoadResult` for preserving runtime library selection after manifest loading
 - Documented decision regarding game classpath source
+- Documented the native extraction operation boundary
 
 ### Changed
 

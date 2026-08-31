@@ -18,24 +18,26 @@ Launcher выполняет сценарий запуска как послед�
 
 ## Жизненный цикл задачи
 
- CREATED
-    |
-    ▼
-  READY
-    |
-    ▼
- RUNNING
-    |
-    |
- ┌──┴─────────────────┐
- |                    |
- |                    |
- ▼                    ▼
- COMPLETED          FAILED
- |
- ▼
- DISPOSED
- 
+```text
+CREATED
+  |
+  ▼
+READY
+  |
+  ▼
+RUNNING
+  |
+  |
+  ┌───────────────────┐
+  |                   |
+  |                   |
+  ▼                   ▼
+COMPLETED           FAILED
+  |
+  ▼
+DISPOSED
+```
+
 ## Инварианты
 
 |-1

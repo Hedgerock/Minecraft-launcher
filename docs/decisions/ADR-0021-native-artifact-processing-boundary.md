@@ -5,8 +5,8 @@
 Accepted
 
 > Примечание: после принятия решения были добавлены директория `natives`,
-> `NativeExtractionPlan` и `NativeExtractionPlanBuilder`
-> Сама распаковка natives и operation `EXTRACT_NATIVES` остаются вне текущей реализации
+> `NativeExtractionPlan` и `NativeExtractionPlanBuilder`, operation `EXTRACT_NATIVES`
+> и реализация `DefaultNativeExtractionService` в модуле `launcher-natives`
 
 ---
 

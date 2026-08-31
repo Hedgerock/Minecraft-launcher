@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Внедрить новое поведение в уже существующий game classpath
+- Провести ревизию library/native flow перед следующим архитектурным решением
 
 ---
 
@@ -42,4 +42,6 @@
 - Добавлена модель `ManifestLoadResult` для результата загрузки manifest
 - `RuntimeLibrarySelection` сохраняется в `LaunchContext` после загрузки manifest
 - Произведен stabilization pass по library/native selection flow перед добавлением новых возможностей
-- Зафиксировано решение об использовании `RuntimeLibrarySelection.libraries` как источник game classpath
+- Зафиксировано решение об использовании `RuntimeLibrarySelection.libraries` как источника game classpath
+- Game classpath теперь строится из `RuntimeLibrarySelection.libraries`, а не из `Manifest.libraries`
+- Обновлена документация после изменения источника game classpath

@@ -318,9 +318,12 @@ manifest mapping и runtime library selection
 
 ### GameClasspathBuilder
 
-Компонент, строящий `GameClasspath` из `Manifest.libraries`
+Компонент, строящий `GameClasspath` из `RuntimeLibrarySelection.libraries`
 
-Если `libraries` пустой, использует `launchInfo.classpath` как fallback для минимальных сценариев
+Если `RuntimeLibrarySelection.libraries` пустой, использует `launchInfo.classpath` как fallback для минимальных
+сценариев
+
+`Manifest.libraries` больше не принимает участия в построении classpath
 
 При построении локальных classpath paths использует `ResourcePathResolver`, чтобы не дублировать правила
 безопасного разрешения manifest paths

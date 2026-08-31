@@ -189,7 +189,8 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 Включение `libraries` в verification/download flow зафиксировано отдельным архитектурным решением и реализовано через
 `ManifestResources`
 
-Если `libraries` пустой, launcher использует `launchInfo.classpath` как fallback для минимальных сценариев
+Если `RuntimeLibrarySelection.libraries` пустой, launcher использует `launchInfo.classpath` как fallback для минимальных
+сценариев
 
 После добавления physical metadata `libraries` могут быть использованы как источник восстанавливаемых ресурсов
 
@@ -198,8 +199,9 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 Для verification/download flow должен использоваться общий resource-level contract, который выражает только `path`,
 `sha256`, `size` и `url`
 
-`GameClasspathBuilder` продолжает использовать `LibraryEntry`, потому что построение classpath зависит от семантики
-`libraries`
+`GameClasspathBuilder` строит classpath из `RuntimeLibrarySelection.libraries`
+
+Если `RuntimeLibrarySelection.libraries` пустой, launcher использует fallback `launchInfo.classpath`
 
 Во время построения `GameLaunchPlan` выбранный источник classpath преобразуется в `GameClasspath`,
 разрешается относительно игровой директории и форматируется в строку с использованием системного разделителя путей
@@ -207,13 +209,14 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 Перед добавлением в `GameClasspath` каждый classpath entry разрешается через общий `ResourcePathResolver` относительно
 игровой директории
 
-Это правило применяется как к `Manifest.libraries`, так и к fallback `launchInfo.classpath`
+`Manifest.libraries` остается compatibility projection для verification/download flow и не является источником
+game classpath
 
 `GameClasspathBuilder` не выполняет прямой `gameDirectory.resolve(...)`, а делегирует построение локального
 пути общему resolver-у
 
 ```text
-Manifest.libraries
+RuntimeLibrarySelection.libraries
     -> GameClasspathBuilder
         -> GameClasspath
             -> ClasspathFormatter

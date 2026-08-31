@@ -57,6 +57,7 @@
 - Changed runtime library selection to return `RuntimeLibrarySelection` with separated libraries and native artifacts
 - Changed manifest loading to store `RuntimeLibrarySelection` in `LaunchContext`
 - Clarified game classpath source documentation
+- Changed game classpath building to use `RuntimeLibrarySelection.libraries` instead of `Manifest.libraries`
 
 ---
 

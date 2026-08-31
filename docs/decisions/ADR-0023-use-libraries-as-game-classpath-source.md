@@ -4,6 +4,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `feat(core): use runtime libraries for game classpath`
+
 ---
 
 ## Контекст

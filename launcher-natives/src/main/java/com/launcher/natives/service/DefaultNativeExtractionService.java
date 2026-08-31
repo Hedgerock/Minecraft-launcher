@@ -4,7 +4,7 @@ import com.launcher.core.natives.NativeExtractionService;
 import com.launcher.core.natives.model.NativeExtractionPlan;
 import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.storage.directory.DirectoryProvider;
-import com.launcher.model.manifest.LibraryEntry;
+import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import com.launcher.natives.exception.NativeExtractionException;
 
 import java.io.IOException;
@@ -33,8 +33,8 @@ public final class DefaultNativeExtractionService implements NativeExtractionSer
 
         Path gameDirectory = directoryProvider.directories().game();
 
-        for (LibraryEntry artifact: plan.artifacts()) {
-            Path sourcePath = resourcePathResolver.resolve(gameDirectory, artifact.path());
+        for (SelectedNativeArtifact selectedNativeArtifact : plan.artifacts()) {
+            Path sourcePath = resourcePathResolver.resolve(gameDirectory, selectedNativeArtifact.artifact().path());
             extractArchive(sourcePath, plan.targetDirectory());
         }
     }

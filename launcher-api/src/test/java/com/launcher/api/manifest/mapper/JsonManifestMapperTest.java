@@ -13,6 +13,8 @@ import com.launcher.model.manifest.RuntimeLibraryMetadata;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
 import com.launcher.model.manifest.classifiers.LibraryClassifiersMetadata;
 import com.launcher.model.manifest.natives.LibraryNativesMetadata;
+import com.launcher.model.manifest.natives.NativeExtractionRules;
+import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import com.launcher.model.manifest.rules.LibraryRule;
 import com.launcher.model.manifest.rules.LibraryRuleAction;
 import com.launcher.model.runtime.OperatingSystem;
@@ -283,12 +285,15 @@ class JsonManifestMapperTest {
                                 )
                         ),
                         List.of(
-                                new LibraryEntry(
-                                        "natives-windows.jar",
-                                        "natives-windows-sha256",
-                                        123456789L,
-                                        "https://localhost/files/libraries/org/example/example/natives-windows.jar"
-                                )
+                               new SelectedNativeArtifact(
+                                       new LibraryEntry(
+                                               "natives-windows.jar",
+                                               "natives-windows-sha256",
+                                               123456789L,
+                                               "https://localhost/files/libraries/org/example/example/natives-windows.jar"
+                                       ),
+                                       new NativeExtractionRules(List.of())
+                               )
                         )
                 ),
                 runtimeLibrarySelection

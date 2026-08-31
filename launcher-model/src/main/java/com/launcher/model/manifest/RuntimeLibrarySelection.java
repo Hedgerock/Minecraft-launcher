@@ -1,12 +1,14 @@
 package com.launcher.model.manifest;
 
+import com.launcher.model.manifest.natives.SelectedNativeArtifact;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 public record RuntimeLibrarySelection(
         List<LibraryEntry> libraries,
-        List<LibraryEntry> nativeArtifacts
+        List<SelectedNativeArtifact> nativeArtifacts
 ) {
 
     public RuntimeLibrarySelection {
@@ -24,7 +26,7 @@ public record RuntimeLibrarySelection(
     public List<LibraryEntry> selectedArtifacts() {
         return Stream.concat(
                 libraries.stream(),
-                nativeArtifacts.stream()
+                nativeArtifacts.stream().map(SelectedNativeArtifact::artifact)
         ).toList();
     }
 

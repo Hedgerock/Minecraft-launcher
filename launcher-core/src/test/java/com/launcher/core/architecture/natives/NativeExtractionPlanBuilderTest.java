@@ -6,6 +6,8 @@ import com.launcher.core.natives.model.NativeExtractionPlan;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
+import com.launcher.model.manifest.natives.NativeExtractionRules;
+import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -36,14 +38,22 @@ class NativeExtractionPlanBuilderTest {
         NativeExtractionPlan result = builder.build(
                 new RuntimeLibrarySelection(
                         List.of(getLibraryEntry("path.jar")),
-                        List.of(getLibraryEntry("artifact.jar"))
+                        List.of(new SelectedNativeArtifact(
+                                getLibraryEntry("artifact.jar"),
+                                new NativeExtractionRules(List.of())
+                        ))
                 )
         );
 
         //then
         assertFalse(result.artifacts().isEmpty());
         assertEquals(
-                List.of(getLibraryEntry("artifact.jar")),
+                List.of(
+                        new SelectedNativeArtifact(
+                                getLibraryEntry("artifact.jar"),
+                                new NativeExtractionRules(List.of())
+                        )
+                ),
                 result.artifacts()
         );
         assertEquals(

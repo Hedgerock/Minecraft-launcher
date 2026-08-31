@@ -1,13 +1,13 @@
 package com.launcher.core.natives.model;
 
-import com.launcher.model.manifest.LibraryEntry;
+import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
 public record NativeExtractionPlan(
-        List<LibraryEntry> artifacts,
+        List<SelectedNativeArtifact> artifacts,
         Path targetDirectory
 ) {
 

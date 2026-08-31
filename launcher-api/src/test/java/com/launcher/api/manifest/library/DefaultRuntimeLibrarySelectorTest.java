@@ -6,6 +6,8 @@ import com.launcher.model.manifest.RuntimeLibraryMetadata;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
 import com.launcher.model.manifest.classifiers.LibraryClassifiersMetadata;
 import com.launcher.model.manifest.natives.LibraryNativesMetadata;
+import com.launcher.model.manifest.natives.NativeExtractionRules;
+import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import com.launcher.model.manifest.rules.LibraryRule;
 import com.launcher.model.manifest.rules.LibraryRuleAction;
 import com.launcher.model.runtime.OperatingSystem;
@@ -187,7 +189,10 @@ class DefaultRuntimeLibrarySelectorTest {
         //then
         assertEquals(
                 List.of(
-                        getLibraryEntry("native-windows-path.jar")
+                        new SelectedNativeArtifact(
+                                getLibraryEntry("native-windows-path.jar"),
+                                new NativeExtractionRules(List.of())
+                        )
                 ),
                 result.nativeArtifacts()
         );

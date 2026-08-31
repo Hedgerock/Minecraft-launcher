@@ -2,6 +2,8 @@ package com.launcher.core.architecture.natives.model;
 
 import com.launcher.core.natives.model.NativeExtractionPlan;
 import com.launcher.model.manifest.LibraryEntry;
+import com.launcher.model.manifest.natives.NativeExtractionRules;
+import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -14,12 +16,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NativeExtractionPlanTest {
-    private static final List<LibraryEntry> DEFAULT_ARTIFACTS = List.of(
-            new LibraryEntry(
-                    "path.jar",
-                    "sha256",
-                    123L,
-                    "http://localhost/path.jar"
+    private static final List<SelectedNativeArtifact> DEFAULT_ARTIFACTS = List.of(
+            new SelectedNativeArtifact(
+                    new LibraryEntry(
+                            "path.jar",
+                            "sha256",
+                            123L,
+                            "http://localhost/path.jar"
+                    ),
+                    new NativeExtractionRules(
+                            List.of()
+                    )
             )
     );
 
@@ -39,7 +46,7 @@ class NativeExtractionPlanTest {
     @Test
     void should_return_empty_when_artifacts_are_empty() {
         //given
-        List<LibraryEntry> artifacts = new ArrayList<>();
+        List<SelectedNativeArtifact> artifacts = new ArrayList<>();
 
         //when
         NativeExtractionPlan plan = new NativeExtractionPlan(artifacts, DEFAULT_TARGET_DIRECTORY);
@@ -51,7 +58,7 @@ class NativeExtractionPlanTest {
     @Test
     void should_reject_null_artifact_from_artifacts() {
         //given
-        List<LibraryEntry> artifacts = new ArrayList<>();
+        List<SelectedNativeArtifact> artifacts = new ArrayList<>();
 
         artifacts.add(null);
 
@@ -72,14 +79,18 @@ class NativeExtractionPlanTest {
                 "http://localhost/candidate.jar"
         );
 
-        List<LibraryEntry> artifacts = new ArrayList<>(DEFAULT_ARTIFACTS);
+        List<String> exclude = List.of();
+        NativeExtractionRules rules = new NativeExtractionRules(exclude);
+        SelectedNativeArtifact artifactCandidate = new SelectedNativeArtifact(candidate, rules);
+
+        List<SelectedNativeArtifact> artifacts = new ArrayList<>(DEFAULT_ARTIFACTS);
 
         NativeExtractionPlan plan = new NativeExtractionPlan(artifacts, DEFAULT_TARGET_DIRECTORY);
 
         //when & then
         assertThrows(
                 UnsupportedOperationException.class,
-                () -> plan.artifacts().add(candidate)
+                () -> plan.artifacts().add(artifactCandidate)
         );
     }
 
@@ -93,12 +104,15 @@ class NativeExtractionPlanTest {
                 "http://localhost/candidate.jar"
         );
 
-        List<LibraryEntry> artifacts = new ArrayList<>(DEFAULT_ARTIFACTS);
+        List<String> exclude = List.of();
+        NativeExtractionRules rules = new NativeExtractionRules(exclude);
+        SelectedNativeArtifact artifactCandidate = new SelectedNativeArtifact(candidate, rules);
 
+        List<SelectedNativeArtifact> artifacts = new ArrayList<>(DEFAULT_ARTIFACTS);
         NativeExtractionPlan plan = new NativeExtractionPlan(artifacts, DEFAULT_TARGET_DIRECTORY);
 
         //when
-        artifacts.add(candidate);
+        artifacts.add(artifactCandidate);
 
         //then
         assertEquals(

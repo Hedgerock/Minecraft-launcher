@@ -8,6 +8,8 @@ import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
+import com.launcher.model.manifest.natives.NativeExtractionRules;
+import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 
 import java.util.List;
 
@@ -58,7 +60,15 @@ public final class RecordingManifestService implements ManifestService {
         RuntimeLibrarySelection runtimeLibrarySelection = new RuntimeLibrarySelection(
                 List.of(),
                 List.of(
-                        new LibraryEntry("path", "sha256", 123L, "url")
+                        new SelectedNativeArtifact(
+                                new LibraryEntry(
+                                        "path",
+                                        "sha256",
+                                        123L,
+                                        "url"
+                                ),
+                                new NativeExtractionRules(List.of())
+                        )
                 )
         );
 
@@ -84,13 +94,16 @@ public final class RecordingManifestService implements ManifestService {
         );
     }
 
-    private List<LibraryEntry> natives() {
+    private List<SelectedNativeArtifact> natives() {
         return List.of(
-                new LibraryEntry(
-                        "libraries/org/example/natives/example-natives.jar",
-                        "sha256-natives",
-                        123L,
-                        "https://example.com/example-natives.jar"
+                new SelectedNativeArtifact(
+                        new LibraryEntry(
+                                "libraries/org/example/natives/example-natives.jar",
+                                "sha256-natives",
+                                123L,
+                                "https://example.com/example-natives.jar"
+                        ),
+                        new NativeExtractionRules(List.of())
                 )
         );
     }

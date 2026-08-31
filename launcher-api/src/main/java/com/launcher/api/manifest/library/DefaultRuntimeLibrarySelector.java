@@ -4,6 +4,8 @@ import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
+import com.launcher.model.manifest.natives.NativeExtractionRules;
+import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import com.launcher.model.manifest.rules.LibraryRuleAction;
 import com.launcher.model.runtime.RuntimeEnvironment;
 
@@ -27,7 +29,10 @@ public final class DefaultRuntimeLibrarySelector implements RuntimeLibrarySelect
 
         return new RuntimeLibrarySelection(
                 librariesList,
-                nativeArtifacts
+                nativeArtifacts.stream().map(artifact -> new SelectedNativeArtifact(
+                        artifact,
+                        new NativeExtractionRules(List.of())
+                )).toList()
         );
     }
 

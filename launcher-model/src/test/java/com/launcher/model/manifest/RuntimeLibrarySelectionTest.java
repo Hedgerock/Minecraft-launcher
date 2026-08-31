@@ -1,5 +1,7 @@
 package com.launcher.model.manifest;
 
+import com.launcher.model.manifest.natives.NativeExtractionRules;
+import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -16,9 +18,15 @@ class RuntimeLibrarySelectionTest {
             getLibraryEntry("second-library-path")
     );
 
-    private static final List<LibraryEntry> DEFAULT_NATIVE_ARTIFACTS = List.of(
-            getLibraryEntry("first-artifact-path"),
-            getLibraryEntry("second-artifact-path")
+    private static final List<SelectedNativeArtifact> DEFAULT_NATIVE_ARTIFACTS = List.of(
+            new SelectedNativeArtifact(
+                    getLibraryEntry("first-artifact-path"),
+                    new NativeExtractionRules(List.of())
+            ),
+            new SelectedNativeArtifact(
+                    getLibraryEntry("second-artifact-path"),
+                    new NativeExtractionRules(List.of())
+            )
     );
 
     @Test
@@ -90,7 +98,7 @@ class RuntimeLibrarySelectionTest {
     @Test
     void should_reject_null_entry_to_native_artifacts() {
         //given
-        List<LibraryEntry> nativeArtifacts = new ArrayList<>();
+        List<SelectedNativeArtifact> nativeArtifacts = new ArrayList<>();
         nativeArtifacts.add(null);
 
         //when & then
@@ -116,8 +124,12 @@ class RuntimeLibrarySelectionTest {
     @Test
     void should_reject_native_artifacts_mutation_from_accessor() {
         //given
-        LibraryEntry candidate = getLibraryEntry("candidate-path2");
-        List<LibraryEntry> nativeArtifacts = new ArrayList<>(DEFAULT_NATIVE_ARTIFACTS);
+        SelectedNativeArtifact candidate = new SelectedNativeArtifact(
+                getLibraryEntry("candidate-path2"),
+                new NativeExtractionRules(List.of())
+        );
+
+        List<SelectedNativeArtifact> nativeArtifacts = new ArrayList<>(DEFAULT_NATIVE_ARTIFACTS);
 
         RuntimeLibrarySelection selection = new RuntimeLibrarySelection(DEFAULT_LIBRARIES, nativeArtifacts);
 
@@ -146,8 +158,12 @@ class RuntimeLibrarySelectionTest {
     @Test
     void should_create_immutable_native_artifacts() {
         //given
-        LibraryEntry candidate = getLibraryEntry("candidate-path");
-        List<LibraryEntry> nativeArtifacts = new ArrayList<>(DEFAULT_NATIVE_ARTIFACTS);
+        SelectedNativeArtifact candidate = new SelectedNativeArtifact(
+                getLibraryEntry("candidate-path2"),
+                new NativeExtractionRules(List.of())
+        );
+
+        List<SelectedNativeArtifact> nativeArtifacts = new ArrayList<>(DEFAULT_NATIVE_ARTIFACTS);
 
         RuntimeLibrarySelection selection = new RuntimeLibrarySelection(DEFAULT_LIBRARIES, nativeArtifacts);
 

@@ -2,6 +2,8 @@ package com.launcher.natives.service;
 
 import com.launcher.core.natives.model.NativeExtractionPlan;
 import com.launcher.model.manifest.LibraryEntry;
+import com.launcher.model.manifest.natives.NativeExtractionRules;
+import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import com.launcher.natives.exception.NativeExtractionException;
 import com.launcher.natives.support.FixedDirectoryProvider;
 import com.launcher.natives.support.RecordingResourcePathResolver;
@@ -60,11 +62,11 @@ class DefaultNativeExtractionServiceTest {
                 "second-content"
         );
 
-        LibraryEntry artifact = getArtifact("libraries/first");
-        LibraryEntry secondArtifact = getArtifact("libraries/second");
+        SelectedNativeArtifact firstSelectedNativeArtifact = getArtifact("libraries/first");
+        SelectedNativeArtifact secondSelectedNativeArtifact = getArtifact("libraries/second");
 
         NativeExtractionPlan extractionPlan = new NativeExtractionPlan(
-                List.of(artifact, secondArtifact),
+                List.of(firstSelectedNativeArtifact, secondSelectedNativeArtifact),
                 targetDirectory
         );
 
@@ -145,11 +147,11 @@ class DefaultNativeExtractionServiceTest {
     void should_fail_when_source_artifact_does_not_exist() {
         //given
         Path targetDirectory = directoryProvider.directories().natives();
-        LibraryEntry firstArtifact = getArtifact("libraries/another-value");
+        SelectedNativeArtifact selectedNativeArtifact = getArtifact("libraries/another-value");
 
         //when
         NativeExtractionPlan extractionPlan = new NativeExtractionPlan(
-                List.of(firstArtifact),
+                List.of(selectedNativeArtifact),
                 targetDirectory
         );
 
@@ -184,11 +186,11 @@ class DefaultNativeExtractionServiceTest {
                 "content"
         );
 
-        LibraryEntry firstArtifact = getArtifact("libraries/outside");
+        SelectedNativeArtifact selectedNativeArtifact = getArtifact("libraries/outside");
 
         //when
         NativeExtractionPlan extractionPlan = new NativeExtractionPlan(
-                List.of(firstArtifact),
+                List.of(selectedNativeArtifact),
                 targetDirectory
         );
 
@@ -221,11 +223,11 @@ class DefaultNativeExtractionServiceTest {
         createArchive(firstArchive, "first-native.dll", "first-native-content");
         createArchive(secondArchive, "second-native.dll", "second-native-content");
 
-        LibraryEntry firstArtifact = getArtifact("libraries/first-native");
-        LibraryEntry secondArtifact = getArtifact("libraries/second-native");
+        SelectedNativeArtifact firstSelectedNativeArtifact = getArtifact("libraries/first-native");
+        SelectedNativeArtifact secondSelectedNativeArtifact = getArtifact("libraries/second-native");
 
         NativeExtractionPlan extractionPlan = new NativeExtractionPlan(
-                List.of(firstArtifact, secondArtifact),
+                List.of(firstSelectedNativeArtifact, secondSelectedNativeArtifact),
                 targetDirectory
         );
 
@@ -266,10 +268,10 @@ class DefaultNativeExtractionServiceTest {
                 "native-content"
         );
 
-        LibraryEntry artifact = getArtifact("libraries/natives");
+        SelectedNativeArtifact selectedNativeArtifact = getArtifact("libraries/natives");
 
         NativeExtractionPlan extractionPlan = new NativeExtractionPlan(
-                List.of(artifact),
+                List.of(selectedNativeArtifact),
                 targetDirectory
         );
 
@@ -298,10 +300,10 @@ class DefaultNativeExtractionServiceTest {
                 "native-content"
         );
 
-        LibraryEntry artifact = getArtifact("libraries/natives");
+        SelectedNativeArtifact selectedNativeArtifact = getArtifact("libraries/natives");
 
         NativeExtractionPlan extractionPlan = new NativeExtractionPlan(
-                List.of(artifact),
+                List.of(selectedNativeArtifact),
                 targetDirectory
         );
 
@@ -342,12 +344,17 @@ class DefaultNativeExtractionServiceTest {
         }
     }
 
-    private LibraryEntry getArtifact(String path) {
-        return new LibraryEntry(
-                path + ".jar",
-                "sha256-" + path,
-                123L,
-                "https://test-url.com/" + path
+    private SelectedNativeArtifact getArtifact(String path) {
+        return new SelectedNativeArtifact(
+                new LibraryEntry(
+                        path + ".jar",
+                        "sha256-" + path,
+                        123L,
+                        "https://test-url.com/" + path
+                ),
+                new NativeExtractionRules(
+                        List.of()
+                )
         );
     }
 }

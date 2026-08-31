@@ -8,22 +8,36 @@ import com.launcher.core.architecture.support.recording.RecordingManifestService
 import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.ManifestLoadResult;
+import com.launcher.model.manifest.RuntimeLibrarySelection;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameLaunchPlanBuilderTest {
+    private RecordingManifestService manifestService;
+    private RecordingDirectoryProvider directoryProvider;
+    private RecordingDefaultGameLaunchCommandBuilder launchCommandBuilder;
+    private RecordingGameClasspathBuilder recordingGameClasspathBuilder;
+    private RecordingClasspathFormatter recordingClasspathFormatter;
+
+    @BeforeEach
+    void setUp() {
+        manifestService = new RecordingManifestService();
+        directoryProvider = new RecordingDirectoryProvider();
+        launchCommandBuilder = new RecordingDefaultGameLaunchCommandBuilder();
+        recordingGameClasspathBuilder = new RecordingGameClasspathBuilder();
+        recordingClasspathFormatter = new RecordingClasspathFormatter();
+    }
 
     @Test
-    void should_build_game_launch_plan_with_game_directory_from_directory_provider() {
+    void should_reject_null_runtime_library_selection() {
         //given
-        RecordingDirectoryProvider directoryProvider = new RecordingDirectoryProvider();
-        RecordingDefaultGameLaunchCommandBuilder launchCommandBuilder = new RecordingDefaultGameLaunchCommandBuilder();
-        RecordingGameClasspathBuilder recordingGameClasspathBuilder = new RecordingGameClasspathBuilder();
-        RecordingClasspathFormatter recordingClasspathFormatter = new RecordingClasspathFormatter();
-
         GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
@@ -31,10 +45,56 @@ class GameLaunchPlanBuilderTest {
                 recordingClasspathFormatter
         );
 
-        Manifest manifest = new RecordingManifestService().loadManifest().manifest();
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
+        Manifest manifest = manifestLoadResult.manifest();
+
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> gameLaunchPlanBuilder.build(manifest, null)
+        );
+
+        assertTrue(exception.getMessage().contains("runtimeLibrarySelection"));
+    }
+
+    @Test
+    void should_reject_null_manifest() {
+        //given
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+                directoryProvider,
+                launchCommandBuilder,
+                recordingGameClasspathBuilder,
+                recordingClasspathFormatter
+        );
+
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
+        RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
+
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> gameLaunchPlanBuilder.build(null, runtimeLibrarySelection)
+        );
+
+        assertTrue(exception.getMessage().contains("manifest"));
+    }
+
+    @Test
+    void should_build_game_launch_plan_with_game_directory_from_directory_provider() {
+        //given
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+                directoryProvider,
+                launchCommandBuilder,
+                recordingGameClasspathBuilder,
+                recordingClasspathFormatter
+        );
+
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
+        Manifest manifest = manifestLoadResult.manifest();
+        RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
 
         //when
-        GameLaunchPlan gameLaunchPlan = gameLaunchPlanBuilder.build(manifest);
+        GameLaunchPlan gameLaunchPlan = gameLaunchPlanBuilder.build(manifest, runtimeLibrarySelection);
 
         //then
         assertEquals(
@@ -70,6 +130,11 @@ class GameLaunchPlanBuilderTest {
         assertEquals(
                 manifest,
                 recordingGameClasspathBuilder.getManifest()
+        );
+
+        assertEquals(
+                runtimeLibrarySelection.libraries(),
+                recordingGameClasspathBuilder.getLibraryEntries()
         );
 
         assertEquals(

@@ -34,14 +34,43 @@ public final class RecordingManifestService implements ManifestService {
         );
     }
 
-    public Manifest loadManifestWithEmptyLibraries() {
-        return new Manifest(
+    public ManifestLoadResult loadManifestWithEmptyLibraries() {
+        RuntimeLibrarySelection runtimeLibrarySelection = new RuntimeLibrarySelection(
+                List.of(),
+                List.of()
+        );
+
+        Manifest manifest = new Manifest(
                 "${minecraft_version}",
                 loaderInfo(),
                 files(),
                 launchInfo(),
-                List.of()
+                runtimeLibrarySelection.selectedArtifacts()
         );
+
+        return new ManifestLoadResult(
+                manifest,
+                runtimeLibrarySelection
+        );
+    }
+
+    public ManifestLoadResult loadManifestWithNativeArtifactsAndWithoutLibraries() {
+        RuntimeLibrarySelection runtimeLibrarySelection = new RuntimeLibrarySelection(
+                List.of(),
+                List.of(
+                        new LibraryEntry("path", "sha256", 123L, "url")
+                )
+        );
+
+        Manifest manifest = new Manifest(
+                "${minecraft_version}",
+                loaderInfo(),
+                files(),
+                launchInfo(),
+                runtimeLibrarySelection.selectedArtifacts()
+        );
+
+        return new ManifestLoadResult(manifest, runtimeLibrarySelection);
     }
 
     private List<LibraryEntry> libraries() {

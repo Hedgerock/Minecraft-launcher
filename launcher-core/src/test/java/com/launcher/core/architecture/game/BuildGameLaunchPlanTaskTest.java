@@ -12,6 +12,8 @@ import com.launcher.core.result.SuccessResult;
 import com.launcher.core.state.LauncherState;
 import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.ManifestLoadResult;
+import com.launcher.model.manifest.RuntimeLibrarySelection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,6 +57,25 @@ class BuildGameLaunchPlanTaskTest {
     }
 
     @Test
+    void should_return_failure_when_runtime_library_selection_not_available() {
+        //given
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
+        BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
+
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
+        Manifest manifest = manifestLoadResult.manifest();
+
+        context.setManifest(manifest);
+
+        //when
+        Result result = task.execute(context);
+
+        //then
+        assertInstanceOf(FailureResult.class, result);
+        assertTrue(((FailureResult) result).getMessage().contains("Runtime library selection not available"));
+    }
+
+    @Test
     void should_return_failure_when_manifest_not_loaded() {
         //given
         GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
@@ -65,6 +86,7 @@ class BuildGameLaunchPlanTaskTest {
 
         //then
         assertInstanceOf(FailureResult.class, result);
+        assertTrue(((FailureResult) result).getMessage().contains("Manifest not loaded"));
     }
 
     @Test
@@ -82,8 +104,12 @@ class BuildGameLaunchPlanTaskTest {
         //given
         GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
-        Manifest manifest = (manifestService.loadManifest()).manifest();
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
+        Manifest manifest = manifestLoadResult.manifest();
+        RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
+
         context.setManifest(manifest);
+        context.setRuntimeLibrarySelection(runtimeLibrarySelection);
 
         //when
         Result result = task.execute(context);
@@ -98,8 +124,12 @@ class BuildGameLaunchPlanTaskTest {
         //given
         GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
-        Manifest manifest = (manifestService.loadManifest()).manifest();
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
+        Manifest manifest = manifestLoadResult.manifest();
+        RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
+
         context.setManifest(manifest);
+        context.setRuntimeLibrarySelection(runtimeLibrarySelection);
 
         //when
         task.execute(context);

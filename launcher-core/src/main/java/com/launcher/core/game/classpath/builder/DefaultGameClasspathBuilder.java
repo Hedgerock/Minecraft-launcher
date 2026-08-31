@@ -17,13 +17,19 @@ public final class DefaultGameClasspathBuilder implements GameClasspathBuilder {
     }
 
     @Override
-    public GameClasspath build(Manifest manifest, Path gameDirectory) {
+    public GameClasspath build(
+            Manifest manifest,
+            List<LibraryEntry> libraries,
+            Path gameDirectory
+    ) {
         Objects.requireNonNull(manifest, "manifest");
+        Objects.requireNonNull(libraries, "libraries");
+        libraries.forEach(library -> Objects.requireNonNull(library, "library"));
         Objects.requireNonNull(gameDirectory, "gameDirectory");
 
-        List<String> entries = manifest.libraries().isEmpty()
+        List<String> entries = libraries.isEmpty()
                 ? manifest.launchInfo().classpath()
-                : manifest.libraries().stream()
+                : libraries.stream()
                 .map(LibraryEntry::path)
                 .toList();
 

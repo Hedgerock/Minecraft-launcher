@@ -7,8 +7,10 @@ import com.launcher.core.game.classpath.formatter.ClasspathFormatter;
 import com.launcher.core.resolve.model.LaunchVariables;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.RuntimeLibrarySelection;
 
 import java.nio.file.Path;
+import java.util.Objects;
 
 public final class GameLaunchPlanBuilder {
     private final DirectoryProvider directoryProvider;
@@ -28,11 +30,15 @@ public final class GameLaunchPlanBuilder {
         this.classpathFormatter = classpathFormatter;
     }
 
-    public GameLaunchPlan build(Manifest manifest) {
+    public GameLaunchPlan build(Manifest manifest, RuntimeLibrarySelection runtimeLibrarySelection) {
+        Objects.requireNonNull(manifest, "manifest");
+        Objects.requireNonNull(runtimeLibrarySelection, "runtimeLibrarySelection");
+
         Path gameDirectory = directoryProvider.directories().game();
 
         GameClasspath gameClasspath = gameClasspathBuilder.build(
                 manifest,
+                runtimeLibrarySelection.libraries(),
                 gameDirectory
         );
 

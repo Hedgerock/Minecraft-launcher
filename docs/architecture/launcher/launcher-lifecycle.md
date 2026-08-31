@@ -23,6 +23,7 @@
 | `BUILDING_DOWNLOAD_PLAN`    | Построение плана загрузки           |
 | `DOWNLOADING`               | Получение недостающих ресурсов      |
 | `PREPARING_GAME`            | Подготовка окружения                |
+| `EXTRACTING_NATIVES`        | Подготовка native artifacts         |
 | `BUILDING_GAME_LAUNCH_PLAN` | Построение плана запуска игры       |
 | `LAUNCHING`                 | Запуск игрового процесса            |
 | `RUNNING`                   | Игра запущена                       |
@@ -66,7 +67,11 @@ L-5
 
 Если `PREPARE_DIRECTORIES` завершается ошибкой, launcher переходит в `FAILED`
 
-После успешной подготовки директорий `LauncherEngine` запускает `BUILD_GAME_LAUNCH_PLAN`
+После успешной подготовки директорий `LauncherEngine` запускает `EXTRACT_NATIVES`
+
+Если `EXTRACT_NATIVES` завершается ошибкой, launcher переходит в `FAILED`
+
+После успешного `EXTRACT_NATIVES` `LauncherEngine` запускает `BUILD_GAME_LAUNCH_PLAN`
 
 Во время построения `GameLaunchPlan` launcher создает `LaunchVariables` и применяет поддерживаемые
 подстановки в `jvmArgs` и `gameArgs`

@@ -2,7 +2,7 @@
 
 ## Текущий план
 
-- Реализовать `EXTRACT_NATIVES` как отдельную operation после `PREPARE_DIRECTORIES`
+- Спроектировать реализацию native extraction service
 
 ---
 
@@ -46,3 +46,4 @@
 - Game classpath теперь строится из `RuntimeLibrarySelection.libraries`, а не из `Manifest.libraries`
 - Обновлена документация после изменения источника game classpath
 - Зафиксирована граница `EXTRACT_NATIVES` как отдельной operation после `PREPARE_DIRECTORIES`
+- `EXTRACT_NATIVES` добавлена в launcher lifecycle после `PREPARE_DIRECTORIES`

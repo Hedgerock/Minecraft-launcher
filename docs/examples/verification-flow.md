@@ -154,7 +154,7 @@ VERIFY_FILES
 ## Результат
 
 Если `VerificationPlan.isValid()` возвращает `true`, `LauncherEngine` может пропустить этап построения
-`DownloadPlan` и перейти сразу к `PREPARE_DIRECTORIES`, затем `BUILD_GAME_LAUNCH_PLAN`,
+`DownloadPlan` и перейти сразу к `PREPARE_DIRECTORIES`, затем `EXTRACT_NATIVES`, затем `BUILD_GAME_LAUNCH_PLAN`,
 затем `LAUNCH_GAME` и затем в `RUNNING`
 
 Если `VerificationPlan.isValid()` возвращает `false`, `LauncherEngine` запускает `BUILD_DOWNLOAD_PLAN`
@@ -190,27 +190,3 @@ V-6
 
 Повторная проверка после `DOWNLOAD_FILES` обязательна для подтверждения корректности восстановленного локального
 состояния
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

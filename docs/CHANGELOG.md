@@ -33,6 +33,7 @@
 - Added `ManifestLoadResult` for preserving runtime library selection after manifest loading
 - Documented decision regarding game classpath source
 - Documented the native extraction operation boundary
+- Added `EXTRACT_NATIVES` operation to launcher lifecycle
 
 ### Changed
 

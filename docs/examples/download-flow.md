@@ -123,7 +123,8 @@ LauncherEngine
 
 Повторная проверка определяет, действительно ли локальное состояние соответствует ожидаемому состоянию
 
-Если повторный `VerificationPlan` валиден, `LauncherEngine` переходит в `RUNNING`
+Если повторный `VerificationPlan` валиден, `LauncherEngine` переходит в `PREPARE_DIRECTORIES`, затем `EXTRACT_NATIVES`,
+затем `BUILD_GAME_LAUNCH_PLAN`, затем `LAUNCH_GAME` и затем в `RUNNING`
 
 Если проверка завершается ошибкой, или план остается невалидным, `LauncherEngine` переходит в `FAILED`
 

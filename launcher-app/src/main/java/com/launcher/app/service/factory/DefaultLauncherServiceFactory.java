@@ -9,7 +9,6 @@ import com.launcher.api.manifest.mapper.ManifestMapper;
 import com.launcher.api.manifest.service.HttpManifestService;
 import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.app.service.LauncherServices;
-import com.launcher.app.service.UnsupportedNativeExtractionService;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadService;
 import com.launcher.core.game.GameService;
@@ -26,6 +25,7 @@ import com.launcher.downloader.download.FileDownloader;
 import com.launcher.downloader.service.DefaultDownloadService;
 import com.launcher.game.process.ProcessBuilderGameProcessLauncher;
 import com.launcher.game.service.DefaultGameService;
+import com.launcher.natives.service.DefaultNativeExtractionService;
 import com.launcher.storage.file.FileMetadataReader;
 import com.launcher.storage.file.LocalFileMetadataReader;
 import com.launcher.storage.hash.HashService;
@@ -100,8 +100,14 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
         return new DefaultVerificationService(directoryProvider, fileVerifier, resourcePathResolver);
     }
 
-    private NativeExtractionService createNativeExtractionService() {
-        return new UnsupportedNativeExtractionService();
+    private NativeExtractionService createNativeExtractionService(
+            DirectoryProvider directoryProvider,
+            ResourcePathResolver resourcePathResolver
+    ) {
+        return new DefaultNativeExtractionService(
+                directoryProvider,
+                resourcePathResolver
+        );
     }
 
     private GameService createGameService() {
@@ -119,7 +125,7 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
                 createDirectoryService(directoryProvider),
                 createDownloadService(directoryProvider, resourcePathResolver),
                 createGameService(),
-                createNativeExtractionService()
+                createNativeExtractionService(directoryProvider, resourcePathResolver)
         );
     }
 }

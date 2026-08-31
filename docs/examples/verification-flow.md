@@ -1,6 +1,6 @@
 # Поток верификации
 
-## Цель 
+## Цель
 
 Описать последовательность проверки локального состояния игровых ресурсов перед выбором
 следующего шага `LauncherEngine`
@@ -154,7 +154,7 @@ VERIFY_FILES
 ## Результат
 
 Если `VerificationPlan.isValid()` возвращает `true`, `LauncherEngine` может пропустить этап построения
-`DownloadPlan` и перейти сразу к `PREPARE_DIRECTORIES`, затем `BUILD_GAME_LAUNCH_PLAN`, 
+`DownloadPlan` и перейти сразу к `PREPARE_DIRECTORIES`, затем `BUILD_GAME_LAUNCH_PLAN`,
 затем `LAUNCH_GAME` и затем в `RUNNING`
 
 Если `VerificationPlan.isValid()` возвращает `false`, `LauncherEngine` запускает `BUILD_DOWNLOAD_PLAN`
@@ -179,7 +179,7 @@ V-3
 
 V-4
 
-`VerifyFilesTask` получает `Manifest` из `LaunchContext` и сохраняет сформированный `VerificationPlan` 
+`VerifyFilesTask` получает `Manifest` из `LaunchContext` и сохраняет сформированный `VerificationPlan`
 обратно в `LaunchContext`
 
 V-5

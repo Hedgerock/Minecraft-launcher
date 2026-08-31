@@ -5,7 +5,7 @@
 Superseded by ADR-0012
 
 > Историческая заметка: ADR фиксирует ответственность `LauncherEngine` до перехода на operation-модель
-> После перехода с `TaskPipeline` на `OperationManager` часть деталей реализации и механизмов исполнения 
+> После перехода с `TaskPipeline` на `OperationManager` часть деталей реализации и механизмов исполнения
 > изменилась
 > Актуальная ответственность `LauncherEngine` определяется текущей operation-моделью и описана в [ADR-0012](ADR-0012-launcher-engine-uses-operation-manager.md)
 

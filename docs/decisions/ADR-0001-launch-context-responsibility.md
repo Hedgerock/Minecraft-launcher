@@ -7,7 +7,7 @@ Accepted
 > Историческая заметка: ADR фиксирует решение в контексте ранней архитектуры проекта
 > После перехода с `TaskPipeline` на `OperationManager`, часть деталей реализации изменилась, но
 > архитектурная мотивация документа сохраняется
-> 
+>
 > Актуальная модель `LaunchContext` описана в [operation-model.md](../architecture/operation/operation-model.md)
 > Актуальное описание жизненного цикла Launcher см. в [launcher-lifecycle.md](../architecture/launcher/launcher-lifecycle.md)
 

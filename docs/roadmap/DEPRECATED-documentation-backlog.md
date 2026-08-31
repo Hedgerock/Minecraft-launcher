@@ -23,7 +23,7 @@ engineering iteration
 
 ---
 
-## Phase 1/2 processes 
+## Phase 1/2 processes
 
 Architecture
 ------------

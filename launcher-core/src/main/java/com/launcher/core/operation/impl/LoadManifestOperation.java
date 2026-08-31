@@ -23,7 +23,7 @@ public final class LoadManifestOperation extends LaunchOperation {
         super(
                 launchContext,
                 executionStrategy,
-                OperationType.LOAD_MANIFEST, 
+                OperationType.LOAD_MANIFEST,
                 eventBus
         );
         this.manifestService = manifestService;

@@ -142,11 +142,11 @@
         -> downloadService.download(...)
             -> DownloadProgressChangedEvent
                 -> DownloadCompletedEvent
-                
+
 При ошибке загрузки:
     DownloadStartedEvent
         -> downloadService.download(...)
-            -> Result.failure(...)          
+            -> Result.failure(...)
 ```
 
 `DownloadProgressChangedEvent` и `DownloadCompletedEvent` после ошибки не публикуются

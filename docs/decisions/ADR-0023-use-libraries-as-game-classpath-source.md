@@ -51,7 +51,7 @@ RuntimeLibrarySelection
         -> GameClasspathBuilder
             -> GameClasspath
                 -> launch command
-                
+
 RuntimeLibrarySelection.selectedArtifacts()
     -> Manifest.libraries
         -> ManifestResources
@@ -64,7 +64,7 @@ RuntimeLibrarySelection.selectedArtifacts()
 
 Verification/download flow продолжает работать через `ManifestResources` и не требует изменения текущего поведения
 
-`GameClasspathBuilder` больше не должен использовать `Manifest.libraries`, если 
+`GameClasspathBuilder` больше не должен использовать `Manifest.libraries`, если
 доступен `RuntimeLibrarySelection.libraries`
 
 `BuildGameLaunchPlanTask` или `GameLaunchPlanBuilder` должны получить доступ к `RuntimeLibrarySelection`

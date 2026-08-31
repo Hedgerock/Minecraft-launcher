@@ -53,7 +53,7 @@ Accepted
 
 `LibraryEntry` не становится полной моделью исходного Minecraft library contract
 
-Metadata, необходимая для выбора подходящего library artifact, должна вводиться отдельно от 
+Metadata, необходимая для выбора подходящего library artifact, должна вводиться отдельно от
 `LibraryEntry`
 
 Для будущих итераций выделяется отдельная зона ответственности

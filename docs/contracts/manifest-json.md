@@ -26,7 +26,7 @@ JSON manifest
     -> ManifestJson
         -> RuntimeLibraryMetadata
             -> LibraryArtifactMetadata
-            
+
 RuntimeEnvironment
     -> RuntimeLibrarySelector
         -> LibraryEntry
@@ -105,7 +105,7 @@ RuntimeEnvironment
 
 `FileEntry` и `LibraryEntry` остаются manifest-specific моделями и не заменяются напрямую `ResourceEntry`
 
-На текущем этапе `ManifestResources` используется как источник verification flow, поэтому `Manifest.files` 
+На текущем этапе `ManifestResources` используется как источник verification flow, поэтому `Manifest.files`
 и `Manifest.libraries` участвуют в verification/download lifecycle через общий `ResourceEntry` контракт
 
 `libraries` сначала преобразуется в список `RuntimeLibraryMetadata`
@@ -222,7 +222,7 @@ RuntimeLibrarySelection.libraries
             -> ClasspathFormatter
                 -> LaunchVariables.classpath
                     -> ${classpath}
-                    
+
 fallback:
     launchInfo.classpath
         -> GameClasspathBuilder
@@ -259,7 +259,7 @@ LaunchInfo
 Если JSON невозможно прочитать или преобразовать в корректный `Manifest`, mapper завершает работу ошибкой
 `ManifestMappingException`
 
-`LaunchInfo` требует непустые значения `mainClass` и `javaExecutable` 
+`LaunchInfo` требует непустые значения `mainClass` и `javaExecutable`
 
 `Manifest` требует наличие списка `libraries`, пустой список допустим для минимальных сценариев
 

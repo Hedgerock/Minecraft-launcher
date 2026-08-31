@@ -4,7 +4,7 @@
 
 Accepted
 
-> Примечание: решение реализовано в итерации 
+> Примечание: решение реализовано в итерации
 > `feat(verification): verify manifest resources`
 
 ---
@@ -31,7 +31,7 @@ Accepted
 На текущем этапе `DefaultVerificationService` все еще использует только `Manifest.files` и преобразует
 `FileEntry` в `ResourceEntry`
 
-Это означает, что библиотеки уже участвуют в построении classpath, но еще не участвуют в 
+Это означает, что библиотеки уже участвуют в построении classpath, но еще не участвуют в
 verification/download lifecycle
 
 ---

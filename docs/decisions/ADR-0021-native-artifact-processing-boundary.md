@@ -12,7 +12,7 @@ Accepted
 
 ## Контекст
 
-После добавления classifiers и natives metadata launcher умеет выбирать native artifact для 
+После добавления classifiers и natives metadata launcher умеет выбирать native artifact для
 текущей `OperatingSystem`
 
 На текущем этапе выбранный native artifact становится обычным `LibraryEntry` после runtime library selection
@@ -47,7 +47,7 @@ Native artifact обычно должен быть
 
 `RuntimeLibrarySelector` не распаковывает natives и не знает о директории распаковки
 
-После selection native artifact представлен как обычный `LibraryEntry` и участвует в verification/download flow lifecycle 
+После selection native artifact представлен как обычный `LibraryEntry` и участвует в verification/download flow lifecycle
 через `ManifestResources`
 
 Распаковка natives должна быть оформлена отдельной будущей итерацией после того, как selected native

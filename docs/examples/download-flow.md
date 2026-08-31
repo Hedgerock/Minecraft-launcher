@@ -143,7 +143,7 @@ LauncherEngine
 
 Ошибки загрузки считаются техническими ошибками download-слоя
 
-`DefaultFileDownloader` преобразует ошибки получения данных, записи временного файла и 
+`DefaultFileDownloader` преобразует ошибки получения данных, записи временного файла и
 переноса файла в `DownloadException`
 
 `DefaultDownloadService` преобразует ошибки размера загруженного файла в `DownloadException`

@@ -4,6 +4,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `feat(natives): replace existing native files during extraction`
+
 ---
 
 ## Контекст

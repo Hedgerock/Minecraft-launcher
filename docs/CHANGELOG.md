@@ -42,6 +42,8 @@
 - Documented natives directory launch argument decision
 - Added support for resolving `${natives_directory}` from `LauncherDirectories.nativesDirectory`
   during game launch command building
+- Documented decision regarding native extraction output policy
+- Added native extraction output policy for replacing existing extracted files
 
 ### Changed
 

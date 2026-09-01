@@ -37,6 +37,8 @@
 - Documented native extraction service implementation boundary
 - Added `DefaultNativeExtractionService` in `launcher-natives`
 - Documented native extraction exclude rules for selected native artifacts
+- Added manifest JSON mapping for native extraction `extract.exclude` rules
+- Added native extraction exclude rule handling in `DefaultNativeExtractionService`
 
 ### Changed
 

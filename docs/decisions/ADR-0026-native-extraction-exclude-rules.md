@@ -4,6 +4,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(api): preserve native extraction rules in selection`
+> `feat(natives): apply native extraction exclude rules`
+
 ---
 
 ## Контекст

@@ -81,6 +81,11 @@ RuntimeEnvironment
       },
       "natives": {
         "windows": "natives-windows"
+      },
+      "extract": {
+        "exclude": [
+          "META-INF/"
+        ]
       }
     }
   ]
@@ -125,6 +130,14 @@ RuntimeEnvironment
 `natives` преобразуется в `LibraryNativesMetadata`
 
 Отсутствие `classifiers` и `natives` означает пустые metadata
+
+`extract.exclude` преобразуется в `NativeExtractionRules`
+
+Отсутствие `extract` или `extract.exclude` означает пустые правила распаковки
+
+`RuntimeLibrarySelector` сохраняет extraction rules вместе с selected native artifact
+
+`DefaultNativeExtractionService` использует правила при распаковке native artifacts
 
 Затем `RuntimeLibrarySelector` формирует `RuntimeLibrarySelection` на основе `RuntimeLibraryMetadata`
 

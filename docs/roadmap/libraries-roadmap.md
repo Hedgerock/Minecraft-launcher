@@ -2,10 +2,8 @@
 
 ## Текущий план
 
-- Реализовать сохранение `extract.exclude` при выборе native artifacts
-- Обновить `NativeExtractionPlan` для передачи правил распаковки в `DefaultNativeExtractionService`
-- Научить `DefaultNativeExtractionService` пропускать excluded archive entries
-- Обновить документацию native extraction flow после реализации
+- Провести ревизию native extraction flow после реализации `extract.exclude`
+- Определить следующий шаг library/native flow
 
 ---
 
@@ -54,3 +52,7 @@
 - `NativeExtractionService` реализован в отдельном модуле `launcher-natives`
 - `launcher-app` подключает `DefaultNativeExtractionService` через composition root
 - Зафиксировано решение о правилах исключения при распаковке native artifacts
+- Manifest JSON mapping сохраняет `extract.exclude` в `RuntimeLibraryMetadata`
+- `RuntimeLibrarySelector` передает extraction rules в selected native artifacts
+- `DefaultNativeExtractionService` пропускает archive entries по правилам `extract.exclude`
+- Обновлена документация после реализации правил `extract.exclude`

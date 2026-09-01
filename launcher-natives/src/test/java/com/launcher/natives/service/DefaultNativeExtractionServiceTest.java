@@ -44,6 +44,44 @@ class DefaultNativeExtractionServiceTest {
     }
 
     @Test
+    void should_replace_existing_native_file_when_extracting_again() throws IOException {
+        //given
+        Path gameDirectory = directoryProvider.directories().game();
+        Path archivePath = gameDirectory.resolve("libraries/natives.jar");
+        Path targetDirectory = directoryProvider.directories().natives();
+        Path extractedFile = targetDirectory.resolve("native.dll");
+
+        createArchive(
+                archivePath,
+                "native.dll",
+                "new-native-content"
+        );
+
+        Files.createDirectories(targetDirectory);
+
+        Files.writeString(
+                extractedFile,
+                "existing-native-content"
+        );
+
+        SelectedNativeArtifact selectedNativeArtifact = getArtifact("libraries/natives");
+
+        NativeExtractionPlan extractionPlan = new NativeExtractionPlan(
+                List.of(selectedNativeArtifact),
+                targetDirectory
+        );
+
+        //when
+        service.extract(extractionPlan);
+
+        //then
+        assertEquals(
+                "new-native-content",
+                Files.readString(extractedFile)
+        );
+    }
+
+    @Test
     void should_fail_when_excluded_archive_entry_escapes_target_directory() throws IOException {
         //given
         Path gameDirectory = directoryProvider.directories().game();

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -97,7 +98,11 @@ public final class DefaultNativeExtractionService implements NativeExtractionSer
             Files.createDirectories(parent);
         }
 
-        Files.copy(zipInputStream, targetPath);
+        Files.copy(
+                zipInputStream,
+                targetPath,
+                StandardCopyOption.REPLACE_EXISTING
+        );
     }
 
     private boolean shouldExclude(

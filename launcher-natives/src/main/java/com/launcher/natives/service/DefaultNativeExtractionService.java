@@ -4,6 +4,7 @@ import com.launcher.core.natives.NativeExtractionService;
 import com.launcher.core.natives.model.NativeExtractionPlan;
 import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.storage.directory.DirectoryProvider;
+import com.launcher.model.manifest.natives.NativeExtractionRules;
 import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import com.launcher.natives.exception.NativeExtractionException;
 
@@ -35,11 +36,19 @@ public final class DefaultNativeExtractionService implements NativeExtractionSer
 
         for (SelectedNativeArtifact selectedNativeArtifact : plan.artifacts()) {
             Path sourcePath = resourcePathResolver.resolve(gameDirectory, selectedNativeArtifact.artifact().path());
-            extractArchive(sourcePath, plan.targetDirectory());
+            extractArchive(
+                    sourcePath,
+                    plan.targetDirectory(),
+                    selectedNativeArtifact.extractionRules()
+            );
         }
     }
 
-    private void extractArchive(Path sourcePath, Path targetDirectory) {
+    private void extractArchive(
+            Path sourcePath,
+            Path targetDirectory,
+            NativeExtractionRules extractionRules
+    ) {
         try (
                 InputStream inputStream = Files.newInputStream(sourcePath);
                 ZipInputStream zipInputStream = new ZipInputStream(inputStream)
@@ -47,7 +56,13 @@ public final class DefaultNativeExtractionService implements NativeExtractionSer
             ZipEntry zipEntry;
 
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                extractEntry(zipInputStream, zipEntry, targetDirectory);
+                extractEntry(
+                        zipInputStream,
+                        zipEntry,
+                        targetDirectory,
+                        extractionRules
+                );
+
                 zipInputStream.closeEntry();
             }
 
@@ -62,9 +77,14 @@ public final class DefaultNativeExtractionService implements NativeExtractionSer
     private void extractEntry(
             ZipInputStream zipInputStream,
             ZipEntry zipEntry,
-            Path targetDirectory
+            Path targetDirectory,
+            NativeExtractionRules extractionRules
     ) throws IOException {
         Path targetPath = resolveTargetPath(targetDirectory, zipEntry.getName());
+
+        if (shouldExclude(zipEntry.getName(), extractionRules)) {
+            return;
+        }
 
         if (zipEntry.isDirectory()) {
             Files.createDirectories(targetPath);
@@ -78,6 +98,16 @@ public final class DefaultNativeExtractionService implements NativeExtractionSer
         }
 
         Files.copy(zipInputStream, targetPath);
+    }
+
+    private boolean shouldExclude(
+            String entryName,
+            NativeExtractionRules extractionRules
+    ) {
+        String normalizedEntryName = entryName.replace('\\', '/');
+
+        return extractionRules.excludes().stream()
+                .anyMatch(normalizedEntryName::startsWith);
     }
 
     private Path resolveTargetPath(Path targetDirectory, String entryName) {

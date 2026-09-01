@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -40,6 +41,97 @@ class DefaultNativeExtractionServiceTest {
                 directoryProvider,
                 resourcePathResolver
         );
+    }
+
+    @Test
+    void should_fail_when_excluded_archive_entry_escapes_target_directory() throws IOException {
+        //given
+        Path gameDirectory = directoryProvider.directories().game();
+        Path archivePath = gameDirectory.resolve("libraries/outside.jar");
+        Path targetDirectory = directoryProvider.directories().natives();
+
+        createArchive(
+                archivePath,
+                "../outside.dll",
+                "content"
+        );
+
+        SelectedNativeArtifact selectedNativeArtifact =
+                getArtifact("libraries/outside", List.of("../"));
+
+        NativeExtractionPlan extractionPlan = new NativeExtractionPlan(
+                List.of(selectedNativeArtifact),
+                targetDirectory
+        );
+
+        //when
+        NativeExtractionException exception = assertThrows(
+                NativeExtractionException.class,
+                () -> service.extract(extractionPlan)
+        );
+
+        assertTrue(
+                exception.getMessage().contains("Native archive entry escapes target directory")
+        );
+
+        assertFalse(
+                Files.exists(targetDirectory.getParent().resolve("outside.dll"))
+        );
+    }
+
+    @Test
+    void should_skip_excluded_archive_entries() throws IOException {
+        //given
+        Path gameDirectory = directoryProvider.directories().game();
+        Path firstPath = gameDirectory.resolve("libraries/first.jar");
+        Path secondPath = gameDirectory.resolve("libraries/second.jar");
+        Path targetDirectory = directoryProvider.directories().natives();
+
+        createArchive(
+                firstPath,
+                Map.of(
+                        "first.dll",
+                        "first-content",
+                        "META-INF/MANIFEST.MF",
+                        "another-first-content"
+                )
+        );
+
+        createArchive(
+                secondPath,
+                Map.of(
+                        "second.dll",
+                        "second-content",
+                        "META-INF/SECOND-MANIFEST.MF",
+                        "another-second-content"
+                )
+        );
+
+        SelectedNativeArtifact selectedNativeArtifact =
+                getArtifact("libraries/first", List.of("META-INF/"));
+
+        SelectedNativeArtifact secondSelectedNativeArtifact =
+                getArtifact("libraries/second", List.of("META-INF/"));
+
+        NativeExtractionPlan extractionPlan = new NativeExtractionPlan(
+                List.of(selectedNativeArtifact, secondSelectedNativeArtifact),
+                targetDirectory
+        );
+
+        //when
+        service.extract(extractionPlan);
+
+        //then
+        Path firstFile = targetDirectory.resolve("first.dll");
+        Path secondFile = targetDirectory.resolve("META-INF/MANIFEST.MF");
+        Path thirdFile = targetDirectory.resolve("second.dll");
+        Path fourthFile = targetDirectory.resolve("META-INF/SECOND-MANIFEST.MF");
+
+        assertTrue(Files.exists(firstFile));
+        assertTrue(Files.exists(thirdFile));
+
+        assertFalse(Files.exists(secondFile));
+        assertFalse(Files.exists(fourthFile));
     }
 
     @Test
@@ -326,6 +418,27 @@ class DefaultNativeExtractionServiceTest {
 
     private void createArchive(
             Path archivePath,
+            Map<String, String> entries
+    ) throws IOException {
+        Files.createDirectories(archivePath.getParent());
+
+        try (
+                OutputStream outputStream = Files.newOutputStream(archivePath);
+                ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream)
+        ) {
+           for (Map.Entry<String, String> entry : entries.entrySet()) {
+                zipOutputStream.putNextEntry(
+                    new ZipEntry(entry.getKey())
+                );
+
+                zipOutputStream.write(entry.getValue().getBytes(StandardCharsets.UTF_8));
+                zipOutputStream.closeEntry();
+           }
+        }
+    }
+
+    private void createArchive(
+            Path archivePath,
             String entryName,
             String content
     ) throws IOException {
@@ -344,6 +457,7 @@ class DefaultNativeExtractionServiceTest {
         }
     }
 
+
     private SelectedNativeArtifact getArtifact(String path) {
         return new SelectedNativeArtifact(
                 new LibraryEntry(
@@ -354,6 +468,20 @@ class DefaultNativeExtractionServiceTest {
                 ),
                 new NativeExtractionRules(
                         List.of()
+                )
+        );
+    }
+
+    private SelectedNativeArtifact getArtifact(String path, List<String> excludes) {
+        return new SelectedNativeArtifact(
+                new LibraryEntry(
+                        path + ".jar",
+                        "sha256-" + path,
+                        123L,
+                        "https://test-url.com/" + path
+                ),
+                new NativeExtractionRules(
+                        excludes
                 )
         );
     }

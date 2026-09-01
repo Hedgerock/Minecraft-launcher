@@ -18,18 +18,23 @@ class DefaultGameLaunchCommandBuilderTest {
         return new RecordingManifestService().loadManifest().manifest().launchInfo();
     }
 
+    private DefaultGameLaunchCommandBuilder getCommandBuilder() {
+        return new DefaultGameLaunchCommandBuilder(
+                new DefaultLaunchArgumentResolver()
+        );
+    }
+
     @Test
     void should_build_command_from_launch_info() {
         //given
-        DefaultGameLaunchCommandBuilder commandBuilder = new DefaultGameLaunchCommandBuilder(
-                new DefaultLaunchArgumentResolver()
-        );
+        DefaultGameLaunchCommandBuilder commandBuilder = getCommandBuilder();
         LaunchInfo launchInfo = getLaunchInfo();
 
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
                 Path.of("test-directory"),
-                "classpath.to.CurrentClass"
+                "classpath.to.CurrentClass",
+                Path.of("natives-directory")
         );
 
         //when

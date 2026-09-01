@@ -146,6 +146,11 @@ class GameLaunchPlanBuilderTest {
                 recordingGameClasspathBuilder.getGameClasspath(),
                 recordingClasspathFormatter.getGameClasspath()
         );
+
+        assertEquals(
+                directoryProvider.directories().natives(),
+                launchCommandBuilder.getLaunchVariables().nativesDirectory()
+        );
     }
 
 }

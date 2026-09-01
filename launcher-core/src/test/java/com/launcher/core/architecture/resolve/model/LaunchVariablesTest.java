@@ -11,16 +11,43 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class LaunchVariablesTest {
 
     @Test
+    void should_reject_null_natives_directory() {
+        //given
+        String versionName = "test";
+        Path gameDirectory = Path.of("test-directory");
+        String classpath = "test.classpath.TestClass";
+
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new LaunchVariables(
+                        versionName,
+                        gameDirectory,
+                        classpath,
+                        null
+                )
+        );
+
+        assertTrue(exception.getMessage().contains("nativesDirectory"));
+    }
+
+    @Test
     void should_reject_blank_classpath() {
         //given
         String versionName = "test";
         Path gameDirectory = Path.of("test-directory");
         String classpath = " ";
+        Path nativesDirectory = Path.of("natives-directory");
 
         //when & then
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> new LaunchVariables(versionName, gameDirectory, classpath)
+                () -> new LaunchVariables(
+                        versionName,
+                        gameDirectory,
+                        classpath,
+                        nativesDirectory
+                )
         );
 
         assertTrue(exception.getMessage().contains("classpath must not be blank"));
@@ -31,11 +58,17 @@ class LaunchVariablesTest {
         //given
         String versionName = "test";
         Path gameDirectory = Path.of("test-directory");
+        Path nativesDirectory = Path.of("natives-directory");
 
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> new LaunchVariables(versionName, gameDirectory, null)
+                () -> new LaunchVariables(
+                        versionName,
+                        gameDirectory,
+                        null,
+                        nativesDirectory
+                )
         );
 
         assertTrue(exception.getMessage().contains("classpath"));
@@ -46,11 +79,17 @@ class LaunchVariablesTest {
         //given
         String versionName = "test";
         String classpath = "test.classpath.TestClass";
+        Path nativesDirectory = Path.of("natives-directory");
 
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> new LaunchVariables(versionName, null, classpath)
+                () -> new LaunchVariables(
+                        versionName,
+                        null,
+                        classpath,
+                        nativesDirectory
+                )
         );
 
         assertTrue(exception.getMessage().contains("gameDirectory"));
@@ -65,7 +104,12 @@ class LaunchVariablesTest {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> new LaunchVariables(null, gameDirectory, classpath)
+                () -> new LaunchVariables(
+                        null,
+                        gameDirectory,
+                        classpath,
+                        Path.of("natives-directory")
+                )
         );
 
         assertTrue(exception.getMessage().contains("versionName"));
@@ -77,11 +121,17 @@ class LaunchVariablesTest {
         Path gameDirectory = Path.of("game-directory");
         String versionName = " ";
         String classpath = "test.classpath.TestClass";
+        Path nativesDirectory = Path.of("natives-directory");
 
         //when & then
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> new LaunchVariables(versionName, gameDirectory, classpath)
+                () -> new LaunchVariables(
+                        versionName,
+                        gameDirectory,
+                        classpath,
+                        nativesDirectory
+                )
         );
 
         assertTrue(exception.getMessage().contains("versionName must not be blank"));

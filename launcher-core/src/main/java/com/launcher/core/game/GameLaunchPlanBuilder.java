@@ -42,12 +42,15 @@ public final class GameLaunchPlanBuilder {
                 gameDirectory
         );
 
+        Path nativesDirectory = directoryProvider.directories().natives();
+
         String classpath = classpathFormatter.format(gameClasspath);
 
         LaunchVariables launchVariables = new LaunchVariables(
                 manifest.minecraftVersion(),
                 gameDirectory,
-                classpath
+                classpath,
+                nativesDirectory
         );
 
         return new GameLaunchPlan(

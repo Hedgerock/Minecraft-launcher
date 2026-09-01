@@ -6,20 +6,23 @@ import java.util.Objects;
 public record LaunchVariables(
         String versionName,
         Path gameDirectory,
-        String classpath
+        String classpath,
+        Path nativesDirectory
 ) {
 
     public LaunchVariables {
         Objects.requireNonNull(versionName, "versionName");
         Objects.requireNonNull(gameDirectory, "gameDirectory");
         Objects.requireNonNull(classpath, "classpath");
+        Objects.requireNonNull(nativesDirectory, "nativesDirectory");
 
-        if (versionName.isBlank()) {
-            throw new IllegalArgumentException("versionName must not be blank");
-        }
+        validateNotBlank(versionName, "versionName");
+        validateNotBlank(classpath, "classpath");
+    }
 
-        if (classpath.isBlank()) {
-            throw new IllegalArgumentException("classpath must not be blank");
+    private void validateNotBlank(String value, String fieldName) {
+        if (value.isBlank()) {
+            throw new IllegalArgumentException(fieldName + " " + "must not be blank");
         }
     }
 

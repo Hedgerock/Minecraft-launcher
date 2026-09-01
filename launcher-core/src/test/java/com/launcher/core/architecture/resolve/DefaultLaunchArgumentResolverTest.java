@@ -22,7 +22,35 @@ class DefaultLaunchArgumentResolverTest {
                 "--unknown",
                 "${unknown_placeholder}",
                 "--cp",
-                "${classpath}"
+                "${classpath}",
+                "--nativesDir",
+                "${natives_directory}"
+        );
+    }
+
+    @Test
+    void should_resolve_natives_directory_placeholder() {
+        //given
+        List<String> arguments = List.of(
+                "-Djava.library.path=${natives_directory}"
+        );
+        Path gameDirectory = Path.of("game-path");
+        Path nativesDirectory = gameDirectory.resolve("natives");
+
+        LaunchVariables launchVariables = new LaunchVariables(
+                "1.12.1",
+                gameDirectory,
+                "net.minecraft.launchwrapper.Launch",
+                nativesDirectory
+        );
+
+        //when
+        List<String> result = underTest.resolve(arguments, launchVariables);
+
+        //then
+        assertEquals(
+                "-Djava.library.path=" + nativesDirectory,
+                result.getFirst()
         );
     }
 
@@ -34,7 +62,8 @@ class DefaultLaunchArgumentResolverTest {
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
                 Path.of("game-path"),
-                "net.minecraft.launchwrapper.Launch"
+                "net.minecraft.launchwrapper.Launch",
+                Path.of("natives-directory")
         );
 
         //when
@@ -54,7 +83,8 @@ class DefaultLaunchArgumentResolverTest {
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
                 Path.of("game-path"),
-                "net.minecraft.launchwrapper.Launch"
+                "net.minecraft.launchwrapper.Launch",
+                Path.of("natives-directory")
         );
 
         //when & then
@@ -84,7 +114,8 @@ class DefaultLaunchArgumentResolverTest {
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
                 Path.of("game-path"),
-                "net.minecraft.launchwrapper.Launch"
+                "net.minecraft.launchwrapper.Launch",
+                Path.of("natives-directory")
         );
 
         //when & then
@@ -104,7 +135,8 @@ class DefaultLaunchArgumentResolverTest {
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
                 Path.of("game-path"),
-                "net.minecraft.launchwrapper.Launch"
+                "net.minecraft.launchwrapper.Launch",
+                Path.of("natives-directory")
         );
 
         //when
@@ -124,7 +156,8 @@ class DefaultLaunchArgumentResolverTest {
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
                 Path.of("game-path"),
-                "net.minecraft.launchwrapper.Launch"
+                "net.minecraft.launchwrapper.Launch",
+                Path.of("natives-directory")
         );
 
         //when
@@ -142,7 +175,8 @@ class DefaultLaunchArgumentResolverTest {
         LaunchVariables launchVariables = new LaunchVariables(
                 "1.12.1",
                 Path.of("game-path"),
-                "net.minecraft.launchwrapper.Launch"
+                "net.minecraft.launchwrapper.Launch",
+                Path.of("natives-directory")
         );
 
         //when

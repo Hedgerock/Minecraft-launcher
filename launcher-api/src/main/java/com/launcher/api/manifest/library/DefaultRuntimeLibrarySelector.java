@@ -4,7 +4,6 @@ import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
-import com.launcher.model.manifest.natives.NativeExtractionRules;
 import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import com.launcher.model.manifest.rules.LibraryRuleAction;
 import com.launcher.model.runtime.RuntimeEnvironment;
@@ -25,24 +24,20 @@ public final class DefaultRuntimeLibrarySelector implements RuntimeLibrarySelect
 
         List<RuntimeLibraryMetadata> selectedLibraries = getSelectedLibraries(libraries, environment);
         List<LibraryEntry> librariesList = getLibraries(selectedLibraries);
-        List<LibraryEntry> nativeArtifacts = getNativeArtifacts(selectedLibraries, environment);
+        List<SelectedNativeArtifact> nativeArtifacts = getNativeArtifacts(selectedLibraries, environment);
 
         return new RuntimeLibrarySelection(
                 librariesList,
-                nativeArtifacts.stream().map(artifact -> new SelectedNativeArtifact(
-                        artifact,
-                        new NativeExtractionRules(List.of())
-                )).toList()
+                nativeArtifacts
         );
     }
 
-    private List<LibraryEntry> getNativeArtifacts(
+    private List<SelectedNativeArtifact> getNativeArtifacts(
             List<RuntimeLibraryMetadata> selectedLibraries,
             RuntimeEnvironment environment
     ) {
         return selectedLibraries.stream()
                 .flatMap(library -> selectedNativeArtifacts(library, environment))
-                .map(this::toLibraryEntry)
                 .toList();
     }
 
@@ -79,13 +74,16 @@ public final class DefaultRuntimeLibrarySelector implements RuntimeLibrarySelect
                 .orElse(false);
     }
 
-    private Stream<LibraryArtifactMetadata> selectedNativeArtifacts(
+    private Stream<SelectedNativeArtifact> selectedNativeArtifacts(
             RuntimeLibraryMetadata library,
             RuntimeEnvironment environment
     ) {
         return library.natives()
                 .classifierFor(environment.operatingSystem())
-                .map(classifierName -> resolveClassifierArtifact(library, classifierName))
+                .map(classifierName -> new SelectedNativeArtifact(
+                        toLibraryEntry(resolveClassifierArtifact(library, classifierName)),
+                        library.extractionRules()
+                ))
                 .stream();
     }
 

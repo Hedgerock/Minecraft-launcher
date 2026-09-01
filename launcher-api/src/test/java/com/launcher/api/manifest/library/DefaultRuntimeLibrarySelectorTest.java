@@ -25,6 +25,47 @@ class DefaultRuntimeLibrarySelectorTest {
     private final RuntimeEnvironment environment = new RuntimeEnvironment(OperatingSystem.WINDOWS);
 
     @Test
+    void should_preserve_native_extraction_rules_when_selecting_native_artifact() {
+        //given
+        Map<String, LibraryArtifactMetadata> classifiers = Map.of(
+                "natives-windows",
+                new LibraryArtifactMetadata(
+                        "native-windows-path.jar",
+                        "sha256",
+                        100L,
+                        "https://example.com/native-windows-path.jar"
+                )
+        );
+
+        Map<OperatingSystem, String> natives = Map.of(
+                OperatingSystem.WINDOWS,
+                "natives-windows"
+        );
+
+        List<RuntimeLibraryMetadata> libraries = List.of(
+                getRuntimeLibraryMetadata(
+                        "libraries/example.jar",
+                        List.of(
+                                new LibraryRule(LibraryRuleAction.ALLOW, OperatingSystem.WINDOWS),
+                                new LibraryRule(LibraryRuleAction.DISALLOW, OperatingSystem.LINUX)
+                        ),
+                        classifiers,
+                        natives
+                )
+        );
+
+        //when & then
+        RuntimeLibrarySelection result = selector.select(libraries, environment);
+
+        assertEquals(
+                new NativeExtractionRules(List.of(
+                        "META-INF/"
+                )),
+                result.nativeArtifacts().getFirst().extractionRules()
+        );
+    }
+
+    @Test
     void should_fail_when_native_classifier_is_mapped_but_classifier_artifact_is_missing() {
         //given
         Map<String, LibraryArtifactMetadata> classifiers = Map.of(
@@ -191,7 +232,9 @@ class DefaultRuntimeLibrarySelectorTest {
                 List.of(
                         new SelectedNativeArtifact(
                                 getLibraryEntry("native-windows-path.jar"),
-                                new NativeExtractionRules(List.of())
+                                new NativeExtractionRules(List.of(
+                                        "META-INF/"
+                                ))
                         )
                 ),
                 result.nativeArtifacts()
@@ -423,7 +466,10 @@ class DefaultRuntimeLibrarySelectorTest {
                 ),
                 rules,
                 new LibraryClassifiersMetadata(classifiers),
-                new LibraryNativesMetadata(natives)
+                new LibraryNativesMetadata(natives),
+                new NativeExtractionRules(List.of(
+                        "META-INF/"
+                ))
         );
     }
 

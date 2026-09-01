@@ -59,6 +59,11 @@
         "windows": "natives-windows",
         "linux": "natives-linux",
         "macos": "natives-osx"
+      },
+      "extract": {
+        "exclude": [
+          "META-INF/"
+        ]
       }
     }
   ]

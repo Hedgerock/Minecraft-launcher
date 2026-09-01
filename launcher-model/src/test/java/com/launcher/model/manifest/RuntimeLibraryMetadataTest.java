@@ -2,6 +2,7 @@ package com.launcher.model.manifest;
 
 import com.launcher.model.manifest.classifiers.LibraryClassifiersMetadata;
 import com.launcher.model.manifest.natives.LibraryNativesMetadata;
+import com.launcher.model.manifest.natives.NativeExtractionRules;
 import com.launcher.model.manifest.rules.LibraryRule;
 import com.launcher.model.manifest.rules.LibraryRuleAction;
 import com.launcher.model.runtime.OperatingSystem;
@@ -16,6 +17,33 @@ import static org.junit.jupiter.api.Assertions.*;
 class RuntimeLibraryMetadataTest {
 
     @Test
+    void should_reject_null_extraction_rules() {
+        //given
+        LibraryArtifactMetadata classifierArtifact = getLibraryArtifactMetadata("classifier-artifact");
+        LibraryClassifiersMetadata classifiers = new LibraryClassifiersMetadata(
+                Map.of("classifier-value", classifierArtifact)
+        );
+
+        LibraryNativesMetadata natives = new LibraryNativesMetadata(
+                Map.of(OperatingSystem.WINDOWS, "classifier-for-windows")
+        );
+
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new RuntimeLibraryMetadata(
+                        getLibraryArtifactMetadata("artifact"),
+                        List.of(),
+                        classifiers,
+                        natives,
+                        null
+                )
+        );
+
+        assertTrue(exception.getMessage().contains("extractionRules"));
+    }
+
+    @Test
     void should_store_natives_metadata() {
         //given && when
         LibraryArtifactMetadata classifierArtifact = getLibraryArtifactMetadata("classifier-artifact");
@@ -27,11 +55,14 @@ class RuntimeLibraryMetadataTest {
                 Map.of(OperatingSystem.WINDOWS, "classifier-for-windows")
         );
 
+        NativeExtractionRules rules = new NativeExtractionRules(List.of());
+
         RuntimeLibraryMetadata runtimeLibraryMetadata = new RuntimeLibraryMetadata(
                 getLibraryArtifactMetadata("artifact"),
                 List.of(),
                 classifiers,
-                natives
+                natives,
+                rules
         );
 
         //then
@@ -53,11 +84,14 @@ class RuntimeLibraryMetadataTest {
                 Map.of(OperatingSystem.WINDOWS, "classifier-for-windows")
         );
 
+        NativeExtractionRules rules = new NativeExtractionRules(List.of());
+
         RuntimeLibraryMetadata runtimeLibraryMetadata = new RuntimeLibraryMetadata(
                 getLibraryArtifactMetadata("artifact"),
                 List.of(),
                 classifiers,
-                natives
+                natives,
+                rules
         );
 
         //then
@@ -95,7 +129,8 @@ class RuntimeLibraryMetadataTest {
                                 getLibraryArtifactMetadata("library-artifact"),
                                 List.of(),
                                 new LibraryClassifiersMetadata(classifiers),
-                                null
+                                null,
+                                new NativeExtractionRules(List.of())
                         )
         );
 
@@ -117,7 +152,8 @@ class RuntimeLibraryMetadataTest {
                                 getLibraryArtifactMetadata("value"),
                                 List.of(),
                                 null,
-                                new LibraryNativesMetadata(natives)
+                                new LibraryNativesMetadata(natives),
+                                new NativeExtractionRules(List.of())
                         )
         );
 

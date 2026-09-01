@@ -34,12 +34,7 @@
           "action": "disallow",
           "os": "macos"
         }
-      ],
-      "extract": {
-        "exclude": [
-          "META-INF/"
-        ]
-      }
+      ]
     }
   ]
 }

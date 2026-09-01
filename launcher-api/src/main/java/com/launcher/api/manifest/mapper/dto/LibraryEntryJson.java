@@ -18,7 +18,8 @@ public record LibraryEntryJson(
         String url,
         List<LibraryRuleJson> rules,
         Map<String, LibraryArtifactJson> classifiers,
-        Map<String, String> natives
+        Map<String, String> natives,
+        LibraryExtractJson extract
 ) {
 
     public LibraryEntryJson {
@@ -33,6 +34,10 @@ public record LibraryEntryJson(
         natives = natives == null
                 ? Map.of()
                 : Map.copyOf(natives);
+
+        extract = extract == null
+                ? new LibraryExtractJson(List.of())
+                : extract;
     }
 
     RuntimeLibraryMetadata toRuntimeLibraryMetadata() {
@@ -42,7 +47,8 @@ public record LibraryEntryJson(
                         .map(LibraryRuleJson::toLibraryRule)
                         .toList(),
                 toLibraryClassifiers(),
-                toLibraryNatives()
+                toLibraryNatives(),
+                extract.toNativeExtractionRules()
         );
     }
 

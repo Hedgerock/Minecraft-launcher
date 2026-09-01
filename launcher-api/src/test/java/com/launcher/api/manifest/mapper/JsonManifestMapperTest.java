@@ -73,6 +73,37 @@ class JsonManifestMapperTest {
     }
 
     @Test
+    void should_map_library_extract_from_manifest_json() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest.json");
+
+        //when
+        mapper.map(json);
+
+        //then
+        assertEquals(
+                new NativeExtractionRules(List.of("META-INF/")),
+                selector.getLibraries().getFirst().extractionRules()
+        );
+    }
+
+    @Test
+    void should_map_empty_extract_when_field_is_null() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest-json-without-extract.json");
+
+        //when
+        mapper.map(json);
+
+        //then
+        assertTrue(selector.getLibraries().getFirst().extractionRules().isEmpty());
+    }
+
+    @Test
     void should_map_empty_classifiers_and_natives_when_fields_are_null() {
         //given
         RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
@@ -186,7 +217,7 @@ class JsonManifestMapperTest {
         //given
         RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
         JsonManifestMapper mapper = getMapper(selector);
-        String json = loadResource("manifest/test-valid-manifest-without-classifiers-and-natives.json");
+        String json = loadResource("manifest/test-valid-manifest-json-without-classifiers-natives-and-extract.json");
 
         //when
         mapper.map(json);
@@ -292,7 +323,7 @@ class JsonManifestMapperTest {
                                                123456789L,
                                                "https://localhost/files/libraries/org/example/example/natives-windows.jar"
                                        ),
-                                       new NativeExtractionRules(List.of())
+                                       new NativeExtractionRules(List.of("META-INF/"))
                                )
                         )
                 ),

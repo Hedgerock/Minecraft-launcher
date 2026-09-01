@@ -2,60 +2,79 @@
 
 ## Текущий план
 
-- Провести ревизию library/native flow после реализации политики записи распакованных native artifacts
+- Определить следующий runtime milestone после `v0.4.0-library-native-flow`
 
 ---
 
-## Выполнено
+## Milestone v0.4.0 — Library Native Flow
 
-- Добавлена модель `ResourceEntry`
-- Добавлена projection `ManifestResources` для `Manifest.files` и `Manifest.libraries`
-- Зафиксировано решение использовать `ManifestResources` как источник verification flow
-- Подключен `ManifestResources` к verification flow
-- Зафиксирован минимальный scope library metadata
-- Зафиксирована граница runtime metadata для `libraries`
-- Добавлен seam runtime library selection перед формированием `LibraryEntry`
-- Artifact metadata выделена в отдельную модель `LibraryArtifactMetadata`
-- Зафиксирована граница runtime environment для будущего library selection
-- Введена минимальная модель `RuntimeEnvironment`
-- `RuntimeEnvironment` передан в runtime library selection без изменения текущего поведения
-- Добавлен `RuntimeEnvironmentProvider` для определения текущего runtime environment
-- Зафиксированы минимальные OS-specific library rules
-- Добавлены модели `LibraryRule` и `LibraryRuleAction`
-- Manifest JSON mapping преобразует library rules в `RuntimeLibraryMetadata`
-- `RuntimeLibrarySelector` выбирает libraries с учетом текущей `OperatingSystem`
-- Зафиксирована граница classifiers и natives metadata для library selection
-- Добавлена минимальная модель `LibraryClassifiersMetadata`
-- Добавлена минимальная модель `LibraryNativesMetadata`
-- Classifiers и natives metadata подключены к `RuntimeLibraryMetadata`
-- Manifest JSON mapping преобразует classifiers и natives metadata в `RuntimeLibraryMetadata`
-- Расширен runtime library selection выбором native artifact для текущей `OperatingSystem`
-- Зафиксирована граница обработки выбранных native artifacts после runtime library selection
-- Добавлена директория `natives` в `LauncherDirectories`
-- Подготовка директорий теперь создает директорию `natives` для будущей распаковки native artifacts
-- Добавлена модель `NativeExtractionPlan` для будущей распаковки selected native artifacts
-- Источником selected native artifacts для будущего `NativeExtractionPlan` стала модель `RuntimeLibrarySelection`
-- `RuntimeLibrarySelector` теперь возвращает разделение selected libraries и native artifacts
-- Добавлен `NativeExtractionPlanBuilder`, который строит `NativeExtractionPlan`
-  из `RuntimeLibrarySelection.nativeArtifacts`
-- Зафиксирована граница результата загрузки manifest для сохранения `RuntimeLibrarySelection`
-- Добавлена модель `ManifestLoadResult` для результата загрузки manifest
-- `RuntimeLibrarySelection` сохраняется в `LaunchContext` после загрузки manifest
-- Произведен stabilization pass по library/native selection flow перед добавлением новых возможностей
-- Зафиксировано решение об использовании `RuntimeLibrarySelection.libraries` как источника game classpath
-- Game classpath теперь строится из `RuntimeLibrarySelection.libraries`, а не из `Manifest.libraries`
-- Обновлена документация после изменения источника game classpath
-- Зафиксирована граница `EXTRACT_NATIVES` как отдельной operation после `PREPARE_DIRECTORIES`
-- `EXTRACT_NATIVES` добавлена в launcher lifecycle после `PREPARE_DIRECTORIES`
-- Зафиксировано решение о реализации `NativeExtractionService`
-- `NativeExtractionService` реализован в отдельном модуле `launcher-natives`
-- `launcher-app` подключает `DefaultNativeExtractionService` через composition root
-- Зафиксировано решение о правилах исключения при распаковке native artifacts
-- Manifest JSON mapping сохраняет `extract.exclude` в `RuntimeLibraryMetadata`
-- `RuntimeLibrarySelector` передает extraction rules в selected native artifacts
-- `DefaultNativeExtractionService` пропускает archive entries по правилам `extract.exclude`
-- Обновлена документация после реализации правил `extract.exclude`
-- Зафиксировано решение о передаче директории natives в аргументы запуска
-- Добавлена переменная запуска `${natives_directory}` для передачи директории natives в JVM arguments
-- Зафиксировано решение о политике записи распакованных native artifacts
-- Реализовано использование простой идемпотентной output policy для текущей директории natives
+Library/native flow доведен до состояния, где manifest metadata проходит путь от JSON-контракта
+до runtime selection, verification/download lifecycle, native extraction и построения launch command
+
+Подробные итоги зафиксированы в [Ретроспективе library/native flow](../retrospective/2026-09-library-native-flow.md)
+
+Ключевые результаты
+
+- Добавлен manifest JSON contract
+- Добавлен manifest JSON mapping
+- Добавлены runtime library metadata модели
+- Добавлен `RuntimeEnvironment`
+- Добавлен `RuntimeEnvironmentProvider`
+- Добавлены OS-specific library rules
+- Добавлены classifiers и natives metadata
+- Добавлен `RuntimeLibrarySelection`
+- `RuntimeLibrarySelection.libraries` стал источником game classpath
+- Selected native artifacts участвуют в verification/download flow через compatibility projection
+- Добавлен `NativeExtractionPlan`
+- Добавлен `EXTRACT_NATIVES`
+- Добавлен модуль `launcher-natives`
+- Добавлен `DefaultNativeExtractionService`
+- Добавлена launch variable `${natives_directory}`
+- Добавлена output policy для повторной распаковки natives
+
+---
+
+## Отложено
+
+- Stable runtime identity для profile/version/manifest/installation
+- Версионирование директории natives
+- Cleanup policy для старых natives directories
+- Параллельная поддержка нескольких runtime native sets
+- Architecture-specific natives selection
+- Rules на основе features
+- Java runtime selection
+- Проверка существования Java executable
+- Assets index
+- Auth launch arguments
+- Loader-specific правила запуска
+
+---
+
+## Возможные следующие направления
+
+### Runtime identity
+
+Ввести стабильную модель идентичности runtime-сценария только после появления подтвержденной
+необходимости различать profile, version, manifest hash или installation
+
+### Java runtime
+
+Определить, как launcher выбирает Java runtime, проверяет `javaExecutable` и сообщает об ошибках запуска
+
+### Assets
+
+Добавить отдельную модель assets/index после завершения текущего library/native milestone
+
+### Launch metadata
+
+Расширить manifest launch metadata аргументами авторизации, loader-specific правилами и дополнительными
+runtime-подстановками только после появления конкретного сценария
+
+---
+
+## Правило развития
+
+Новые возможности library/native flow должны добавляться через отдельные ADR
+
+Отложенные темы не считаются скрытым техническим долгом, пока для них явно указано условие возврата и
+они не блокируют текущий runtime lifecycle

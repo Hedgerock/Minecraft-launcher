@@ -1,5 +1,9 @@
 ## Unreleased
 
+---
+
+## v0.4.0 – Library Native Flow
+
 ### Added
 
 - Added launch argument placeholder resolution for game launch commands

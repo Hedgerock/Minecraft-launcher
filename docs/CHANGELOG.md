@@ -39,7 +39,7 @@
 - Documented native extraction exclude rules for selected native artifacts
 - Added manifest JSON mapping for native extraction `extract.exclude` rules
 - Added native extraction exclude rule handling in `DefaultNativeExtractionService`
-
+- Documented natives directory launch argument decision
 ### Changed
 
 - Changed game classpath building to prefer manifest libraries with launchInfo classpath fallback

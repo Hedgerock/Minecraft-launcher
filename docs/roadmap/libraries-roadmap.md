@@ -2,8 +2,7 @@
 
 ## Текущий план
 
-- Провести ревизию native extraction flow после реализации `extract.exclude`
-- Определить следующий шаг library/native flow
+- Реализовать передачу директории natives в аргументы запуска игры
 
 ---
 
@@ -56,3 +55,4 @@
 - `RuntimeLibrarySelector` передает extraction rules в selected native artifacts
 - `DefaultNativeExtractionService` пропускает archive entries по правилам `extract.exclude`
 - Обновлена документация после реализации правил `extract.exclude`
+- Зафиксировано решение о передачи директории natives в аргументы запуска

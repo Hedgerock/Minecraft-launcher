@@ -177,7 +177,9 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 
 `JavaLauncherHttpClient` отвечает только за получение JSON-строки
 
-`JsonManifestMapper` отвечает только за преобразование JSON-строки в `Manifest`
+`JsonManifestMapper` отвечает только за преобразование JSON-строки в `ManifestLoadResult`
+
+`ManifestLoadResult` содержит `Manifest` и `RuntimeLibrarySelection`
 
 ---
 
@@ -187,11 +189,12 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 
 На текущем этапе поддерживается
 
-| Подстановка         | Значение                                                                                    |
-|---------------------|---------------------------------------------------------------------------------------------|
-| `${version_name}`   | Версия Minecraft из `Manifest.minecraftVersion`                                             |
-| `${game_directory}` | Путь к игровой директории из `DirectoryProvider`                                            |
-| `${classpath}`      | Отформатированный classpath, построенный из `libraries` или fallback `launchInfo.classpath` |
+| Подстановка            | Значение                                                                                    |
+|------------------------|---------------------------------------------------------------------------------------------|
+| `${version_name}`      | Версия Minecraft из `Manifest.minecraftVersion`                                             |
+| `${game_directory}`    | Путь к игровой директории из `DirectoryProvider`                                            |
+| `${classpath}`         | Отформатированный classpath, построенный из `libraries` или fallback `launchInfo.classpath` |
+| `${natives_directory}` | Путь к директории natives из `DirectoryProvider`                                            |
 
 `libraries` является основным источником classpath entries и описывает библиотеки для построения classpath
 
@@ -285,11 +288,9 @@ LaunchInfo
 - Правила на основе architecture
 - Автоматический выбор Java runtime
 - Проверка существования Java executable на файловой системе
-- Правило подстановки переменных
+- Расширение механизма подстановки переменных
 - Аргументы авторизации
 - Assets index
-- Распаковка natives
-- Использование natives directory в launch arguments
 - Loader-specific правила запуска
 
 Данные поля должны появляться отдельными итерациями после появления подтвержденных runtime-сценариев

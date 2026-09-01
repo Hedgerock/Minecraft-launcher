@@ -83,7 +83,10 @@ L-5
 Если `RuntimeLibrarySelection.libraries` пустой, используется fallback `launchInfo.classpath`, который тоже проходит
 через тот же механизм безопасного разрешения пути
 
-Первый элемент команды запуска берется из `launchInfo.javaExecutable`,
+Директория natives передается в `LaunchVariables` и может быть использована manifest metadata через
+подстановку `${natives_directory}`
+
+Первый элемент команды запуска берется из `launchInfo.javaExecutable`
 
 Если `Manifest` не содержит `LaunchInfo`, `BUILD_GAME_LAUNCH_PLAN` завершается ошибкой, launcher переходит в `FAILED`
 

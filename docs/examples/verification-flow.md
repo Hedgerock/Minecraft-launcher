@@ -114,7 +114,11 @@ gameDirectory.resolve(resource.path())
 ```text
 VERIFY_FILES
     -> VerificationPlan.isValid()
-        -> RUNNING
+        -> PREPARE_DIRECTORIES
+            -> EXTRACT_NATIVES
+                -> BUILD_GAME_LAUNCH_PLAN
+                    -> LAUNCH_GAME
+                        -> RUNNING
 ```
 
 Если план невалиден

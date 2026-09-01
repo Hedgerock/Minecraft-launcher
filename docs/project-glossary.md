@@ -50,7 +50,8 @@ Runtime-контекст текущего запуска лаунчера
 
 Набор значений, доступных при построении команды запуска
 
-На текущем этапе содержит версию игры, путь к игровой директории и отформатированный `classpath`
+На текущем этапе содержит версию игры, путь к игровой директории, отформатированный `classpath`
+и путь к директории natives
 
 ### LaunchArgumentResolver
 
@@ -124,8 +125,8 @@ runtime-сценариях
 
 Промежуточная модель library metadata, полученная из manifest JSON до выбора runtime-compatible `LibraryEntry`
 
-На текущем этапе содержит основной `LibraryArtifactMetadata`, список `LibraryRule`, `LibraryClassifiersMetadata`
-и `LibraryNativesMetadata`
+На текущем этапе содержит основной `LibraryArtifactMetadata`, список `LibraryRule`, `LibraryClassifiersMetadata`,
+`LibraryNativesMetadata` и `NativeExtractionRules`
 
 Описывает metadata library до выбора итогового runtime-compatible `LibraryEntry`
 
@@ -148,6 +149,20 @@ runtime-сценариях
 Модель metadata, описывающая соответствие `OperatingSystem` и имени classifier для native artifact
 
 Используется при выборе native artifact для текущей `OperatingSystem`
+
+### SelectedNativeArtifact
+
+Модель выбранного native artifact после runtime library selection
+
+Содержит `LibraryEntry` и `NativeExtractionRules`
+
+Используется как входная модель для native extraction flow
+
+### NativeExtractionRules
+
+Правила распаковки selected native artifact
+
+На текущем этапе содержит список archive entries или префиксов, которые должны быть исключены при распаковке
 
 ### LibraryRule
 
@@ -227,7 +242,7 @@ manifest mapping и runtime library selection
 
 ### LaunchOperation
 
-Минимальная завершенная операция `Launcher`, имеющая собственный жизненный цикл, `LauncherContext`
+Минимальная завершенная операция `Launcher`, имеющая собственный жизненный цикл, `LaunchContext`
 и набор `LauncherTask`
 
 ### LauncherTask

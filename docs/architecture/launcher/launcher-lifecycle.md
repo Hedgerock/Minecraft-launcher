@@ -89,6 +89,14 @@ L-5
 `GameLaunchPlanBuilder` выбирает Java executable через `JavaRuntimeSelector` и передает уже выбранное значение в
 `GameLaunchCommandBuilder`
 
+После выбора Java executable `GameLaunchPlanBuilder` выполняет readiness check через `JavaExecutableReadinessChecker`
+
+На текущем этапе application assembly использует `NoOpJavaExecutableReadinessChecker`, чтобы не ломать сценарий, где
+manifest указывает command name `java`, а не filesystem path
+
+Реальная filesystem-проверка доступна через `DefaultJavaExecutableReadinessChecker`, но ее подключение требует
+отдельного решения о различии command name и explicit path
+
 Если `Manifest` не содержит `LaunchInfo`, `BUILD_GAME_LAUNCH_PLAN` завершается ошибкой, launcher переходит в `FAILED`
 
 Если `BUILD_GAME_LAUNCH_PLAN` завершается с ошибкой, launcher переходит в `FAILED`

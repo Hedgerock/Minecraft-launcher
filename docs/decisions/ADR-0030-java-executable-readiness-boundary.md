@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(core): add java executable readiness contract`
+> `feat(core): add java executable readiness check to launch plan builder`
+
 ---
 
 ## Контекст

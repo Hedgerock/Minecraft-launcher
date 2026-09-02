@@ -171,8 +171,8 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 
 `launchInfo.javaExecutable` описывает manifest-provided Java executable
 
-На текущем этапе `ManifestRuntimeSelector` использует это значение как источник выбранного
-Java executable для построения комманды запуска игры
+На текущем этапе `ManifestJavaRuntimeSelector` использует это значение как источник выбранного
+Java executable для построения команды запуска игры
 
 `JsonManifestMapper` не выполняет запуск, загрузку файлов или проверку хеша
 

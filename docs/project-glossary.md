@@ -113,6 +113,17 @@ runtime-сценариях
 
 ## Runtime
 
+### JavaExecutableReadinessChecker
+
+Контракт проверки готовности выбранного Java executable перед построением `GameLaunchPlan`
+
+На текущем этапе `GameLaunchPlanBuilder` вызывает checker после `JavaRuntimeSelector` и до `GameLaunchCommandBuilder`
+
+`DefaultJavaExecutableReadinessChecker` проверяет существование файла и то, что путь указывает на regular file
+
+`NoOpJavaExecutableReadinessChecker` используется в application assembly до появления решения о различии command name
+и explicit filesystem path
+
 ### JavaRuntimeSelector
 
 Контракт выбора Java executable для построения `GameLaunchPlan`

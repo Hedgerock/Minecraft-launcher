@@ -3,11 +3,15 @@
 ### Added
 
 - Added Java runtime selection contract for choosing Java executable before building game launch command
+- Added Java executable readiness checker contract
+- Added default Java executable readiness checker for explicit filesystem paths
+- Added no-op Java executable readiness checker for current application assembly wiring
 
 ### Changed
 
 - Changed game launch plan building to use `JavaRuntimeSelector` instead of reading `LaunchInfo.javaExecutable`
   directly in command building
+- Changed game launch plan building to run Java executable readiness check after Java runtime selection
 
 ---
 

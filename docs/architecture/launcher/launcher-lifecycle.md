@@ -86,7 +86,8 @@ L-5
 Директория natives передается в `LaunchVariables` и может быть использована manifest metadata через
 подстановку `${natives_directory}`
 
-Первый элемент команды запуска берется из `launchInfo.javaExecutable`
+`GameLaunchPlanBuilder` выбирает Java executable через `JavaRuntimeSelector` и передает уже выбранное значение в
+`GameLaunchCommandBuilder`
 
 Если `Manifest` не содержит `LaunchInfo`, `BUILD_GAME_LAUNCH_PLAN` завершается ошибкой, launcher переходит в `FAILED`
 

@@ -4,6 +4,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(core): add java runtime selection contract`
+> `feat(core): use java runtime selector in launch plan builder`
+
 ---
 
 ## Контекст

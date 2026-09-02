@@ -1,5 +1,14 @@
 ## Unreleased
 
+### Added
+
+- Added Java runtime selection contract for choosing Java executable before building game launch command
+
+### Changed
+
+- Changed game launch plan building to use `JavaRuntimeSelector` instead of reading `LaunchInfo.javaExecutable`
+  directly in command building
+
 ---
 
 ## v0.4.0 – Library Native Flow

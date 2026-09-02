@@ -44,7 +44,8 @@ Runtime-контекст текущего запуска лаунчера
 
 Первый элемент команды запуска игрового процесса
 
-На текущем этапе значение поступает из `launchInfo.javaExecutable` и не выбирается launcher автоматически
+На текущем этапе значение выбирается через `ManifestJavaRuntimeSelector`, который использует
+`LaunchInfo.javaExecutable` и не выполняет автоматический поиск Java runtime
 
 ### LaunchVariables
 
@@ -111,6 +112,14 @@ runtime-сценариях
 ---
 
 ## Runtime
+
+### JavaRuntimeSelector
+
+Контракт выбора Java executable для построения `GameLaunchPlan`
+
+На текущем этапе минимальная реализация `ManifestJavaRuntimeSelector` использует `LaunchInfo.javaExecutable`
+
+Selector не проверяет существование Java executable и не ищет Java installations
 
 ### RuntimeLibrarySelection
 

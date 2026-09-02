@@ -169,7 +169,10 @@ Library включается в `RuntimeLibrarySelection.libraries`, если п
 Library исключается из `RuntimeLibrarySelection.libraries`, если совпадающих правил нет или последнее
 совпадающее правило имеет `action` `DISALLOW`
 
-`launchInfo.javaExecutable` используется как первый элемент команды запуска игры
+`launchInfo.javaExecutable` описывает manifest-provided Java executable
+
+На текущем этапе `ManifestRuntimeSelector` использует это значение как источник выбранного
+Java executable для построения комманды запуска игры
 
 `JsonManifestMapper` не выполняет запуск, загрузку файлов или проверку хеша
 

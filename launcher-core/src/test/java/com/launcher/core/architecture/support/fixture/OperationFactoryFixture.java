@@ -21,6 +21,7 @@ import com.launcher.core.operation.factory.DefaultOperationFactory;
 import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.runtime.ManifestJavaRuntimeSelector;
+import com.launcher.core.runtime.NoOpJavaExecutableReadinessChecker;
 import com.launcher.core.verification.model.VerificationPlan;
 
 import java.net.URI;
@@ -45,7 +46,8 @@ public class OperationFactoryFixture {
                         new SafeResourcePathResolver()
                 ),
                 new RecordingClasspathFormatter(),
-                new ManifestJavaRuntimeSelector()
+                new ManifestJavaRuntimeSelector(),
+                new NoOpJavaExecutableReadinessChecker()
         );
     }
 

@@ -27,6 +27,8 @@ import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.core.resolve.LaunchArgumentResolver;
 import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.resource.SafeResourcePathResolver;
+import com.launcher.core.runtime.JavaExecutableReadinessChecker;
+import com.launcher.core.runtime.NoOpJavaExecutableReadinessChecker;
 import com.launcher.core.runtime.JavaRuntimeSelector;
 import com.launcher.core.runtime.ManifestJavaRuntimeSelector;
 import com.launcher.core.runtime.RuntimeEnvironmentProvider;
@@ -73,13 +75,15 @@ public final class DefaultApplicationAssembly implements ApplicationAssembly {
         ClasspathFormatter classpathFormatter = new DefaultClasspathFormatter();
         GameLaunchCommandBuilder launchCommandBuilder = getLaunchCommandBuilder();
         JavaRuntimeSelector javaRuntimeSelector = new ManifestJavaRuntimeSelector();
+        JavaExecutableReadinessChecker javaExecutableReadinessChecker = new NoOpJavaExecutableReadinessChecker();
 
         return new GameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
                 classpathBuilder,
                 classpathFormatter,
-                javaRuntimeSelector
+                javaRuntimeSelector,
+                javaExecutableReadinessChecker
         );
     }
 

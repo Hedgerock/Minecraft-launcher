@@ -5,6 +5,7 @@ import com.launcher.core.game.classpath.GameClasspath;
 import com.launcher.core.game.classpath.builder.GameClasspathBuilder;
 import com.launcher.core.game.classpath.formatter.ClasspathFormatter;
 import com.launcher.core.resolve.model.LaunchVariables;
+import com.launcher.core.runtime.JavaExecutableReadinessChecker;
 import com.launcher.core.runtime.JavaRuntimeSelector;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.model.manifest.LaunchInfo;
@@ -21,19 +22,22 @@ public final class GameLaunchPlanBuilder {
     private final GameClasspathBuilder gameClasspathBuilder;
     private final ClasspathFormatter classpathFormatter;
     private final JavaRuntimeSelector javaRuntimeSelector;
+    private final JavaExecutableReadinessChecker javaExecutableReadinessChecker;
 
     public GameLaunchPlanBuilder(
             DirectoryProvider directoryProvider,
             GameLaunchCommandBuilder launchCommandBuilder,
             GameClasspathBuilder gameClasspathBuilder,
             ClasspathFormatter classpathFormatter,
-            JavaRuntimeSelector javaRuntimeSelector
+            JavaRuntimeSelector javaRuntimeSelector,
+            JavaExecutableReadinessChecker javaExecutableReadinessChecker
     ) {
         this.directoryProvider = directoryProvider;
         this.launchCommandBuilder = launchCommandBuilder;
         this.gameClasspathBuilder = gameClasspathBuilder;
         this.classpathFormatter = classpathFormatter;
         this.javaRuntimeSelector = javaRuntimeSelector;
+        this.javaExecutableReadinessChecker = javaExecutableReadinessChecker;
     }
 
     public GameLaunchPlan build(Manifest manifest, RuntimeLibrarySelection runtimeLibrarySelection) {
@@ -62,6 +66,8 @@ public final class GameLaunchPlanBuilder {
         LaunchInfo launchInfo = manifest.launchInfo();
 
         Path javaExecutable = javaRuntimeSelector.selectJavaExecutable(launchInfo);
+
+        javaExecutableReadinessChecker.checkReady(javaExecutable);
 
         List<String> command =
                 launchCommandBuilder.build(launchInfo, launchVariables, javaExecutable);

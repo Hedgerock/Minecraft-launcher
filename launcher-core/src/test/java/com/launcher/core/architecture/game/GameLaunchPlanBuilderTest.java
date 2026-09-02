@@ -4,6 +4,7 @@ import com.launcher.core.architecture.support.recording.RecordingClasspathFormat
 import com.launcher.core.architecture.support.recording.RecordingDefaultGameLaunchCommandBuilder;
 import com.launcher.core.architecture.support.recording.RecordingDirectoryProvider;
 import com.launcher.core.architecture.support.recording.RecordingGameClasspathBuilder;
+import com.launcher.core.architecture.support.recording.RecordingJavaExecutableReadinessChecker;
 import com.launcher.core.architecture.support.recording.RecordingJavaRuntimeSelector;
 import com.launcher.core.architecture.support.recording.RecordingManifestService;
 import com.launcher.core.game.GameLaunchPlan;
@@ -18,6 +19,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,6 +30,7 @@ class GameLaunchPlanBuilderTest {
     private RecordingGameClasspathBuilder recordingGameClasspathBuilder;
     private RecordingClasspathFormatter recordingClasspathFormatter;
     private RecordingJavaRuntimeSelector recordingJavaRuntimeSelector;
+    private RecordingJavaExecutableReadinessChecker recordingJavaExecutableReadinessChecker;
 
     @BeforeEach
     void setUp() {
@@ -37,6 +40,60 @@ class GameLaunchPlanBuilderTest {
         recordingGameClasspathBuilder = new RecordingGameClasspathBuilder();
         recordingClasspathFormatter = new RecordingClasspathFormatter();
         recordingJavaRuntimeSelector = new RecordingJavaRuntimeSelector();
+        recordingJavaExecutableReadinessChecker = new RecordingJavaExecutableReadinessChecker();
+    }
+
+    @Test
+    void should_fail_when_selected_java_executable_is_not_ready() {
+        //given
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+                directoryProvider,
+                launchCommandBuilder,
+                recordingGameClasspathBuilder,
+                recordingClasspathFormatter,
+                recordingJavaRuntimeSelector,
+                recordingJavaExecutableReadinessChecker
+        );
+
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
+        Manifest manifest = manifestLoadResult.manifest();
+        RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
+
+        recordingJavaExecutableReadinessChecker.setNotValid();
+
+        //when & then
+        assertThrows(
+                IllegalStateException.class,
+                () -> gameLaunchPlanBuilder.build(manifest, runtimeLibrarySelection)
+        );
+
+        assertNull(launchCommandBuilder.getLaunchInfo());
+    }
+
+    @Test
+    void should_check_selected_java_executable_before_building_command() {
+        //given
+        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+                directoryProvider,
+                launchCommandBuilder,
+                recordingGameClasspathBuilder,
+                recordingClasspathFormatter,
+                recordingJavaRuntimeSelector,
+                recordingJavaExecutableReadinessChecker
+        );
+
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
+        Manifest manifest = manifestLoadResult.manifest();
+        RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
+
+        //when
+        gameLaunchPlanBuilder.build(manifest, runtimeLibrarySelection);
+
+        //then
+        assertEquals(
+                Path.of("new-java-executable"),
+                recordingJavaExecutableReadinessChecker.getJavaExecutable()
+        );
     }
 
     @Test
@@ -47,7 +104,8 @@ class GameLaunchPlanBuilderTest {
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
                 recordingClasspathFormatter,
-                recordingJavaRuntimeSelector
+                recordingJavaRuntimeSelector,
+                recordingJavaExecutableReadinessChecker
         );
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
@@ -77,7 +135,8 @@ class GameLaunchPlanBuilderTest {
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
                 recordingClasspathFormatter,
-                recordingJavaRuntimeSelector
+                recordingJavaRuntimeSelector,
+                recordingJavaExecutableReadinessChecker
 
         );
 
@@ -101,7 +160,8 @@ class GameLaunchPlanBuilderTest {
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
                 recordingClasspathFormatter,
-                recordingJavaRuntimeSelector
+                recordingJavaRuntimeSelector,
+                recordingJavaExecutableReadinessChecker
         );
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
@@ -124,7 +184,8 @@ class GameLaunchPlanBuilderTest {
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
                 recordingClasspathFormatter,
-                recordingJavaRuntimeSelector
+                recordingJavaRuntimeSelector,
+                recordingJavaExecutableReadinessChecker
         );
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();

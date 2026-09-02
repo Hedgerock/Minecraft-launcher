@@ -27,6 +27,8 @@ import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.core.resolve.LaunchArgumentResolver;
 import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.resource.SafeResourcePathResolver;
+import com.launcher.core.runtime.JavaRuntimeSelector;
+import com.launcher.core.runtime.ManifestJavaRuntimeSelector;
 import com.launcher.core.runtime.RuntimeEnvironmentProvider;
 import com.launcher.core.runtime.SystemRuntimeEnvironmentProvider;
 import com.launcher.core.state.LauncherStateMachine;
@@ -63,6 +65,24 @@ public final class DefaultApplicationAssembly implements ApplicationAssembly {
         return new DefaultGameClasspathBuilder(resourcePathResolver);
     }
 
+    private GameLaunchPlanBuilder getLaunchPlanBuilder(
+            ResourcePathResolver resourcePathResolver,
+            DirectoryProvider directoryProvider
+    ) {
+        GameClasspathBuilder classpathBuilder = getClasspathBuilder(resourcePathResolver);
+        ClasspathFormatter classpathFormatter = new DefaultClasspathFormatter();
+        GameLaunchCommandBuilder launchCommandBuilder = getLaunchCommandBuilder();
+        JavaRuntimeSelector javaRuntimeSelector = new ManifestJavaRuntimeSelector();
+
+        return new GameLaunchPlanBuilder(
+                directoryProvider,
+                launchCommandBuilder,
+                classpathBuilder,
+                classpathFormatter,
+                javaRuntimeSelector
+        );
+    }
+
     private OperationManager createOperationManager(LauncherInfrastructure launcherInfrastructure) {
         ResourcePathResolver resourcePathResolver = new SafeResourcePathResolver();
         DirectoryProvider directoryProvider = new LocalDirectoryProvider(launcherConfiguration);
@@ -79,19 +99,10 @@ public final class DefaultApplicationAssembly implements ApplicationAssembly {
         LauncherServices services = servicesFactory.createServices();
         DownloadPlanBuilder builder = new DownloadPlanBuilder();
 
-        GameClasspathBuilder classpathBuilder = getClasspathBuilder(resourcePathResolver);
-        ClasspathFormatter classpathFormatter = new DefaultClasspathFormatter();
-        GameLaunchCommandBuilder launchCommandBuilder = getLaunchCommandBuilder();
-
-        GameLaunchPlanBuilder launchPlanBuilder = new GameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                classpathBuilder,
-                classpathFormatter
-        );
-
         NativeExtractionPlanBuilder nativeExtractionPlanBuilder =
                 new NativeExtractionPlanBuilder(directoryProvider);
+
+        GameLaunchPlanBuilder launchPlanBuilder = getLaunchPlanBuilder(resourcePathResolver, directoryProvider);
 
         OperationFactory operationFactory = new DefaultOperationFactory(
                 services.manifestService(),

@@ -5,11 +5,14 @@ import com.launcher.core.game.classpath.GameClasspath;
 import com.launcher.core.game.classpath.builder.GameClasspathBuilder;
 import com.launcher.core.game.classpath.formatter.ClasspathFormatter;
 import com.launcher.core.resolve.model.LaunchVariables;
+import com.launcher.core.runtime.JavaRuntimeSelector;
 import com.launcher.core.storage.directory.DirectoryProvider;
+import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 
 public final class GameLaunchPlanBuilder {
@@ -17,17 +20,20 @@ public final class GameLaunchPlanBuilder {
     private final GameLaunchCommandBuilder launchCommandBuilder;
     private final GameClasspathBuilder gameClasspathBuilder;
     private final ClasspathFormatter classpathFormatter;
+    private final JavaRuntimeSelector javaRuntimeSelector;
 
     public GameLaunchPlanBuilder(
             DirectoryProvider directoryProvider,
             GameLaunchCommandBuilder launchCommandBuilder,
             GameClasspathBuilder gameClasspathBuilder,
-            ClasspathFormatter classpathFormatter
+            ClasspathFormatter classpathFormatter,
+            JavaRuntimeSelector javaRuntimeSelector
     ) {
         this.directoryProvider = directoryProvider;
         this.launchCommandBuilder = launchCommandBuilder;
         this.gameClasspathBuilder = gameClasspathBuilder;
         this.classpathFormatter = classpathFormatter;
+        this.javaRuntimeSelector = javaRuntimeSelector;
     }
 
     public GameLaunchPlan build(Manifest manifest, RuntimeLibrarySelection runtimeLibrarySelection) {
@@ -53,9 +59,16 @@ public final class GameLaunchPlanBuilder {
                 nativesDirectory
         );
 
+        LaunchInfo launchInfo = manifest.launchInfo();
+
+        Path javaExecutable = javaRuntimeSelector.selectJavaExecutable(launchInfo);
+
+        List<String> command =
+                launchCommandBuilder.build(launchInfo, launchVariables, javaExecutable);
+
         return new GameLaunchPlan(
                 gameDirectory,
-                launchCommandBuilder.build(manifest.launchInfo(), launchVariables)
+                command
         );
     }
 

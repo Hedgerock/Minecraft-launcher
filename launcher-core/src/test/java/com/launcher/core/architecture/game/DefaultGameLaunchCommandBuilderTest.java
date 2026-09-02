@@ -38,7 +38,7 @@ class DefaultGameLaunchCommandBuilderTest {
         );
 
         //when
-        List<String> command = commandBuilder.build(launchInfo, launchVariables);
+        List<String> command = commandBuilder.build(launchInfo, launchVariables, Path.of("java-custom"));
 
         //then
         assertEquals(

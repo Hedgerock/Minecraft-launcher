@@ -14,6 +14,7 @@ import com.launcher.core.operation.impl.BuildGameLaunchPlanOperation;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.core.resource.SafeResourcePathResolver;
+import com.launcher.core.runtime.ManifestJavaRuntimeSelector;
 import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,8 @@ class BuildGameLaunchPlanOperationTest {
                         new DefaultGameClasspathBuilder(
                                 new SafeResourcePathResolver()
                         ),
-                        new DefaultClasspathFormatter()
+                        new DefaultClasspathFormatter(),
+                        new ManifestJavaRuntimeSelector()
                 )
         );
     }

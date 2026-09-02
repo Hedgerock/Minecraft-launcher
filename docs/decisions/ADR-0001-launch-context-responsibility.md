@@ -1,3 +1,5 @@
+[← Назад к списку решений](README.md)
+
 # ADR-0001 LaunchContext Responsibility
 
 ## Статус

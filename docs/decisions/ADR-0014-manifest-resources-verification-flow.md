@@ -1,3 +1,5 @@
+[← Назад к списку решений](README.md)
+
 # ADR-0014: Использовать ManifestResources как источник verification flow
 
 ## Статус

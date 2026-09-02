@@ -1,3 +1,5 @@
+[← Назад к списку решений](README.md)
+
 # ADR-0020: Определить границу classifiers и natives metadata для libraries
 
 ## Статус

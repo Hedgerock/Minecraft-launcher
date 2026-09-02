@@ -1,3 +1,5 @@
+[← Назад к списку решений](README.md)
+
 # ADR-0017: Определить границу runtime metadata для libraries
 
 ## Статус

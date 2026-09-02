@@ -1,3 +1,5 @@
+[← Назад к списку решений](README.md)
+
 # ADR-0010 Execution Strategy Selection
 
 ## Статус

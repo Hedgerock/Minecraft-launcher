@@ -1,3 +1,5 @@
+[← Назад к списку решений](README.md)
+
 # ADR-0025: Определить реализацию native extraction service
 
 ## Статус

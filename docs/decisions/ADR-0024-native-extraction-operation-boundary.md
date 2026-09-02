@@ -1,3 +1,5 @@
+[← Назад к списку решений](README.md)
+
 # ADR-0024: Определить границу native extraction operation
 
 ## Статус

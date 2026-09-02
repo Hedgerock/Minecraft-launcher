@@ -1,3 +1,5 @@
+[← Назад к списку решений](README.md)
+
 # ADR-0019: Определить минимальные OS-specific rules для libraries
 
 ## Статус

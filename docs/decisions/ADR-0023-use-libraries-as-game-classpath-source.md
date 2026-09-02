@@ -1,3 +1,5 @@
+[← Назад к списку решений](README.md)
+
 # ADR-0023: Использовать RuntimeLibrarySelection.libraries как источник game classpath
 
 ## Статус

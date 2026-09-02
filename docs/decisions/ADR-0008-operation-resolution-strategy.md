@@ -1,3 +1,5 @@
+[← Назад к списку решений](README.md)
+
 # ADR-0008 Operation Resolution Strategy
 
 ## Статус

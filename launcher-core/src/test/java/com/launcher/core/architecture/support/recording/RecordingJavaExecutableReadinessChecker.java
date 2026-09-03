@@ -1,6 +1,6 @@
 package com.launcher.core.architecture.support.recording;
 
-import com.launcher.core.runtime.JavaExecutableReadinessChecker;
+import com.launcher.core.runtime.javaexecutable.checker.JavaExecutableReadinessChecker;
 import com.launcher.model.runtime.JavaExecutableReference;
 
 public final class RecordingJavaExecutableReadinessChecker implements JavaExecutableReadinessChecker {

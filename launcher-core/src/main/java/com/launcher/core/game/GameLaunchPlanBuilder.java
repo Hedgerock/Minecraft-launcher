@@ -5,7 +5,7 @@ import com.launcher.core.game.classpath.GameClasspath;
 import com.launcher.core.game.classpath.builder.GameClasspathBuilder;
 import com.launcher.core.game.classpath.formatter.ClasspathFormatter;
 import com.launcher.core.resolve.model.LaunchVariables;
-import com.launcher.core.runtime.JavaExecutableReadinessChecker;
+import com.launcher.core.runtime.javaexecutable.checker.JavaExecutableReadinessChecker;
 import com.launcher.core.runtime.JavaRuntimeSelector;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.model.manifest.LaunchInfo;

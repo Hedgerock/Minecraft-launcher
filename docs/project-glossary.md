@@ -153,6 +153,15 @@ extensions
 Application assembly пока использует `NoOpJavaCommandPathResolver`, поэтому реальный PATH lookup еще не включен в
 production wiring
 
+### JavaCommandPathEnvironmentProvider
+
+Контракт получения `JavaCommandPathEnvironment` из runtime окружения
+
+`SystemJavaCommandPathEnvironmentProvider` читает `PATH` и `PATHEXT`, преобразует директории поиска и executable
+extensions в модель, которую использует `DefaultJavaCommandPathResolver`
+
+На текущем этапе provider реализован, но application assembly еще не использует real PATH lookup в production wiring
+
 ### JavaExecutableReadinessChecker
 
 Контракт проверки готовности выбранного Java executable перед построением `GameLaunchPlan`
@@ -162,7 +171,7 @@ production wiring
 
 `DefaultJavaExecutableReadinessChecker` проверяет существование файла и то, что путь указывает на regular file
 
-`NoOpJavaExecutableReadinessChecker` используется в application assembly подключения real PATH lookup и
+`NoOpJavaExecutableReadinessChecker` используется в application assembly до подключения real PATH lookup и
 readiness policy для resolved Java executable
 
 ### JavaRuntimeSelector

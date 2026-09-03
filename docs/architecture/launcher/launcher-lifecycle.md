@@ -109,8 +109,8 @@ resolved reference в `GameLaunchCommandBuilder`
 На текущем этапе application assembly использует `NoOpJavaCommandPathResolver` и `NoOpJavaExecutableReadinessChecker`,
 чтобы не ломать сценарий, где manifest указывает command name `java`, а не filesystem path
 
-Реальная filesystem-проверка доступна через `DefaultJavaExecutableReadinessChecker`, но ее подключение требует
-реального подключения real PATH environment и production policy для Java command path resolution
+Реальная filesystem-проверка доступна через `DefaultJavaExecutableReadinessChecker`, но production wiring пока
+остается на no-op policy до подключения real PATH lookup
 
 Если `Manifest` не содержит `LaunchInfo`, `BUILD_GAME_LAUNCH_PLAN` завершается ошибкой, launcher переходит в `FAILED`
 

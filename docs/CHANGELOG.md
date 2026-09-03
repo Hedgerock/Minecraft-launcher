@@ -11,6 +11,7 @@
 - Added Java command path resolver contract for resolving command name references into explicit filesystem paths
 - Added default Java command path resolver for resolving command names from PATH environment
 - Added Java command PATH environment model for passing path directories and executable extensions into resolver
+- Added Java command path environment provider for building resolver environment from `PATH` and `PATHEXT`
 
 ### Changed
 

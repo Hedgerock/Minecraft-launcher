@@ -1,5 +1,6 @@
-package com.launcher.core.runtime;
+package com.launcher.core.runtime.javaexecutable.checker;
 
+import com.launcher.core.runtime.javaexecutable.exception.JavaExecutableNotReadyException;
 import com.launcher.model.runtime.JavaExecutableReference;
 
 import java.nio.file.Files;

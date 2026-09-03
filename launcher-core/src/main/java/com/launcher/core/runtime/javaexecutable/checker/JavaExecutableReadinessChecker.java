@@ -1,4 +1,4 @@
-package com.launcher.core.runtime;
+package com.launcher.core.runtime.javaexecutable.checker;
 
 import com.launcher.model.runtime.JavaExecutableReference;
 

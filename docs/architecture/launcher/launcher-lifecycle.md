@@ -96,19 +96,21 @@ manifest-provided `javaExecutable` в `JavaExecutableReference`
 `JavaRuntimeSelector` возвращает `JavaExecutableReference`, который сохраняет различие между command name и explicit
 filesystem path
 
-`JavaCommandPathResolver` уже выделен как отдельная граница для будущего преобразования command name reference в
-explicit filesystem path, но пока не участвует в текущем launch plan flow
+После выбора reference `GameLaunchPlanBuilder` передает его в `JavaCommandPathResolver`
 
-После выбора reference `GameLaunchPlanBuilder` выполняет readiness check через `JavaExecutableReadinessChecker` и
-передает reference в `GameLaunchCommandBuilder`
+`JavaCommandPathResolver` преобразует command name reference в explicit filesystem path или
+возвращает reference без изменений, если используется no-op implementation
+
+После resolution `GameLaunchPlanBuilder` выполняет readiness check через `JavaExecutableReadinessChecker` и передает
+resolved reference в `GameLaunchCommandBuilder`
 
 `GameLaunchCommandBuilder` использует `JavaExecutableReference.value()` как первый элемент команды запуска
 
-На текущем этапе application assembly использует `NoOpJavaExecutableReadinessChecker`, чтобы не ломать сценарий, где
-manifest указывает command name `java`, а не filesystem path
+На текущем этапе application assembly использует `NoOpJavaCommandPathResolver` и `NoOpJavaExecutableReadinessChecker`,
+чтобы не ломать сценарий, где manifest указывает command name `java`, а не filesystem path
 
 Реальная filesystem-проверка доступна через `DefaultJavaExecutableReadinessChecker`, но ее подключение требует
-отдельного решения о различии command name и explicit path
+реального подключения real PATH environment и production policy для Java command path resolution
 
 Если `Manifest` не содержит `LaunchInfo`, `BUILD_GAME_LAUNCH_PLAN` завершается ошибкой, launcher переходит в `FAILED`
 

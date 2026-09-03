@@ -148,18 +148,22 @@ launch
 `DefaultJavaCommandPathResolver` использует `JavaCommandPathEnvironment`, который содержит директории и executable
 extensions
 
-На текущем этапе resolver реализован, но еще не подключен к `GameLaunchPlanBuilder` и application assembly
+На текущем этапе `GameLaunchPlanBuilder` уже вызывает `JavaCommandPathResolver` перед readiness check
+
+Application assembly пока использует `NoOpJavaCommandPathResolver`, поэтому реальный PATH lookup еще не включен в
+production wiring
 
 ### JavaExecutableReadinessChecker
 
 Контракт проверки готовности выбранного Java executable перед построением `GameLaunchPlan`
 
-На текущем этапе `GameLaunchPlanBuilder` вызывает checker после `JavaRuntimeSelector` и до `GameLaunchCommandBuilder`
+На текущем этапе `GameLaunchPlanBuilder` вызывает checker после `JavaCommandPathResolver` и
+до `GameLaunchCommandBuilder`
 
 `DefaultJavaExecutableReadinessChecker` проверяет существование файла и то, что путь указывает на regular file
 
-`NoOpJavaExecutableReadinessChecker` используется в application assembly до появления решения о различии command name
-и explicit filesystem path
+`NoOpJavaExecutableReadinessChecker` используется в application assembly подключения real PATH lookup и
+readiness policy для resolved Java executable
 
 ### JavaRuntimeSelector
 

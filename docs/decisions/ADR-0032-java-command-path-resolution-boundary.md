@@ -9,6 +9,7 @@ Accepted
 > Примечание: решение частично реализовано в итерациях
 > `feat(core): add java command path resolver contract`
 > `feat(core): resolve java command name from path environment`
+> `feat(core): use java command path resolver in launch plan builder`
 
 ---
 

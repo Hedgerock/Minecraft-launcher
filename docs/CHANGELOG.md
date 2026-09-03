@@ -9,7 +9,7 @@
 - Added Java executable reference model for separating command name and explicit filesystem path scenarios
 - Added Java executable reference resolver for converting manifest Java executable metadata into `JavaExecutableReference`
 - Added Java command path resolver contract for resolving command name references into explicit filesystem paths
-- Added default Java command path resolver for resolving command names from path environment
+- Added default Java command path resolver for resolving command names from PATH environment
 - Added Java command PATH environment model for passing path directories and executable extensions into resolver
 
 ### Changed
@@ -21,6 +21,7 @@
 - Changed Java executable readiness check and game launch plan building to use `JavaExecutableReference`
 - Changed `ManifestJavaRuntimeSelector` to delegate Java executable reference creation to `JavaExecutableReferenceResolver`
 - Grouped Java executable runtime components under dedicated runtime package
+- Changed game launch plan building to resolve Java command path before Java executable readiness check
 
 ---
 

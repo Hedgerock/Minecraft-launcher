@@ -3,7 +3,7 @@
 ## Текущий фокус
 
 - Развить Java runtime flow после `v0.4.0-library-native-flow`
-- Подключить реализованный Java command path resolver к launch plan flow
+- Подключить чтение Java command path environment из runtime окружения
 
 ---
 

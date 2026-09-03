@@ -8,6 +8,9 @@
 - Added no-op Java executable readiness checker for current application assembly wiring
 - Added Java executable reference model for separating command name and explicit filesystem path scenarios
 - Added Java executable reference resolver for converting manifest Java executable metadata into `JavaExecutableReference`
+- Added Java command path resolver contract for resolving command name references into explicit filesystem paths
+- Added default Java command path resolver for resolving command names from path environment
+- Added Java command PATH environment model for passing path directories and executable extensions into resolver
 
 ### Changed
 

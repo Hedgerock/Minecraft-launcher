@@ -137,6 +137,19 @@ name reference
 
 Resolver не выполняет PATH resolution и не определяет explicit filesystem path автоматически
 
+### JavaCommandPathResolver
+
+Контракт преобразования `JavaExecutableReference` типа command name в `JavaExecutableReference` типа explicit
+filesystem path
+
+Resolver выполняет PATH-oriented lookup отдельно от manifest mapping, runtime selection, command building и process
+launch
+
+`DefaultJavaCommandPathResolver` использует `JavaCommandPathEnvironment`, который содержит директории и executable
+extensions
+
+На текущем этапе resolver реализован, но еще не подключен к `GameLaunchPlanBuilder` и application assembly
+
 ### JavaExecutableReadinessChecker
 
 Контракт проверки готовности выбранного Java executable перед построением `GameLaunchPlan`

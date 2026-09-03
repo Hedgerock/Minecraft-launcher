@@ -3,7 +3,7 @@
 ## Текущий фокус
 
 - Развить Java runtime flow после `v0.4.0-library-native-flow`
-- Удерживать различие между command name, explicit filesystem path и будущим PATH resolution
+- Подключить реализованный Java command path resolver к launch plan flow
 
 ---
 

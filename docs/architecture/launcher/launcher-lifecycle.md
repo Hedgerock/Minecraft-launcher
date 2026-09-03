@@ -96,6 +96,9 @@ manifest-provided `javaExecutable` в `JavaExecutableReference`
 `JavaRuntimeSelector` возвращает `JavaExecutableReference`, который сохраняет различие между command name и explicit
 filesystem path
 
+`JavaCommandPathResolver` уже выделен как отдельная граница для будущего преобразования command name reference в
+explicit filesystem path, но пока не участвует в текущем launch plan flow
+
 После выбора reference `GameLaunchPlanBuilder` выполняет readiness check через `JavaExecutableReadinessChecker` и
 передает reference в `GameLaunchCommandBuilder`
 

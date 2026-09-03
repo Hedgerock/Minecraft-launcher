@@ -52,6 +52,8 @@ L-5
 Завершение `Operation` всегда приводит систему в согласованное состояние
 (`RUNNING`, `FAILED` или `IDLE` в зависимости от сценария)
 
+---
+
 После успешной загрузки `manifest` `LauncherEngine` сохраняет в `LaunchContext` `Manifest` и `RuntimeLibrarySelection`,
 затем переходит к `VERIFYING_FILES`
 
@@ -86,10 +88,15 @@ L-5
 Директория natives передается в `LaunchVariables` и может быть использована manifest metadata через
 подстановку `${natives_directory}`
 
-`GameLaunchPlanBuilder` выбирает Java executable через `JavaRuntimeSelector` и передает уже выбранное значение в
-`GameLaunchCommandBuilder`
+`GameLaunchPlanBuilder` выбирает Java executable через `JavaRuntimeSelector`
 
-После выбора Java executable `GameLaunchPlanBuilder` выполняет readiness check через `JavaExecutableReadinessChecker`
+`JavaRuntimeSelector` возвращает `JavaExecutableReference`, который сохраняет различие между command name и explicit
+filesystem path
+
+После выбора reference `GameLaunchPlanBuilder` выполняет readiness check через `JavaExecutableReadinessChecker` и
+передает reference в `GameLaunchCommandBuilder`
+
+`GameLaunchCommandBuilder` использует `JavaExecutableReference.value()` как первый элемент команды запуска
 
 На текущем этапе application assembly использует `NoOpJavaExecutableReadinessChecker`, чтобы не ломать сценарий, где
 manifest указывает command name `java`, а не filesystem path

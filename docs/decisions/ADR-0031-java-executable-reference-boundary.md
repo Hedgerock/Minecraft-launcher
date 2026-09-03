@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(core): add java executable reference model`
+> `feat(core): use java executable reference in launch plan flow`
+
 ---
 
 ## Контекст
@@ -99,7 +103,7 @@ LaunchInfo.javaExecutable
 
 `DefaultJavaExecutableReadinessChecker` остается полезным для explicit filesystem path сценариев
 
-Будущая модель `JavaExecutableReference` может быть добавлена без изменения ответственности `GameLaunchCommandBuilder` и
+Модель `JavaExecutableReference` может использоваться без изменения ответственности `GameLaunchCommandBuilder` и
 `GameService`
 
 В будущем можно будет добавить поддержку
@@ -114,7 +118,6 @@ LaunchInfo.javaExecutable
 
 ## Не входит в решение
 
-- Реализация `JavaExecutableReference`
 - Реализация PATH resolution
 - Поиск Java installations
 - Выбор Java version

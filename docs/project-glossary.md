@@ -113,6 +113,21 @@ runtime-сценариях
 
 ## Runtime
 
+### JavaExecutableReference
+
+Модель смысловой ссылки на Java executable
+
+Разделяет два сценария
+
+- command name
+- explicit filesystem path
+
+На текущем этапе `ManifestJavaRuntimeSelector` создает command name reference из `LaunchInfo.javaExecutable`
+
+`JavaExecutableReadinessChecker` получает `JavaExecutableReference`, а не raw `Path`
+
+`GameLaunchCommandBuilder` использует `JavaExecutableReference.value()` как первый элемент launch command
+
 ### JavaExecutableReadinessChecker
 
 Контракт проверки готовности выбранного Java executable перед построением `GameLaunchPlan`

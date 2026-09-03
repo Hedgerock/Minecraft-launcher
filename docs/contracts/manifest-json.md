@@ -169,10 +169,11 @@ Library включается в `RuntimeLibrarySelection.libraries`, если п
 Library исключается из `RuntimeLibrarySelection.libraries`, если совпадающих правил нет или последнее
 совпадающее правило имеет `action` `DISALLOW`
 
-`launchInfo.javaExecutable` описывает manifest-provided Java executable
+`launchInfo.javaExecutable` описывает manifest-provided Java executable reference
 
-На текущем этапе `ManifestJavaRuntimeSelector` использует это значение как источник выбранного
-Java executable для построения команды запуска игры
+На текущем этапе `ManifestJavaRuntimeSelector` преобразует это значение в command name `JavaExecutableReference`
+
+Это значение не считается explicit filesystem path автоматически
 
 `JsonManifestMapper` не выполняет запуск, загрузку файлов или проверку хеша
 

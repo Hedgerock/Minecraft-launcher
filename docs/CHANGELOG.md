@@ -6,12 +6,15 @@
 - Added Java executable readiness checker contract
 - Added default Java executable readiness checker for explicit filesystem paths
 - Added no-op Java executable readiness checker for current application assembly wiring
+- Added Java executable reference model for separating command name and explicit filesystem path scenarios
 
 ### Changed
 
 - Changed game launch plan building to use `JavaRuntimeSelector` instead of reading `LaunchInfo.javaExecutable`
   directly in command building
 - Changed game launch plan building to run Java executable readiness check after Java runtime selection
+- Changed Java runtime selection to return `JavaExecutableReference`
+- Changed Java executable readiness check and game launch plan building to use `JavaExecutableReference`
 
 ---
 

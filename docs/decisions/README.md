@@ -43,3 +43,4 @@
 | [ADR-0029](ADR-0029-java-runtime-selection-boundary.md)          | Граница выбора Java runtime                                       | java runtime       |
 | [ADR-0030](ADR-0030-java-executable-readiness-boundary.md)       | Граница проверки Java executable                                  | java runtime       |
 | [ADR-0031](ADR-0031-java-executable-reference-boundary.md)       | Граница Java executable reference                                 | java runtime       |
+| [ADR-0032](ADR-0032-java-command-path-resolution-boundary.md)    | Граница PATH resolution для Java command name                     | java runtime       |

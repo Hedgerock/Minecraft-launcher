@@ -2,17 +2,15 @@ package com.launcher.core.architecture.support.recording;
 
 import com.launcher.core.runtime.JavaRuntimeSelector;
 import com.launcher.model.manifest.LaunchInfo;
-
-import java.nio.file.Path;
+import com.launcher.model.runtime.JavaExecutableReference;
 
 public final class RecordingJavaRuntimeSelector implements JavaRuntimeSelector {
     private LaunchInfo launchInfo;
-    private final Path javaExecutable = Path.of("new-java-executable");
 
     @Override
-    public Path selectJavaExecutable(LaunchInfo launchInfo) {
+    public JavaExecutableReference selectJavaExecutable(LaunchInfo launchInfo) {
         this.launchInfo = launchInfo;
-        return javaExecutable;
+        return JavaExecutableReference.commandName("new-java-executable");
     }
 
     public LaunchInfo getLaunchInfo() {

@@ -12,10 +12,10 @@ import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
+import com.launcher.model.runtime.JavaExecutableReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -91,8 +91,8 @@ class GameLaunchPlanBuilderTest {
 
         //then
         assertEquals(
-                Path.of("new-java-executable"),
-                recordingJavaExecutableReadinessChecker.getJavaExecutable()
+                JavaExecutableReference.commandName("new-java-executable"),
+                recordingJavaExecutableReadinessChecker.getJavaExecutableReference()
         );
     }
 
@@ -122,8 +122,8 @@ class GameLaunchPlanBuilderTest {
         );
 
         assertEquals(
-                Path.of("new-java-executable"),
-                launchCommandBuilder.getJavaExecutable()
+                JavaExecutableReference.commandName("new-java-executable"),
+                launchCommandBuilder.getJavaExecutableReference()
         );
     }
 

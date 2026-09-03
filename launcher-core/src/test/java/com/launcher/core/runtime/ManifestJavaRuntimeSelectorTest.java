@@ -1,9 +1,9 @@
 package com.launcher.core.runtime;
 
 import com.launcher.model.manifest.LaunchInfo;
+import com.launcher.model.runtime.JavaExecutableReference;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,12 +25,14 @@ class ManifestJavaRuntimeSelectorTest {
         );
 
         //when
-        Path result = selector.selectJavaExecutable(launchInfo);
+        JavaExecutableReference result = selector.selectJavaExecutable(launchInfo);
 
         //then
+        assertTrue(result.isCommandName());
+
         assertEquals(
-                Path.of("java-custom"),
-                result
+                "java-custom",
+                result.value()
         );
     }
 

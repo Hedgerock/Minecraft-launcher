@@ -1,9 +1,9 @@
 package com.launcher.core.runtime;
 
-import java.nio.file.Path;
+import com.launcher.model.runtime.JavaExecutableReference;
 
 public interface JavaExecutableReadinessChecker {
 
-    void checkReady(Path javaExecutable);
+    void checkReady(JavaExecutableReference javaExecutableReference);
 
 }

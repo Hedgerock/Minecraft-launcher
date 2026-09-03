@@ -1,11 +1,10 @@
 package com.launcher.core.runtime;
 
 import com.launcher.model.manifest.LaunchInfo;
-
-import java.nio.file.Path;
+import com.launcher.model.runtime.JavaExecutableReference;
 
 public interface JavaRuntimeSelector {
 
-    Path selectJavaExecutable(LaunchInfo launchInfo);
+    JavaExecutableReference selectJavaExecutable(LaunchInfo launchInfo);
 
 }

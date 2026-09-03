@@ -3,25 +3,25 @@ package com.launcher.core.architecture.support.recording;
 import com.launcher.core.game.builder.GameLaunchCommandBuilder;
 import com.launcher.core.resolve.model.LaunchVariables;
 import com.launcher.model.manifest.LaunchInfo;
+import com.launcher.model.runtime.JavaExecutableReference;
 
-import java.nio.file.Path;
 import java.util.List;
 
 public final class RecordingDefaultGameLaunchCommandBuilder implements GameLaunchCommandBuilder {
 
     private LaunchInfo launchInfo;
     private LaunchVariables launchVariables;
-    private Path javaExecutable;
+    private JavaExecutableReference javaExecutableReference;
 
     @Override
     public List<String> build(
             LaunchInfo launchInfo,
             LaunchVariables launchVariables,
-            Path javaExecutable
+            JavaExecutableReference javaExecutableReference
     ) {
         this.launchInfo = launchInfo;
         this.launchVariables = launchVariables;
-        this.javaExecutable = javaExecutable;
+        this.javaExecutableReference = javaExecutableReference;
         return List.of("test-command");
     }
 
@@ -33,7 +33,7 @@ public final class RecordingDefaultGameLaunchCommandBuilder implements GameLaunc
         return launchVariables;
     }
 
-    public Path getJavaExecutable() {
-        return javaExecutable;
+    public JavaExecutableReference getJavaExecutableReference() {
+        return javaExecutableReference;
     }
 }

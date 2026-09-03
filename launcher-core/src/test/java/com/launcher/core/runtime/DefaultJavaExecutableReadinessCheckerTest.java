@@ -1,5 +1,6 @@
 package com.launcher.core.runtime;
 
+import com.launcher.model.runtime.JavaExecutableReference;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -8,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,57 +18,76 @@ class DefaultJavaExecutableReadinessCheckerTest {
             new DefaultJavaExecutableReadinessChecker();
 
     @Test
-    void should_reject_directory_as_java_executable(
-            @TempDir Path tempDir
-    ) throws IOException {
+    void should_reject_non_explicit_path_java_executable_reference() {
         //given
-        Path javaExecutable = tempDir.resolve("directory-path");
-
-        Files.createDirectory(javaExecutable);
+        JavaExecutableReference reference = JavaExecutableReference.commandName("java");
 
         //when & then
         JavaExecutableNotReadyException exception = assertThrows(
                 JavaExecutableNotReadyException.class,
-                () -> checker.checkReady(javaExecutable)
+                () -> checker.checkReady(reference)
         );
 
-        assertTrue(exception.getMessage().contains("Java executable is not a file: " + javaExecutable));
+        assertTrue(exception.getMessage().contains("Java executable reference is not an explicit path: " + reference.value()));
     }
 
     @Test
-    void should_reject_missing_java_executable(@TempDir Path tempDir) {
+    void should_reject_directory_as_java_executable_reference(
+            @TempDir Path tempDir
+    ) throws IOException {
         //given
-        Path javaExecutable = tempDir.resolve("fake-path");
+        Path directory = tempDir.resolve("directory");
+        JavaExecutableReference reference = JavaExecutableReference.explicitPath(directory.toString());
+        Files.createDirectory(reference.path());
 
         //when & then
         JavaExecutableNotReadyException exception = assertThrows(
                 JavaExecutableNotReadyException.class,
-                () -> checker.checkReady(javaExecutable)
+                () -> checker.checkReady(reference)
         );
 
-        assertTrue(exception.getMessage().contains("Java executable does not exist: " + javaExecutable));
+        assertTrue(exception.getMessage().contains("Java executable is not a file: " + reference.value()));
+    }
+
+    @Test
+    void should_reject_missing_java_executable_reference(@TempDir Path tempDir) {
+        //given
+        Path path = tempDir.resolve("test-path");
+        JavaExecutableReference reference = JavaExecutableReference.explicitPath(path.toString());
+
+        //when & then
+        JavaExecutableNotReadyException exception = assertThrows(
+                JavaExecutableNotReadyException.class,
+                () -> checker.checkReady(reference)
+        );
+
+        assertTrue(exception.getMessage().contains("Java executable does not exist: " + reference.value()));
     }
 
     @Test
     void should_accept_existing_regular_file(@TempDir Path tempDir) throws IOException {
         //given
-        Path javaExecutable = tempDir.resolve("java-executable");
+        Path path = tempDir.resolve("test-path");
+        JavaExecutableReference reference = JavaExecutableReference.explicitPath(path.toString());
 
-        Files.createFile(javaExecutable);
+        Files.createFile(reference.path());
 
         //when & then
-        assertDoesNotThrow(() -> checker.checkReady(javaExecutable));
+        assertDoesNotThrow(() -> checker.checkReady(reference));
     }
 
     @Test
-    void should_reject_null_java_executable() {
+    void should_reject_null_java_executable_reference() {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> checker.checkReady(null)
         );
 
-        assertTrue(exception.getMessage().contains("javaExecutable"));
+        assertEquals(
+                "javaExecutableReference",
+                exception.getMessage()
+        );
     }
 
 }

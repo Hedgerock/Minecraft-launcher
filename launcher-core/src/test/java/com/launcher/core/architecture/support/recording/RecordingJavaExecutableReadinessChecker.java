@@ -1,27 +1,26 @@
 package com.launcher.core.architecture.support.recording;
 
 import com.launcher.core.runtime.JavaExecutableReadinessChecker;
-
-import java.nio.file.Path;
+import com.launcher.model.runtime.JavaExecutableReference;
 
 public final class RecordingJavaExecutableReadinessChecker implements JavaExecutableReadinessChecker {
-    private Path javaExecutable;
+    private JavaExecutableReference javaExecutableReference;
     private boolean notValid = false;
 
     @Override
-    public void checkReady(Path javaExecutable) {
+    public void checkReady(JavaExecutableReference javaExecutableReference) {
         if (notValid) {
             throw new IllegalStateException("Java executable is not valid");
         }
 
-        this.javaExecutable = javaExecutable;
+        this.javaExecutableReference = javaExecutableReference;
     }
 
     public void setNotValid() {
         notValid = true;
     }
 
-    public Path getJavaExecutable() {
-        return javaExecutable;
+    public JavaExecutableReference getJavaExecutableReference() {
+        return javaExecutableReference;
     }
 }

@@ -11,6 +11,7 @@ import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
+import com.launcher.model.runtime.JavaExecutableReference;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -65,12 +66,16 @@ public final class GameLaunchPlanBuilder {
 
         LaunchInfo launchInfo = manifest.launchInfo();
 
-        Path javaExecutable = javaRuntimeSelector.selectJavaExecutable(launchInfo);
+        JavaExecutableReference javaExecutableReference = javaRuntimeSelector.selectJavaExecutable(launchInfo);
 
-        javaExecutableReadinessChecker.checkReady(javaExecutable);
+        javaExecutableReadinessChecker.checkReady(javaExecutableReference);
 
         List<String> command =
-                launchCommandBuilder.build(launchInfo, launchVariables, javaExecutable);
+                launchCommandBuilder.build(
+                        launchInfo,
+                        launchVariables,
+                        javaExecutableReference
+                );
 
         return new GameLaunchPlan(
                 gameDirectory,

@@ -5,6 +5,7 @@ import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
 import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.core.resolve.model.LaunchVariables;
 import com.launcher.model.manifest.LaunchInfo;
+import com.launcher.model.runtime.JavaExecutableReference;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -38,7 +39,11 @@ class DefaultGameLaunchCommandBuilderTest {
         );
 
         //when
-        List<String> command = commandBuilder.build(launchInfo, launchVariables, Path.of("java-custom"));
+        List<String> command = commandBuilder.build(
+                launchInfo,
+                launchVariables,
+                JavaExecutableReference.commandName("java-custom")
+        );
 
         //then
         assertEquals(

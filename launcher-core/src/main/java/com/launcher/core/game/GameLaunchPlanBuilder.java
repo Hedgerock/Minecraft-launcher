@@ -7,6 +7,7 @@ import com.launcher.core.game.classpath.formatter.ClasspathFormatter;
 import com.launcher.core.resolve.model.LaunchVariables;
 import com.launcher.core.runtime.javaexecutable.checker.JavaExecutableReadinessChecker;
 import com.launcher.core.runtime.JavaRuntimeSelector;
+import com.launcher.core.runtime.javaexecutable.resolver.JavaCommandPathResolver;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.manifest.Manifest;
@@ -24,6 +25,7 @@ public final class GameLaunchPlanBuilder {
     private final ClasspathFormatter classpathFormatter;
     private final JavaRuntimeSelector javaRuntimeSelector;
     private final JavaExecutableReadinessChecker javaExecutableReadinessChecker;
+    private final JavaCommandPathResolver javaCommandPathResolver;
 
     public GameLaunchPlanBuilder(
             DirectoryProvider directoryProvider,
@@ -31,7 +33,8 @@ public final class GameLaunchPlanBuilder {
             GameClasspathBuilder gameClasspathBuilder,
             ClasspathFormatter classpathFormatter,
             JavaRuntimeSelector javaRuntimeSelector,
-            JavaExecutableReadinessChecker javaExecutableReadinessChecker
+            JavaExecutableReadinessChecker javaExecutableReadinessChecker,
+            JavaCommandPathResolver javaCommandPathResolver
     ) {
         this.directoryProvider = directoryProvider;
         this.launchCommandBuilder = launchCommandBuilder;
@@ -39,6 +42,7 @@ public final class GameLaunchPlanBuilder {
         this.classpathFormatter = classpathFormatter;
         this.javaRuntimeSelector = javaRuntimeSelector;
         this.javaExecutableReadinessChecker = javaExecutableReadinessChecker;
+        this.javaCommandPathResolver = javaCommandPathResolver;
     }
 
     public GameLaunchPlan build(Manifest manifest, RuntimeLibrarySelection runtimeLibrarySelection) {
@@ -66,15 +70,19 @@ public final class GameLaunchPlanBuilder {
 
         LaunchInfo launchInfo = manifest.launchInfo();
 
-        JavaExecutableReference javaExecutableReference = javaRuntimeSelector.selectJavaExecutable(launchInfo);
+        JavaExecutableReference selectedJavaExecutableReference =
+                javaRuntimeSelector.selectJavaExecutable(launchInfo);
 
-        javaExecutableReadinessChecker.checkReady(javaExecutableReference);
+        JavaExecutableReference resolvedJavaExecutableReference =
+                javaCommandPathResolver.resolve(selectedJavaExecutableReference);
+
+        javaExecutableReadinessChecker.checkReady(resolvedJavaExecutableReference);
 
         List<String> command =
                 launchCommandBuilder.build(
                         launchInfo,
                         launchVariables,
-                        javaExecutableReference
+                        resolvedJavaExecutableReference
                 );
 
         return new GameLaunchPlan(

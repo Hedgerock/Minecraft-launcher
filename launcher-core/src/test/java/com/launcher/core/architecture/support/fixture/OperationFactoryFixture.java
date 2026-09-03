@@ -23,6 +23,7 @@ import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.runtime.ManifestJavaRuntimeSelector;
 import com.launcher.core.runtime.javaexecutable.checker.NoOpJavaExecutableReadinessChecker;
 import com.launcher.core.runtime.javaexecutable.resolver.ManifestJavaExecutableReferenceResolver;
+import com.launcher.core.runtime.javaexecutable.resolver.NoOpJavaCommandPathResolver;
 import com.launcher.core.verification.model.VerificationPlan;
 
 import java.net.URI;
@@ -50,7 +51,8 @@ public class OperationFactoryFixture {
                 new ManifestJavaRuntimeSelector(
                         new ManifestJavaExecutableReferenceResolver()
                 ),
-                new NoOpJavaExecutableReadinessChecker()
+                new NoOpJavaExecutableReadinessChecker(),
+                new NoOpJavaCommandPathResolver()
         );
     }
 

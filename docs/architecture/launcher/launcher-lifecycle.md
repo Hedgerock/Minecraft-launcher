@@ -90,6 +90,9 @@ L-5
 
 `GameLaunchPlanBuilder` выбирает Java executable через `JavaRuntimeSelector`
 
+`JavaRuntimeSelector` использует `JavaExecutableReferenceResolver`, чтобы преобразовать
+manifest-provided `javaExecutable` в `JavaExecutableReference`
+
 `JavaRuntimeSelector` возвращает `JavaExecutableReference`, который сохраняет различие между command name и explicit
 filesystem path
 

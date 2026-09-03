@@ -128,6 +128,15 @@ runtime-сценариях
 
 `GameLaunchCommandBuilder` использует `JavaExecutableReference.value()` как первый элемент launch command
 
+### JavaExecutableReferenceResolver
+
+Контракт преобразования raw Java executable metadata в `JavaExecutableReference`
+
+На текущем этапе `ManifestJavaExecutableReferenceResolver` преобразует manifest-provided `javaExecutable` в command
+name reference
+
+Resolver не выполняет PATH resolution и не определяет explicit filesystem path автоматически
+
 ### JavaExecutableReadinessChecker
 
 Контракт проверки готовности выбранного Java executable перед построением `GameLaunchPlan`
@@ -143,7 +152,8 @@ runtime-сценариях
 
 Контракт выбора Java executable для построения `GameLaunchPlan`
 
-На текущем этапе минимальная реализация `ManifestJavaRuntimeSelector` использует `LaunchInfo.javaExecutable`
+На текущем этапе минимальная реализация `ManifestJavaRuntimeSelector` использует `JavaExecutableReferenceResolver` для
+преобразования `LaunchInfo.javaExecutable` в `JavaExecutableReference`
 
 Selector не проверяет существование Java executable и не ищет Java installations
 

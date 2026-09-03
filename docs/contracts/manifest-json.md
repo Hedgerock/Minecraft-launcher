@@ -171,7 +171,7 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 
 `launchInfo.javaExecutable` описывает manifest-provided Java executable reference
 
-На текущем этапе `ManifestJavaRuntimeSelector` преобразует это значение в command name `JavaExecutableReference`
+На текущем этапе `JavaExecutableReferenceResolver` преобразует это значение в command name `JavaExecutableReference`
 
 Это значение не считается explicit filesystem path автоматически
 

@@ -7,6 +7,7 @@
 - Added default Java executable readiness checker for explicit filesystem paths
 - Added no-op Java executable readiness checker for current application assembly wiring
 - Added Java executable reference model for separating command name and explicit filesystem path scenarios
+- Added Java executable reference resolver for converting manifest Java executable metadata into `JavaExecutableReference`
 
 ### Changed
 
@@ -15,6 +16,8 @@
 - Changed game launch plan building to run Java executable readiness check after Java runtime selection
 - Changed Java runtime selection to return `JavaExecutableReference`
 - Changed Java executable readiness check and game launch plan building to use `JavaExecutableReference`
+- Changed `ManifestJavaRuntimeSelector` to delegate Java executable reference creation to `JavaExecutableReferenceResolver`
+- Grouped Java executable runtime components under dedicated runtime package
 
 ---
 

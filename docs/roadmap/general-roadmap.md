@@ -2,14 +2,20 @@
 
 ## Текущий фокус
 
-- Определить следующий runtime milestone после `v0.4.0-library-native-flow`
-- Поддерживать развитие проекта через короткие ADR → code → docs итерации
+- Развить Java runtime flow после `v0.4.0-library-native-flow`
+- Удерживать различие между command name, explicit filesystem path и будущим PATH resolution
 
 ---
 
-## Domain roadmaps
+## Доменные направления
 
 - [Путь развития библиотек](libraries-roadmap.md)
+
+---
+
+## Перспективные направления
+
+- [Перспективы развития проекта](potential-roadmap.md)
 
 ---
 

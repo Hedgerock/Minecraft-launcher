@@ -1,8 +1,11 @@
+[← Назад к общему пути](general-roadmap.md)
+
 # Путь развития библиотек
 
 ## Текущий план
 
-- Определить следующий runtime milestone после `v0.4.0-library-native-flow`
+- Новых активных задач в library/native flow сейчас нет
+- Дальнейшие изменения library/native flow должны добавляться через отдельные ADR
 
 ---
 
@@ -42,8 +45,6 @@ Library/native flow доведен до состояния, где manifest meta
 - Параллельная поддержка нескольких runtime native sets
 - Architecture-specific natives selection
 - Rules на основе features
-- Java runtime selection
-- Проверка существования Java executable
 - Assets index
 - Auth launch arguments
 - Loader-specific правила запуска
@@ -56,10 +57,6 @@ Library/native flow доведен до состояния, где manifest meta
 
 Ввести стабильную модель идентичности runtime-сценария только после появления подтвержденной
 необходимости различать profile, version, manifest hash или installation
-
-### Java runtime
-
-Определить, как launcher выбирает Java runtime, проверяет `javaExecutable` и сообщает об ошибках запуска
 
 ### Assets
 

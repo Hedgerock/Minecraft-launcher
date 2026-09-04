@@ -106,11 +106,14 @@ resolved reference в `GameLaunchCommandBuilder`
 
 `GameLaunchCommandBuilder` использует `JavaExecutableReference.value()` как первый элемент команды запуска
 
-На текущем этапе application assembly использует `NoOpJavaCommandPathResolver` и `NoOpJavaExecutableReadinessChecker`,
-чтобы не ломать сценарий, где manifest указывает command name `java`, а не filesystem path
+На текущем этапе application assembly использует `SystemJavaCommandPathEnvironmentProvider`,
+`DefaultJavaCommandPathResolver` и `DefaultJavaExecutableReadinessChecker`
 
-Реальная filesystem-проверка доступна через `DefaultJavaExecutableReadinessChecker`, но production wiring пока
-остается на no-op policy до подключения real PATH lookup
+Если manifest указывает command name, например `java`, `GameLaunchPlanBuilder` сначала разрешает его
+через PATH-oriented lookup в explicit filesystem path, а затем выполняет readiness check
+
+Некорректные entries из `PATH` игнорируются provider-ом, чтобы corrupted system environment не ломало создание
+`LauncherEngine`
 
 Если `Manifest` не содержит `LaunchInfo`, `BUILD_GAME_LAUNCH_PLAN` завершается ошибкой, launcher переходит в `FAILED`
 

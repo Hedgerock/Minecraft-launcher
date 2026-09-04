@@ -2,8 +2,8 @@
 
 ## Текущий фокус
 
-- Развить Java runtime flow после `v0.4.0-library-native-flow`
-- Подключить real Java command path resolution в application assembly
+- Провести ревизию Java runtime flow после подключения production PATH resolution
+- Определить следующий шаг развития Java runtime flow
 
 ---
 
@@ -27,3 +27,4 @@
 - Зафиксированы правила написания git commits
 - Зафиксированы правила ведения roadmap
 - Завершен milestone `v0.4.0-library-native-flow`
+- Подключен production PATH resolution для Java command name в application assembly

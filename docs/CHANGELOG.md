@@ -12,6 +12,7 @@
 - Added default Java command path resolver for resolving command names from PATH environment
 - Added Java command PATH environment model for passing path directories and executable extensions into resolver
 - Added Java command path environment provider for building resolver environment from `PATH` and `PATHEXT`
+- Added invalid PATH entry filtering for Java command path environment provider
 
 ### Changed
 
@@ -23,6 +24,7 @@
 - Changed `ManifestJavaRuntimeSelector` to delegate Java executable reference creation to `JavaExecutableReferenceResolver`
 - Grouped Java executable runtime components under dedicated runtime package
 - Changed game launch plan building to resolve Java command path before Java executable readiness check
+- Changed application assembly to use default Java command path resolver and default Java executable readiness checker
 
 ---
 

@@ -6,11 +6,13 @@
 
 Accepted
 
-> Примечание: решение частично реализовано в итерациях
+> Примечание: решение реализовано в итерациях
 > `feat(core): add java command path resolver contract`
 > `feat(core): resolve java command name from path environment`
 > `feat(core): use java command path resolver in launch plan builder`
 > `feat(core): add java command path environment provider`
+> `fix(core): ignore invalid java command path entries`
+> `feat(app): wire default java command path resolver`
 
 ---
 

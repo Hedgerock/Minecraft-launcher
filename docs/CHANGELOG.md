@@ -26,6 +26,7 @@
 - Changed game launch plan building to resolve Java command path before Java executable readiness check
 - Changed application assembly to use default Java command path resolver and default Java executable readiness checker
 - Changed manifest Java executable reference resolution to preserve explicit filesystem path scenarios
+- Changed Java executable readiness check to report invalid explicit paths as readiness failures
 
 ---
 

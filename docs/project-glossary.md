@@ -182,6 +182,9 @@ application assembly
 `DefaultJavaExecutableReadinessChecker` используется в application assembly после PATH resolution и проверяет
 уже resolved explicit filesystem path
 
+Некорректный explicit filesystem path преобразуется в readiness failure, а не протекает наружу как platform-specific
+path parsing error
+
 `NoOpJavaExecutableReadinessChecker` остается полезным для тестов и изолированных сценариев, где filesystem readiness
 не является предметом проверки
 

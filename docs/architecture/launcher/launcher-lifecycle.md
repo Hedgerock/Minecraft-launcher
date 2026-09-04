@@ -121,6 +121,9 @@ Application assembly использует `SystemJavaCommandPathEnvironmentProvi
 Если manifest указывает command name, например `java`, `GameLaunchPlanBuilder` сначала разрешает его
 через PATH-oriented lookup в explicit filesystem path, а затем выполняет readiness check
 
+Если resolved explicit filesystem path невозможно разобрать как корректный path текущей платформы,
+`JavaExecutableReadinessChecker` возвращает readiness failure
+
 Некорректные entries из `PATH` игнорируются provider-ом, чтобы corrupted system environment не ломало создание
 `LauncherEngine`
 

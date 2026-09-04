@@ -2,14 +2,15 @@
 
 ## Текущий фокус
 
-- Завершить ревизию Java runtime flow после подключения production PATH resolution
-- Определить следующий шаг Java executable failure diagnostics
+- Определить следующий runtime milestone после завершения Java executable flow
+- Развить Java runtime flow без преждевременного Java installation discovery
 
 ---
 
 ## Доменные направления
 
 - [Путь развития библиотек](libraries-roadmap.md)
+- [Путь развития Java runtime](java-runtime-roadmap.md)
 
 ---
 

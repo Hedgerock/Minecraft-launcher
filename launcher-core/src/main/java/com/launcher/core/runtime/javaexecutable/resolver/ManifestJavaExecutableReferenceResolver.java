@@ -10,6 +10,20 @@ public final class ManifestJavaExecutableReferenceResolver implements JavaExecut
     public JavaExecutableReference resolve(String javaExecutable) {
         Objects.requireNonNull(javaExecutable, "javaExecutable");
 
+        if (javaExecutable.isBlank()) {
+            throw new IllegalArgumentException(
+                    "javaExecutable must not be blank"
+            );
+        }
+
+        if (containsPathSeparator(javaExecutable)) {
+            return JavaExecutableReference.explicitPath(javaExecutable);
+        }
+
         return JavaExecutableReference.commandName(javaExecutable);
+    }
+
+    private boolean containsPathSeparator(String javaExecutable) {
+        return javaExecutable.contains("/") || javaExecutable.contains("\\");
     }
 }

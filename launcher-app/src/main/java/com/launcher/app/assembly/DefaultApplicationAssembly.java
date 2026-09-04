@@ -27,15 +27,17 @@ import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.core.resolve.LaunchArgumentResolver;
 import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.resource.SafeResourcePathResolver;
-import com.launcher.core.runtime.javaexecutable.checker.JavaExecutableReadinessChecker;
-import com.launcher.core.runtime.javaexecutable.checker.NoOpJavaExecutableReadinessChecker;
 import com.launcher.core.runtime.JavaRuntimeSelector;
 import com.launcher.core.runtime.ManifestJavaRuntimeSelector;
 import com.launcher.core.runtime.RuntimeEnvironmentProvider;
 import com.launcher.core.runtime.SystemRuntimeEnvironmentProvider;
+import com.launcher.core.runtime.javaexecutable.checker.DefaultJavaExecutableReadinessChecker;
+import com.launcher.core.runtime.javaexecutable.checker.JavaExecutableReadinessChecker;
+import com.launcher.core.runtime.javaexecutable.resolver.DefaultJavaCommandPathResolver;
 import com.launcher.core.runtime.javaexecutable.resolver.JavaCommandPathResolver;
 import com.launcher.core.runtime.javaexecutable.resolver.ManifestJavaExecutableReferenceResolver;
-import com.launcher.core.runtime.javaexecutable.resolver.NoOpJavaCommandPathResolver;
+import com.launcher.core.runtime.javaexecutable.resolver.provider.JavaCommandPathEnvironmentProvider;
+import com.launcher.core.runtime.javaexecutable.resolver.provider.SystemJavaCommandPathEnvironmentProvider;
 import com.launcher.core.state.LauncherStateMachine;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.directory.LocalDirectoryProvider;
@@ -80,8 +82,13 @@ public final class DefaultApplicationAssembly implements ApplicationAssembly {
         JavaRuntimeSelector javaRuntimeSelector = new ManifestJavaRuntimeSelector(
                 new ManifestJavaExecutableReferenceResolver()
         );
-        JavaExecutableReadinessChecker javaExecutableReadinessChecker = new NoOpJavaExecutableReadinessChecker();
-        JavaCommandPathResolver javaCommandPathResolver = new NoOpJavaCommandPathResolver();
+        JavaExecutableReadinessChecker javaExecutableReadinessChecker = new DefaultJavaExecutableReadinessChecker();
+
+        JavaCommandPathEnvironmentProvider javaCommandPathEnvironmentProvider =
+                new SystemJavaCommandPathEnvironmentProvider();
+        JavaCommandPathResolver javaCommandPathResolver = new DefaultJavaCommandPathResolver(
+                javaCommandPathEnvironmentProvider.current()
+        );
 
         return new GameLaunchPlanBuilder(
                 directoryProvider,

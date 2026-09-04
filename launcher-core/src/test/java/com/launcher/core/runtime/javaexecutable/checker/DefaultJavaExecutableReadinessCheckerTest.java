@@ -19,6 +19,20 @@ class DefaultJavaExecutableReadinessCheckerTest {
             new DefaultJavaExecutableReadinessChecker();
 
     @Test
+    void should_reject_invalid_java_executable_path() {
+        //given
+        JavaExecutableReference reference = JavaExecutableReference.explicitPath("\0");
+
+        //when & then
+        JavaExecutableNotReadyException exception = assertThrows(
+                JavaExecutableNotReadyException.class,
+                () -> checker.checkReady(reference)
+        );
+
+        assertTrue(exception.getMessage().contains("Java executable path is invalid"));
+    }
+
+    @Test
     void should_reject_non_explicit_path_java_executable_reference() {
         //given
         JavaExecutableReference reference = JavaExecutableReference.commandName("java");

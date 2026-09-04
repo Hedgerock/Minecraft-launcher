@@ -4,6 +4,7 @@ import com.launcher.core.runtime.javaexecutable.exception.JavaExecutableNotReady
 import com.launcher.model.runtime.JavaExecutableReference;
 
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -19,7 +20,7 @@ public final class DefaultJavaExecutableReadinessChecker implements JavaExecutab
             );
         }
 
-        Path javaExecutable = javaExecutableReference.path();
+        Path javaExecutable = getJavaExecutablePath(javaExecutableReference);
 
         if (!Files.exists(javaExecutable)) {
             throw new JavaExecutableNotReadyException(
@@ -30,6 +31,16 @@ public final class DefaultJavaExecutableReadinessChecker implements JavaExecutab
         if (!Files.isRegularFile(javaExecutable)) {
             throw new JavaExecutableNotReadyException(
                     "Java executable is not a file: " + javaExecutable
+            );
+        }
+    }
+
+    private Path getJavaExecutablePath(JavaExecutableReference javaExecutableReference) {
+        try {
+            return javaExecutableReference.path();
+        } catch (InvalidPathException e) {
+            throw new JavaExecutableNotReadyException(
+                    "Java executable path is invalid: " + javaExecutableReference.value()
             );
         }
     }

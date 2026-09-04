@@ -122,7 +122,8 @@ runtime-сценариях
 - command name
 - explicit filesystem path
 
-На текущем этапе `ManifestJavaRuntimeSelector` создает command name reference из `LaunchInfo.javaExecutable`
+`ManifestJavaRuntimeSelector` делегирует интерпретацию `LaunchInfo.javaExecutable` в 
+`ManifestJavaExecutableReferenceResolver`
 
 `JavaExecutableReadinessChecker` получает `JavaExecutableReference`, а не raw `Path`
 
@@ -132,10 +133,14 @@ runtime-сценариях
 
 Контракт преобразования raw Java executable metadata в `JavaExecutableReference`
 
-На текущем этапе `ManifestJavaExecutableReferenceResolver` преобразует manifest-provided `javaExecutable` в command
-name reference
+`ManifestJavaExecutableReferenceResolver` интерпретирует manifest-provided `javaExecutable` перед
+созданием `JavaExecutableReference`
 
-Resolver не выполняет PATH resolution и не определяет explicit filesystem path автоматически
+Значение без path separator считается command name
+
+Значение с path separator считается explicit filesystem path
+
+Resolver не выполняет PATH resolution, не проверяет существование файла и не выбирает Java version
 
 ### JavaCommandPathResolver
 

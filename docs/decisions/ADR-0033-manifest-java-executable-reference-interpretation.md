@@ -6,6 +6,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `feat(core): resolve manifest java executable reference type`
+
 ---
 
 ## Контекст

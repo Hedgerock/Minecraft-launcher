@@ -4,6 +4,7 @@ import com.launcher.core.runtime.javaexecutable.resolver.model.JavaCommandPathEn
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -20,6 +21,64 @@ class SystemJavaCommandPathEnvironmentProviderTest {
         );
     }
 
+    private Path getValidPath(String target, String value) {
+        if (value.equals(target)) {
+            throw new InvalidPathException(
+                    value,
+                    "invalid path"
+            );
+        }
+
+        return Path.of(value);
+    }
+
+    @Test
+    void should_reject_null_path_parser() {
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new SystemJavaCommandPathEnvironmentProvider(
+                        variable -> "not-null",
+                        null
+                )
+        );
+
+        assertEquals(
+                "pathParser",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void should_ignore_invalid_path_entries() {
+        //given
+        String validFirst = "first";
+        String invalid = "invalid";
+        String validSecond = "second";
+
+        String path = validFirst + File.pathSeparator + invalid
+                + File.pathSeparator
+                + validSecond;
+
+        SystemJavaCommandPathEnvironmentProvider provider = new SystemJavaCommandPathEnvironmentProvider(
+                variable -> switch (variable) {
+                    case "PATH" -> path;
+                    case "PATHEXT" -> null;
+                    default -> "not-found";
+                },
+                value -> getValidPath(invalid, value)
+        );
+
+        //when
+        JavaCommandPathEnvironment result = provider.current();
+
+        //then
+        assertEquals(
+                List.of(Path.of(validFirst), Path.of(validSecond)),
+                result.directories()
+        );
+    }
+
     @Test
     void should_return_empty_extensions_when_pathext_is_null() {
         //given
@@ -28,7 +87,8 @@ class SystemJavaCommandPathEnvironmentProviderTest {
                     case "PATH" -> getSeparatedString("java-bin", "system-bin");
                     case "PATHEXT" -> null;
                     default -> "not-found";
-                }
+                },
+                Path::of
         );
 
         //when
@@ -46,7 +106,8 @@ class SystemJavaCommandPathEnvironmentProviderTest {
                     case "PATH" -> null;
                     case "PATHEXT" -> getSeparatedString(".EXE", ".BAT", " ", ".CMD", ".SH", " ");
                     default -> "not-found";
-                }
+                },
+                Path::of
         );
 
         //when
@@ -64,7 +125,8 @@ class SystemJavaCommandPathEnvironmentProviderTest {
                     case "PATH" -> " ";
                     case "PATHEXT" -> getSeparatedString(".EXE", ".BAT", " ", ".CMD", ".SH", " ");
                     default -> null;
-                }
+                },
+                Path::of
         );
 
         //when
@@ -82,7 +144,8 @@ class SystemJavaCommandPathEnvironmentProviderTest {
                     case "PATH" -> getSeparatedString("java-bin", "system-bin");
                     case "PATHEXT" -> " ";
                     default -> null;
-                }
+                },
+                Path::of
         );
 
         //when
@@ -100,7 +163,8 @@ class SystemJavaCommandPathEnvironmentProviderTest {
                     case "PATH" -> getSeparatedString("java-bin", "system-bin");
                     case "PATHEXT" -> getSeparatedString(".EXE", ".BAT", " ", ".CMD", ".SH", " ");
                     default -> null;
-                }
+                },
+                Path::of
         );
 
         //when
@@ -121,7 +185,8 @@ class SystemJavaCommandPathEnvironmentProviderTest {
                     case "PATH" -> getSeparatedString("java-bin", " ", "system-bin", " ");
                     case "PATHEXT" -> getSeparatedString(".EXE", ".BAT", " ", ".CMD", ".SH", " ");
                     default -> null;
-                }
+                },
+                Path::of
         );
 
         //when
@@ -142,7 +207,7 @@ class SystemJavaCommandPathEnvironmentProviderTest {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> new SystemJavaCommandPathEnvironmentProvider(null)
+                () -> new SystemJavaCommandPathEnvironmentProvider(null, Path::of)
         );
 
         assertEquals(
@@ -159,7 +224,8 @@ class SystemJavaCommandPathEnvironmentProviderTest {
                     case "PATH" -> getSeparatedString("java-bin", "system-bin");
                     case "PATHEXT" -> getSeparatedString(".EXE", ".BAT", " ", ".CMD", ".SH", " ");
                     default -> null;
-                }
+                },
+                Path::of
         );
 
         //when
@@ -180,7 +246,8 @@ class SystemJavaCommandPathEnvironmentProviderTest {
                     case "PATH" -> getSeparatedString("java-bin", "system-bin");
                     case "PATHEXT" -> getSeparatedString(".EXE", ".BAT", " ", ".CMD", ".SH", " ");
                     default -> null;
-                }
+                },
+                Path::of
         );
 
         //when

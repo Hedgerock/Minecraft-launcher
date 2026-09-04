@@ -3,25 +3,33 @@ package com.launcher.core.runtime.javaexecutable.resolver.provider;
 import com.launcher.core.runtime.javaexecutable.resolver.model.JavaCommandPathEnvironment;
 
 import java.io.File;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 public final class SystemJavaCommandPathEnvironmentProvider implements JavaCommandPathEnvironmentProvider {
     private final Function<String, String> environmentVariableProvider;
+    private final PathParser pathParser;
 
     public SystemJavaCommandPathEnvironmentProvider() {
-        this(System::getenv);
+        this(System::getenv, Path::of);
     }
 
-    SystemJavaCommandPathEnvironmentProvider(Function<String, String> environmentVariableProvider) {
+    SystemJavaCommandPathEnvironmentProvider(
+            Function<String, String> environmentVariableProvider,
+            PathParser pathParser
+    ) {
         this.environmentVariableProvider = Objects.requireNonNull(
                 environmentVariableProvider,
                 "environmentVariableProvider"
         );
+
+        this.pathParser = Objects.requireNonNull(pathParser, "pathParser");
     }
 
     @Override
@@ -46,7 +54,8 @@ public final class SystemJavaCommandPathEnvironmentProvider implements JavaComma
     private List<Path> getDirectories(String path) {
         return Arrays.stream(path.split(File.pathSeparator))
                 .filter(entry -> !entry.isBlank())
-                .map(Path::of)
+                .map(this::toPath)
+                .flatMap(Optional::stream)
                 .toList();
     }
 
@@ -55,5 +64,15 @@ public final class SystemJavaCommandPathEnvironmentProvider implements JavaComma
                 .filter(extension -> !extension.isBlank())
                 .map(extension -> extension.toLowerCase(Locale.ROOT))
                 .toList();
+    }
+
+    private Optional<Path> toPath(String entry) {
+        try {
+            return Optional.of(
+                    pathParser.parse(entry)
+            );
+        } catch (InvalidPathException e) {
+            return Optional.empty();
+        }
     }
 }

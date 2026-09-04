@@ -106,15 +106,17 @@ filesystem path
 После выбора reference `GameLaunchPlanBuilder` передает его в `JavaCommandPathResolver`
 
 `JavaCommandPathResolver` преобразует command name reference в explicit filesystem path или
-возвращает reference без изменений, если используется no-op implementation
+возвращает reference без изменений
+
+При использовании no-op implementation в тестовой среде `JavaCommandPathResolver` возвращает reference без изменений
 
 После resolution `GameLaunchPlanBuilder` выполняет readiness check через `JavaExecutableReadinessChecker` и передает
 resolved reference в `GameLaunchCommandBuilder`
 
 `GameLaunchCommandBuilder` использует `JavaExecutableReference.value()` как первый элемент команды запуска
 
-На текущем этапе application assembly использует `SystemJavaCommandPathEnvironmentProvider`,
-`DefaultJavaCommandPathResolver` и `DefaultJavaExecutableReadinessChecker`
+Application assembly использует `SystemJavaCommandPathEnvironmentProvider`, `DefaultJavaCommandPathResolver` и
+`DefaultJavaExecutableReadinessChecker`
 
 Если manifest указывает command name, например `java`, `GameLaunchPlanBuilder` сначала разрешает его
 через PATH-oriented lookup в explicit filesystem path, а затем выполняет readiness check

@@ -171,11 +171,15 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 
 `launchInfo.javaExecutable` описывает manifest-provided Java executable reference
 
-На текущем этапе `JavaExecutableReferenceResolver` преобразует это значение в command name `JavaExecutableReference`
+`ManifestJavaExecutableReferenceResolver` интерпретирует это значение в `JavaExecutableReference`
 
-Это значение не считается explicit filesystem path автоматически
+Если значение не содержит путевой разделитель, возвращается command name `JavaExecutableReference`
+
+Если значение содержит путевой разделитель, возвращается explicit filesystem path `JavaExecutableReference`
 
 `JsonManifestMapper` не выполняет запуск, загрузку файлов или проверку хеша
+
+`JsonManifestMapper` не делает PATH lookup, readiness или version selection
 
 Его ответственность ограничена преобразованием внешнего JSON-контракта в доменную модель
 

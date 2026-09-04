@@ -2,8 +2,8 @@
 
 ## Текущий фокус
 
-- Провести ревизию Java runtime flow после подключения production PATH resolution
-- Определить следующий шаг развития Java runtime flow
+- Завершить ревизию Java runtime flow после подключения production PATH resolution
+- Определить следующий шаг Java executable failure diagnostics
 
 ---
 

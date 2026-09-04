@@ -122,7 +122,7 @@ runtime-сценариях
 - command name
 - explicit filesystem path
 
-`ManifestJavaRuntimeSelector` делегирует интерпретацию `LaunchInfo.javaExecutable` в 
+`ManifestJavaRuntimeSelector` делегирует интерпретацию `LaunchInfo.javaExecutable` в
 `ManifestJavaExecutableReferenceResolver`
 
 `JavaExecutableReadinessChecker` получает `JavaExecutableReference`, а не raw `Path`
@@ -153,7 +153,7 @@ launch
 `DefaultJavaCommandPathResolver` использует `JavaCommandPathEnvironment`, который содержит директории и executable
 extensions
 
-На текущем этапе `GameLaunchPlanBuilder` уже вызывает `JavaCommandPathResolver` перед readiness check
+`GameLaunchPlanBuilder` вызывает `JavaCommandPathResolver` перед readiness check
 
 Application assembly использует `DefaultJavaCommandPathResolver`, поэтому command name из manifest metadata разрешается
 в explicit filesystem path до readiness check
@@ -168,15 +168,14 @@ extensions в модель, которую использует `DefaultJavaComm
 Application assembly использует `SystemJavaCommandPathEnvironmentProvider` для построения production
 `JavaCommandPathEnvironment`
 
-Некоторые entries из `PATH`, которые нельзя преобразовать в `Path`, игнорируются provider-ом и не должен ломать
+Некоторые entries из `PATH`, которые нельзя преобразовать в `Path`, игнорируются provider-ом и не должны ломать
 application assembly
 
 ### JavaExecutableReadinessChecker
 
 Контракт проверки готовности выбранного Java executable перед построением `GameLaunchPlan`
 
-На текущем этапе `GameLaunchPlanBuilder` вызывает checker после `JavaCommandPathResolver` и
-до `GameLaunchCommandBuilder`
+`GameLaunchPlanBuilder` вызывает checker после `JavaCommandPathResolver` и до `GameLaunchCommandBuilder`
 
 `DefaultJavaExecutableReadinessChecker` проверяет существование файла и то, что путь указывает на regular file
 
@@ -190,8 +189,8 @@ application assembly
 
 Контракт выбора Java executable для построения `GameLaunchPlan`
 
-На текущем этапе минимальная реализация `ManifestJavaRuntimeSelector` использует `JavaExecutableReferenceResolver` для
-преобразования `LaunchInfo.javaExecutable` в `JavaExecutableReference`
+`ManifestJavaRuntimeSelector` использует `JavaExecutableReferenceResolver` для преобразования
+`LaunchInfo.javaExecutable` в `JavaExecutableReference`
 
 Selector не проверяет существование Java executable и не ищет Java installations
 

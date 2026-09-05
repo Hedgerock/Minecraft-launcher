@@ -45,7 +45,7 @@ class RuntimeLibraryMetadataTest {
 
     @Test
     void should_store_natives_metadata() {
-        //given && when
+        //given & when
         LibraryArtifactMetadata classifierArtifact = getLibraryArtifactMetadata("classifier-artifact");
         LibraryClassifiersMetadata classifiers = new LibraryClassifiersMetadata(
                 Map.of("classifier-value", classifierArtifact)
@@ -74,7 +74,7 @@ class RuntimeLibraryMetadataTest {
 
     @Test
     void should_store_classifiers_metadata() {
-        //given && when
+        //given & when
         LibraryArtifactMetadata classifierArtifact = getLibraryArtifactMetadata("classifier-artifact");
         LibraryClassifiersMetadata classifiers = new LibraryClassifiersMetadata(
                 Map.of("classifier-value", classifierArtifact)
@@ -103,7 +103,7 @@ class RuntimeLibraryMetadataTest {
 
     @Test
     void should_use_empty_classifiers_and_natives_by_default() {
-        //given && when
+        //given & when
         RuntimeLibraryMetadata runtimeLibraryMetadata = new RuntimeLibraryMetadata(
                 getLibraryArtifactMetadata("artifact"),
                 List.of()

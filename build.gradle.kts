@@ -54,6 +54,7 @@ tasks.register("qualityCheck") {
 
         val nonStaticWildCardImport = Regex("""^\s*import\s+(?!static\b)[\w.]+\.\*;\s*$""")
         val suppressAll = Regex("""@SuppressWarnings\s*\(\s*"all"\s*\)""")
+        val emptyCatchBlock = Regex("""catch\s*\([^)]*\)\s*\{\s*}""")
 
         files.forEach { file ->
             val bytes = file.readBytes()
@@ -99,6 +100,22 @@ tasks.register("qualityCheck") {
                             file,
                             lineNumber,
                             "System.out.println is not allowed"
+                        )
+                    }
+
+                    if (line.contains("System.err.println")) {
+                        violations += QualityViolation(
+                            file,
+                            lineNumber,
+                            "System.err.println is not allowed"
+                        )
+                    }
+
+                    if (emptyCatchBlock.containsMatchIn(line)) {
+                        violations += QualityViolation(
+                            file,
+                            lineNumber,
+                            "Empty catch block is not allowed"
                         )
                     }
 

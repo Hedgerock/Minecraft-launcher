@@ -13,17 +13,21 @@
 
 ## Gradle и build foundation
 
-Можно унифицировать:
+Централизованы:
 
 - group
 - version
-- JUnit BOM
-- test configuration
-- common repositories
+- repositories
 - Java toolchain
+- JUnit test dependencies
+- test platform configuration
 
-Вернуться к теме стоит, когда build-конфигурация начнет мешать развитию модулей или появится
-повторение настроек между Gradle modules
+`docs` не является Gradle module, но остается в области root-level `qualityCheck`
+
+Дальнейшее развитие build foundation пока отложено
+
+Вернуться к теме стоит, когда появится необходимость в convention plugins, version catalog, dependency looking или
+более строгом dependency analysis
 
 ---
 

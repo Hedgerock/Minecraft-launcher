@@ -27,6 +27,10 @@
 - Changed application assembly to use default Java command path resolver and default Java executable readiness checker
 - Changed manifest Java executable reference resolution to preserve explicit filesystem path scenarios
 - Changed Java executable readiness check to report invalid explicit paths as readiness failures
+- Centralized common Gradle module configuration in the root build script
+- Removed duplicated module-level group, version, repositories and test platform configuration
+- Unified JUnit test dependencies across Gradle modules
+- Removed docs directory from Gradle modules while keeping documentation covered by quality checks
 
 ---
 

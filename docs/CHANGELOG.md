@@ -31,6 +31,8 @@
 - Removed duplicated module-level group, version, repositories and test platform configuration
 - Unified JUnit test dependencies across Gradle modules
 - Removed docs directory from Gradle modules while keeping documentation covered by quality checks
+- Strengthened project quality checks for final newlines, empty catch blocks, System.err.println and invalid combined
+  test sections
 
 ---
 

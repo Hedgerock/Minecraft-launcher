@@ -29,5 +29,5 @@
 - Зафиксированы правила ведения roadmap
 - Завершен milestone `v0.4.0-library-native-flow`
 - Подключен production PATH resolution для Java command name в application assembly
-- Стабилизирована Gradle build foundation: common module configuration, test dependencies, repositories, group
-  version централизованы в root build script
+- Проведена stabilization cleanup-итерация: усилен quality gate, стабилизирована Gradle build foundation
+  и зафиксированы правила написания тестов

@@ -132,6 +132,14 @@ tasks.register("qualityCheck") {
                             "printStackTrace is not allowed"
                         )
                     }
+
+                    if (file.name.endsWith("Test.java") && line.contains("//given && when")) {
+                        violations += QualityViolation(
+                            file,
+                            lineNumber,
+                            """Invalid combined test section. Use "//given & when" instead"""
+                        )
+                    }
                 }
             }
         }

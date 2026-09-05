@@ -56,6 +56,16 @@ tasks.register("qualityCheck") {
         val suppressAll = Regex("""@SuppressWarnings\s*\(\s*"all"\s*\)""")
 
         files.forEach { file ->
+            val bytes = file.readBytes()
+
+            if (bytes.isNotEmpty() && bytes.last() != '\n'.code.toByte()) {
+                violations += QualityViolation(
+                    file,
+                    1,
+                    "Missing final newline"
+                )
+            }
+
             file.readLines(Charsets.UTF_8).forEachIndexed { index, line ->
                 val lineNumber = index + 1
 

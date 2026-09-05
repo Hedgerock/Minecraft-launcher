@@ -54,7 +54,7 @@ public class DefaultFileDownloader implements FileDownloader {
     }
 
     private void copyTempFile(String url, Path temporaryFile) throws IOException {
-        try(InputStream inputStream = downloadSource.open(url)) {
+        try (InputStream inputStream = downloadSource.open(url)) {
             Files.copy(
                     inputStream,
                     temporaryFile,
@@ -66,7 +66,9 @@ public class DefaultFileDownloader implements FileDownloader {
     private void deleteTemporaryFileQuietly(Path temporaryFile) {
         try {
             Files.deleteIfExists(temporaryFile);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+            // Best-effort cleanup: the original download failure must remain the reported cause
+        }
     }
 
     private void safeMove(Path source, Path targetPath) throws IOException {

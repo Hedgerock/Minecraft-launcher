@@ -30,6 +30,29 @@ class LauncherCoreBoundaryTest {
             "import com.launcher.storage.hash.Sha256HashService;"
     );
 
+    private static final List<String> FORBIDDEN_CORE_SOURCE_FILES = List.of(
+            "LocalFileStorage.java"
+    );
+
+    @Test
+    void launcher_core_should_not_contain_concrete_storage_adapters() throws IOException {
+        List<String> violations = findForbiddenCoreClasses();
+
+        if (!violations.isEmpty()) {
+            fail(String.join(System.lineSeparator(), violations));
+        }
+    }
+
+    private List<String> findForbiddenCoreClasses() throws IOException {
+        try (Stream<Path> paths = Files.walk(CORE_MAIN_SOURCES)) {
+            return paths
+                    .filter(Files::isRegularFile)
+                    .filter(path -> FORBIDDEN_CORE_SOURCE_FILES.contains(path.getFileName().toString()))
+                    .map("%s is a concrete adapter and must not be located in launcher-core"::formatted)
+                    .toList();
+        }
+    }
+
     @Test
     void launcher_core_should_not_import_concrete_infrastructure_adapters() throws IOException {
         List<String> violations = findViolations();

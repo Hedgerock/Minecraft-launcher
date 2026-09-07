@@ -48,3 +48,4 @@
 | [ADR-0034](ADR-0034-core-boundary-classification.md)                      | Классификация границ launcher-core                                | module boundaries  |
 | [ADR-0035](ADR-0035-java-executable-readiness-adapter-boundary.md)        | Граница реализации Java executable readiness checker              | java runtime       |
 | [ADR-0036](ADR-0036-java-command-path-resolver-boundary.md)               | Граница Java command path resolver                                | java runtime       |
+| [ADR-0037](ADR-0037-reserved-modules-policy.md)                           | Политика reserved modules                                         | module boundaries  |

@@ -73,6 +73,34 @@
 
 ---
 
+## Project foundation stabilization
+
+Перед следующим runtime milestone нужно завершить короткую foundation stabilization итерацию
+
+Цель итерации
+
+- Уточнить оставшиеся спорные границы `launcher-core`
+- Зафиксировать статус reserved modules
+- Добавить минимальный CI pipeline для GitHub
+- Не развивать новые launcher features до завершения foundation pass
+
+Reserved modules требуют отдельной фиксации
+
+- `launcher-auth` зарезервирован для будущего authentication flow
+- `launcher-ui` зарезервирован для будущего presentation layer
+- `launcher-common` требует отдельного решения: оставить как строго ограниченный shared primitives module
+  или удалить до появления подтвержденного сценария
+
+Минимальный CI pipeline должен проверять
+
+- Java 21
+- `./gradlew clean check`
+
+Расширение CI за пределы минимального quality gate откладывается до появления повторяющихся проблем,
+которые выгодно проверять автоматически
+
+---
+
 ## Error model
 
 Для лаунчера очень важно, чтобы ошибки были не просто failed, а имели понятный контекст:

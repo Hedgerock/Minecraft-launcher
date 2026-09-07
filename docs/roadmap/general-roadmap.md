@@ -2,8 +2,10 @@
 
 ## Текущий фокус
 
-- Определить следующий runtime milestone после завершения Java executable flow
-- Развить Java runtime flow без преждевременного Java installation discovery
+- Провести foundation stabilization перед следующим runtime milestone
+- Уточнить границы `launcher-core` после переноса concrete adapters
+- Зафиксировать статус reserved modules
+- Добавить минимальный CI pipeline для GitHub
 
 ---
 

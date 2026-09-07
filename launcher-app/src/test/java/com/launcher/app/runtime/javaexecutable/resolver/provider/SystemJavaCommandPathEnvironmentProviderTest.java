@@ -1,4 +1,4 @@
-package com.launcher.core.runtime.javaexecutable.resolver.provider;
+package com.launcher.app.runtime.javaexecutable.resolver.provider;
 
 import com.launcher.core.runtime.javaexecutable.resolver.model.JavaCommandPathEnvironment;
 import org.junit.jupiter.api.Test;

@@ -1,11 +1,12 @@
-package com.launcher.core.storage.directory;
+package com.launcher.app.storage.directory;
 
 import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.model.storage.LauncherDirectories;
 
 import java.nio.file.Path;
 
-public class LocalDirectoryProvider implements DirectoryProvider {
+public final class LocalDirectoryProvider implements DirectoryProvider {
 
     private final LauncherDirectories launcherDirectories;
 

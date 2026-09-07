@@ -1,4 +1,4 @@
-package com.launcher.core.runtime.javaexecutable.resolver.provider;
+package com.launcher.app.runtime.javaexecutable.resolver.provider;
 
 import java.nio.file.Path;
 

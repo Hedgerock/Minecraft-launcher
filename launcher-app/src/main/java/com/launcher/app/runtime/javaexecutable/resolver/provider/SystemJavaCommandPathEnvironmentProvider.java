@@ -1,6 +1,7 @@
-package com.launcher.core.runtime.javaexecutable.resolver.provider;
+package com.launcher.app.runtime.javaexecutable.resolver.provider;
 
 import com.launcher.core.runtime.javaexecutable.resolver.model.JavaCommandPathEnvironment;
+import com.launcher.core.runtime.javaexecutable.resolver.provider.JavaCommandPathEnvironmentProvider;
 
 import java.io.File;
 import java.nio.file.InvalidPathException;

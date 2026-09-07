@@ -1,5 +1,6 @@
-package com.launcher.core.runtime;
+package com.launcher.app.runtime;
 
+import com.launcher.core.runtime.RuntimeEnvironmentProvider;
 import com.launcher.model.runtime.OperatingSystem;
 import com.launcher.model.runtime.RuntimeEnvironment;
 import org.junit.jupiter.api.Test;

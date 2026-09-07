@@ -31,11 +31,15 @@ class LauncherCoreBoundaryTest {
     );
 
     private static final List<String> FORBIDDEN_CORE_SOURCE_FILES = List.of(
-            "LocalFileStorage.java"
+            "LocalFileStorage.java",
+            "LocalDirectoryProvider.java",
+            "SystemRuntimeEnvironmentProvider.java",
+            "SystemJavaCommandPathEnvironmentProvider.java",
+            "PathParser.java"
     );
 
     @Test
-    void launcher_core_should_not_contain_concrete_storage_adapters() throws IOException {
+    void launcher_core_should_not_contain_forbidden_concrete_adapters() throws IOException {
         List<String> violations = findForbiddenCoreClasses();
 
         if (!violations.isEmpty()) {

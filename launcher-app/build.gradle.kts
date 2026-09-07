@@ -10,4 +10,5 @@ dependencies {
     implementation(project(":launcher-downloader"))
     implementation(project(":launcher-game"))
     implementation(project(":launcher-natives"))
+    implementation(project(":launcher-model"))
 }

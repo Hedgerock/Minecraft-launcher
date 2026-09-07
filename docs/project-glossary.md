@@ -182,6 +182,12 @@ application assembly
 `DefaultJavaExecutableReadinessChecker` используется в application assembly после PATH resolution и проверяет
 уже resolved explicit filesystem path
 
+`DefaultJavaExecutableReadinessChecker` является production implementation `JavaExecutableReadinessChecker` и находится
+в `launcher-app`
+
+Он проверяет explicit filesystem path после PATH resolution и не принадлежит `launcher-core`, потому что читает состояние
+локальной файловой системы
+
 Некорректный explicit filesystem path преобразуется в readiness failure, а не протекает наружу как platform-specific
 path parsing error
 

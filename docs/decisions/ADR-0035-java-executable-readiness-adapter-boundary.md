@@ -6,6 +6,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `refactor(app): move java executable readiness adapter out of core`
+
 ---
 
 ## Контекст
@@ -47,7 +49,7 @@ Concrete adapters, которые читают filesystem, environment variables
 Production implementation readiness check должна находиться вне `launcher-core`, потому что она работает с локальной
 файловой системой
 
-На момент принятия решения `DefaultJavaExecutableReadinessChecker` должен быть перенесен `launcher-app`
+На момент принятия решения `DefaultJavaExecutableReadinessChecker` должен быть перенесен в `launcher-app`
 
 `launcher-app` является composition root и temporary home для production adapters, для которых еще не выделен
 отдельный adapter module

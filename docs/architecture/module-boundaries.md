@@ -88,6 +88,8 @@
 
 Ядро зависит от абстракции, корень композиции от реализации
 
+---
+
 ## Корень композиции
 
 `launcher-app` является composition root
@@ -98,6 +100,8 @@
 
 `launcher-core` не создает конкретные инфраструктурные реализации внутри жизненного цикла
 операции
+
+---
 
 ## Статус переноса
 
@@ -114,6 +118,8 @@
 
 `HttpManifestService` является конкретным адаптером `launcher-api`
 
+---
+
 ## Границы хранения
 
 В проекте существует отдельный модуль `launcher-storage`
@@ -122,6 +128,33 @@
 
 Если `launcher-core` нуждается в файловом доступе, он должен зависеть от абстракции, а конкретная
 реализация должна передаваться через композиционный корень
+
+---
+
+## Границы Java runtime
+
+`launcher-core` владеет orchestration contracts Java runtime flow
+
+### `launcher-core` владеет
+
+- `JavaRuntimeSelector`
+- `JavaExecutableReadinessChecker`
+- `JavaCommandPathResolver`
+- `JavaExecutableReferenceResolver`
+- `NoOpJavaExecutableReadinessChecker`
+-  Pure policies, которые не читают filesystem, environment variables или system properties
+
+### `launcher-app` владеет
+
+- `SystemRuntimeEnvironmentProvider`
+- `SystemJavaCommandPathEnvironmentProvider`
+- `DefaultJavaExecutableReadinessChecker`
+-  Production wiring Java runtime flow
+
+Concrete Java runtime adapters не должны находиться в `launcher-core`, если они читают filesystem,
+environment variables, system properties или process state
+
+---
 
 ## Границы верификации
 
@@ -150,6 +183,8 @@
 - Алгоритмом верификации
 - Взаимодействием с файловой системой и хешированием через контракты
 
+---
+
 ## Направление зависимостей
 
 ```text
@@ -174,6 +209,9 @@ launcher-app
 launcher-core
     -> Конкретная реализация адаптера
 ```
+
+---
+
 ## Проверка правила
 
 Правила из этого документа должны быть постепенно закреплены архитектурными тестами
@@ -185,6 +223,8 @@ launcher-core
 - `launcher-core` не создает конкретные инфраструктурные реализации внутри цикла жизни операции
 - `launcher-app` является composition root
 - Конкретные адаптеры находятся вне `launcher-core`
+
+---
 
 ## Архитектурное эволюционное правило
 

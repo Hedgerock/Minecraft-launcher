@@ -13,6 +13,7 @@
 - Added Java command PATH environment model for passing path directories and executable extensions into resolver
 - Added Java command path environment provider for building resolver environment from `PATH` and `PATHEXT`
 - Added invalid PATH entry filtering for Java command path environment provider
+- Documented launcher-core boundary classification for orchestration, ports, policies and concrete adapters
 
 ### Changed
 

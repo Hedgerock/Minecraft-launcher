@@ -14,6 +14,7 @@
 - Added Java command path environment provider for building resolver environment from `PATH` and `PATHEXT`
 - Added invalid PATH entry filtering for Java command path environment provider
 - Documented launcher-core boundary classification for orchestration, ports, policies and concrete adapters
+- Added minimal GitHub Actions CI pipeline for Java 21 and `./gradlew clean check`
 
 ### Changed
 
@@ -34,6 +35,7 @@
 - Removed docs directory from Gradle modules while keeping documentation covered by quality checks
 - Strengthened project quality checks for final newlines, empty catch blocks, System.err.println and invalid combined
   test sections
+- Documented reserved modules policy for `launcher-auth`, `launcher-common`, and `launcher-ui`
 
 ---
 

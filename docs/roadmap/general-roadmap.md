@@ -2,10 +2,9 @@
 
 ## Текущий фокус
 
-- Провести foundation stabilization перед следующим runtime milestone
-- Уточнить границы `launcher-core` после переноса concrete adapters
-- Зафиксировать статус reserved modules
-- Добавить минимальный CI pipeline для GitHub
+- Завершить foundation stabilization перед следующим runtime milestone
+- Проверить, не осталось ли критичных module boundary хвостов
+- Подготовить переход к следующему runtime milestone
 
 ---
 
@@ -33,3 +32,5 @@
 - Подключен production PATH resolution для Java command name в application assembly
 - Проведена stabilization cleanup-итерация: усилен quality gate, стабилизирована Gradle build foundation
   и зафиксированы правила написания тестов
+- Зафиксирована политика reserved modules для `launcher-auth`, `launcher-common` и `launcher-ui`
+- Добавлен минимальный GitHub Actions CI pipeline для проверки `./gradlew clean check`

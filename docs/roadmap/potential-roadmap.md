@@ -80,18 +80,20 @@
 Цель итерации
 
 - Уточнить оставшиеся спорные границы `launcher-core`
-- Зафиксировать статус reserved modules
-- Добавить минимальный CI pipeline для GitHub
+- Поддерживать зафиксированную политику reserved modules
+- Поддерживать минимальный CI pipeline для GitHub
 - Не развивать новые launcher features до завершения foundation pass
 
-Reserved modules требуют отдельной фиксации
+Reserved modules зафиксированы в [ADR-0037](../decisions/ADR-0037-reserved-modules-policy.md)
 
 - `launcher-auth` зарезервирован для будущего authentication flow
 - `launcher-ui` зарезервирован для будущего presentation layer
-- `launcher-common` требует отдельного решения: оставить как строго ограниченный shared primitives module
-  или удалить до появления подтвержденного сценария
+- `launcher-common` остается строго ограниченным reserved shared primitives module
 
-Минимальный CI pipeline должен проверять
+Добавлять код в `launcher-common` можно только после подтвержденного cross-module сценария или отдельного
+architecture/design decision
+
+Минимальный CI pipeline добавлен и проверяет
 
 - Java 21
 - `./gradlew clean check`

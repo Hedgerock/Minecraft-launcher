@@ -35,7 +35,8 @@ class LauncherCoreBoundaryTest {
             "LocalDirectoryProvider.java",
             "SystemRuntimeEnvironmentProvider.java",
             "SystemJavaCommandPathEnvironmentProvider.java",
-            "PathParser.java"
+            "PathParser.java",
+            "DefaultJavaExecutableReadinessChecker.java"
     );
 
     @Test

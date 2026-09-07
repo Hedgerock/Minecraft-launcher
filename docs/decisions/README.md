@@ -47,3 +47,4 @@
 | [ADR-0033](ADR-0033-manifest-java-executable-reference-interpretation.md) | Интерпретация Java executable reference из manifest metadata      | java runtime       |
 | [ADR-0034](ADR-0034-core-boundary-classification.md)                      | Классификация границ launcher-core                                | module boundaries  |
 | [ADR-0035](ADR-0035-java-executable-readiness-adapter-boundary.md)        | Граница реализации Java executable readiness checker              | java runtime       |
+| [ADR-0036](ADR-0036-java-command-path-resolver-boundary.md)               | Граница Java command path resolver                                | java runtime       |

@@ -90,11 +90,14 @@ L-5
 
 `GameLaunchPlanBuilder` выбирает Java executable через `JavaRuntimeSelector`
 
-`JavaRuntimeSelector` использует `ManifestJavaExecutableReferenceResolver`, чтобы преобразовать
-manifest-provided `javaExecutable` в `JavaExecutableReference`
+`GameLaunchPlanBuilder` передает в `JavaRuntimeSelector` manifest launch metadata и optional configured Java override
 
-`ManifestJavaExecutableReferenceResolver` интерпретирует `LaunchInfo.javaExecutable` как command name или explicit
-filesystem path
+Если configured override задан, `JavaRuntimeSelector` выбирает его перед manifest-provided `LaunchInfo.javaExecutable`
+
+Если override не задан, используется manifest-based selection flow
+
+`ManifestJavaExecutableReferenceResolver` интерпретирует выбранное raw Java executable value как command name
+или explicit filesystem path
 
 Command name проходит через `JavaCommandPathResolver`
 

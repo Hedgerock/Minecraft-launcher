@@ -44,8 +44,11 @@ Runtime-контекст текущего запуска лаунчера
 
 Первый элемент команды запуска игрового процесса
 
-На текущем этапе значение выбирается через `ManifestJavaRuntimeSelector`, который использует
-`LaunchInfo.javaExecutable` и не выполняет автоматический поиск Java runtime
+Значение выбирается через `JavaRuntimeSelector`
+
+Configured Java override имеет приоритет над manifest-provided `LaunchInfo.javaExecutable`
+
+Если override отсутствует, используется manifest-based Java executable selection flow
 
 ### LaunchVariables
 
@@ -122,8 +125,10 @@ runtime-сценариях
 - command name
 - explicit filesystem path
 
-`ManifestJavaRuntimeSelector` делегирует интерпретацию `LaunchInfo.javaExecutable` в
-`ManifestJavaExecutableReferenceResolver`
+`ManifestJavaRuntimeSelector` выбирает raw Java executable value из configured override или manifest-provided
+`LaunchInfo.javaExecutable`
+
+Выбранное значение интерпретируется через `JavaExecutableReferenceResolver`
 
 `JavaExecutableReadinessChecker` получает `JavaExecutableReference`, а не raw `Path`
 
@@ -133,8 +138,10 @@ runtime-сценариях
 
 Контракт преобразования raw Java executable metadata в `JavaExecutableReference`
 
-`ManifestJavaExecutableReferenceResolver` интерпретирует manifest-provided `javaExecutable` перед
-созданием `JavaExecutableReference`
+`ManifestJavaExecutableReferenceResolver` интерпретирует выбранное raw Java executable value перед созданием
+`JavaExecutableReference`
+
+Выбранное значение может прийти из configured override или manifest-provided `LaunchInfo.javaExecutable`
 
 Значение без path separator считается command name
 
@@ -198,10 +205,21 @@ path parsing error
 
 Контракт выбора Java executable для построения `GameLaunchPlan`
 
-`ManifestJavaRuntimeSelector` использует `JavaExecutableReferenceResolver` для преобразования
-`LaunchInfo.javaExecutable` в `JavaExecutableReference`
+`ManifestJavaRuntimeSelector` выбирает configured Java override, если он задан, иначе использует
+`LaunchInfo.javaExecutable`
 
 Selector не проверяет существование Java executable и не ищет Java installations
+
+### JavaRuntimeSelectionRequest
+
+Модель входных данных для выбора Java executable
+
+Содержит manifest launch metadata и optional configured Java override
+
+Используется `JavaRuntimeSelector`, чтобы выбрать configured override перед manifest-provided
+`LaunchInfo.javaExecutable`
+
+Не выполняет runtime selection, PATH lookup, readiness check или Java version validation
 
 ### RuntimeLibrarySelection
 

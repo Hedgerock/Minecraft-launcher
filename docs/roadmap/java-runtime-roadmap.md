@@ -4,9 +4,18 @@
 
 ## Текущий план
 
-- Развить configured Java override как следующий Java runtime milestone после `v0.5.0-java-runtime-foundation`
-- Сначала определить boundary configured override, затем переходить к модели и production wiring
+- Провести ревизию operation planning builders перед следующим Java runtime шагом
+- Зафиксировать правило, когда planning builder должен быть контрактом
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
+
+---
+
+## Выполнено после `v0.5.0-java-runtime-foundation`
+
+- Добавлен configured Java override через `LauncherConfiguration`
+- Добавлен `JavaRuntimeSelectionRequest`
+- `GameLaunchPlanBuilder` передает configured override в Java runtime selection
+- `ManifestJavaRuntimeSelector` выбирает configured override перед manifest metadata
 
 ---
 

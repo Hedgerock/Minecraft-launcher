@@ -2,8 +2,8 @@
 
 ## Текущий фокус
 
-- Выбрать следующий Java runtime milestone после `v0.5.0-java-runtime-foundation`
-- Подготовить scope следующей runtime-итерации
+- Провести ревизию operation planning builders перед следующим Java runtime шагом
+- Зафиксировать правило, когда planning builder должен быть контрактом
 - Не вводить Java installation discovery без подтвержденного сценария
 
 ---

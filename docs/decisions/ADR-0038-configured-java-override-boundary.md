@@ -6,6 +6,12 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(core): add configured java executable override`
+> `refactor(core): introduce java runtime selection request`
+> `refactor(core): introduce game launch plan builder port`
+> `feat(core): prefer configured java executable override`
+
 ---
 
 ## Контекст

@@ -1,5 +1,16 @@
 ## Unreleased
 
+### Added
+
+- Added configured Java executable override to launcher configuration
+- Added Java runtime selection request for passing manifest metadata and configured Java override into runtime selection
+- Added `GameLaunchPlanBuilder` port for game launch plan task and operation wiring
+
+### Changed
+
+- Changed game launch plan building to pass configured Java executable override into Java runtime selection
+- Changed Java runtime selection to prefer configured Java executable override before manifest metadata
+
 ---
 
 ## v0.5.0 – Java Runtime Foundation

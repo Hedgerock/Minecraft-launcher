@@ -4,9 +4,9 @@
 
 ## Текущий план
 
-- Определить следующий Java runtime milestone после завершения Java executable runtime flow
-- Выбрать между configured Java override, Java version requirements и Java installation discovery
-- Не вводить автоматический поиск Java installations без подтвержденного сценария
+- Развить configured Java override как следующий Java runtime milestone после `v0.5.0-java-runtime-foundation`
+- Сначала определить boundary configured override, затем переходить к модели и production wiring
+- Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
 
 ---
 
@@ -33,7 +33,6 @@ Java executable runtime flow доведен до минимального produc
 
 - Выбор Java version
 - Проверка совместимости Java version с manifest metadata
-- Configured Java override
 - Поиск Java installations вне `PATH`
 - Автоматическая установка Java
 - Fallback policy для отсутствующего Java executable
@@ -45,13 +44,38 @@ Java executable runtime flow доведен до минимального produc
 
 ---
 
-## Возможные следующие направления
+## Активное направление
 
 - Configured Java override
+
+---
+
+## Возможные следующие направления
+
 - Java version requirements
 - Java runtime failure model
 - Java installation discovery
 - Java process lifecycle diagnostics
+
+---
+
+## Почему configured Java override первым
+
+Configured Java override является ближайшим развитием после Java executable runtime foundation
+
+Он позволяет явно передать Java executable через configuration, не вводя автоматический поиск Java
+installations
+
+Этот шаг проверяет текущие границы
+
+- `JavaRuntimeSelector`
+- `JavaExecutableReferenceResolver`
+- `JavaCommandPathResolver`
+- `JavaExecutableReadinessChecker`
+- `GameLaunchPlanBuilder`
+
+Java installation discovery и Java version requirements остаются отложенными, потому что требуют более сложной модели
+runtime identity, version parsing и fallback policy
 
 ---
 

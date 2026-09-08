@@ -130,6 +130,10 @@ ADR должны оформляться согласно [Правилам на�
 
 Релизы должны оформляться согласно [Правилам подготовки релизов](release-guidelines.md)
 
+### Правила planning builders
+
+Planning builders должны оформляться согласно [Правилам написания planning builders](planning-builder-guidelines.md)
+
 ---
 
 ## D-7 Единый язык документации

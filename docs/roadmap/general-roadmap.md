@@ -3,7 +3,7 @@
 ## Текущий фокус
 
 - Провести ревизию operation planning builders перед следующим Java runtime шагом
-- Зафиксировать правило, когда planning builder должен быть контрактом
+- Использовать правила planning builders при ревизии operation planning boundaries
 - Не вводить Java installation discovery без подтвержденного сценария
 
 ---

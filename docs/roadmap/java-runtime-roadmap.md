@@ -5,7 +5,7 @@
 ## Текущий план
 
 - Провести ревизию operation planning builders перед следующим Java runtime шагом
-- Зафиксировать правило, когда planning builder должен быть контрактом
+- Использовать правила planning builders при ревизии operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
 
 ---

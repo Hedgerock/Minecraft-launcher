@@ -15,6 +15,7 @@ import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.execution.SequentialExecutionStrategy;
+import com.launcher.core.game.DefaultGameLaunchPlanBuilder;
 import com.launcher.core.game.GameLaunchPlanBuilder;
 import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
 import com.launcher.core.game.builder.GameLaunchCommandBuilder;
@@ -90,7 +91,7 @@ public final class DefaultApplicationAssembly implements ApplicationAssembly {
                 javaCommandPathEnvironmentProvider.current()
         );
 
-        return new GameLaunchPlanBuilder(
+        return new DefaultGameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
                 classpathBuilder,

@@ -1,9 +1,10 @@
 package com.launcher.core.architecture.game;
 
 import com.launcher.core.architecture.support.fixture.OperationFactoryFixture;
+import com.launcher.core.architecture.support.recording.RecordingGameLaunchPlanBuilder;
 import com.launcher.core.architecture.support.recording.RecordingManifestService;
 import com.launcher.core.game.BuildGameLaunchPlanTask;
-import com.launcher.core.game.GameLaunchPlanBuilder;
+import com.launcher.core.game.DefaultGameLaunchPlanBuilder;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.result.FailureResult;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -34,9 +36,38 @@ class BuildGameLaunchPlanTaskTest {
     }
 
     @Test
+    void should_pass_configuration_java_executable_override_to_game_launch_plan_builder() {
+        //given
+        RecordingGameLaunchPlanBuilder launchPlanBuilder = new RecordingGameLaunchPlanBuilder();
+        BuildGameLaunchPlanTask buildGameLaunchPlanTask = new BuildGameLaunchPlanTask(launchPlanBuilder);
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
+        Manifest manifest = manifestLoadResult.manifest();
+        RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
+
+        context.setManifest(manifest);
+        context.setRuntimeLibrarySelection(runtimeLibrarySelection);
+
+        //when
+        Result result = buildGameLaunchPlanTask.execute(context);
+
+        //then
+        assertTrue(result.success());
+
+        assertEquals(
+                runtimeLibrarySelection,
+                launchPlanBuilder.getRuntimeLibrarySelection()
+        );
+
+        assertEquals(
+                Optional.of("TestValue"),
+                launchPlanBuilder.getJavaExecutableOverride()
+        );
+    }
+
+    @Test
     void should_return_failure_when_launch_info_is_missing() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
         context.setManifest(
                 new Manifest(
@@ -59,7 +90,7 @@ class BuildGameLaunchPlanTaskTest {
     @Test
     void should_return_failure_when_runtime_library_selection_not_available() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
@@ -78,7 +109,7 @@ class BuildGameLaunchPlanTaskTest {
     @Test
     void should_return_failure_when_manifest_not_loaded() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
 
         //when
@@ -92,7 +123,7 @@ class BuildGameLaunchPlanTaskTest {
     @Test
     void should_return_build_game_launch_plan_state() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
 
         //then
@@ -102,7 +133,7 @@ class BuildGameLaunchPlanTaskTest {
     @Test
     void should_return_success_result_when_game_launch_plan_is_built() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
@@ -122,7 +153,7 @@ class BuildGameLaunchPlanTaskTest {
     @Test
     void should_save_game_launch_plan_in_launch_context() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = OperationFactoryFixture.gameLaunchPlanBuilder();
         BuildGameLaunchPlanTask task = new BuildGameLaunchPlanTask(gameLaunchPlanBuilder);
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();

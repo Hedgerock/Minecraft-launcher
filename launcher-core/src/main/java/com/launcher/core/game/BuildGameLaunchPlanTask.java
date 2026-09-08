@@ -1,5 +1,6 @@
 package com.launcher.core.game;
 
+import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.result.Result;
 import com.launcher.core.state.LauncherState;
@@ -8,7 +9,7 @@ import com.launcher.core.task.TaskResult;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
 
-public class BuildGameLaunchPlanTask implements LauncherTask {
+public final class BuildGameLaunchPlanTask implements LauncherTask {
     private final GameLaunchPlanBuilder gameLaunchPlanBuilder;
 
     public BuildGameLaunchPlanTask(GameLaunchPlanBuilder gameLaunchPlanBuilder) {
@@ -37,7 +38,14 @@ public class BuildGameLaunchPlanTask implements LauncherTask {
             return TaskResult.failure("Runtime library selection not available");
         }
 
-        GameLaunchPlan gameLaunchPlan = gameLaunchPlanBuilder.build(manifest, runtimeLibrarySelection);
+        LauncherConfiguration configuration = launchContext.getLauncherConfiguration();
+
+        GameLaunchPlan gameLaunchPlan = gameLaunchPlanBuilder.build(
+                manifest,
+                runtimeLibrarySelection,
+                configuration.javaExecutableOverride()
+        );
+
         launchContext.setGameLaunchPlan(gameLaunchPlan);
         return TaskResult.success();
     }

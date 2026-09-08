@@ -9,7 +9,7 @@ import com.launcher.core.architecture.support.recording.RecordingJavaExecutableR
 import com.launcher.core.architecture.support.recording.RecordingJavaRuntimeSelector;
 import com.launcher.core.architecture.support.recording.RecordingManifestService;
 import com.launcher.core.game.GameLaunchPlan;
-import com.launcher.core.game.GameLaunchPlanBuilder;
+import com.launcher.core.game.DefaultGameLaunchPlanBuilder;
 import com.launcher.core.runtime.model.JavaRuntimeSelectionRequest;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ManifestLoadResult;
@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -27,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class GameLaunchPlanBuilderTest {
+class DefaultGameLaunchPlanBuilderTest {
     private RecordingManifestService manifestService;
     private RecordingDirectoryProvider directoryProvider;
     private RecordingDefaultGameLaunchCommandBuilder launchCommandBuilder;
@@ -50,9 +51,40 @@ class GameLaunchPlanBuilderTest {
     }
 
     @Test
+    void should_pass_configured_java_executable_override_to_runtime_selection() {
+        //given
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
+                directoryProvider,
+                launchCommandBuilder,
+                recordingGameClasspathBuilder,
+                recordingClasspathFormatter,
+                recordingJavaRuntimeSelector,
+                recordingJavaExecutableReadinessChecker,
+                recordingJavaCommandPathResolver
+        );
+
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
+        Manifest manifest = manifestLoadResult.manifest();
+        RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
+
+        Optional<String> override = Optional.of("test-value");
+
+        //when
+        gameLaunchPlanBuilder.build(manifest, runtimeLibrarySelection, override);
+
+        //then
+        assertEquals(
+                override,
+                recordingJavaRuntimeSelector
+                        .getJavaRuntimeSelectionRequest()
+                        .javaExecutableOverride()
+        );
+    }
+
+    @Test
     void should_use_resolved_java_executable_for_command_building() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
@@ -79,7 +111,7 @@ class GameLaunchPlanBuilderTest {
     @Test
     void should_resolve_selected_java_executable_before_readiness_check() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
@@ -107,7 +139,7 @@ class GameLaunchPlanBuilderTest {
     @Test
     void should_fail_when_java_command_path_resolution_failed() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
@@ -141,7 +173,7 @@ class GameLaunchPlanBuilderTest {
     @Test
     void should_fail_when_selected_java_executable_is_not_ready() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
@@ -170,7 +202,7 @@ class GameLaunchPlanBuilderTest {
     @Test
     void should_check_resolved_java_executable_before_building_command() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
@@ -197,7 +229,7 @@ class GameLaunchPlanBuilderTest {
     @Test
     void should_use_java_runtime_selector_for_java_executable() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
@@ -230,7 +262,7 @@ class GameLaunchPlanBuilderTest {
     @Test
     void should_reject_null_runtime_library_selection() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
@@ -255,7 +287,7 @@ class GameLaunchPlanBuilderTest {
     @Test
     void should_reject_null_manifest() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,
@@ -280,7 +312,7 @@ class GameLaunchPlanBuilderTest {
     @Test
     void should_build_game_launch_plan_with_game_directory_from_directory_provider() {
         //given
-        GameLaunchPlanBuilder gameLaunchPlanBuilder = new GameLaunchPlanBuilder(
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
                 directoryProvider,
                 launchCommandBuilder,
                 recordingGameClasspathBuilder,

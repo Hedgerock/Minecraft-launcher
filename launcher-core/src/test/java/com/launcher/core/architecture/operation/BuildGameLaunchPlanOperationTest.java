@@ -5,7 +5,7 @@ import com.launcher.core.architecture.support.recording.RecordingDirectoryProvid
 import com.launcher.core.event.EventBus;
 import com.launcher.core.execution.SequentialExecutionStrategy;
 import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
-import com.launcher.core.game.GameLaunchPlanBuilder;
+import com.launcher.core.game.DefaultGameLaunchPlanBuilder;
 import com.launcher.core.game.classpath.builder.DefaultGameClasspathBuilder;
 import com.launcher.core.game.classpath.formatter.DefaultClasspathFormatter;
 import com.launcher.core.launch.LaunchContext;
@@ -35,7 +35,7 @@ class BuildGameLaunchPlanOperationTest {
                 context,
                 new SequentialExecutionStrategy(),
                 new EventBus(),
-                new GameLaunchPlanBuilder(
+                new DefaultGameLaunchPlanBuilder(
                         new RecordingDirectoryProvider(),
                         new DefaultGameLaunchCommandBuilder(
                                 new DefaultLaunchArgumentResolver()

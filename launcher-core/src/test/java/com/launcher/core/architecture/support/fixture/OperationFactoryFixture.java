@@ -12,7 +12,7 @@ import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.game.builder.DefaultGameLaunchCommandBuilder;
-import com.launcher.core.game.GameLaunchPlanBuilder;
+import com.launcher.core.game.DefaultGameLaunchPlanBuilder;
 import com.launcher.core.game.classpath.builder.DefaultGameClasspathBuilder;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.manifest.ManifestService;
@@ -29,6 +29,7 @@ import com.launcher.core.verification.model.VerificationPlan;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 public class OperationFactoryFixture {
 
@@ -38,8 +39,8 @@ public class OperationFactoryFixture {
         return new DownloadPlanBuilder();
     }
 
-    public static GameLaunchPlanBuilder gameLaunchPlanBuilder() {
-        return new GameLaunchPlanBuilder(
+    public static DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder() {
+        return new DefaultGameLaunchPlanBuilder(
                 new RecordingDirectoryProvider(),
                 new DefaultGameLaunchCommandBuilder(
                         new DefaultLaunchArgumentResolver()
@@ -71,8 +72,8 @@ public class OperationFactoryFixture {
         return new LaunchContext(
                 new LauncherConfiguration(
                         URI.create("currentPath"),
-                        Path.of("")
-
+                        Path.of(""),
+                        Optional.of("TestValue")
                 )
         );
     }

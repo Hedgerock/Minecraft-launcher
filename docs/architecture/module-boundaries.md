@@ -142,17 +142,29 @@
 - `JavaCommandPathResolver`
 - `JavaExecutableReferenceResolver`
 - `NoOpJavaExecutableReadinessChecker`
--  Pure policies, которые не читают filesystem, environment variables или system properties
+- Pure policies, которые не читают filesystem, environment variables или system properties
 
 ### `launcher-app` владеет
 
 - `SystemRuntimeEnvironmentProvider`
 - `SystemJavaCommandPathEnvironmentProvider`
 - `DefaultJavaExecutableReadinessChecker`
--  Production wiring Java runtime flow
+- Production wiring Java runtime flow
 
 Concrete Java runtime adapters не должны находиться в `launcher-core`, если они читают filesystem,
 environment variables, system properties или process state
+
+---
+
+## Reserved modules
+
+`launcher-auth`, `launcher-common` и `launcher-ui` могут оставаться подключенными к Gradle build как
+reserved modules
+
+Их статус зафиксирован в [ADR-0037](../decisions/ADR-0037-reserved-modules-policy.md)
+
+`launcher-common` не должен использоваться как общий utility module без подтвержденного cross-module сценария или
+architecture/design решения
 
 ---
 

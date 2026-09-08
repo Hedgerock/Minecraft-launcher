@@ -2,9 +2,9 @@
 
 ## Текущий фокус
 
-- Завершить foundation stabilization перед следующим runtime milestone
-- Проверить, не осталось ли критичных module boundary хвостов
-- Подготовить переход к следующему runtime milestone
+- Выбрать следующий Java runtime milestone после `v0.5.0-java-runtime-foundation`
+- Подготовить scope следующей runtime-итерации
+- Не вводить Java installation discovery без подтвержденного сценария
 
 ---
 
@@ -34,3 +34,5 @@
   и зафиксированы правила написания тестов
 - Зафиксирована политика reserved modules для `launcher-auth`, `launcher-common` и `launcher-ui`
 - Добавлен минимальный GitHub Actions CI pipeline для проверки `./gradlew clean check`
+- Завершена foundation stabilization после `v0.4.0-library-native-flow`
+- Подготовлен release `v0.5.0-java-runtime-foundation`

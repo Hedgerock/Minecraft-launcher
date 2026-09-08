@@ -1,5 +1,9 @@
 ## Unreleased
 
+---
+
+## v0.5.0 – Java Runtime Foundation
+
 ### Added
 
 - Added Java runtime selection contract for choosing Java executable before building game launch command
@@ -15,6 +19,7 @@
 - Added invalid PATH entry filtering for Java command path environment provider
 - Documented launcher-core boundary classification for orchestration, ports, policies and concrete adapters
 - Added minimal GitHub Actions CI pipeline for Java 21 and `./gradlew clean check`
+- Added release guidelines for changelog, tags and milestone retrospective preparation
 
 ### Changed
 
@@ -36,6 +41,7 @@
 - Strengthened project quality checks for final newlines, empty catch blocks, System.err.println and invalid combined
   test sections
 - Documented reserved modules policy for `launcher-auth`, `launcher-common`, and `launcher-ui`
+- Moved concrete runtime, directory and Java executable readiness adapters out of `launcher-core`
 
 ---
 

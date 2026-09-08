@@ -49,3 +49,4 @@
 | [ADR-0035](ADR-0035-java-executable-readiness-adapter-boundary.md)        | Граница реализации Java executable readiness checker              | java runtime       |
 | [ADR-0036](ADR-0036-java-command-path-resolver-boundary.md)               | Граница Java command path resolver                                | java runtime       |
 | [ADR-0037](ADR-0037-reserved-modules-policy.md)                           | Политика reserved modules                                         | module boundaries  |
+| [ADR-0038](ADR-0038-configured-java-override-boundary.md)                 | Граница configured Java override                                  | java runtime       |

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,6 +22,39 @@ class ManifestJavaRuntimeSelectorTest {
     void setUp() {
         resolver = new RecordingJavaExecutableReferenceResolver();
         selector = new ManifestJavaRuntimeSelector(resolver);
+    }
+
+    @Test
+    void should_prefer_configured_java_executable_override() {
+        //given
+        LaunchInfo launchInfo = new LaunchInfo(
+                "MainClass",
+                List.of(),
+                List.of(),
+                List.of("test-classpath.jar"),
+                "manifest-java"
+        );
+
+        JavaRuntimeSelectionRequest request = new JavaRuntimeSelectionRequest(
+                launchInfo,
+                Optional.of("configured-java")
+        );
+
+        //when
+        JavaExecutableReference result = selector.selectJavaExecutable(request);
+
+        //then
+        assertTrue(result.isCommandName());
+
+        assertEquals(
+                "configured-java",
+                result.value()
+        );
+
+        assertEquals(
+                "configured-java",
+                resolver.getJavaExecutable()
+        );
     }
 
     @Test
@@ -38,7 +72,7 @@ class ManifestJavaRuntimeSelectorTest {
     }
 
     @Test
-    void should_select_java_executable_from_launch_info() {
+    void should_select_java_executable_from_launch_info_when_override_is_absent() {
         //given
         LaunchInfo launchInfo = new LaunchInfo(
                 "MainClass",

@@ -20,8 +20,9 @@ public final class ManifestJavaRuntimeSelector implements JavaRuntimeSelector {
     public JavaExecutableReference selectJavaExecutable(JavaRuntimeSelectionRequest request) {
         Objects.requireNonNull(request, "request");
 
-        return javaExecutableReferenceResolver.resolve(
-                request.launchInfo().javaExecutable()
-        );
+        String javaExecutable = request.javaExecutableOverride()
+                .orElseGet(() -> request.launchInfo().javaExecutable());
+
+        return javaExecutableReferenceResolver.resolve(javaExecutable);
     }
 }

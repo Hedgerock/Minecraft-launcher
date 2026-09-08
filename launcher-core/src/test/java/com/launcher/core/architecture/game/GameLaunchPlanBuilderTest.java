@@ -10,6 +10,7 @@ import com.launcher.core.architecture.support.recording.RecordingJavaRuntimeSele
 import com.launcher.core.architecture.support.recording.RecordingManifestService;
 import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.game.GameLaunchPlanBuilder;
+import com.launcher.core.runtime.model.JavaRuntimeSelectionRequest;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
@@ -209,14 +210,15 @@ class GameLaunchPlanBuilderTest {
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
         RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
+        JavaRuntimeSelectionRequest request = JavaRuntimeSelectionRequest.fromManifest(manifest.launchInfo());
 
         //when
         gameLaunchPlanBuilder.build(manifest, runtimeLibrarySelection);
 
         //then
         assertEquals(
-                manifest.launchInfo(),
-                recordingJavaRuntimeSelector.getLaunchInfo()
+                request,
+                recordingJavaRuntimeSelector.getJavaRuntimeSelectionRequest()
         );
 
         assertEquals(
@@ -351,5 +353,4 @@ class GameLaunchPlanBuilderTest {
                 launchCommandBuilder.getLaunchVariables().nativesDirectory()
         );
     }
-
 }

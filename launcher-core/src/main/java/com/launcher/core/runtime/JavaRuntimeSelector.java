@@ -1,10 +1,12 @@
 package com.launcher.core.runtime;
 
-import com.launcher.model.manifest.LaunchInfo;
+import com.launcher.core.runtime.model.JavaRuntimeSelectionRequest;
 import com.launcher.model.runtime.JavaExecutableReference;
 
 public interface JavaRuntimeSelector {
 
-    JavaExecutableReference selectJavaExecutable(LaunchInfo launchInfo);
+    JavaExecutableReference selectJavaExecutable(
+            JavaRuntimeSelectionRequest request
+    );
 
 }

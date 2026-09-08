@@ -8,6 +8,7 @@ import com.launcher.core.resolve.model.LaunchVariables;
 import com.launcher.core.runtime.javaexecutable.checker.JavaExecutableReadinessChecker;
 import com.launcher.core.runtime.JavaRuntimeSelector;
 import com.launcher.core.runtime.javaexecutable.resolver.JavaCommandPathResolver;
+import com.launcher.core.runtime.model.JavaRuntimeSelectionRequest;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.manifest.Manifest;
@@ -70,8 +71,11 @@ public final class GameLaunchPlanBuilder {
 
         LaunchInfo launchInfo = manifest.launchInfo();
 
+        JavaRuntimeSelectionRequest request =
+                JavaRuntimeSelectionRequest.fromManifest(launchInfo);
+
         JavaExecutableReference selectedJavaExecutableReference =
-                javaRuntimeSelector.selectJavaExecutable(launchInfo);
+                javaRuntimeSelector.selectJavaExecutable(request);
 
         JavaExecutableReference resolvedJavaExecutableReference =
                 javaCommandPathResolver.resolve(selectedJavaExecutableReference);
@@ -90,5 +94,4 @@ public final class GameLaunchPlanBuilder {
                 command
         );
     }
-
 }

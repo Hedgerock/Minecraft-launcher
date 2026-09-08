@@ -1,6 +1,7 @@
 package com.launcher.core.runtime;
 
 import com.launcher.core.architecture.support.recording.RecordingJavaExecutableReferenceResolver;
+import com.launcher.core.runtime.model.JavaRuntimeSelectionRequest;
 import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.runtime.JavaExecutableReference;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,8 +48,10 @@ class ManifestJavaRuntimeSelectorTest {
                 "java-custom"
         );
 
+        JavaRuntimeSelectionRequest request = JavaRuntimeSelectionRequest.fromManifest(launchInfo);
+
         //when
-        JavaExecutableReference result = selector.selectJavaExecutable(launchInfo);
+        JavaExecutableReference result = selector.selectJavaExecutable(request);
 
         //then
         assertTrue(result.isCommandName());
@@ -65,14 +68,14 @@ class ManifestJavaRuntimeSelectorTest {
     }
 
     @Test
-    void should_reject_null_launch_info() {
+    void should_reject_null_java_runtime_selection_request() {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> selector.selectJavaExecutable(null)
         );
 
-        assertTrue(exception.getMessage().contains("launchInfo"));
+        assertTrue(exception.getMessage().contains("request"));
     }
 
 }

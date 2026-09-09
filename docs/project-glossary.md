@@ -36,7 +36,7 @@ Runtime-контекст текущего запуска лаунчера
 
 Метаданные запуска игры из `Manifest`
 
-Содержит `mainClass`, `javaExecutable`, `jvmArgs`, `gameArgs` и `classpath`
+Содержит `mainClass`, `javaExecutable`, `javaVersionRequirement`, `jvmArgs`, `gameArgs` и `classpath`
 
 Используется `GameLaunchPlanBuilder` для построения команды запуска
 
@@ -153,7 +153,9 @@ Resolver не выполняет PATH resolution, не проверяет сущ
 
 Модель требования к версии Java
 
-На текущем этапе содержит минимальную major version, необходимую для будущей проверки совместимости Java runtime
+В manifest flow требование приходит из manifest launch metadata через `LaunchInfo.javaVersionRequirement`
+
+Содержит минимальную major version, необходимую для будущей проверки совместимости Java runtime
 
 Не описывает Java executable, installation path, способ поиска Java или fallback policy
 

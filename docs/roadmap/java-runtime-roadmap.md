@@ -5,7 +5,7 @@
 ## Текущий план
 
 - Провести ревизию Java runtime flow перед выбором следующей runtime boundary
-- Определить источник Java version requirements без добавления Java installation discovery
+- Провести ревизию Java version requirement flow перед выбором следующей runtime boundary
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
 
@@ -23,6 +23,7 @@
 - Добавлена минимальная Java runtime failure model
 - Добавлен общий базовый exception для classified Java runtime failures
 - Добавлена модель `JavaVersionRequirement` для выражения минимального требования к major version Java
+- Manifest JSON теперь является источником `JavaVersionRequirement` для `LaunchInfo`
 
 ---
 

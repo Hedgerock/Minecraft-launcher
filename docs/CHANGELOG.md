@@ -13,6 +13,7 @@
 - Documented Java version requirements boundary decision
 - Added Java version requirement model for minimal Java major version constraints
 - Documented manifest source for Java version requirement decision
+- Mapped Java version requirement from manifest JSON into `LaunchInfo`
 
 ### Changed
 

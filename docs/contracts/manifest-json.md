@@ -57,7 +57,10 @@ RuntimeEnvironment
     "jvmArgs": ["-Xmx2G"],
     "gameArgs": ["--username", "Player"],
     "classpath": ["libraries/example.jar", "client.jar"],
-    "javaExecutable": "java"
+    "javaExecutable": "java",
+    "javaVersionRequirement": {
+      "minimumMajorVersion": 17
+    }
   },
   "libraries": [
     {
@@ -177,9 +180,18 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 
 Если значение содержит путевой разделитель, возвращается explicit filesystem path `JavaExecutableReference`
 
+`launchInfo.javaVersionRequirement` преобразуется в `JavaVersionRequirement`
+
+`launchInfo.javaVersionRequirement.minimumMajorVersion` описывает минимальную major version Java, необходимую для
+запуска сборки
+
 `JsonManifestMapper` не выполняет запуск, загрузку файлов или проверку хеша
 
 `JsonManifestMapper` не делает PATH lookup, readiness или version selection
+
+`LaunchInfo` требует наличие `javaVersionRequirement`
+
+`JavaVersionRequirement.minimumMajorVersion` должен быть положительным целым числом
 
 Его ответственность ограничена преобразованием внешнего JSON-контракта в доменную модель
 
@@ -300,6 +312,8 @@ LaunchInfo
 - Аргументы авторизации
 - Assets index
 - Loader-specific правила запуска
+- Проверка совместимости выбранного Java executable с `javaVersionRequirement`
+- Автоматический выбор Java installation по `javaVersionRequirement`
 
 Данные поля должны появляться отдельными итерациями после появления подтвержденных runtime-сценариев
 

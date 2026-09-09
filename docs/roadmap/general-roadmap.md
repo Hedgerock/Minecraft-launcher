@@ -2,8 +2,8 @@
 
 ## Текущий фокус
 
-- Провести ревизию operation planning builders перед следующим Java runtime шагом
-- Использовать правила planning builders при ревизии operation planning boundaries
+- Выбрать следующий Java runtime шаг после configured Java override
+- Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery без подтвержденного сценария
 
 ---

@@ -4,8 +4,8 @@
 
 ## Текущий план
 
-- Провести ревизию operation planning builders перед следующим Java runtime шагом
-- Использовать правила planning builders при ревизии operation planning boundaries
+- Выбрать следующий Java runtime шаг после configured Java override
+- Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
 
 ---
@@ -16,6 +16,9 @@
 - Добавлен `JavaRuntimeSelectionRequest`
 - `GameLaunchPlanBuilder` передает configured override в Java runtime selection
 - `ManifestJavaRuntimeSelector` выбирает configured override перед manifest metadata
+- Зафиксированы правила planning builders
+- Проведена ревизия operation planning builders без немедленного рефакторинга
+  `DownloadPlanBuilder` и `NativeExtractionPlanBuilder`
 
 ---
 
@@ -55,7 +58,7 @@ Java executable runtime flow доведен до минимального produc
 
 ## Активное направление
 
-- Configured Java override
+- Выбор следующего Java runtime шага после configured Java override
 
 ---
 

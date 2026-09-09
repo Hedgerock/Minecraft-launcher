@@ -12,6 +12,7 @@
 - Documented Java runtime roadmap transition toward Java version requirements
 - Documented Java version requirements boundary decision
 - Added Java version requirement model for minimal Java major version constraints
+- Documented manifest source for Java version requirement decision
 
 ### Changed
 

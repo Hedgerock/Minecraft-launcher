@@ -53,3 +53,4 @@
 | [ADR-0039](ADR-0039-java-runtime-failure-model.md)                        | Модель ошибок Java runtime                                        | java runtime       |
 | [ADR-0040](ADR-0040-operation-failure-diagnostics-boundary.md)            | Граница operation failure diagnostics                             | operation          |
 | [ADR-0041](ADR-0041-java-version-requirements-boundary.md)                | Граница Java version requirements                                 | java runtime       |
+| [ADR-0042](ADR-0042-manifest-java-version-requirement-source.md)          | Manifest source для Java version requirement                      | java runtime       |

@@ -1,5 +1,7 @@
 package com.launcher.core.runtime.javaexecutable.resolver;
 
+import com.launcher.core.runtime.javaexecutable.exception.JavaExecutableReferenceResolutionException;
+import com.launcher.core.runtime.javaexecutable.exception.JavaRuntimeFailureReason;
 import com.launcher.model.runtime.JavaExecutableReference;
 import org.junit.jupiter.api.Test;
 
@@ -45,21 +47,29 @@ class ManifestJavaExecutableReferenceResolverTest {
 
     @Test
     void should_reject_blank_java_executable() {
-        List<String> messages = new ArrayList<>();
+        List<ExceptionReport> messages = new ArrayList<>();
         List<String> javaExecutables = List.of(" ", "\t", "\n", "");
 
         //when & then
         javaExecutables.forEach(commandName -> {
-            IllegalArgumentException exception = assertThrows(
-                    IllegalArgumentException.class,
+            JavaExecutableReferenceResolutionException exception = assertThrows(
+                    JavaExecutableReferenceResolutionException.class,
                     () -> resolver.resolve(commandName)
             );
 
-            messages.add(exception.getMessage());
+            messages.add(
+                    new ExceptionReport(
+                            exception.getReason(),
+                            exception.getMessage()
+                    )
+            );
         });
 
         assertTrue(
-                messages.stream().allMatch(message -> message.contains("javaExecutable must not be blank"))
+                messages.stream().allMatch(report ->
+                        report.message().contains("javaExecutable must not be blank") &&
+                                report.reason() == JavaRuntimeFailureReason.INVALID_RAW_JAVA_EXECUTABLE_VALUE
+                )
         );
     }
 
@@ -98,4 +108,9 @@ class ManifestJavaExecutableReferenceResolverTest {
         );
     }
 
+    private record ExceptionReport(
+            JavaRuntimeFailureReason reason,
+            String message
+    ) {
+    }
 }

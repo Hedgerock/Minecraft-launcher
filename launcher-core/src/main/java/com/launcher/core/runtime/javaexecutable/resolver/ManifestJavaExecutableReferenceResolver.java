@@ -1,5 +1,7 @@
 package com.launcher.core.runtime.javaexecutable.resolver;
 
+import com.launcher.core.runtime.javaexecutable.exception.JavaExecutableReferenceResolutionException;
+import com.launcher.core.runtime.javaexecutable.exception.JavaRuntimeFailureReason;
 import com.launcher.model.runtime.JavaExecutableReference;
 
 import java.util.Objects;
@@ -11,7 +13,8 @@ public final class ManifestJavaExecutableReferenceResolver implements JavaExecut
         Objects.requireNonNull(javaExecutable, "javaExecutable");
 
         if (javaExecutable.isBlank()) {
-            throw new IllegalArgumentException(
+            throw new JavaExecutableReferenceResolutionException(
+                    JavaRuntimeFailureReason.INVALID_RAW_JAVA_EXECUTABLE_VALUE,
                     "javaExecutable must not be blank"
             );
         }

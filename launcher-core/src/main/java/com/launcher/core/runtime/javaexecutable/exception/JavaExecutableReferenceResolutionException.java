@@ -2,10 +2,10 @@ package com.launcher.core.runtime.javaexecutable.exception;
 
 import java.util.Objects;
 
-public class JavaExecutableNotReadyException extends RuntimeException {
+public class JavaExecutableReferenceResolutionException extends RuntimeException {
     private final JavaRuntimeFailureReason reason;
 
-    public JavaExecutableNotReadyException(
+    public JavaExecutableReferenceResolutionException(
             JavaRuntimeFailureReason reason,
             String message
     ) {

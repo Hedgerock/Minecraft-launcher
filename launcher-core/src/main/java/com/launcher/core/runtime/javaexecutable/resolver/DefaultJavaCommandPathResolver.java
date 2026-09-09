@@ -1,6 +1,7 @@
 package com.launcher.core.runtime.javaexecutable.resolver;
 
 import com.launcher.core.runtime.javaexecutable.exception.JavaCommandPathResolutionException;
+import com.launcher.core.runtime.javaexecutable.exception.JavaRuntimeFailureReason;
 import com.launcher.core.runtime.javaexecutable.resolver.model.JavaCommandPathEnvironment;
 import com.launcher.model.runtime.JavaExecutableReference;
 
@@ -31,6 +32,7 @@ public final class DefaultJavaCommandPathResolver implements JavaCommandPathReso
                 .or(() -> findWithExtensions(commandName))
                 .orElseThrow(() ->
                         new JavaCommandPathResolutionException(
+                                JavaRuntimeFailureReason.COMMAND_NAME_NOT_RESOLVED,
                                 "Java command not found: " + commandName
                         )
                 );

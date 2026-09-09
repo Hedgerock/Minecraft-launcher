@@ -1,6 +1,7 @@
 package com.launcher.app.runtime.javaexecutable.checker;
 
 import com.launcher.core.runtime.javaexecutable.exception.JavaExecutableNotReadyException;
+import com.launcher.core.runtime.javaexecutable.exception.JavaRuntimeFailureReason;
 import com.launcher.model.runtime.JavaExecutableReference;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -12,7 +13,6 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultJavaExecutableReadinessCheckerTest {
     private final DefaultJavaExecutableReadinessChecker checker =
@@ -29,7 +29,15 @@ class DefaultJavaExecutableReadinessCheckerTest {
                 () -> checker.checkReady(reference)
         );
 
-        assertTrue(exception.getMessage().contains("Java executable path is invalid"));
+        assertEquals(
+                JavaRuntimeFailureReason.INVALID_EXPLICIT_PATH,
+                exception.getReason()
+        );
+
+        assertEquals(
+                "Java executable path is invalid: " + reference.value(),
+                exception.getMessage()
+        );
     }
 
     @Test
@@ -43,7 +51,15 @@ class DefaultJavaExecutableReadinessCheckerTest {
                 () -> checker.checkReady(reference)
         );
 
-        assertTrue(exception.getMessage().contains("Java executable reference is not an explicit path: " + reference.value()));
+        assertEquals(
+                JavaRuntimeFailureReason.NON_EXPLICIT_JAVA_EXECUTABLE_REFERENCE,
+                exception.getReason()
+        );
+
+        assertEquals(
+                "Java executable reference is not an explicit path: " + reference.value(),
+                exception.getMessage()
+        );
     }
 
     @Test
@@ -61,7 +77,15 @@ class DefaultJavaExecutableReadinessCheckerTest {
                 () -> checker.checkReady(reference)
         );
 
-        assertTrue(exception.getMessage().contains("Java executable is not a file: " + reference.value()));
+        assertEquals(
+                JavaRuntimeFailureReason.JAVA_EXECUTABLE_NOT_REGULAR_FILE,
+                exception.getReason()
+        );
+
+        assertEquals(
+                "Java executable is not a file: " + reference.value(),
+                exception.getMessage()
+        );
     }
 
     @Test
@@ -76,7 +100,15 @@ class DefaultJavaExecutableReadinessCheckerTest {
                 () -> checker.checkReady(reference)
         );
 
-        assertTrue(exception.getMessage().contains("Java executable does not exist: " + reference.value()));
+        assertEquals(
+                JavaRuntimeFailureReason.JAVA_EXECUTABLE_NOT_FOUND,
+                exception.getReason()
+        );
+
+        assertEquals(
+                "Java executable does not exist: " + reference.value(),
+                exception.getMessage()
+        );
     }
 
     @Test

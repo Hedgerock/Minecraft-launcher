@@ -1,6 +1,7 @@
 package com.launcher.core.runtime.javaexecutable.resolver;
 
 import com.launcher.core.runtime.javaexecutable.exception.JavaCommandPathResolutionException;
+import com.launcher.core.runtime.javaexecutable.exception.JavaRuntimeFailureReason;
 import com.launcher.core.runtime.javaexecutable.resolver.model.JavaCommandPathEnvironment;
 import com.launcher.model.runtime.JavaExecutableReference;
 import org.junit.jupiter.api.Test;
@@ -55,11 +56,22 @@ class DefaultJavaCommandPathResolverTest {
         );
 
         DefaultJavaCommandPathResolver resolver = new DefaultJavaCommandPathResolver(environment);
+        JavaExecutableReference reference = JavaExecutableReference.commandName("java");
 
         //when & then
-        assertThrows(
+        JavaCommandPathResolutionException exception = assertThrows(
                 JavaCommandPathResolutionException.class,
-                () -> resolver.resolve(JavaExecutableReference.commandName("java"))
+                () -> resolver.resolve(reference)
+        );
+
+        assertEquals(
+                JavaRuntimeFailureReason.COMMAND_NAME_NOT_RESOLVED,
+                exception.getReason()
+        );
+
+        assertEquals(
+                "Java command not found: " + reference.value(),
+                exception.getMessage()
         );
     }
 
@@ -76,7 +88,12 @@ class DefaultJavaCommandPathResolverTest {
         );
 
         assertEquals(
-                "Java command not found: nonExistingCommand",
+                JavaRuntimeFailureReason.COMMAND_NAME_NOT_RESOLVED,
+                exception.getReason()
+        );
+
+        assertEquals(
+                "Java command not found: " + reference.value(),
                 exception.getMessage()
         );
     }

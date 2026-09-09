@@ -1,19 +1,11 @@
 package com.launcher.core.runtime.javaexecutable.exception;
 
-import java.util.Objects;
-
-public class JavaExecutableNotReadyException extends RuntimeException {
-    private final JavaRuntimeFailureReason reason;
+public final class JavaExecutableNotReadyException extends JavaRuntimeFailureException {
 
     public JavaExecutableNotReadyException(
             JavaRuntimeFailureReason reason,
             String message
     ) {
-        super(message);
-        this.reason = Objects.requireNonNull(reason, "reason");
-    }
-
-    public JavaRuntimeFailureReason getReason() {
-        return reason;
+        super(reason, message);
     }
 }

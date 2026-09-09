@@ -6,16 +6,17 @@ import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.execution.SequentialExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.result.OperationResult;
-import com.launcher.core.result.FailureResult;
-import com.launcher.core.result.SuccessResult;
 import com.launcher.core.task.LauncherTask;
+import com.launcher.core.task.TaskResult;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SequentialExecutionStrategyTest {
     private final SequentialExecutionStrategy sequentialExecutionStrategy =
@@ -37,7 +38,7 @@ class SequentialExecutionStrategyTest {
         return new RecordingLauncherTask(
                 events,
                 name,
-                SuccessResult.INSTANCE
+                TaskResult.success()
         );
     }
 
@@ -47,7 +48,7 @@ class SequentialExecutionStrategyTest {
         return new RecordingLauncherTask(
                 events,
                 "Task-2",
-                new FailureResult("failure")
+                TaskResult.failure("failure")
         );
     }
 

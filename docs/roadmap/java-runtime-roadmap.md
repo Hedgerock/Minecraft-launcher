@@ -4,7 +4,8 @@
 
 ## Текущий план
 
-- Реализовать минимальную Java runtime failure model после ADR-0039
+- Завершить документационное закрепление Java runtime failure model после реализации ADR-0039
+- Провести ревизию Java runtime flow перед выбором следующей runtime boundary
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
 
@@ -19,6 +20,8 @@
 - Зафиксированы правила planning builders
 - Проведена ревизия operation planning builders без немедленного рефакторинга
   `DownloadPlanBuilder` и `NativeExtractionPlanBuilder`
+- Добавлена минимальная Java runtime failure model
+- Добавлен общий базовый exception для classified Java runtime failures
 
 ---
 

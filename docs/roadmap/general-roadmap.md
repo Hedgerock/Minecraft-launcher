@@ -2,7 +2,8 @@
 
 ## Текущий фокус
 
-- Реализовать минимальную Java runtime failure model после ADR-0039
+- Завершить документационное закрепление Java runtime failure model
+- Провести ревизию Java runtime flow перед выбором следующего runtime-направления
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery без подтвержденного сценария
 

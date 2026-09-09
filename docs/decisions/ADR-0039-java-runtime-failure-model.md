@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(core): classify java runtime failures`
+> `refactor(core): introduce java runtime failure exception`
+
 ---
 
 ## Контекст

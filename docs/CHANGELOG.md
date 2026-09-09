@@ -7,6 +7,7 @@
 - Added `GameLaunchPlanBuilder` port for game launch plan task and operation wiring
 - Added planning builder guidelines for deciding when builders should become contracts
 - Documented Java runtime failure model decision
+- Added shared Java runtime failure exception for classified Java runtime errors
 
 ### Changed
 

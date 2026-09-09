@@ -15,14 +15,11 @@ public final class SequentialExecutionStrategy implements ExecutionStrategy {
             List<LauncherTask> tasks,
             LaunchContext launchContext
     ) {
-
-        for (LauncherTask task: tasks) {
+        for (LauncherTask task : tasks) {
             Result result = task.execute(launchContext);
 
             if (!result.success()) {
-
                 FailureResult failureResult = (FailureResult) result;
-
                 return OperationResult.failure(failureResult.getMessage());
             }
         }

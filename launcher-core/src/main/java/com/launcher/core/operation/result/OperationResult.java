@@ -13,10 +13,6 @@ public final class OperationResult {
         this.errorMessage = errorMessage;
     }
 
-    public boolean isSuccess() {
-        return success;
-    }
-
     public static OperationResult success() {
         return SUCCESS;
     }
@@ -24,10 +20,11 @@ public final class OperationResult {
     public static OperationResult failure(String errorMessage) {
         return new OperationResult(false, errorMessage);
     }
-    public
-    Optional<String> errorMessage() {
+
+    public boolean isSuccess() {
+        return success;
+    }
+    public Optional<String> errorMessage() {
         return Optional.ofNullable(errorMessage);
     }
-
-
 }

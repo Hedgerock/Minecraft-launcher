@@ -5,7 +5,7 @@
 ## Текущий план
 
 - Провести ревизию Java runtime flow перед выбором следующей runtime boundary
-- Рассмотреть Java version requirements как следующий минимальный runtime слой
+- Определить источник Java version requirements без добавления Java installation discovery
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
 
@@ -22,6 +22,7 @@
   `DownloadPlanBuilder` и `NativeExtractionPlanBuilder`
 - Добавлена минимальная Java runtime failure model
 - Добавлен общий базовый exception для classified Java runtime failures
+- Добавлена модель `JavaVersionRequirement` для выражения минимального требования к major version Java
 
 ---
 

@@ -149,6 +149,14 @@ runtime-сценариях
 
 Resolver не выполняет PATH resolution, не проверяет существование файла и не выбирает Java version
 
+### JavaVersionRequirement
+
+Модель требования к версии Java
+
+На текущем этапе содержит минимальную major version, необходимую для будущей проверки совместимости Java runtime
+
+Не описывает Java executable, installation path, способ поиска Java или fallback policy
+
 ### JavaCommandPathResolver
 
 Контракт преобразования `JavaExecutableReference` типа command name в `JavaExecutableReference` типа explicit

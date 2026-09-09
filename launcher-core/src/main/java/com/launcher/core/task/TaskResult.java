@@ -4,13 +4,12 @@ import com.launcher.core.result.FailureResult;
 import com.launcher.core.result.Result;
 import com.launcher.core.result.SuccessResult;
 
-public record TaskResult(
-        boolean status,
-        String message
+public final class TaskResult {
 
-) {
+    private TaskResult() {}
+
     public static Result success() {
-        return new SuccessResult();
+        return SuccessResult.INSTANCE;
     }
 
     public static Result failure(String message) {

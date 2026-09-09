@@ -24,6 +24,7 @@ public final class OperationResult {
     public boolean isSuccess() {
         return success;
     }
+
     public Optional<String> errorMessage() {
         return Optional.ofNullable(errorMessage);
     }

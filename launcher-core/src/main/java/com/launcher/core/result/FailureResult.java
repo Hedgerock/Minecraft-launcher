@@ -6,6 +6,7 @@ public final class FailureResult implements Result {
     public FailureResult(String message) {
         this.message = message;
     }
+
     @Override
     public boolean success() {
         return false;

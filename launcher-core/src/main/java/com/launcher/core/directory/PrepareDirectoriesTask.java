@@ -2,12 +2,12 @@ package com.launcher.core.directory;
 
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.result.Result;
-import com.launcher.core.result.SuccessResult;
 import com.launcher.core.state.LauncherState;
-import com.launcher.core.task.LauncherTask;
 import com.launcher.core.storage.service.DirectoryService;
+import com.launcher.core.task.LauncherTask;
+import com.launcher.core.task.TaskResult;
 
-public class PrepareDirectoriesTask implements LauncherTask {
+public final class PrepareDirectoriesTask implements LauncherTask {
 
     private final DirectoryService directoryService;
 
@@ -23,6 +23,6 @@ public class PrepareDirectoriesTask implements LauncherTask {
     @Override
     public Result execute(LaunchContext launchContext) {
         directoryService.prepareLauncherDirectories();
-        return new SuccessResult();
+        return TaskResult.success();
     }
 }

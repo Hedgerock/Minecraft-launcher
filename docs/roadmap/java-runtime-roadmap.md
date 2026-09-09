@@ -4,8 +4,8 @@
 
 ## Текущий план
 
-- Определить границу operation failure diagnostics после реализации Java runtime failure model
-- Не поднимать Java-specific failure reason в operation layer без generic failure context
+- Провести ревизию Java runtime flow перед выбором следующей runtime boundary
+- Рассмотреть Java version requirements как следующий минимальный runtime слой
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
 
@@ -56,12 +56,15 @@ Java executable runtime flow доведен до минимального produc
 - Диагностика прав доступа к Java executable
 - Отдельная модель Java installation
 - Интеграция Java runtime selection с будущим profile/version flow
+- Generic operation failure context
+- Structured operation diagnostics
+- Operation failure source/details model
 
 ---
 
 ## Активное направление
 
-- Operation failure diagnostics boundary
+- Java version requirements boundary
 
 ---
 
@@ -73,7 +76,24 @@ Java executable runtime flow доведен до минимального produc
 
 ---
 
-## Почему operation failure diagnostics следующим
+## Почему Java version requirements следующим
+
+Java executable runtime flow уже умеет выбрать Java executable, разрешить command name через PATH-oriented lookup
+и проверить readiness explicit filesystem path
+
+После configured Java override и Java runtime failure model следующий минимальный runtime слой — понять, какие
+Java version requirements могут приходить из manifest metadata или launcher configuration
+
+Этот шаг не требует Java installation discovery, automatic provisioning или fallback policy
+
+На данном этапе важно определить только границу требований к версии Java, а не реализовывать поиск
+подходящей Java installation
+
+---
+
+## История последовательности активных решений
+
+### Operation failure diagnostics
 
 Java runtime failure model уже классифицирует ошибки внутри Java runtime boundary
 
@@ -86,9 +106,7 @@ Java runtime failure model уже классифицирует ошибки вн
 
 Если structured diagnostics потребуется на уровне operation, она должна появиться как generic operation failure context
 
----
-
-## Почему configured Java override первым
+### Configured Java override
 
 Configured Java override является ближайшим развитием после Java executable runtime foundation
 

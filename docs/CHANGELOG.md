@@ -9,11 +9,13 @@
 - Documented Java runtime failure model decision
 - Added shared Java runtime failure exception for classified Java runtime errors
 - Documented operation failure diagnostics decision
+- Documented Java runtime roadmap transition toward Java version requirements
 
 ### Changed
 
 - Changed game launch plan building to pass configured Java executable override into Java runtime selection
 - Changed Java runtime selection to prefer configured Java executable override before manifest metadata
+- Stabilized task result factory usage before future operation failure diagnostics changes
 
 ---
 

@@ -6,6 +6,7 @@
 - Added Java runtime selection request for passing manifest metadata and configured Java override into runtime selection
 - Added `GameLaunchPlanBuilder` port for game launch plan task and operation wiring
 - Added planning builder guidelines for deciding when builders should become contracts
+- Documented Java runtime failure model decision
 
 ### Changed
 

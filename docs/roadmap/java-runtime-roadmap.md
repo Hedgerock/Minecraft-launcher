@@ -4,7 +4,7 @@
 
 ## Текущий план
 
-- Выбрать следующий Java runtime шаг после configured Java override
+- Реализовать минимальную Java runtime failure model после ADR-0039
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
 
@@ -48,7 +48,7 @@ Java executable runtime flow доведен до минимального produc
 - Поиск Java installations вне `PATH`
 - Автоматическая установка Java
 - Fallback policy для отсутствующего Java executable
-- Более структурированная модель ошибок Java runtime
+- Расширенная диагностика Java runtime ошибок
 - Сохранение исходного `cause` в Java executable runtime exceptions
 - Диагностика прав доступа к Java executable
 - Отдельная модель Java installation
@@ -58,14 +58,13 @@ Java executable runtime flow доведен до минимального produc
 
 ## Активное направление
 
-- Выбор следующего Java runtime шага после configured Java override
+- Java runtime failure model
 
 ---
 
 ## Возможные следующие направления
 
 - Java version requirements
-- Java runtime failure model
 - Java installation discovery
 - Java process lifecycle diagnostics
 

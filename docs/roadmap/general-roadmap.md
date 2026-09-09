@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Выбрать следующий Java runtime шаг после configured Java override
+- Реализовать минимальную Java runtime failure model после ADR-0039
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery без подтвержденного сценария
 

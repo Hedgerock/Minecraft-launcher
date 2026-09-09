@@ -8,6 +8,7 @@
 - Added planning builder guidelines for deciding when builders should become contracts
 - Documented Java runtime failure model decision
 - Added shared Java runtime failure exception for classified Java runtime errors
+- Documented operation failure diagnostics decision
 
 ### Changed
 

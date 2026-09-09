@@ -5,6 +5,7 @@ import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.LaunchInfo;
+import com.launcher.model.runtime.JavaVersionRequirement;
 
 import java.util.List;
 
@@ -44,7 +45,8 @@ public final class RecordingManifest {
                                 "test-value.jar",
                                 "test-value2.jar"
                         ),
-                        "java-custom"
+                        "java-custom",
+                        new JavaVersionRequirement(17)
                 ),
                 List.of(
                         new LibraryEntry(

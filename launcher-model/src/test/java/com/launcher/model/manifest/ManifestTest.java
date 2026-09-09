@@ -1,5 +1,6 @@
 package com.launcher.model.manifest;
 
+import com.launcher.model.runtime.JavaVersionRequirement;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -152,7 +153,8 @@ class ManifestTest {
                 List.of("jvm", "arg1", "arg2"),
                 List.of("--username", "Player", "--userRole"),
                 List.of("libraries/example.jar", "client.jar"),
-                "java"
+                "java",
+                new JavaVersionRequirement(17)
         );
     }
 

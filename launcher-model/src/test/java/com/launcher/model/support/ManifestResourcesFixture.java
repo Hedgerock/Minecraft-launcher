@@ -7,6 +7,7 @@ import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ResourceEntry;
+import com.launcher.model.runtime.JavaVersionRequirement;
 
 import java.util.List;
 
@@ -38,7 +39,8 @@ public final class ManifestResourcesFixture {
             List.of("jvm", "arg1", "arg2"),
             List.of("--username", "Player", "--userRole"),
             List.of("classpath-path"),
-            "java"
+            "java",
+            new JavaVersionRequirement(17)
     );
 
     private static final Manifest MANIFEST = new Manifest(

@@ -98,7 +98,10 @@ class HttpManifestLoadingIntegrationTest {
                         "jvmArgs": ["-Xmx2G", "-Djava.class.path=${classpath}"],
                         "gameArgs": ["--version", "${version_name}"],
                         "classpath": ["versions/client.jar"],
-                        "javaExecutable": "java"
+                        "javaExecutable": "java",
+                        "javaVersionRequirement": {
+                            "minimumMajorVersion": 17
+                        }
                     },
                     "libraries": [
                         {

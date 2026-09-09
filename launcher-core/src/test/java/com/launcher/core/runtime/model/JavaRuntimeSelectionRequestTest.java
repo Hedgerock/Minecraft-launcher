@@ -1,6 +1,7 @@
 package com.launcher.core.runtime.model;
 
 import com.launcher.model.manifest.LaunchInfo;
+import com.launcher.model.runtime.JavaVersionRequirement;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -15,7 +16,8 @@ class JavaRuntimeSelectionRequestTest {
             List.of(),
             List.of(),
             List.of("path", "to", "class"),
-            "java-custom"
+            "java-custom",
+            new JavaVersionRequirement(17)
     );
 
     private static final String DEFAULT_JAVA_EXECUTABLE_OVERRIDE = "DefaultValue";

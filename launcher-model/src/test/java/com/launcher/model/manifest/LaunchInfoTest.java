@@ -1,5 +1,6 @@
 package com.launcher.model.manifest;
 
+import com.launcher.model.runtime.JavaVersionRequirement;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -11,6 +12,27 @@ import static org.junit.jupiter.api.Assertions.*;
 class LaunchInfoTest {
 
     @Test
+    void should_reject_null_java_version_requirement() {
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new LaunchInfo(
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        getDefaultClasspath(),
+                        getDefaultJavaExecutable(),
+                        null
+                )
+        );
+
+        assertEquals(
+                "javaVersionRequirement",
+                exception.getMessage()
+        );
+    }
+
+    @Test
     void should_create_launch_info_with_java_executable() {
         //given & when
         LaunchInfo launchInfo = new LaunchInfo(
@@ -18,7 +40,8 @@ class LaunchInfoTest {
                 getDefaultJvmArgs(),
                 getDefaultGameArgs(),
                 getDefaultClasspath(),
-                getDefaultJavaExecutable()
+                getDefaultJavaExecutable(),
+                getDefaultJavaVersionRequirement()
         );
 
         //then
@@ -35,7 +58,8 @@ class LaunchInfoTest {
                         getDefaultJvmArgs(),
                         getDefaultGameArgs(),
                         getDefaultClasspath(),
-                        " "
+                        " ",
+                        getDefaultJavaVersionRequirement()
                 )
         );
 
@@ -52,7 +76,8 @@ class LaunchInfoTest {
                         getDefaultJvmArgs(),
                         getDefaultGameArgs(),
                         getDefaultClasspath(),
-                        null
+                        null,
+                        getDefaultJavaVersionRequirement()
                 )
         );
 
@@ -75,7 +100,8 @@ class LaunchInfoTest {
                 getDefaultJvmArgs(),
                 gameArgs,
                 getDefaultClasspath(),
-                getDefaultJavaExecutable()
+                getDefaultJavaExecutable(),
+                getDefaultJavaVersionRequirement()
         );
 
         //when
@@ -109,7 +135,8 @@ class LaunchInfoTest {
                 jvmArgs,
                 getDefaultGameArgs(),
                 getDefaultClasspath(),
-                getDefaultJavaExecutable()
+                getDefaultJavaExecutable(),
+                getDefaultJavaVersionRequirement()
         );
 
         //when
@@ -143,7 +170,8 @@ class LaunchInfoTest {
                 getDefaultJvmArgs(),
                 getDefaultGameArgs(),
                 classpath,
-                getDefaultJavaExecutable()
+                getDefaultJavaExecutable(),
+                getDefaultJavaVersionRequirement()
         );
 
         //when & then
@@ -172,7 +200,8 @@ class LaunchInfoTest {
                 getDefaultJvmArgs(),
                 getDefaultGameArgs(),
                 classpath,
-                getDefaultJavaExecutable()
+                getDefaultJavaExecutable(),
+                getDefaultJavaVersionRequirement()
         );
 
         //when
@@ -206,7 +235,8 @@ class LaunchInfoTest {
                         getDefaultJvmArgs(),
                         getDefaultGameArgs(),
                         classPathWithNullValue,
-                        getDefaultJavaExecutable()
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement()
                 )
         );
     }
@@ -224,7 +254,8 @@ class LaunchInfoTest {
                         getDefaultJvmArgs(),
                         getDefaultGameArgs(),
                         emptyClasspath,
-                        getDefaultJavaExecutable()
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement()
                 )
         );
 
@@ -243,7 +274,8 @@ class LaunchInfoTest {
                         getDefaultJvmArgs(),
                         getDefaultGameArgs(),
                         null,
-                        getDefaultJavaExecutable()
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement()
                 )
         );
 
@@ -262,7 +294,8 @@ class LaunchInfoTest {
                         null,
                         getDefaultGameArgs(),
                         getDefaultClasspath(),
-                        getDefaultJavaExecutable()
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement()
                 )
         );
 
@@ -281,7 +314,8 @@ class LaunchInfoTest {
                         getDefaultJvmArgs(),
                         null,
                         getDefaultClasspath(),
-                        getDefaultJavaExecutable()
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement()
                 )
         );
 
@@ -304,7 +338,8 @@ class LaunchInfoTest {
                 jvmArgs,
                 getDefaultGameArgs(),
                 getDefaultClasspath(),
-                getDefaultJavaExecutable()
+                getDefaultJavaExecutable(),
+                getDefaultJavaVersionRequirement()
         );
 
         //when & then
@@ -329,7 +364,8 @@ class LaunchInfoTest {
                 getDefaultJvmArgs(),
                 gameArgs,
                 getDefaultClasspath(),
-                getDefaultJavaExecutable()
+                getDefaultJavaExecutable(),
+                getDefaultJavaVersionRequirement()
         );
 
         //when & then
@@ -356,7 +392,8 @@ class LaunchInfoTest {
                         jvmArgs,
                         getDefaultGameArgs(),
                         getDefaultClasspath(),
-                        getDefaultJavaExecutable()
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement()
                 )
         );
 
@@ -379,7 +416,8 @@ class LaunchInfoTest {
                         getDefaultJvmArgs(),
                         gameArgs,
                         getDefaultClasspath(),
-                        getDefaultJavaExecutable()
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement()
                 )
         );
     }
@@ -394,7 +432,8 @@ class LaunchInfoTest {
                         getDefaultJvmArgs(),
                         getDefaultGameArgs(),
                         getDefaultClasspath(),
-                        getDefaultJavaExecutable()
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement()
                 )
         );
 
@@ -413,7 +452,8 @@ class LaunchInfoTest {
                         getDefaultJvmArgs(),
                         getDefaultGameArgs(),
                         getDefaultClasspath(),
-                        getDefaultJavaExecutable()
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement()
                 )
         );
 
@@ -439,5 +479,9 @@ class LaunchInfoTest {
 
     private List<String> getDefaultClasspath() {
         return List.of("libraries/example.jar", "client.jar");
+    }
+
+    private JavaVersionRequirement getDefaultJavaVersionRequirement() {
+        return new JavaVersionRequirement(17);
     }
 }

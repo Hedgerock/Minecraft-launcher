@@ -4,6 +4,7 @@ import com.launcher.core.architecture.support.recording.RecordingJavaExecutableR
 import com.launcher.core.runtime.model.JavaRuntimeSelectionRequest;
 import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.runtime.JavaExecutableReference;
+import com.launcher.model.runtime.JavaVersionRequirement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +33,8 @@ class ManifestJavaRuntimeSelectorTest {
                 List.of(),
                 List.of(),
                 List.of("test-classpath.jar"),
-                "manifest-java"
+                "manifest-java",
+                new JavaVersionRequirement(17)
         );
 
         JavaRuntimeSelectionRequest request = new JavaRuntimeSelectionRequest(
@@ -79,7 +81,8 @@ class ManifestJavaRuntimeSelectorTest {
                 List.of(),
                 List.of(),
                 List.of("test-classpath.jar"),
-                "java-custom"
+                "java-custom",
+                new JavaVersionRequirement(17)
         );
 
         JavaRuntimeSelectionRequest request = JavaRuntimeSelectionRequest.fromManifest(launchInfo);

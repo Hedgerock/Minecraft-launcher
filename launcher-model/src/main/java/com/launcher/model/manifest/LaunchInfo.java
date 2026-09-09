@@ -1,5 +1,7 @@
 package com.launcher.model.manifest;
 
+import com.launcher.model.runtime.JavaVersionRequirement;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -8,7 +10,8 @@ public record LaunchInfo(
         List<String> jvmArgs,
         List<String> gameArgs,
         List<String> classpath,
-        String javaExecutable
+        String javaExecutable,
+        JavaVersionRequirement javaVersionRequirement
 ) {
 
     public LaunchInfo {
@@ -17,6 +20,7 @@ public record LaunchInfo(
         Objects.requireNonNull(gameArgs, "gameArgs");
         Objects.requireNonNull(classpath, "classpath");
         Objects.requireNonNull(javaExecutable, "javaExecutable");
+        Objects.requireNonNull(javaVersionRequirement, "javaVersionRequirement");
 
         validateFieldOnBlankValue(mainClass, "mainClass");
         validateFieldOnBlankValue(javaExecutable, "javaExecutable");

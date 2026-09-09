@@ -379,6 +379,10 @@ class JsonManifestMapperTest {
         );
 
         assertEquals("java", launchInfo.javaExecutable());
+        assertEquals(
+                21,
+                launchInfo.javaVersionRequirement().minimumMajorVersion()
+        );
 
         assertEquals(2, manifest.libraries().size());
 

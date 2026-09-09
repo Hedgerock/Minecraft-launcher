@@ -14,7 +14,10 @@
   "launchInfo": {
     "mainClass": "net.minecraft.client.main.Main",
     "gameArgs": ["--username", "Player"],
-    "javaExecutable": "java"
+    "javaExecutable": "java",
+    "javaVersionRequirement": {
+      "minimumMajorVersion": 17
+    }
   },
   "libraries": [
     {

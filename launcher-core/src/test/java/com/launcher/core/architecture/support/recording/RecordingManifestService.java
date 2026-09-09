@@ -10,6 +10,7 @@ import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
 import com.launcher.model.manifest.natives.NativeExtractionRules;
 import com.launcher.model.manifest.natives.SelectedNativeArtifact;
+import com.launcher.model.runtime.JavaVersionRequirement;
 
 import java.util.List;
 
@@ -134,7 +135,8 @@ public final class RecordingManifestService implements ManifestService {
                         "test-value.jar",
                         "test-value2.jar"
                 ),
-                "java-custom"
+                "java-custom",
+                new JavaVersionRequirement(17)
         );
     }
 

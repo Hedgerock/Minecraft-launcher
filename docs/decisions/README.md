@@ -52,3 +52,4 @@
 | [ADR-0038](ADR-0038-configured-java-override-boundary.md)                 | Граница configured Java override                                  | java runtime       |
 | [ADR-0039](ADR-0039-java-runtime-failure-model.md)                        | Модель ошибок Java runtime                                        | java runtime       |
 | [ADR-0040](ADR-0040-operation-failure-diagnostics-boundary.md)            | Граница operation failure diagnostics                             | operation          |
+| [ADR-0041](ADR-0041-java-version-requirements-boundary.md)                | Граница Java version requirements                                 | java runtime       |

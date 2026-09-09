@@ -10,6 +10,7 @@
 - Added shared Java runtime failure exception for classified Java runtime errors
 - Documented operation failure diagnostics decision
 - Documented Java runtime roadmap transition toward Java version requirements
+- Documented Java version requirements boundary decision
 
 ### Changed
 

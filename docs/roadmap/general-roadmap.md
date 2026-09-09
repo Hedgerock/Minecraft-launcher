@@ -2,8 +2,8 @@
 
 ## Текущий фокус
 
-- Завершить документационное закрепление Java runtime failure model
-- Провести ревизию Java runtime flow перед выбором следующего runtime-направления
+- Определить границу operation failure diagnostics после Java runtime failure model
+- Не расширять operation layer Java-specific failure reason без generic failure context
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery без подтвержденного сценария
 

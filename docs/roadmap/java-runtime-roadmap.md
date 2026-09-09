@@ -4,8 +4,8 @@
 
 ## Текущий план
 
-- Завершить документационное закрепление Java runtime failure model после реализации ADR-0039
-- Провести ревизию Java runtime flow перед выбором следующей runtime boundary
+- Определить границу operation failure diagnostics после реализации Java runtime failure model
+- Не поднимать Java-specific failure reason в operation layer без generic failure context
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
 
@@ -61,7 +61,7 @@ Java executable runtime flow доведен до минимального produc
 
 ## Активное направление
 
-- Java runtime failure model
+- Operation failure diagnostics boundary
 
 ---
 
@@ -70,6 +70,21 @@ Java executable runtime flow доведен до минимального produc
 - Java version requirements
 - Java installation discovery
 - Java process lifecycle diagnostics
+
+---
+
+## Почему operation failure diagnostics следующим
+
+Java runtime failure model уже классифицирует ошибки внутри Java runtime boundary
+
+Однако operation lifecycle по-прежнему получает только текстовое сообщение ошибки
+
+Перед добавлением UI, fallback policy или recovery behavior нужно определить, должна ли structured failure information
+подниматься выше runtime boundary
+
+На текущем шаге важно не протащить Java-specific reason напрямую в operation layer
+
+Если structured diagnostics потребуется на уровне operation, она должна появиться как generic operation failure context
 
 ---
 

@@ -19,6 +19,7 @@
 - Changed game launch plan building to pass configured Java executable override into Java runtime selection
 - Changed Java runtime selection to prefer configured Java executable override before manifest metadata
 - Stabilized task result factory usage before future operation failure diagnostics changes
+- Documented optional ADR alternatives and trade-offs guidance
 
 ---
 

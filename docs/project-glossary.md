@@ -143,8 +143,8 @@ runtime-сценариях
 
 Не выбирает Java executable, не выполняет Java installation discovery и не принимает fallback policy
 
-На момент описания application assembly использует `NoOpJavaRuntimeVersionDetector`, поэтому production parsing
-Java version еще не выполняется
+Application assembly использует `DefaultJavaRuntimeVersionDetector`, который определяет Java runtime version через запуск
+resolved Java executable с аргументом версии и parsing process output
 
 ### JavaExecutableReference
 

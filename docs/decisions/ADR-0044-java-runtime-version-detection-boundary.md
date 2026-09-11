@@ -6,6 +6,13 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(core): add runtime java version detector contract`
+> `feat(core): wire java runtime version detection into launch planning`
+> `feat(app): parse java runtime version output`
+> `feat(app): detect java runtime version from executable`
+> `feat(app): wire default java runtime version detector`
+
 ---
 
 ## Контекст

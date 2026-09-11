@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Довести Java runtime version detection flow до adapter-level реализации без Java installation discovery
+- Довести Java runtime compatibility flow до production проверки без fallback policy
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не расширять operation layer Java-specific failure reason без generic failure context

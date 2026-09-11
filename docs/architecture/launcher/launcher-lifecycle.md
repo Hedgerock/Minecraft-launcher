@@ -132,8 +132,8 @@ Application assembly использует `SystemJavaCommandPathEnvironmentProvi
 
 После readiness check `GameLaunchPlanBuilder` определяет фактическую `JavaRuntimeVersion` через `JavaRuntimeVersionDetector`
 
-На момент описания application assembly использует `NoOpJavaRuntimeVersionDetector`, поэтому production parsing Java
-version еще не выполняется
+Application assembly использует `DefaultJavaRuntimeVersionDetector`, который запускает resolved Java executable с
+аргументом версии, объединяет process output и передает его в parser `JavaRuntimeVersionOutputParser`
 
 После detection `GameLaunchPlanBuilder` передает detected `JavaRuntimeVersion` и `LaunchInfo.javaVersionRequirement` в
 `JavaRuntimeCompatibilityChecker`

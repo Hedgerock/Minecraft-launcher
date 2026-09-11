@@ -19,6 +19,7 @@
 - Added Java runtime version model
 - Documented Java runtime version detection boundary decision
 - Wired Java runtime version detection boundary into game launch planning
+- Added default Java runtime version detector and wired it into application assembly
 
 ### Changed
 

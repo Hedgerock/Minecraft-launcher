@@ -26,6 +26,7 @@
 - Зафиксирована граница проверки совместимости Java version
 - Добавлен контракт Java runtime compatibility boundary
 - Java runtime compatibility boundary подключена в launch planning через `NoOpJavaRuntimeCompatibilityChecker`
+- Добавлена модель `JavaRuntimeVersion` для выражения фактически обнаруженной major version Java
 
 ---
 

@@ -175,6 +175,14 @@ Resolver не выполняет PATH resolution, не проверяет сущ
 
 Не описывает Java executable, installation path, способ поиска Java или fallback policy
 
+### JavaRuntimeVersion
+
+Модель фактически обнаруженной версии Java runtime
+
+Содержит major version выбранного Java executable
+
+Не описывает Java executable, installation path, способ определения версии Java или fallback policy
+
 ### JavaCommandPathResolver
 
 Контракт преобразования `JavaExecutableReference` типа command name в `JavaExecutableReference` типа explicit

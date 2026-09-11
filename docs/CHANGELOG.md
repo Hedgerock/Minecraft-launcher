@@ -16,6 +16,7 @@
 - Mapped Java version requirement from manifest JSON into `LaunchInfo`
 - Documented Java version compatibility boundary decision
 - Added Java runtime compatibility boundary and wired it into game launch plan building
+- Added Java runtime version model
 
 ### Changed
 

@@ -17,6 +17,7 @@
 - Documented Java version compatibility boundary decision
 - Added Java runtime compatibility boundary and wired it into game launch plan building
 - Added Java runtime version model
+- Documented Java runtime version detection boundary decision
 
 ### Changed
 

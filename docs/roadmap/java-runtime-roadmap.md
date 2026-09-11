@@ -4,7 +4,8 @@
 
 ## Текущий план
 
-- Провести ревизию Java version compatibility flow перед выбором adapter-level реализации
+- Реализовать Java runtime version detection boundary без Java installation discovery
+- Не смешивать version detection с compatibility decision и fallback policy
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
 
@@ -27,6 +28,7 @@
 - Добавлен контракт Java runtime compatibility boundary
 - Java runtime compatibility boundary подключена в launch planning через `NoOpJavaRuntimeCompatibilityChecker`
 - Добавлена модель `JavaRuntimeVersion` для выражения фактически обнаруженной major version Java
+- Зафиксирована граница определения Java runtime version
 
 ---
 
@@ -69,7 +71,7 @@ Java executable runtime flow доведен до минимального produc
 
 ## Активное направление
 
-- Java version compatibility boundary
+- Java runtime version detection boundary
 
 ---
 
@@ -81,7 +83,27 @@ Java executable runtime flow доведен до минимального produc
 
 ---
 
-## Почему Java version compatibility следующим
+## Почему Java runtime version detection следующим
+
+Java executable runtime flow уже умеет выбирать Java executable, разрешить command name через PATH-oriented lookup и
+проверить readiness explicit filesystem path
+
+После появления `JavaVersionRequirement`, manifest source для requirement и compatibility boundary следующий минимальный
+runtime слой — определить фактическую `JavaRuntimeVersion` выбранного Java executable
+
+Этот шаг не требует Java installation discovery, automatic provisioning или fallback policy
+
+На момент принятия решения важно реализовать только detection boundary, а не поиск подходящей Java installation или
+автоматический выбор альтернативной Java version
+
+Если выбранный executable не сможет предоставить корректную runtime version, launcher должен получить явную runtime
+failure, но не должен автоматически искать другую Java installation без отдельного решения
+
+---
+
+## История последовательности активных решений
+
+### Java version compatibility
 
 Java executable runtime flow уже умеет выбрать Java executable, разрешить command name через PATH-oriented lookup и
 проверить readiness explicit filesystem path
@@ -95,10 +117,6 @@ Java executable runtime flow уже умеет выбрать Java executable, �
 
 Если выбранный executable не соответствует требованию, launcher должен получить явную runtime failure, но не должен
 автоматически искать альтернативную Java installation без отдельного решения
-
----
-
-## История последовательности активных решений
 
 ### Java version requirements
 

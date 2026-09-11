@@ -55,3 +55,4 @@
 | [ADR-0041](ADR-0041-java-version-requirements-boundary.md)                | Граница Java version requirements                                 | java runtime       |
 | [ADR-0042](ADR-0042-manifest-java-version-requirement-source.md)          | Manifest source для Java version requirement                      | java runtime       |
 | [ADR-0043](ADR-0043-java-version-compatibility-boundary.md)               | Граница проверки совместимости Java version                       | java runtime       |
+| [ADR-0044](ADR-0044-java-runtime-version-detection-boundary.md)           | Граница определения Java runtime version                          | java runtime       |

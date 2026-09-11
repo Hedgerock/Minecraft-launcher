@@ -7,6 +7,7 @@
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не расширять operation layer Java-specific failure reason без generic failure context
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
+- После Java runtime compatibility flow усилить integration coverage для launch planning и Java runtime foundation
 
 ---
 

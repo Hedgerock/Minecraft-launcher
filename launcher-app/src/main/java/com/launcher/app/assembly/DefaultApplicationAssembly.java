@@ -3,12 +3,13 @@ package com.launcher.app.assembly;
 import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.app.infrastructure.factory.DefaultLauncherInfrastructureFactory;
 import com.launcher.app.infrastructure.factory.LauncherInfrastructureFactory;
+import com.launcher.app.runtime.SystemRuntimeEnvironmentProvider;
+import com.launcher.app.runtime.detection.DefaultJavaRuntimeVersionDetector;
+import com.launcher.app.runtime.javaexecutable.checker.DefaultJavaExecutableReadinessChecker;
+import com.launcher.app.runtime.javaexecutable.resolver.provider.SystemJavaCommandPathEnvironmentProvider;
 import com.launcher.app.service.LauncherServices;
 import com.launcher.app.service.factory.DefaultLauncherServiceFactory;
 import com.launcher.app.service.factory.LauncherServicesFactory;
-import com.launcher.app.runtime.SystemRuntimeEnvironmentProvider;
-import com.launcher.app.runtime.javaexecutable.checker.DefaultJavaExecutableReadinessChecker;
-import com.launcher.app.runtime.javaexecutable.resolver.provider.SystemJavaCommandPathEnvironmentProvider;
 import com.launcher.app.storage.directory.LocalDirectoryProvider;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
@@ -38,7 +39,6 @@ import com.launcher.core.runtime.RuntimeEnvironmentProvider;
 import com.launcher.core.runtime.compatibility.JavaRuntimeCompatibilityChecker;
 import com.launcher.core.runtime.compatibility.NoOpJavaRuntimeCompatibilityChecker;
 import com.launcher.core.runtime.detection.JavaRuntimeVersionDetector;
-import com.launcher.core.runtime.detection.NoOpJavaRuntimeVersionDetector;
 import com.launcher.core.runtime.javaexecutable.checker.JavaExecutableReadinessChecker;
 import com.launcher.core.runtime.javaexecutable.resolver.DefaultJavaCommandPathResolver;
 import com.launcher.core.runtime.javaexecutable.resolver.JavaCommandPathResolver;
@@ -95,7 +95,7 @@ public final class DefaultApplicationAssembly implements ApplicationAssembly {
                 javaCommandPathEnvironmentProvider.current()
         );
 
-        JavaRuntimeVersionDetector javaRuntimeVersionDetector = new NoOpJavaRuntimeVersionDetector();
+        JavaRuntimeVersionDetector javaRuntimeVersionDetector = new DefaultJavaRuntimeVersionDetector();
         JavaRuntimeCompatibilityChecker javaRuntimeCompatibilityChecker =
                 new NoOpJavaRuntimeCompatibilityChecker();
 

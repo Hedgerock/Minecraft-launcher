@@ -116,6 +116,22 @@ runtime-сценариях
 
 ## Runtime
 
+### JavaRuntimeCompatibilityChecker
+
+Контракт проверки совместимости выбранного Java executable с `JavaVersionRequirement`
+
+Получает уже resolved `JavaExecutableReference` и требование версии Java
+
+Не выбирает Java executable, не выполняет Java installation discovery и не строит команду запуска
+
+### JavaRuntimeCompatibilityRequest
+
+Модель входных данных для проверки Java runtime compatibility
+
+Содержит resolved `JavaExecutableReference` и `JavaVersionRequirement`
+
+Используется после Java runtime selection, PATH resolution и readiness check
+
 ### JavaExecutableReference
 
 Модель смысловой ссылки на Java executable

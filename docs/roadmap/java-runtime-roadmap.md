@@ -4,8 +4,7 @@
 
 ## Текущий план
 
-- Провести ревизию Java runtime flow перед выбором следующей runtime boundary
-- Реализовать Java version compatibility boundary без Java installation discovery
+- Провести ревизию Java version compatibility flow перед выбором adapter-level реализации
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
 
@@ -25,6 +24,8 @@
 - Добавлена модель `JavaVersionRequirement` для выражения минимального требования к major version Java
 - Manifest JSON теперь является источником `JavaVersionRequirement` для `LaunchInfo`
 - Зафиксирована граница проверки совместимости Java version
+- Добавлен контракт Java runtime compatibility boundary
+- Java runtime compatibility boundary подключена в launch planning через `NoOpJavaRuntimeCompatibilityChecker`
 
 ---
 

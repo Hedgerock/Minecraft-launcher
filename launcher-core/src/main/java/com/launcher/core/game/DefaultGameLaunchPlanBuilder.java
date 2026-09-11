@@ -6,6 +6,8 @@ import com.launcher.core.game.classpath.builder.GameClasspathBuilder;
 import com.launcher.core.game.classpath.formatter.ClasspathFormatter;
 import com.launcher.core.resolve.model.LaunchVariables;
 import com.launcher.core.runtime.JavaRuntimeSelector;
+import com.launcher.core.runtime.compatibility.JavaRuntimeCompatibilityChecker;
+import com.launcher.core.runtime.compatibility.model.JavaRuntimeCompatibilityRequest;
 import com.launcher.core.runtime.javaexecutable.checker.JavaExecutableReadinessChecker;
 import com.launcher.core.runtime.javaexecutable.resolver.JavaCommandPathResolver;
 import com.launcher.core.runtime.model.JavaRuntimeSelectionRequest;
@@ -28,6 +30,7 @@ public final class DefaultGameLaunchPlanBuilder implements GameLaunchPlanBuilder
     private final JavaRuntimeSelector javaRuntimeSelector;
     private final JavaExecutableReadinessChecker javaExecutableReadinessChecker;
     private final JavaCommandPathResolver javaCommandPathResolver;
+    private final JavaRuntimeCompatibilityChecker javaRuntimeCompatibilityChecker;
 
     public DefaultGameLaunchPlanBuilder(
             DirectoryProvider directoryProvider,
@@ -36,7 +39,8 @@ public final class DefaultGameLaunchPlanBuilder implements GameLaunchPlanBuilder
             ClasspathFormatter classpathFormatter,
             JavaRuntimeSelector javaRuntimeSelector,
             JavaExecutableReadinessChecker javaExecutableReadinessChecker,
-            JavaCommandPathResolver javaCommandPathResolver
+            JavaCommandPathResolver javaCommandPathResolver,
+            JavaRuntimeCompatibilityChecker javaRuntimeCompatibilityChecker
     ) {
         this.directoryProvider = directoryProvider;
         this.launchCommandBuilder = launchCommandBuilder;
@@ -45,6 +49,7 @@ public final class DefaultGameLaunchPlanBuilder implements GameLaunchPlanBuilder
         this.javaRuntimeSelector = javaRuntimeSelector;
         this.javaExecutableReadinessChecker = javaExecutableReadinessChecker;
         this.javaCommandPathResolver = javaCommandPathResolver;
+        this.javaRuntimeCompatibilityChecker = javaRuntimeCompatibilityChecker;
     }
 
     public GameLaunchPlan build(
@@ -101,6 +106,13 @@ public final class DefaultGameLaunchPlanBuilder implements GameLaunchPlanBuilder
                 javaCommandPathResolver.resolve(selectedJavaExecutableReference);
 
         javaExecutableReadinessChecker.checkReady(resolvedJavaExecutableReference);
+
+        javaRuntimeCompatibilityChecker.checkCompatible(
+                new JavaRuntimeCompatibilityRequest(
+                        resolvedJavaExecutableReference,
+                        launchInfo.javaVersionRequirement()
+                )
+        );
 
         List<String> command =
                 launchCommandBuilder.build(

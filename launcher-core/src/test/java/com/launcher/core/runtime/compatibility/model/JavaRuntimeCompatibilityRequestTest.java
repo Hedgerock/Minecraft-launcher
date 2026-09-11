@@ -1,6 +1,6 @@
 package com.launcher.core.runtime.compatibility.model;
 
-import com.launcher.model.runtime.JavaExecutableReference;
+import com.launcher.model.runtime.JavaRuntimeVersion;
 import com.launcher.model.runtime.JavaVersionRequirement;
 import org.junit.jupiter.api.Test;
 
@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JavaRuntimeCompatibilityRequestTest {
-    private static final JavaExecutableReference DEFAULT_RESOLVED_JAVA_EXECUTABLE_REFERENCE =
-            JavaExecutableReference.explicitPath("runtime/java/bin/java");
+    private static final JavaRuntimeVersion DEFAULT_JAVA_RUNTIME_VERSION =
+            new JavaRuntimeVersion(21);
 
     private static final JavaVersionRequirement DEFAULT_JAVA_VERSION_REQUIREMENT =
             new JavaVersionRequirement(17);
@@ -18,14 +18,14 @@ class JavaRuntimeCompatibilityRequestTest {
     void should_create_request() {
         //given & when
         JavaRuntimeCompatibilityRequest result = new JavaRuntimeCompatibilityRequest(
-                DEFAULT_RESOLVED_JAVA_EXECUTABLE_REFERENCE,
+                DEFAULT_JAVA_RUNTIME_VERSION,
                 DEFAULT_JAVA_VERSION_REQUIREMENT
         );
 
         //then
         assertEquals(
-                DEFAULT_RESOLVED_JAVA_EXECUTABLE_REFERENCE,
-                result.resolvedJavaExecutableReference()
+                DEFAULT_JAVA_RUNTIME_VERSION,
+                result.javaRuntimeVersion()
         );
         assertEquals(
                 DEFAULT_JAVA_VERSION_REQUIREMENT,
@@ -39,7 +39,7 @@ class JavaRuntimeCompatibilityRequestTest {
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new JavaRuntimeCompatibilityRequest(
-                        DEFAULT_RESOLVED_JAVA_EXECUTABLE_REFERENCE,
+                        DEFAULT_JAVA_RUNTIME_VERSION,
                         null
                 )
         );
@@ -48,7 +48,7 @@ class JavaRuntimeCompatibilityRequestTest {
     }
 
     @Test
-    void should_reject_null_resolved_java_executable_reference() {
+    void should_reject_null_java_runtime_version() {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
@@ -58,6 +58,6 @@ class JavaRuntimeCompatibilityRequestTest {
                 )
         );
 
-        assertEquals("resolvedJavaExecutableReference", exception.getMessage());
+        assertEquals("javaRuntimeVersion", exception.getMessage());
     }
 }

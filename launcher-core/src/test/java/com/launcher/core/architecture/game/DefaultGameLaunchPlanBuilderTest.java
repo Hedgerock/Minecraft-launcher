@@ -8,6 +8,7 @@ import com.launcher.core.architecture.support.recording.RecordingJavaCommandPath
 import com.launcher.core.architecture.support.recording.RecordingJavaExecutableReadinessChecker;
 import com.launcher.core.architecture.support.recording.RecordingJavaRuntimeCompatibilityChecker;
 import com.launcher.core.architecture.support.recording.RecordingJavaRuntimeSelector;
+import com.launcher.core.architecture.support.recording.RecordingJavaRuntimeVersionDetector;
 import com.launcher.core.architecture.support.recording.RecordingManifestService;
 import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.game.DefaultGameLaunchPlanBuilder;
@@ -38,6 +39,7 @@ class DefaultGameLaunchPlanBuilderTest {
     private RecordingJavaRuntimeSelector recordingJavaRuntimeSelector;
     private RecordingJavaExecutableReadinessChecker recordingJavaExecutableReadinessChecker;
     private RecordingJavaCommandPathResolver recordingJavaCommandPathResolver;
+    private RecordingJavaRuntimeVersionDetector recordingJavaRuntimeVersionDetector;
     private RecordingJavaRuntimeCompatibilityChecker recordingJavaRuntimeCompatibilityChecker;
 
     @BeforeEach
@@ -50,11 +52,12 @@ class DefaultGameLaunchPlanBuilderTest {
         recordingJavaRuntimeSelector = new RecordingJavaRuntimeSelector();
         recordingJavaExecutableReadinessChecker = new RecordingJavaExecutableReadinessChecker();
         recordingJavaCommandPathResolver = new RecordingJavaCommandPathResolver();
+        recordingJavaRuntimeVersionDetector = new RecordingJavaRuntimeVersionDetector();
         recordingJavaRuntimeCompatibilityChecker = new RecordingJavaRuntimeCompatibilityChecker();
     }
 
     @Test
-    void should_check_java_runtime_compatibility_with_resolved_java_executable_and_requirement() {
+    void should_check_java_runtime_compatibility_with_detected_java_runtime_version_and_requirement() {
         //given
         DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
                 directoryProvider,
@@ -64,6 +67,7 @@ class DefaultGameLaunchPlanBuilderTest {
                 recordingJavaRuntimeSelector,
                 recordingJavaExecutableReadinessChecker,
                 recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
                 recordingJavaRuntimeCompatibilityChecker
         );
 
@@ -77,7 +81,14 @@ class DefaultGameLaunchPlanBuilderTest {
         //then
         assertEquals(
                 recordingJavaCommandPathResolver.getResolvedJavaExecutableReference(),
-                recordingJavaRuntimeCompatibilityChecker.getRequest().resolvedJavaExecutableReference()
+                recordingJavaRuntimeVersionDetector
+                        .getRequest()
+                        .resolvedJavaExecutableReference()
+        );
+
+        assertEquals(
+                recordingJavaRuntimeVersionDetector.getJavaRuntimeVersion(),
+                recordingJavaRuntimeCompatibilityChecker.getRequest().javaRuntimeVersion()
         );
 
         assertEquals(
@@ -97,6 +108,7 @@ class DefaultGameLaunchPlanBuilderTest {
                 recordingJavaRuntimeSelector,
                 recordingJavaExecutableReadinessChecker,
                 recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
                 recordingJavaRuntimeCompatibilityChecker
         );
 
@@ -129,6 +141,7 @@ class DefaultGameLaunchPlanBuilderTest {
                 recordingJavaRuntimeSelector,
                 recordingJavaExecutableReadinessChecker,
                 recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
                 recordingJavaRuntimeCompatibilityChecker
         );
 
@@ -157,6 +170,7 @@ class DefaultGameLaunchPlanBuilderTest {
                 recordingJavaRuntimeSelector,
                 recordingJavaExecutableReadinessChecker,
                 recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
                 recordingJavaRuntimeCompatibilityChecker
         );
 
@@ -186,6 +200,7 @@ class DefaultGameLaunchPlanBuilderTest {
                 recordingJavaRuntimeSelector,
                 recordingJavaExecutableReadinessChecker,
                 recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
                 recordingJavaRuntimeCompatibilityChecker
         );
 
@@ -209,6 +224,7 @@ class DefaultGameLaunchPlanBuilderTest {
         assertNull(recordingJavaExecutableReadinessChecker.getJavaExecutableReference());
         assertNull(launchCommandBuilder.getLaunchInfo());
         assertNull(recordingJavaRuntimeCompatibilityChecker.getRequest());
+        assertNull(recordingJavaRuntimeVersionDetector.getRequest());
     }
 
     @Test
@@ -222,6 +238,7 @@ class DefaultGameLaunchPlanBuilderTest {
                 recordingJavaRuntimeSelector,
                 recordingJavaExecutableReadinessChecker,
                 recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
                 recordingJavaRuntimeCompatibilityChecker
         );
 
@@ -240,6 +257,7 @@ class DefaultGameLaunchPlanBuilderTest {
         assertNull(launchCommandBuilder.getLaunchInfo());
         assertNull(recordingJavaExecutableReadinessChecker.getJavaExecutableReference());
         assertNull(recordingJavaRuntimeCompatibilityChecker.getRequest());
+        assertNull(recordingJavaRuntimeVersionDetector.getRequest());
     }
 
     @Test
@@ -253,6 +271,7 @@ class DefaultGameLaunchPlanBuilderTest {
                 recordingJavaRuntimeSelector,
                 recordingJavaExecutableReadinessChecker,
                 recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
                 recordingJavaRuntimeCompatibilityChecker
         );
 
@@ -281,6 +300,7 @@ class DefaultGameLaunchPlanBuilderTest {
                 recordingJavaRuntimeSelector,
                 recordingJavaExecutableReadinessChecker,
                 recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
                 recordingJavaRuntimeCompatibilityChecker
         );
 
@@ -315,6 +335,7 @@ class DefaultGameLaunchPlanBuilderTest {
                 recordingJavaRuntimeSelector,
                 recordingJavaExecutableReadinessChecker,
                 recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
                 recordingJavaRuntimeCompatibilityChecker
         );
 
@@ -341,6 +362,7 @@ class DefaultGameLaunchPlanBuilderTest {
                 recordingJavaRuntimeSelector,
                 recordingJavaExecutableReadinessChecker,
                 recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
                 recordingJavaRuntimeCompatibilityChecker
         );
 
@@ -367,6 +389,7 @@ class DefaultGameLaunchPlanBuilderTest {
                 recordingJavaRuntimeSelector,
                 recordingJavaExecutableReadinessChecker,
                 recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
                 recordingJavaRuntimeCompatibilityChecker
         );
 

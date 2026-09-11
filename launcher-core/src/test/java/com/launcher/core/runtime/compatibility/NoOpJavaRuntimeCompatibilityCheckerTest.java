@@ -1,7 +1,7 @@
 package com.launcher.core.runtime.compatibility;
 
 import com.launcher.core.runtime.compatibility.model.JavaRuntimeCompatibilityRequest;
-import com.launcher.model.runtime.JavaExecutableReference;
+import com.launcher.model.runtime.JavaRuntimeVersion;
 import com.launcher.model.runtime.JavaVersionRequirement;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ class NoOpJavaRuntimeCompatibilityCheckerTest {
     void should_accept_request() {
         //given
         JavaRuntimeCompatibilityRequest request = new JavaRuntimeCompatibilityRequest(
-                JavaExecutableReference.explicitPath("runtime/java/bin/java"),
+                new JavaRuntimeVersion(21),
                 new JavaVersionRequirement(17)
         );
 

@@ -22,6 +22,7 @@ import com.launcher.core.resolve.DefaultLaunchArgumentResolver;
 import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.runtime.ManifestJavaRuntimeSelector;
 import com.launcher.core.runtime.compatibility.NoOpJavaRuntimeCompatibilityChecker;
+import com.launcher.core.runtime.detection.NoOpJavaRuntimeVersionDetector;
 import com.launcher.core.runtime.javaexecutable.checker.NoOpJavaExecutableReadinessChecker;
 import com.launcher.core.runtime.javaexecutable.resolver.ManifestJavaExecutableReferenceResolver;
 import com.launcher.core.runtime.javaexecutable.resolver.NoOpJavaCommandPathResolver;
@@ -55,6 +56,7 @@ public class OperationFactoryFixture {
                 ),
                 new NoOpJavaExecutableReadinessChecker(),
                 new NoOpJavaCommandPathResolver(),
+                new NoOpJavaRuntimeVersionDetector(),
                 new NoOpJavaRuntimeCompatibilityChecker()
         );
     }

@@ -8,6 +8,8 @@ import com.launcher.core.resolve.model.LaunchVariables;
 import com.launcher.core.runtime.JavaRuntimeSelector;
 import com.launcher.core.runtime.compatibility.JavaRuntimeCompatibilityChecker;
 import com.launcher.core.runtime.compatibility.model.JavaRuntimeCompatibilityRequest;
+import com.launcher.core.runtime.detection.JavaRuntimeVersionDetector;
+import com.launcher.core.runtime.detection.model.JavaRuntimeVersionDetectionRequest;
 import com.launcher.core.runtime.javaexecutable.checker.JavaExecutableReadinessChecker;
 import com.launcher.core.runtime.javaexecutable.resolver.JavaCommandPathResolver;
 import com.launcher.core.runtime.model.JavaRuntimeSelectionRequest;
@@ -16,6 +18,7 @@ import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
 import com.launcher.model.runtime.JavaExecutableReference;
+import com.launcher.model.runtime.JavaRuntimeVersion;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -30,6 +33,7 @@ public final class DefaultGameLaunchPlanBuilder implements GameLaunchPlanBuilder
     private final JavaRuntimeSelector javaRuntimeSelector;
     private final JavaExecutableReadinessChecker javaExecutableReadinessChecker;
     private final JavaCommandPathResolver javaCommandPathResolver;
+    private final JavaRuntimeVersionDetector javaRuntimeVersionDetector;
     private final JavaRuntimeCompatibilityChecker javaRuntimeCompatibilityChecker;
 
     public DefaultGameLaunchPlanBuilder(
@@ -40,6 +44,7 @@ public final class DefaultGameLaunchPlanBuilder implements GameLaunchPlanBuilder
             JavaRuntimeSelector javaRuntimeSelector,
             JavaExecutableReadinessChecker javaExecutableReadinessChecker,
             JavaCommandPathResolver javaCommandPathResolver,
+            JavaRuntimeVersionDetector javaRuntimeVersionDetector,
             JavaRuntimeCompatibilityChecker javaRuntimeCompatibilityChecker
     ) {
         this.directoryProvider = directoryProvider;
@@ -49,6 +54,7 @@ public final class DefaultGameLaunchPlanBuilder implements GameLaunchPlanBuilder
         this.javaRuntimeSelector = javaRuntimeSelector;
         this.javaExecutableReadinessChecker = javaExecutableReadinessChecker;
         this.javaCommandPathResolver = javaCommandPathResolver;
+        this.javaRuntimeVersionDetector = javaRuntimeVersionDetector;
         this.javaRuntimeCompatibilityChecker = javaRuntimeCompatibilityChecker;
     }
 
@@ -107,9 +113,13 @@ public final class DefaultGameLaunchPlanBuilder implements GameLaunchPlanBuilder
 
         javaExecutableReadinessChecker.checkReady(resolvedJavaExecutableReference);
 
+        JavaRuntimeVersion javaRuntimeVersion = javaRuntimeVersionDetector.detect(
+                new JavaRuntimeVersionDetectionRequest(resolvedJavaExecutableReference)
+        );
+
         javaRuntimeCompatibilityChecker.checkCompatible(
                 new JavaRuntimeCompatibilityRequest(
-                        resolvedJavaExecutableReference,
+                        javaRuntimeVersion,
                         launchInfo.javaVersionRequirement()
                 )
         );

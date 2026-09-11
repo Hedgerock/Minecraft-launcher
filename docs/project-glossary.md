@@ -118,19 +118,33 @@ runtime-сценариях
 
 ### JavaRuntimeCompatibilityChecker
 
-Контракт проверки совместимости выбранного Java executable с `JavaVersionRequirement`
+Контракт проверки совместимости detected Java runtime version с `JavaVersionRequirement`
 
-Получает уже resolved `JavaExecutableReference` и требование версии Java
+Получает уже определенную `JavaRuntimeVersion` и требование версии Java
 
-Не выбирает Java executable, не выполняет Java installation discovery и не строит команду запуска
+Не выбирает Java executable, не определяет runtime version, не выполняет Java installation discovery и не
+строит команду запуска
+
+На момент описания application assembly использует `NoOpJavaRuntimeCompatibilityChecker`, поэтому production проверка
+совместимости Java version еще не выполняется
 
 ### JavaRuntimeCompatibilityRequest
 
 Модель входных данных для проверки Java runtime compatibility
 
-Содержит resolved `JavaExecutableReference` и `JavaVersionRequirement`
+Содержит detected `JavaRuntimeVersion` и `JavaVersionRequirement`
 
-Используется после Java runtime selection, PATH resolution и readiness check
+Не содержит `JavaExecutableReference`, потому что получение фактической версии Java runtime вынесено в
+`JavaRuntimeVersionDetector`
+
+### JavaRuntimeVersionDetector
+
+Контракт определения фактической `JavaRuntimeVersion` для already resolved `JavaExecutableReference`
+
+Не выбирает Java executable, не выполняет Java installation discovery и не принимает fallback policy
+
+На момент описания application assembly использует `NoOpJavaRuntimeVersionDetector`, поэтому production parsing
+Java version еще не выполняется
 
 ### JavaExecutableReference
 

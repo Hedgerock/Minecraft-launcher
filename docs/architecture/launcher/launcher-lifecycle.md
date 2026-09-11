@@ -130,6 +130,19 @@ Application assembly использует `SystemJavaCommandPathEnvironmentProvi
 Некорректные entries из `PATH` игнорируются provider-ом, чтобы corrupted system environment не ломало создание
 `LauncherEngine`
 
+После readiness check `GameLaunchPlanBuilder` определяет фактическую `JavaRuntimeVersion` через `JavaRuntimeVersionDetector`
+
+На момент описания application assembly использует `NoOpJavaRuntimeVersionDetector`, поэтому production parsing Java
+version еще не выполняется
+
+После detection `GameLaunchPlanBuilder` передает detected `JavaRuntimeVersion` и `LaunchInfo.javaVersionRequirement` в
+`JavaRuntimeCompatibilityChecker`
+
+На момент описания application assembly использует `NoOpJavaRuntimeCompatibilityChecker`, поэтому production проверка
+совместимости Java version еще не выполняется
+
+После compatibility check `GameLaunchPlanBuilder` передает resolved reference в `GameLaunchCommandBuilder`
+
 Если `Manifest` не содержит `LaunchInfo`, `BUILD_GAME_LAUNCH_PLAN` завершается ошибкой, launcher переходит в `FAILED`
 
 Если `BUILD_GAME_LAUNCH_PLAN` завершается с ошибкой, launcher переходит в `FAILED`

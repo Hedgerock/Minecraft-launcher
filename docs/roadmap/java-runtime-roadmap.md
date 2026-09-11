@@ -4,7 +4,7 @@
 
 ## Текущий план
 
-- Реализовать Java runtime version detection boundary без Java installation discovery
+- Реализовать adapter-level Java runtime version detection без Java installation discovery
 - Не смешивать version detection с compatibility decision и fallback policy
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
@@ -29,6 +29,8 @@
 - Java runtime compatibility boundary подключена в launch planning через `NoOpJavaRuntimeCompatibilityChecker`
 - Добавлена модель `JavaRuntimeVersion` для выражения фактически обнаруженной major version Java
 - Зафиксирована граница определения Java runtime version
+- Java runtime version detection boundary подключена в launch planning через `NoOpJavaRuntimeVersionDetector`
+- `JavaRuntimeCompatibilityRequest` переведен на detected `JavaRuntimeVersion`
 
 ---
 

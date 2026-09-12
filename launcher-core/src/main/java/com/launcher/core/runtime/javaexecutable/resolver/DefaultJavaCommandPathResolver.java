@@ -1,7 +1,7 @@
 package com.launcher.core.runtime.javaexecutable.resolver;
 
 import com.launcher.core.runtime.javaexecutable.exception.JavaCommandPathResolutionException;
-import com.launcher.core.runtime.javaexecutable.exception.JavaRuntimeFailureReason;
+import com.launcher.core.runtime.JavaRuntimeFailureReason;
 import com.launcher.core.runtime.javaexecutable.resolver.model.JavaCommandPathEnvironment;
 import com.launcher.model.runtime.JavaExecutableReference;
 

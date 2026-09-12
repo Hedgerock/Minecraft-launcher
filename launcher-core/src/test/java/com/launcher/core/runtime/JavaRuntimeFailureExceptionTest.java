@@ -1,4 +1,4 @@
-package com.launcher.core.runtime.javaexecutable.exception;
+package com.launcher.core.runtime;
 
 import org.junit.jupiter.api.Test;
 

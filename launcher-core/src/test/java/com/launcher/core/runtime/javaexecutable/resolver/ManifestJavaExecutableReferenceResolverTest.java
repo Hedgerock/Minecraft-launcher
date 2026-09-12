@@ -1,7 +1,7 @@
 package com.launcher.core.runtime.javaexecutable.resolver;
 
 import com.launcher.core.runtime.javaexecutable.exception.JavaExecutableReferenceResolutionException;
-import com.launcher.core.runtime.javaexecutable.exception.JavaRuntimeFailureReason;
+import com.launcher.core.runtime.JavaRuntimeFailureReason;
 import com.launcher.model.runtime.JavaExecutableReference;
 import org.junit.jupiter.api.Test;
 

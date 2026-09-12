@@ -1,4 +1,4 @@
-package com.launcher.core.runtime.javaexecutable.exception;
+package com.launcher.core.runtime;
 
 public enum JavaRuntimeFailureReason {
     INVALID_RAW_JAVA_EXECUTABLE_VALUE,
@@ -6,5 +6,6 @@ public enum JavaRuntimeFailureReason {
     NON_EXPLICIT_JAVA_EXECUTABLE_REFERENCE,
     INVALID_EXPLICIT_PATH,
     JAVA_EXECUTABLE_NOT_FOUND,
-    JAVA_EXECUTABLE_NOT_REGULAR_FILE
+    JAVA_EXECUTABLE_NOT_REGULAR_FILE,
+    INCOMPATIBLE_JAVA_VERSION
 }

@@ -5,6 +5,7 @@
 ## Текущий план
 
 - Провести ревизию Java runtime compatibility flow перед следующим runtime decision
+- Усилить integration coverage Java runtime compatibility flow перед выбором следующего runtime candidate
 - Не смешивать version detection с compatibility decision и fallback policy
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
@@ -36,6 +37,7 @@
 - Application assembly переведен на `DefaultJavaRuntimeVersionDetector`
 - Добавлен production Java runtime compatibility check
 - Application assembly переведен на `DefaultJavaRuntimeCompatibilityChecker`
+- Усилено test coverage Java runtime compatibility failure path в launch planning
 
 ---
 
@@ -105,6 +107,8 @@ Application assembly использует `DefaultJavaRuntimeCompatibilityChecke
 
 На момент описания не нужно автоматически переходить к Java installation discovery, automatic provisioning или
 fallback policy без отдельного подтвержденного сценария
+
+Первый результат ревизии — усиление test coverage для compatibility failure path на уровне launch planning
 
 ---
 

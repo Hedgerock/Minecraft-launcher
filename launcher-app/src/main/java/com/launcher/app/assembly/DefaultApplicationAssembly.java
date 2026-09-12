@@ -36,8 +36,8 @@ import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.runtime.JavaRuntimeSelector;
 import com.launcher.core.runtime.ManifestJavaRuntimeSelector;
 import com.launcher.core.runtime.RuntimeEnvironmentProvider;
+import com.launcher.core.runtime.compatibility.DefaultJavaRuntimeCompatibilityChecker;
 import com.launcher.core.runtime.compatibility.JavaRuntimeCompatibilityChecker;
-import com.launcher.core.runtime.compatibility.NoOpJavaRuntimeCompatibilityChecker;
 import com.launcher.core.runtime.detection.JavaRuntimeVersionDetector;
 import com.launcher.core.runtime.javaexecutable.checker.JavaExecutableReadinessChecker;
 import com.launcher.core.runtime.javaexecutable.resolver.DefaultJavaCommandPathResolver;
@@ -97,7 +97,7 @@ public final class DefaultApplicationAssembly implements ApplicationAssembly {
 
         JavaRuntimeVersionDetector javaRuntimeVersionDetector = new DefaultJavaRuntimeVersionDetector();
         JavaRuntimeCompatibilityChecker javaRuntimeCompatibilityChecker =
-                new NoOpJavaRuntimeCompatibilityChecker();
+                new DefaultJavaRuntimeCompatibilityChecker();
 
         return new DefaultGameLaunchPlanBuilder(
                 directoryProvider,

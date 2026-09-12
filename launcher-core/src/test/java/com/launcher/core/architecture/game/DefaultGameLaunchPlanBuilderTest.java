@@ -57,19 +57,38 @@ class DefaultGameLaunchPlanBuilderTest {
     }
 
     @Test
+    void should_not_build_launch_command_when_java_runtime_compatibility_check_failed() {
+        //given
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
+
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
+        Manifest manifest = manifestLoadResult.manifest();
+        RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
+
+        RuntimeException exception = new RuntimeException("Compatibility failed");
+
+        recordingJavaRuntimeCompatibilityChecker.failWith(exception);
+
+        //when & then
+        RuntimeException result = assertThrows(
+                RuntimeException.class,
+                () -> gameLaunchPlanBuilder.build(manifest, runtimeLibrarySelection)
+        );
+
+        assertSame(exception, result);
+
+        assertEquals(
+                recordingJavaRuntimeVersionDetector.getJavaRuntimeVersion(),
+                recordingJavaRuntimeCompatibilityChecker.getRequest().javaRuntimeVersion()
+        );
+
+        assertNull(launchCommandBuilder.getLaunchInfo());
+    }
+
+    @Test
     void should_check_java_runtime_compatibility_with_detected_java_runtime_version_and_requirement() {
         //given
-        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                recordingGameClasspathBuilder,
-                recordingClasspathFormatter,
-                recordingJavaRuntimeSelector,
-                recordingJavaExecutableReadinessChecker,
-                recordingJavaCommandPathResolver,
-                recordingJavaRuntimeVersionDetector,
-                recordingJavaRuntimeCompatibilityChecker
-        );
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
@@ -100,17 +119,7 @@ class DefaultGameLaunchPlanBuilderTest {
     @Test
     void should_pass_configured_java_executable_override_to_runtime_selection() {
         //given
-        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                recordingGameClasspathBuilder,
-                recordingClasspathFormatter,
-                recordingJavaRuntimeSelector,
-                recordingJavaExecutableReadinessChecker,
-                recordingJavaCommandPathResolver,
-                recordingJavaRuntimeVersionDetector,
-                recordingJavaRuntimeCompatibilityChecker
-        );
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
@@ -133,17 +142,7 @@ class DefaultGameLaunchPlanBuilderTest {
     @Test
     void should_use_resolved_java_executable_for_command_building() {
         //given
-        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                recordingGameClasspathBuilder,
-                recordingClasspathFormatter,
-                recordingJavaRuntimeSelector,
-                recordingJavaExecutableReadinessChecker,
-                recordingJavaCommandPathResolver,
-                recordingJavaRuntimeVersionDetector,
-                recordingJavaRuntimeCompatibilityChecker
-        );
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
@@ -162,17 +161,7 @@ class DefaultGameLaunchPlanBuilderTest {
     @Test
     void should_resolve_selected_java_executable_before_readiness_check() {
         //given
-        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                recordingGameClasspathBuilder,
-                recordingClasspathFormatter,
-                recordingJavaRuntimeSelector,
-                recordingJavaExecutableReadinessChecker,
-                recordingJavaCommandPathResolver,
-                recordingJavaRuntimeVersionDetector,
-                recordingJavaRuntimeCompatibilityChecker
-        );
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
@@ -192,17 +181,7 @@ class DefaultGameLaunchPlanBuilderTest {
     @Test
     void should_fail_when_java_command_path_resolution_failed() {
         //given
-        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                recordingGameClasspathBuilder,
-                recordingClasspathFormatter,
-                recordingJavaRuntimeSelector,
-                recordingJavaExecutableReadinessChecker,
-                recordingJavaCommandPathResolver,
-                recordingJavaRuntimeVersionDetector,
-                recordingJavaRuntimeCompatibilityChecker
-        );
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
@@ -230,17 +209,7 @@ class DefaultGameLaunchPlanBuilderTest {
     @Test
     void should_fail_when_selected_java_executable_is_not_ready() {
         //given
-        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                recordingGameClasspathBuilder,
-                recordingClasspathFormatter,
-                recordingJavaRuntimeSelector,
-                recordingJavaExecutableReadinessChecker,
-                recordingJavaCommandPathResolver,
-                recordingJavaRuntimeVersionDetector,
-                recordingJavaRuntimeCompatibilityChecker
-        );
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
@@ -263,17 +232,7 @@ class DefaultGameLaunchPlanBuilderTest {
     @Test
     void should_check_resolved_java_executable_before_building_command() {
         //given
-        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                recordingGameClasspathBuilder,
-                recordingClasspathFormatter,
-                recordingJavaRuntimeSelector,
-                recordingJavaExecutableReadinessChecker,
-                recordingJavaCommandPathResolver,
-                recordingJavaRuntimeVersionDetector,
-                recordingJavaRuntimeCompatibilityChecker
-        );
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
@@ -292,17 +251,7 @@ class DefaultGameLaunchPlanBuilderTest {
     @Test
     void should_use_java_runtime_selector_for_java_executable() {
         //given
-        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                recordingGameClasspathBuilder,
-                recordingClasspathFormatter,
-                recordingJavaRuntimeSelector,
-                recordingJavaExecutableReadinessChecker,
-                recordingJavaCommandPathResolver,
-                recordingJavaRuntimeVersionDetector,
-                recordingJavaRuntimeCompatibilityChecker
-        );
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
@@ -327,17 +276,7 @@ class DefaultGameLaunchPlanBuilderTest {
     @Test
     void should_reject_null_runtime_library_selection() {
         //given
-        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                recordingGameClasspathBuilder,
-                recordingClasspathFormatter,
-                recordingJavaRuntimeSelector,
-                recordingJavaExecutableReadinessChecker,
-                recordingJavaCommandPathResolver,
-                recordingJavaRuntimeVersionDetector,
-                recordingJavaRuntimeCompatibilityChecker
-        );
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
@@ -354,17 +293,7 @@ class DefaultGameLaunchPlanBuilderTest {
     @Test
     void should_reject_null_manifest() {
         //given
-        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                recordingGameClasspathBuilder,
-                recordingClasspathFormatter,
-                recordingJavaRuntimeSelector,
-                recordingJavaExecutableReadinessChecker,
-                recordingJavaCommandPathResolver,
-                recordingJavaRuntimeVersionDetector,
-                recordingJavaRuntimeCompatibilityChecker
-        );
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
@@ -381,17 +310,7 @@ class DefaultGameLaunchPlanBuilderTest {
     @Test
     void should_build_game_launch_plan_with_game_directory_from_directory_provider() {
         //given
-        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = new DefaultGameLaunchPlanBuilder(
-                directoryProvider,
-                launchCommandBuilder,
-                recordingGameClasspathBuilder,
-                recordingClasspathFormatter,
-                recordingJavaRuntimeSelector,
-                recordingJavaExecutableReadinessChecker,
-                recordingJavaCommandPathResolver,
-                recordingJavaRuntimeVersionDetector,
-                recordingJavaRuntimeCompatibilityChecker
-        );
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
 
         ManifestLoadResult manifestLoadResult = manifestService.loadManifest();
         Manifest manifest = manifestLoadResult.manifest();
@@ -454,6 +373,20 @@ class DefaultGameLaunchPlanBuilderTest {
         assertEquals(
                 directoryProvider.directories().natives(),
                 launchCommandBuilder.getLaunchVariables().nativesDirectory()
+        );
+    }
+
+    private DefaultGameLaunchPlanBuilder getGameLaunchPlanBuilder() {
+        return new DefaultGameLaunchPlanBuilder(
+                directoryProvider,
+                launchCommandBuilder,
+                recordingGameClasspathBuilder,
+                recordingClasspathFormatter,
+                recordingJavaRuntimeSelector,
+                recordingJavaExecutableReadinessChecker,
+                recordingJavaCommandPathResolver,
+                recordingJavaRuntimeVersionDetector,
+                recordingJavaRuntimeCompatibilityChecker
         );
     }
 }

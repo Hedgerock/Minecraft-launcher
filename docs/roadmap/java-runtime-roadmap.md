@@ -4,8 +4,7 @@
 
 ## Текущий план
 
-- Провести ревизию Java runtime compatibility flow перед следующим runtime decision
-- Усилить integration coverage Java runtime compatibility flow перед выбором следующего runtime candidate
+- Завершить ревизию Java runtime compatibility flow перед следующим runtime decision
 - Не смешивать version detection с compatibility decision и fallback policy
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
@@ -110,6 +109,9 @@ fallback policy без отдельного подтвержденного сц�
 
 Первый результат ревизии — усиление test coverage для compatibility failure path на уровне launch planning
 
+После ревизии нужно либо выбрать следующий runtime candidate, либо временно закрыть Java runtime flow как достаточный
+для текущего milestone
+
 ---
 
 ## История последовательности активных решений
@@ -122,8 +124,8 @@ Java runtime version detection flow уже умеет определить фа�
 `GameLaunchPlanBuilder` уже передает detected `JavaRuntimeVersion` и `LaunchInfo.javaVersionRequirement` в
 `JavaRuntimeCompatibilityChecker`
 
-На момент описания application assembly все еще использует `NoOpJavaRuntimeCompatibilityChecker`, поэтому production
-проверка совместимости Java version еще не выполняется
+На момент выбора этого направления application assembly все еще использовал `NoOpJavaRuntimeCompatibilityChecker`,
+поэтому production проверка совместимости Java version еще не выполнялась
 
 Следующий минимальный runtime слой — заменить `NoOpJavaRuntimeCompatibilityChecker` на production проверку detected
 `JavaRuntimeVersion` относительно `JavaVersionRequirement`

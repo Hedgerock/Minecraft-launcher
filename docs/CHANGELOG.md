@@ -20,6 +20,7 @@
 - Documented Java runtime version detection boundary decision
 - Wired Java runtime version detection boundary into game launch planning
 - Added default Java runtime version detector and wired it into application assembly
+- Added default Java runtime compatibility checker and wired it into application assembly
 
 ### Changed
 

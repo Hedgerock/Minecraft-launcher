@@ -4,7 +4,7 @@
 
 ## Текущий план
 
-- Реализовать production Java runtime compatibility check без fallback policy
+- Провести ревизию Java runtime compatibility flow перед следующим runtime decision
 - Не смешивать version detection с compatibility decision и fallback policy
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
@@ -34,6 +34,8 @@
 - Добавлен adapter-level parser вывода Java runtime version
 - Добавлен `DefaultJavaRuntimeVersionDetector` для определения Java runtime version через resolved Java executable
 - Application assembly переведен на `DefaultJavaRuntimeVersionDetector`
+- Добавлен production Java runtime compatibility check
+- Application assembly переведен на `DefaultJavaRuntimeCompatibilityChecker`
 
 ---
 
@@ -59,7 +61,6 @@ Java executable runtime flow доведен до минимального produc
 ## Отложено
 
 - Выбор Java version
-- Проверка совместимости Java version с manifest metadata
 - Поиск Java installations вне `PATH`
 - Автоматическая установка Java
 - Fallback policy для отсутствующего Java executable
@@ -76,7 +77,7 @@ Java executable runtime flow доведен до минимального produc
 
 ## Активное направление
 
-- Java runtime compatibility check
+- Java runtime compatibility flow revision
 
 ---
 
@@ -88,7 +89,28 @@ Java executable runtime flow доведен до минимального produc
 
 ---
 
-## Почему Java runtime version compatibility check следующим
+## Почему Java runtime compatibility flow revision следующим
+
+Java runtime compatibility flow доведен до production-поведения без fallback policy
+
+`GameLaunchPlanBuilder` уже передает detected `JavaRuntimeVersion` и `LaunchInfo.javaVersionRequirement` в
+`JavaRuntimeCompatibilityChecker`
+
+Application assembly использует `DefaultJavaRuntimeCompatibilityChecker`
+
+Если detected Java runtime version ниже requirement, launcher получает Java runtime failure с причиной
+`INCOMPATIBLE_JAVA_VERSION`
+
+Следующий логический шаг — провести ревизию Java runtime flow и выбрать новый кандидат развития
+
+На момент описания не нужно автоматически переходить к Java installation discovery, automatic provisioning или
+fallback policy без отдельного подтвержденного сценария
+
+---
+
+## История последовательности активных решений
+
+### Java runtime version compatibility check
 
 Java runtime version detection flow уже умеет определить фактическую `JavaRuntimeVersion` выбранного Java executable
 через `DefaultJavaRuntimeVersionDetector`
@@ -106,10 +128,6 @@ Java runtime version detection flow уже умеет определить фа�
 
 Если detected Java runtime version не соответствует requirement, launcher должен получать явную runtime failure, но не
 должен автоматически искать альтернативную Java installation без отдельного решения
-
----
-
-## История последовательности активных решений
 
 ### Java runtime version detection
 

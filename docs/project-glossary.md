@@ -125,8 +125,11 @@ runtime-сценариях
 Не выбирает Java executable, не определяет runtime version, не выполняет Java installation discovery и не
 строит команду запуска
 
-На момент описания application assembly использует `NoOpJavaRuntimeCompatibilityChecker`, поэтому production проверка
-совместимости Java version еще не выполняется
+Application assembly использует `DefaultJavaRuntimeCompatibilityChecker`, который проверяет, что detected
+`JavaRuntimeVersion` удовлетворяет `JavaVersionRequirement`
+
+Если detected Java runtime version ниже requirement, checker возвращает Java runtime failure с причиной
+`INCOMPATIBLE_JAVA_VERSION`
 
 ### JavaRuntimeCompatibilityRequest
 

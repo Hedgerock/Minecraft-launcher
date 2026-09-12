@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Довести Java runtime compatibility flow до production проверки без fallback policy
+- Провести ревизию Java runtime compatibility flow перед следующим runtime decision
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не расширять operation layer Java-specific failure reason без generic failure context

@@ -138,8 +138,10 @@ Application assembly использует `DefaultJavaRuntimeVersionDetector`, �
 После detection `GameLaunchPlanBuilder` передает detected `JavaRuntimeVersion` и `LaunchInfo.javaVersionRequirement` в
 `JavaRuntimeCompatibilityChecker`
 
-На момент описания application assembly использует `NoOpJavaRuntimeCompatibilityChecker`, поэтому production проверка
-совместимости Java version еще не выполняется
+Application assembly использует `DefaultJavaRuntimeCompatibilityChecker`, который сравнивает detected `JavaRuntimeVersion`
+с `LaunchInfo.javaVersionRequirement`
+
+Если detected Java runtime version ниже requirement, `BUILD_GAME_LAUNCH_PLAN` завершается Java runtime failure
 
 После compatibility check `GameLaunchPlanBuilder` передает resolved reference в `GameLaunchCommandBuilder`
 

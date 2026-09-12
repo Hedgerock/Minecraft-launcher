@@ -9,6 +9,8 @@ Accepted
 > Примечание: решение реализовано в итерациях
 > `feat(core): add java runtime compatibility contract`
 > `feat(core): wire java runtime compatibility boundary into launch planning`
+> `feat(core): check java runtime version compatibility`
+> `feat(app): wire default java runtime compatibility checker`
 
 ---
 

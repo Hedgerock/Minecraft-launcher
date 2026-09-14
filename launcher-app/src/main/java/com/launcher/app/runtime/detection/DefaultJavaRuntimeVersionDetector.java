@@ -41,10 +41,10 @@ public final class DefaultJavaRuntimeVersionDetector implements JavaRuntimeVersi
 
         JavaRuntimeVersionCommandResult commandResult = commandRunner.run(javaExecutableReference);
 
-        if (commandResult.exitCode() != 0) {
-            throw new JavaRuntimeVersionDetectionException(
-                    "Java version process failed with exit code: " + commandResult.exitCode()
-            );
+        if (!commandResult.isSuccessful()) {
+            JavaProcessDiagnostic diagnostic = commandResult.toDiagnostic();
+
+            throw new JavaRuntimeVersionDetectionException(diagnostic.message());
         }
 
         return outputParser.parse(commandResult.output());

@@ -40,6 +40,7 @@ class DefaultJavaRuntimeVersionDetectorTest {
 
     @Test
     void should_fail_when_process_exits_with_non_zero_code() {
+        //given
         RecordingJavaRuntimeVersionCommandRunner commandRunner =
                 new RecordingJavaRuntimeVersionCommandRunner();
 
@@ -65,7 +66,7 @@ class DefaultJavaRuntimeVersionDetectorTest {
         );
 
         assertEquals(
-                "Java version process failed with exit code: 1",
+                "Java process exited with code 1",
                 exception.getMessage()
         );
     }

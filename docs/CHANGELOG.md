@@ -1,5 +1,9 @@
 ## Unreleased
 
+---
+
+## v0.6.0 – Java Runtime Compatibility
+
 ### Added
 
 - Added configured Java executable override to launcher configuration

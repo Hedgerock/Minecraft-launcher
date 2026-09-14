@@ -39,3 +39,4 @@
 - Завершена foundation stabilization после `v0.4.0-library-native-flow`
 - Подготовлен release `v0.5.0-java-runtime-foundation`
 - Java version requirement flow доведен до manifest source и подключенной compatibility boundary
+- Подготовлен release `v0.6.0-java-runtime-compatibility`

@@ -11,32 +11,26 @@
 
 ---
 
-## Выполнено после `v0.5.0-java-runtime-foundation`
+## Milestone `v0.6.0-java-runtime-compatibility` — Java runtime compatibility flow
 
-- Добавлен configured Java override через `LauncherConfiguration`
-- Добавлен `JavaRuntimeSelectionRequest`
-- `GameLaunchPlanBuilder` передает configured override в Java runtime selection
-- `ManifestJavaRuntimeSelector` выбирает configured override перед manifest metadata
-- Зафиксированы правила planning builders
-- Проведена ревизия operation planning builders без немедленного рефакторинга
-  `DownloadPlanBuilder` и `NativeExtractionPlanBuilder`
-- Добавлена минимальная Java runtime failure model
-- Добавлен общий базовый exception для classified Java runtime failures
-- Добавлена модель `JavaVersionRequirement` для выражения минимального требования к major version Java
-- Manifest JSON теперь является источником `JavaVersionRequirement` для `LaunchInfo`
-- Зафиксирована граница проверки совместимости Java version
-- Добавлен контракт Java runtime compatibility boundary
-- Java runtime compatibility boundary подключена в launch planning через `NoOpJavaRuntimeCompatibilityChecker`
-- Добавлена модель `JavaRuntimeVersion` для выражения фактически обнаруженной major version Java
-- Зафиксирована граница определения Java runtime version
-- Java runtime version detection boundary подключена в launch planning через `NoOpJavaRuntimeVersionDetector`
-- `JavaRuntimeCompatibilityRequest` переведен на detected `JavaRuntimeVersion`
-- Добавлен adapter-level parser вывода Java runtime version
-- Добавлен `DefaultJavaRuntimeVersionDetector` для определения Java runtime version через resolved Java executable
-- Application assembly переведен на `DefaultJavaRuntimeVersionDetector`
-- Добавлен production Java runtime compatibility check
-- Application assembly переведен на `DefaultJavaRuntimeCompatibilityChecker`
-- Усилено test coverage Java runtime compatibility failure path в launch planning
+Java runtime compatibility flow доведен до production-ready состояния без Java installation discovery и fallback policy
+
+### Закрыто
+
+- Configured Java executable override
+- Java runtime failure model
+- Java version requirement model
+- Manifest source для Java version requirement
+- Java runtime compatibility boundary
+- Java runtime version model
+- Java runtime version detection boundary
+- Adapter-level Java runtime version output parser
+- Production Java runtime version detector
+- Production Java runtime compatibility checker
+- Application assembly wiring для version detector и compatibility checker
+- Test coverage для compatibility failure path в launch planning
+
+Подробности зафиксированы в [ретроспективе Java runtime compatibility](../retrospective/2026-09-java-runtime-compatibility.md)
 
 ---
 

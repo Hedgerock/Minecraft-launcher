@@ -27,6 +27,13 @@ record JavaProcessDiagnostic(
         );
     }
 
+    static JavaProcessDiagnostic processInterrupted() {
+        return new JavaProcessDiagnostic(
+                JavaProcessFailureReason.PROCESS_INTERRUPTED,
+                "Java process was interrupted"
+        );
+    }
+
     JavaProcessDiagnostic {
         Objects.requireNonNull(reason, "reason");
         Objects.requireNonNull(message, "message");

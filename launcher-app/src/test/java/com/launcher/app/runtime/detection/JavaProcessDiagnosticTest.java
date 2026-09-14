@@ -8,6 +8,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class JavaProcessDiagnosticTest {
 
     @Test
+    void should_create_process_interrupted_diagnostic() {
+        //given & when
+        JavaProcessDiagnostic result = JavaProcessDiagnostic.processInterrupted();
+
+        //then
+        assertEquals(
+                JavaProcessFailureReason.PROCESS_INTERRUPTED,
+                result.reason()
+        );
+
+        assertEquals(
+                "Java process was interrupted",
+                result.message()
+        );
+    }
+
+    @Test
     void should_create_process_start_failed_diagnostic() {
         //given & when
         JavaProcessDiagnostic result = JavaProcessDiagnostic.processStartFailed();

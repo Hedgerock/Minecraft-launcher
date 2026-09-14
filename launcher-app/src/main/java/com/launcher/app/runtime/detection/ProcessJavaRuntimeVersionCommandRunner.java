@@ -7,20 +7,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 final class ProcessJavaRuntimeVersionCommandRunner implements JavaRuntimeVersionCommandRunner {
+    private final JavaRuntimeVersionProcessStarter processStarter;
+
+    ProcessJavaRuntimeVersionCommandRunner() {
+        this(new ProcessBuilderJavaRuntimeVersionProcessStarter());
+    }
+
+    ProcessJavaRuntimeVersionCommandRunner(
+            JavaRuntimeVersionProcessStarter processStarter
+    ) {
+        this.processStarter = Objects.requireNonNull(processStarter, "processStarter");
+    }
 
     @Override
     public JavaRuntimeVersionCommandResult run(JavaExecutableReference javaExecutableReference) {
         Objects.requireNonNull(javaExecutableReference, "javaExecutableReference");
 
-        ProcessBuilder processBuilder = new ProcessBuilder(
-                javaExecutableReference.value(),
-                "-version"
-        );
-
-        processBuilder.redirectErrorStream(true);
-
         try {
-            Process process = processBuilder.start();
+            Process process = processStarter.start(javaExecutableReference);
 
             String output = new String(
                     process.getInputStream().readAllBytes(),
@@ -37,7 +41,7 @@ final class ProcessJavaRuntimeVersionCommandRunner implements JavaRuntimeVersion
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new JavaRuntimeVersionDetectionException(
-                    "Java version process was interrupted"
+                    JavaProcessDiagnostic.processInterrupted().message()
             );
         }
     }

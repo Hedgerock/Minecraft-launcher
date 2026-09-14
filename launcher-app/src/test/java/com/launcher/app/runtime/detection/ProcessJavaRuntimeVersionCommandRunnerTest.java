@@ -4,7 +4,10 @@ import com.launcher.model.runtime.JavaExecutableReference;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +22,49 @@ class ProcessJavaRuntimeVersionCommandRunnerTest {
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void should_reject_null_process_starter() {
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new ProcessJavaRuntimeVersionCommandRunner(null)
+        );
+
+        assertEquals(
+                "processStarter",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void should_fail_when_java_process_waiting_is_interrupted() {
+        //given
+        ProcessJavaRuntimeVersionCommandRunner commandRunner =
+                new ProcessJavaRuntimeVersionCommandRunner(
+                        javaExecutableReference -> new InterruptedProcess()
+                );
+
+        JavaExecutableReference reference =
+                JavaExecutableReference.explicitPath("runtime/java/bin/java");
+
+        try {
+            //when & then
+            JavaRuntimeVersionDetectionException exception = assertThrows(
+                    JavaRuntimeVersionDetectionException.class,
+                    () -> commandRunner.run(reference)
+            );
+
+            assertEquals(
+                    "Java process was interrupted",
+                    exception.getMessage()
+            );
+
+            assertTrue(Thread.currentThread().isInterrupted());
+        } finally {
+            Thread.interrupted();
+        }
+    }
 
     @Test
     void should_fail_when_java_process_cannot_be_started() {
@@ -100,5 +146,40 @@ class ProcessJavaRuntimeVersionCommandRunnerTest {
         }
 
         return executable;
+    }
+
+    private static final class InterruptedProcess extends Process {
+
+        @Override
+        public OutputStream getOutputStream() {
+            return OutputStream.nullOutputStream();
+        }
+
+        @Override
+        public InputStream getInputStream() {
+            return new ByteArrayInputStream(
+                    "openjdk version \"21.0.8\" 2025-07-15".getBytes(StandardCharsets.UTF_8)
+            );
+        }
+
+        @Override
+        public InputStream getErrorStream() {
+            return InputStream.nullInputStream();
+        }
+
+        @Override
+        public int waitFor() throws InterruptedException {
+            throw new InterruptedException("test interruption");
+        }
+
+        @Override
+        public int exitValue() {
+            return 0;
+        }
+
+        @Override
+        public void destroy() {
+
+        }
     }
 }

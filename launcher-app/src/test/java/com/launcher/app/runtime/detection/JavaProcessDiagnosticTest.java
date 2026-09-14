@@ -8,6 +8,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class JavaProcessDiagnosticTest {
 
     @Test
+    void should_create_output_parsing_failed_diagnostic() {
+        //given & when
+        JavaProcessDiagnostic result = JavaProcessDiagnostic.outputParsingFailed();
+
+        //then
+        assertEquals(
+                JavaProcessFailureReason.OUTPUT_PARSING_FAILED,
+                result.reason()
+        );
+
+        assertEquals(
+                "Java process output cannot be parsed as Java runtime version",
+                result.message()
+        );
+    }
+
+    @Test
     void should_create_empty_output_diagnostic() {
         //given & when
         JavaProcessDiagnostic result = JavaProcessDiagnostic.emptyOutput();

@@ -65,9 +65,14 @@ class DefaultJavaRuntimeVersionDetectorTest {
                 new JavaRuntimeVersionDetectionRequest(reference);
 
         //when & then
-        assertThrows(
-                JavaRuntimeVersionParsingException.class,
+        JavaRuntimeVersionDetectionException exception = assertThrows(
+                JavaRuntimeVersionDetectionException.class,
                 () -> detector.detect(request)
+        );
+
+        assertEquals(
+                "Java process output cannot be parsed as Java runtime version",
+                exception.getMessage()
         );
     }
 

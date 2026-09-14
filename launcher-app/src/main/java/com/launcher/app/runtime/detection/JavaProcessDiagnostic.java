@@ -13,6 +13,13 @@ record JavaProcessDiagnostic(
         );
     }
 
+    static JavaProcessDiagnostic outputParsingFailed() {
+        return new JavaProcessDiagnostic(
+                JavaProcessFailureReason.OUTPUT_PARSING_FAILED,
+                "Java process output cannot be parsed as Java runtime version"
+        );
+    }
+
     JavaProcessDiagnostic {
         Objects.requireNonNull(reason, "reason");
         Objects.requireNonNull(message, "message");

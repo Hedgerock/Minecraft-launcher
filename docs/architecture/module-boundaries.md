@@ -142,7 +142,9 @@
 - `JavaCommandPathResolver`
 - `JavaExecutableReferenceResolver`
 - `NoOpJavaExecutableReadinessChecker`
-- Pure policies, которые не читают filesystem, environment variables или system properties
+- `DefaultJavaRuntimeCompatibilityChecker`, потому что это pure policy без доступа к filesystem, environment variables,
+  system properties или process state
+- No-op реализации runtime contracts, используемые в тестах и временном wiring
 
 ### `launcher-app` владеет
 

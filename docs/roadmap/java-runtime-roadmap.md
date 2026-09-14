@@ -4,7 +4,7 @@
 
 ## Текущий план
 
-- Завершить ревизию Java runtime compatibility flow перед следующим runtime decision
+- Выбрать следующий runtime candidate после закрытия Java runtime compatibility flow revision
 - Не смешивать version detection с compatibility decision и fallback policy
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
@@ -78,7 +78,7 @@ Java executable runtime flow доведен до минимального produc
 
 ## Активное направление
 
-- Java runtime compatibility flow revision
+- Выбор следующего runtime candidate
 
 ---
 
@@ -90,7 +90,18 @@ Java executable runtime flow доведен до минимального produc
 
 ---
 
-## Почему Java runtime compatibility flow revision следующим
+## Итог Java runtime compatibility flow revision
+
+Ревизия подтвердила, что Java runtime compatibility flow достаточно закрыт для текущего milestone
+
+Следующий шаг — выбрать следующий runtime candidate либо временно закрыть Java runtime flow как достаточный
+для текущего milestone
+
+---
+
+## История последовательности активных решений
+
+### Java runtime compatibility flow revision
 
 Java runtime compatibility flow доведен до production-поведения без fallback policy
 
@@ -111,10 +122,6 @@ fallback policy без отдельного подтвержденного сц�
 
 После ревизии нужно либо выбрать следующий runtime candidate, либо временно закрыть Java runtime flow как достаточный
 для текущего milestone
-
----
-
-## История последовательности активных решений
 
 ### Java runtime version compatibility check
 

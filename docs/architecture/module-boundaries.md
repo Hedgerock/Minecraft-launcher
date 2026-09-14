@@ -148,13 +148,17 @@
 
 ### `launcher-app` владеет
 
+- `DefaultJavaRuntimeVersionDetector`
+- `ProcessJavaRuntimeVersionCommandRunner`
+- `JavaRuntimeVersionOutputParser`
 - `SystemRuntimeEnvironmentProvider`
 - `SystemJavaCommandPathEnvironmentProvider`
 - `DefaultJavaExecutableReadinessChecker`
 - Production wiring Java runtime flow
+- Adapter-level Java process diagnostics для Java runtime version detection
 
 Concrete Java runtime adapters не должны находиться в `launcher-core`, если они читают filesystem,
-environment variables, system properties или process state
+environment variables, system properties, process output или process state
 
 ---
 

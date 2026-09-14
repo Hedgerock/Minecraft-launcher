@@ -149,6 +149,23 @@ Application assembly использует `DefaultJavaRuntimeCompatibilityChecke
 Application assembly использует `DefaultJavaRuntimeVersionDetector`, который определяет Java runtime version через запуск
 resolved Java executable с аргументом версии и parsing process output
 
+### JavaProcessDiagnostic
+
+Adapter-level модель диагностики Java process lifecycle внутри Java runtime version detection flow
+
+Описывает failure-сценарии, возникающие при запуске process для определения фактической `JavaRuntimeVersion`
+
+Минимальные причины диагностики
+
+- process не удалось запустить
+- process завершился с non-zero exit code
+- process вернул пустой output
+- process вернул output, который невозможно распарсить как Java runtime version
+
+Не является частью `launcher-core` runtime policy и не поднимается в operation layer как Java-specific reason
+
+Используется внутри `launcher-app` рядом с `DefaultJavaRuntimeVersionDetector`
+
 ### JavaExecutableReference
 
 Модель смысловой ссылки на Java executable

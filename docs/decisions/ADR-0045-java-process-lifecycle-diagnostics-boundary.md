@@ -13,6 +13,7 @@ Accepted
 > `feat(app): diagnose empty java version process output`
 > `feat(app): diagnose unparsable java version output`
 > `feat(app): diagnose java version process start failure`
+> `feat(app): diagnose interrupted java version process`
 
 ---
 
@@ -65,8 +66,8 @@ Java process lifecycle diagnostics должна остаться частью ad
 `GameLaunchPlanBuilder` должен получать failure от detector как runtime failure, но не должен интерпретировать process
 details
 
-Interruption process ожидания завершения рассматривается как часть Java process lifecycle diagnostics, но не вводит retry,
-cancellation policy или изменение общего operation lifecycle
+Прерывание ожидания завершения Java process рассматривается как часть Java process lifecycle diagnostics, но не вводит
+retry policy или изменение общего operation lifecycle
 
 Граница выглядит так
 

@@ -161,6 +161,7 @@ Adapter-level модель диагностики Java process lifecycle вну�
 - process завершился с non-zero exit code
 - process вернул пустой output
 - process вернул output, который невозможно распарсить как Java runtime version
+- ожидание завершения Java process было interrupted
 
 Не является частью `launcher-core` runtime policy и не поднимается в operation layer как Java-specific reason
 

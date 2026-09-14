@@ -115,6 +115,7 @@ process lifecycle остаются минимально выраженными
 - process завершился с non-zero exit code
 - process вернул пустой output
 - process вернул output, который невозможно распарсить как Java runtime version
+- ожидание завершения Java process было interrupted
 
 Этот шаг не требует Java installation discovery, automatic provisioning или fallback policy
 

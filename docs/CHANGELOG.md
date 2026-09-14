@@ -4,6 +4,7 @@
 
 - Documented Java process lifecycle diagnostics boundary decision
 - Added Java process lifecycle diagnostics for Java runtime version detection
+- Added interrupted Java version process diagnostics
 
 ---
 

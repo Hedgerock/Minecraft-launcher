@@ -1,5 +1,6 @@
 package com.launcher.core.architecture.support.fixture;
 
+import com.launcher.core.LaunchResult;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.architecture.support.recording.RecordingLauncherStateMachine;
 import com.launcher.core.architecture.support.recording.RecordingOperationManager;
@@ -59,8 +60,8 @@ public final class LauncherFlowFixture {
         );
     }
 
-    public void launch() {
-        launcherEngine.launch(configuration());
+    public LaunchResult launch() {
+        return launcherEngine.launch(configuration());
     }
 
     public void failOperationAndLaunch(OperationType operationType) {

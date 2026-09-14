@@ -20,7 +20,7 @@ public final class LauncherEngine {
     }
 
 
-    public void launch(LauncherConfiguration configuration) {
+    public LaunchResult launch(LauncherConfiguration configuration) {
         LaunchContext context = new LaunchContext(configuration);
 
         if (operationFailed(
@@ -28,7 +28,7 @@ public final class LauncherEngine {
                 OperationType.LOAD_MANIFEST,
                 context
         )) {
-            return;
+            return LaunchResult.failure(LauncherState.FAILED);
         }
 
 
@@ -37,14 +37,14 @@ public final class LauncherEngine {
                 OperationType.VERIFY_FILES,
                 context
         )) {
-            return;
+            return LaunchResult.failure(LauncherState.FAILED);
         }
 
 
         VerificationPlan verificationPlan = getVerificationPlanOrFail(context);
 
         if (verificationPlan == null) {
-            return;
+            return LaunchResult.failure(LauncherState.FAILED);
         }
 
         if (!verificationPlan.isValid()) {
@@ -54,7 +54,7 @@ public final class LauncherEngine {
                     OperationType.BUILD_DOWNLOAD_PLAN,
                     context
             )) {
-                return;
+                return LaunchResult.failure(LauncherState.FAILED);
             }
 
             if (operationFailed(
@@ -62,7 +62,7 @@ public final class LauncherEngine {
                     OperationType.DOWNLOAD_FILES,
                     context
             )) {
-                return;
+                return LaunchResult.failure(LauncherState.FAILED);
             }
 
             if (operationFailed(
@@ -70,18 +70,18 @@ public final class LauncherEngine {
                     OperationType.VERIFY_FILES,
                     context
             )) {
-                return;
+                return LaunchResult.failure(LauncherState.FAILED);
             }
 
             VerificationPlan downloadedVerificationPlan = getVerificationPlanOrFail(context);
 
             if (downloadedVerificationPlan == null) {
-                return;
+                return LaunchResult.failure(LauncherState.FAILED);
             }
 
             if (!downloadedVerificationPlan.isValid()) {
                 stateMachine.transition(LauncherState.FAILED);
-                return;
+                return LaunchResult.failure(LauncherState.FAILED);
             }
         }
 
@@ -90,7 +90,7 @@ public final class LauncherEngine {
                 OperationType.PREPARE_DIRECTORIES,
                 context
         )) {
-            return;
+            return LaunchResult.failure(LauncherState.FAILED);
         }
 
         if (operationFailed(
@@ -98,7 +98,7 @@ public final class LauncherEngine {
                 OperationType.EXTRACT_NATIVES,
                 context
         )) {
-            return;
+            return LaunchResult.failure(LauncherState.FAILED);
         }
 
         if (operationFailed(
@@ -106,7 +106,7 @@ public final class LauncherEngine {
                 OperationType.BUILD_GAME_LAUNCH_PLAN,
                 context
         )) {
-            return;
+            return LaunchResult.failure(LauncherState.FAILED);
         }
 
         if (operationFailed(
@@ -114,10 +114,12 @@ public final class LauncherEngine {
                 OperationType.LAUNCH_GAME,
                 context
         )) {
-            return;
+            return LaunchResult.failure(LauncherState.FAILED);
         }
 
         stateMachine.transition(LauncherState.RUNNING);
+
+        return LaunchResult.success(LauncherState.RUNNING);
     }
 
     private boolean operationFailed(

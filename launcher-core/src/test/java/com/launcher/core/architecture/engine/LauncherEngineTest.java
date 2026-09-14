@@ -1,5 +1,6 @@
 package com.launcher.core.architecture.engine;
 
+import com.launcher.core.LaunchResult;
 import com.launcher.core.architecture.support.fixture.LauncherFlowFixture;
 import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.event.EventBus;
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LauncherEngineTest {
     private LauncherFlowFixture launcherFlowFixture;
@@ -35,7 +38,7 @@ class LauncherEngineTest {
         VerificationPlan validVerificationPlan =
                 LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -65,6 +68,13 @@ class LauncherEngineTest {
         );
 
         assertEquals(LauncherState.FAILED, launcherFlowFixture.getCurrentState());
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
     }
 
     @Test
@@ -75,7 +85,7 @@ class LauncherEngineTest {
         VerificationPlan validVerificationPlan =
                 LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -109,6 +119,13 @@ class LauncherEngineTest {
         );
 
         assertEquals(LauncherState.RUNNING, launcherFlowFixture.getCurrentState());
+
+        assertTrue(result.success());
+
+        assertEquals(
+                LauncherState.RUNNING,
+                result.finalState()
+        );
     }
 
     @Test
@@ -117,7 +134,7 @@ class LauncherEngineTest {
         VerificationPlan validVerificationPlan =
                 LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
@@ -142,6 +159,13 @@ class LauncherEngineTest {
         );
 
         assertEquals(LauncherState.RUNNING, launcherFlowFixture.getCurrentState());
+
+        assertTrue(result.success());
+
+        assertEquals(
+                LauncherState.RUNNING,
+                result.finalState()
+        );
     }
 
     @Test
@@ -191,7 +215,7 @@ class LauncherEngineTest {
         VerificationPlan notValidVerificationPlan =
                 LauncherFlowFixture.verificationPlan("invalid.jar", VerificationStatus.MISSING);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -225,6 +249,13 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 launcherFlowFixture.getCurrentState()
         );
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
     }
 
     @Test
@@ -235,7 +266,7 @@ class LauncherEngineTest {
         VerificationPlan notValidVerificationPlan =
                 LauncherFlowFixture.verificationPlan("invalid.jar", VerificationStatus.MISSING);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -271,6 +302,13 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 launcherFlowFixture.getCurrentState()
         );
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
     }
 
     @Test
@@ -281,7 +319,7 @@ class LauncherEngineTest {
         VerificationPlan notValidVerificationPlan =
                 LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.MISSING);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -317,6 +355,13 @@ class LauncherEngineTest {
                 LauncherState.RUNNING,
                 launcherFlowFixture.getCurrentState()
         );
+
+        assertTrue(result.success());
+
+        assertEquals(
+                LauncherState.RUNNING,
+                result.finalState()
+        );
     }
 
     @Test
@@ -325,7 +370,7 @@ class LauncherEngineTest {
         VerificationPlan validVerificationPlan =
                 LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.VALID);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
@@ -353,6 +398,13 @@ class LauncherEngineTest {
                 LauncherState.RUNNING,
                 launcherFlowFixture.getCurrentState()
         );
+
+        assertTrue(result.success());
+
+        assertEquals(
+                LauncherState.RUNNING,
+                result.finalState()
+        );
     }
 
     @Test
@@ -361,7 +413,7 @@ class LauncherEngineTest {
         VerificationPlan validVerificationPlan =
                 LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.VALID);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(validVerificationPlan)
@@ -388,6 +440,13 @@ class LauncherEngineTest {
                 LauncherState.RUNNING,
                 launcherFlowFixture.getCurrentState()
         );
+
+        assertTrue(result.success());
+
+        assertEquals(
+                LauncherState.RUNNING,
+                result.finalState()
+        );
     }
 
     @Test
@@ -401,7 +460,7 @@ class LauncherEngineTest {
 
         DownloadPlan downloadPlan = LauncherFlowFixture.downloadPlan(notValidVerificationPlan);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -436,6 +495,13 @@ class LauncherEngineTest {
                 LauncherState.RUNNING,
                 launcherFlowFixture.getCurrentState()
         );
+
+        assertTrue(result.success());
+
+        assertEquals(
+                LauncherState.RUNNING,
+                result.finalState()
+        );
     }
 
     @Test
@@ -449,7 +515,7 @@ class LauncherEngineTest {
 
         DownloadPlan downloadPlan = LauncherFlowFixture.downloadPlan(notValidVerificationPlan);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -481,6 +547,13 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 launcherFlowFixture.getCurrentState()
         );
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
     }
 
     @Test
@@ -491,7 +564,7 @@ class LauncherEngineTest {
 
         DownloadPlan downloadPlan = LauncherFlowFixture.downloadPlan(notValidVerificationPlan);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -507,6 +580,13 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 launcherFlowFixture.getCurrentState()
         );
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
     }
 
     @Test
@@ -517,7 +597,7 @@ class LauncherEngineTest {
 
         DownloadPlan downloadPlan = LauncherFlowFixture.downloadPlan(notValidVerificationPlan);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -533,6 +613,13 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 launcherFlowFixture.getCurrentState()
         );
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
     }
 
     @Test
@@ -543,7 +630,7 @@ class LauncherEngineTest {
 
         DownloadPlan downloadPlan = LauncherFlowFixture.downloadPlan(notValidVerificationPlan);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -558,6 +645,13 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 launcherFlowFixture.getCurrentState()
         );
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
     }
 
     @Test
@@ -570,7 +664,7 @@ class LauncherEngineTest {
 
         DownloadPlan downloadPlan = LauncherFlowFixture.downloadPlan(notValidVerificationPlan);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -585,6 +679,13 @@ class LauncherEngineTest {
         assertEquals(
                 LauncherState.RUNNING,
                 launcherFlowFixture.getCurrentState()
+        );
+
+        assertTrue(result.success());
+
+        assertEquals(
+                LauncherState.RUNNING,
+                result.finalState()
         );
     }
 
@@ -649,7 +750,7 @@ class LauncherEngineTest {
         VerificationPlan notValidVerificationPlan =
                 LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.MISSING);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(notValidVerificationPlan)
@@ -668,6 +769,13 @@ class LauncherEngineTest {
         );
 
         assertEquals(LauncherState.FAILED, launcherFlowFixture.getCurrentState());
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
     }
 
     @Test
@@ -718,7 +826,7 @@ class LauncherEngineTest {
     @Test
     void should_transition_to_failed_when_load_manifest_failed() {
         //given
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationFailed(OperationType.LOAD_MANIFEST, "Failed to load manifest")
         //when
                 .launch();
@@ -732,12 +840,19 @@ class LauncherEngineTest {
         );
 
         assertEquals(LauncherState.FAILED, launcherFlowFixture.getCurrentState());
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
     }
 
     @Test
     void should_transition_to_failed_when_verify_resources_failed() {
         //given
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationFailed(OperationType.VERIFY_FILES, "Failed to verify files")
         //when
@@ -753,12 +868,19 @@ class LauncherEngineTest {
         );
 
         assertEquals(LauncherState.FAILED, launcherFlowFixture.getCurrentState());
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
     }
 
     @Test
     void should_transition_to_failed_when_verification_plan_is_not_stored() {
         //given
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(null)
@@ -775,6 +897,13 @@ class LauncherEngineTest {
         );
 
         assertEquals(LauncherState.FAILED, launcherFlowFixture.getCurrentState());
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
     }
 
     @Test
@@ -808,7 +937,7 @@ class LauncherEngineTest {
         VerificationPlan verificationPlan =
                 LauncherFlowFixture.verificationPlan("valid.jar", VerificationStatus.VALID);
 
-        launcherFlowFixture
+        LaunchResult result = launcherFlowFixture
                 .operationSucceeds(OperationType.LOAD_MANIFEST)
                 .operationSucceeds(OperationType.VERIFY_FILES)
                 .verifyFilesReturns(verificationPlan)
@@ -833,6 +962,12 @@ class LauncherEngineTest {
         );
 
         assertEquals(LauncherState.RUNNING, launcherFlowFixture.getCurrentState());
-    }
 
+        assertTrue(result.success());
+
+        assertEquals(
+                LauncherState.RUNNING,
+                result.finalState()
+        );
+    }
 }

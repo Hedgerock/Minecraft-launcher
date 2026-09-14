@@ -8,6 +8,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class JavaProcessDiagnosticTest {
 
     @Test
+    void should_create_empty_output_diagnostic() {
+        //given & when
+        JavaProcessDiagnostic result = JavaProcessDiagnostic.emptyOutput();
+
+        //then
+        assertEquals(
+                JavaProcessFailureReason.EMPTY_OUTPUT,
+                result.reason()
+        );
+
+        assertEquals(
+                "Java process returned empty output",
+                result.message()
+        );
+    }
+
+    @Test
     void should_create_java_process_diagnostic() {
         //given
         JavaProcessFailureReason reason = JavaProcessFailureReason.PROCESS_START_FAILED;

@@ -11,6 +11,39 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class DefaultJavaRuntimeVersionDetectorTest {
 
     @Test
+    void should_fail_when_java_process_output_is_empty() {
+        //given
+        RecordingJavaRuntimeVersionCommandRunner commandRunner =
+                new RecordingJavaRuntimeVersionCommandRunner();
+
+        commandRunner.setResult(
+                new JavaRuntimeVersionCommandResult(0, " ")
+        );
+
+        DefaultJavaRuntimeVersionDetector detector = new DefaultJavaRuntimeVersionDetector(
+                commandRunner,
+                new JavaRuntimeVersionOutputParser()
+        );
+
+        JavaExecutableReference reference =
+                JavaExecutableReference.explicitPath("runtime/java/bin/java");
+
+        JavaRuntimeVersionDetectionRequest request =
+                new JavaRuntimeVersionDetectionRequest(reference);
+
+        //when & then
+        JavaRuntimeVersionDetectionException exception = assertThrows(
+                JavaRuntimeVersionDetectionException.class,
+                () -> detector.detect(request)
+        );
+
+        assertEquals(
+                "Java process returned empty output",
+                exception.getMessage()
+        );
+    }
+
+    @Test
     void should_fail_when_parser_cannot_parse_output() {
         //given
         RecordingJavaRuntimeVersionCommandRunner commandRunner =

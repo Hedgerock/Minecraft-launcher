@@ -47,6 +47,12 @@ public final class DefaultJavaRuntimeVersionDetector implements JavaRuntimeVersi
             throw new JavaRuntimeVersionDetectionException(diagnostic.message());
         }
 
+        if (commandResult.output().isBlank()) {
+            JavaProcessDiagnostic diagnostic = JavaProcessDiagnostic.emptyOutput();
+
+            throw new JavaRuntimeVersionDetectionException(diagnostic.message());
+        }
+
         return outputParser.parse(commandResult.output());
     }
 }

@@ -21,6 +21,27 @@ class ProcessJavaRuntimeVersionCommandRunnerTest {
     Path tempDir;
 
     @Test
+    void should_fail_when_java_process_cannot_be_started() {
+        //given
+        Path missingExecutable = tempDir.resolve("missing-java-executable");
+
+        JavaExecutableReference reference = JavaExecutableReference.explicitPath(
+                missingExecutable.toString()
+        );
+
+        //when & then
+        JavaRuntimeVersionDetectionException exception = assertThrows(
+                JavaRuntimeVersionDetectionException.class,
+                () -> commandRunner.run(reference)
+        );
+
+        assertEquals(
+                "Java process could not be started",
+                exception.getMessage()
+        );
+    }
+
+    @Test
     void should_reject_null_java_executable_reference() {
         //when & then
         assertThrows(

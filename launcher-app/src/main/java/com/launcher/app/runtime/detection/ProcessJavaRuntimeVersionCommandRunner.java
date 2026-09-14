@@ -31,10 +31,14 @@ final class ProcessJavaRuntimeVersionCommandRunner implements JavaRuntimeVersion
 
             return new JavaRuntimeVersionCommandResult(exitCode, output);
         } catch (IOException e) {
-            throw new JavaRuntimeVersionDetectionException("Failed to start Java version process");
+            throw new JavaRuntimeVersionDetectionException(
+                    JavaProcessDiagnostic.processStartFailed().message()
+            );
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new JavaRuntimeVersionDetectionException("Java version process was interrupted");
+            throw new JavaRuntimeVersionDetectionException(
+                    "Java version process was interrupted"
+            );
         }
     }
 }

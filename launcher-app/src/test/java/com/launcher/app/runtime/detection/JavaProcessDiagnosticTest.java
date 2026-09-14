@@ -8,6 +8,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class JavaProcessDiagnosticTest {
 
     @Test
+    void should_create_process_start_failed_diagnostic() {
+        //given & when
+        JavaProcessDiagnostic result = JavaProcessDiagnostic.processStartFailed();
+
+        //then
+        assertEquals(
+                JavaProcessFailureReason.PROCESS_START_FAILED,
+                result.reason()
+        );
+
+        assertEquals(
+                "Java process could not be started",
+                result.message()
+        );
+    }
+
+    @Test
     void should_create_output_parsing_failed_diagnostic() {
         //given & when
         JavaProcessDiagnostic result = JavaProcessDiagnostic.outputParsingFailed();

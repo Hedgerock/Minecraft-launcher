@@ -20,6 +20,13 @@ record JavaProcessDiagnostic(
         );
     }
 
+    static JavaProcessDiagnostic processStartFailed() {
+        return new JavaProcessDiagnostic(
+                JavaProcessFailureReason.PROCESS_START_FAILED,
+                "Java process could not be started"
+        );
+    }
+
     JavaProcessDiagnostic {
         Objects.requireNonNull(reason, "reason");
         Objects.requireNonNull(message, "message");

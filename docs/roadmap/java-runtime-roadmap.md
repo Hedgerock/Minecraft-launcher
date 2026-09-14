@@ -4,7 +4,7 @@
 
 ## Текущий план
 
-- Провести ревизию Java process lifecycle diagnostics перед следующим runtime decision
+- Не выбирать следующий Java runtime step без подтвержденного сценария
 - Не смешивать process diagnostics с compatibility decision, Java installation discovery и fallback policy
 - Не смешивать version detection с compatibility decision и fallback policy
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
@@ -73,7 +73,7 @@ Java executable runtime flow доведен до минимального produc
 
 ## Активное направление
 
-- Java process lifecycle diagnostics revision
+- Java runtime flow временно закрыт до появления подтвержденного сценария
 
 ---
 
@@ -84,17 +84,32 @@ Java executable runtime flow доведен до минимального produc
 
 ---
 
-## Почему Java process lifecycle diagnostics revision следующим
+## История последовательности активных решений
+
+### Итог Java process lifecycle diagnostics revision
+
+Ревизия подтвердила, что Java process lifecycle diagnostics достаточно закрыта для текущего Java runtime flow
+
+Adapter-level diagnostics покрывает минимальные process lifecycle scenarios
+
+- process не удалось запустить
+- process завершился с non-zero exit code
+- process вернул пустой output
+- process вернул output, который невозможно распарсить как Java runtime version
+- ожидание завершения Java process было interrupted
+
+Следующий Java runtime step не выбран
+
+Java installation discovery, Java runtime fallback policy и structured operation diagnostics остаются отложенными до
+появления подтвержденного сценария
+
+### Java process lifecycle diagnostics revision
 
 Java process lifecycle diagnostics была успешно интегрирована в adapter-level detection flow, с покрытием минимального
 набора сценариев согласно принятому решению [ADR-0045](../decisions/ADR-0045-java-process-lifecycle-diagnostics-boundary.md)
 
 Следующий шаг — провести ревизию Java process lifecycle diagnostics flow, чтобы выбрать нового кандидата на реализацию
 или усиление уже существующего flow
-
----
-
-## История последовательности активных решений
 
 ### Java process lifecycle diagnostics
 

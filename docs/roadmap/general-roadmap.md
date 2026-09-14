@@ -6,7 +6,7 @@
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не расширять operation layer Java-specific failure reason без generic failure context
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
-- Провести ревизию Java process lifecycle diagnostics перед следующим runtime decision
+- Java runtime flow временно закрыт до появления подтвержденного сценария
 
 ---
 

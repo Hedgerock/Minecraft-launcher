@@ -4,7 +4,7 @@
 
 ## Текущий план
 
-- Развивать Java process lifecycle diagnostics внутри Java runtime version detection flow
+- Провести ревизию Java process lifecycle diagnostics перед следующим runtime decision
 - Не смешивать process diagnostics с compatibility decision, Java installation discovery и fallback policy
 - Не смешивать version detection с compatibility decision и fallback policy
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
@@ -73,7 +73,7 @@ Java executable runtime flow доведен до минимального produc
 
 ## Активное направление
 
-- Java process lifecycle diagnostics
+- Java process lifecycle diagnostics revision
 
 ---
 
@@ -84,7 +84,19 @@ Java executable runtime flow доведен до минимального produc
 
 ---
 
-## Почему Java process lifecycle diagnostics следующим
+## Почему Java process lifecycle diagnostics revision следующим
+
+Java process lifecycle diagnostics была успешно интегрирована в adapter-level detection flow, с покрытием минимального
+набора сценариев согласно принятому решению [ADR-0045](../decisions/ADR-0045-java-process-lifecycle-diagnostics-boundary.md)
+
+Следующий шаг — провести ревизию Java process lifecycle diagnostics flow, чтобы выбрать нового кандидата на реализацию
+или усиление уже существующего flow
+
+---
+
+## История последовательности активных решений
+
+### Java process lifecycle diagnostics
 
 После `v0.6.0-java-runtime-compatibility` Java runtime compatibility flow доведен до production-ready состояния
 
@@ -108,10 +120,6 @@ process lifecycle остаются минимально выраженными
 
 Java process lifecycle diagnostics должна усилить существующий detection flow, но не должна выбирать альтернативную Java
 installation или менять compatibility policy
-
----
-
-## История последовательности активных решений
 
 ### Итог Java runtime compatibility flow revision
 

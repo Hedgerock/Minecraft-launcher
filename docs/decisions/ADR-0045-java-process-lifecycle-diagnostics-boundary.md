@@ -6,6 +6,14 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(app): add java process diagnostic model`
+> `feat(app): attach java process diagnostics to version command result`
+> `feat(app): use java process diagnostic for failed version detection`
+> `feat(app): diagnose empty java version process output`
+> `feat(app): diagnose unparsable java version output`
+> `feat(app): diagnose java version process start failure`
+
 ---
 
 ## Контекст

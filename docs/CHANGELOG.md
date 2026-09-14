@@ -1,5 +1,9 @@
 ## Unreleased
 
+### Added
+
+- Documented Java process lifecycle diagnostics boundary decision
+
 ---
 
 ## v0.6.0 – Java Runtime Compatibility

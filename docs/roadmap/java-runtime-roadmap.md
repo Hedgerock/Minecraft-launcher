@@ -4,7 +4,8 @@
 
 ## Текущий план
 
-- Выбрать следующий runtime candidate после закрытия Java runtime compatibility flow revision
+- Развивать Java process lifecycle diagnostics внутри Java runtime version detection flow
+- Не смешивать process diagnostics с compatibility decision, Java installation discovery и fallback policy
 - Не смешивать version detection с compatibility decision и fallback policy
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Не вводить Java installation discovery и Java version management без отдельного подтвержденного сценария
@@ -72,28 +73,52 @@ Java executable runtime flow доведен до минимального produc
 
 ## Активное направление
 
-- Выбор следующего runtime candidate
+- Java process lifecycle diagnostics
 
 ---
 
 ## Возможные следующие направления
 
 - Java installation discovery
-- Java process lifecycle diagnostics
 - Java runtime fallback policy
 
 ---
 
-## Итог Java runtime compatibility flow revision
+## Почему Java process lifecycle diagnostics следующим
+
+После `v0.6.0-java-runtime-compatibility` Java runtime compatibility flow доведен до production-ready состояния
+
+Launcher уже умеет выбрать Java executable, определить фактическую `JavaRuntimeVersion` и сравнивать ее с
+`JavaVersionRequirement`
+
+Следующий слабый участок находится не в compatibility decision, а в adapter-level запуске Java process для определения
+runtime version
+
+На момент описания detection flow уже умеет запускать selected Java executable и parsing process output, но ошибки
+process lifecycle остаются минимально выраженными
+
+Минимальные сценарии, которые нужно уточнить
+
+- process не удалось запустить
+- process завершился с non-zero exit code
+- process вернул пустой output
+- process вернул output, который невозможно распарсить как Java runtime version
+
+Этот шаг не требует Java installation discovery, automatic provisioning или fallback policy
+
+Java process lifecycle diagnostics должна усилить существующий detection flow, но не должна выбирать альтернативную Java
+installation или менять compatibility policy
+
+---
+
+## История последовательности активных решений
+
+### Итог Java runtime compatibility flow revision
 
 Ревизия подтвердила, что Java runtime compatibility flow достаточно закрыт для текущего milestone
 
 Следующий шаг — выбрать следующий runtime candidate либо временно закрыть Java runtime flow как достаточный
 для текущего milestone
-
----
-
-## История последовательности активных решений
 
 ### Java runtime compatibility flow revision
 

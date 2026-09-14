@@ -56,3 +56,4 @@
 | [ADR-0042](ADR-0042-manifest-java-version-requirement-source.md)          | Manifest source для Java version requirement                      | java runtime       |
 | [ADR-0043](ADR-0043-java-version-compatibility-boundary.md)               | Граница проверки совместимости Java version                       | java runtime       |
 | [ADR-0044](ADR-0044-java-runtime-version-detection-boundary.md)           | Граница определения Java runtime version                          | java runtime       |
+| [ADR-0045](ADR-0045-java-process-lifecycle-diagnostics-boundary.md)       | Граница Java process lifecycle diagnostics                        | java runtime       |

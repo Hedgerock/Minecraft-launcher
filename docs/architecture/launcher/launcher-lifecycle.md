@@ -54,6 +54,13 @@ L-5
 
 ---
 
+Инициализация launcher lifecycle flow происходит через `LauncherEngine.launch(...)`
+
+Данный метод возвращает результат работы launcher lifecycle flow в виде `LaunchResult`
+
+Если `LauncherEngine.launch(...)` завершается ошибкой, launcher переходит в `FAILED` и возвращает
+`LaunchResult.failure(...)`
+
 После успешной загрузки `manifest` `LauncherEngine` сохраняет в `LaunchContext` `Manifest` и `RuntimeLibrarySelection`,
 затем переходит к `VERIFYING_FILES`
 
@@ -156,6 +163,9 @@ Application assembly использует `DefaultJavaRuntimeCompatibilityChecke
 Если `LAUNCH_GAME` завершается с ошибкой, launcher переходит в `FAILED`
 
 После успешного `LAUNCH_GAME` launcher переходит в `RUNNING`
+
+Если `LauncherEngine.launch(...)` завершается успешно, launcher переходит в `RUNNING` и возвращает
+`LaunchResult.success(...)`
 
 ## Обоснование проекта
 

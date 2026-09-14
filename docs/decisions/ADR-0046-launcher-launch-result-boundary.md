@@ -6,6 +6,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `feat(core): add launcher launch result`
+
 ---
 
 ## Контекст

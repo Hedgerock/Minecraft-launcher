@@ -7,6 +7,7 @@
 - Added interrupted Java version process diagnostics
 - Closed Java process lifecycle diagnostics revision
 - Documented launcher launch result boundary decision
+- Added launcher launch result model
 
 ---
 

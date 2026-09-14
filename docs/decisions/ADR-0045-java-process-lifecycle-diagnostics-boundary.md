@@ -54,6 +54,7 @@ Java process lifecycle diagnostics должна остаться частью ad
 - Java process завершился с non-zero exit code
 - Java process вернул пустой output
 - Java process вернул output, который невозможно распарсить как Java runtime version
+- Java process был interrupted во время ожидания завершения
 
 `JavaRuntimeVersionDetector` может использовать эту диагностику, но не должен превращаться в Java installation discovery
 или fallback policy
@@ -63,6 +64,9 @@ Java process lifecycle diagnostics должна остаться частью ad
 
 `GameLaunchPlanBuilder` должен получать failure от detector как runtime failure, но не должен интерпретировать process
 details
+
+Interruption process ожидания завершения рассматривается как часть Java process lifecycle diagnostics, но не вводит retry,
+cancellation policy или изменение общего operation lifecycle
 
 Граница выглядит так
 

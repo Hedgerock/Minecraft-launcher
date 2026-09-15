@@ -20,7 +20,7 @@ public final class SequentialExecutionStrategy implements ExecutionStrategy {
 
             if (!result.success()) {
                 FailureResult failureResult = (FailureResult) result;
-                return OperationResult.failure(failureResult.getMessage());
+                return OperationResult.failure(failureResult.failure());
             }
         }
 

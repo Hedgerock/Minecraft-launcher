@@ -5,6 +5,8 @@ import com.launcher.core.architecture.support.recording.RecordingLauncherTask;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.execution.SequentialExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;
+import com.launcher.core.operation.failure.OperationFailure;
+import com.launcher.core.operation.failure.OperationFailureCode;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.task.LauncherTask;
 import com.launcher.core.task.TaskResult;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,34 +25,32 @@ class SequentialExecutionStrategyTest {
     private final SequentialExecutionStrategy sequentialExecutionStrategy =
             new SequentialExecutionStrategy();
 
-    private LaunchContext getContext() {
-        return new LaunchContext(
-                new LauncherConfiguration(
-                        URI.create("currentPath"),
-                        Path.of("")
+    @Test
+    void should_preserve_task_failure_context() {
+        //given
+        RecordingEvents events = new RecordingEvents();
+        OperationFailure failure = new OperationFailure(
+                OperationFailureCode.UNKNOWN,
+                "failure",
+                Map.of("task", "test")
+        );
+
+        List<LauncherTask> tasks = List.of(
+                new RecordingLauncherTask(
+                        events,
+                        "Task-1",
+                        TaskResult.failure(failure)
                 )
         );
-    }
 
-    private RecordingLauncherTask success(
-            RecordingEvents events,
-            String name
-    ) {
-        return new RecordingLauncherTask(
-                events,
-                name,
-                TaskResult.success()
-        );
-    }
+        LaunchContext context = getContext();
 
-    private RecordingLauncherTask failure(
-            RecordingEvents events
-    ) {
-        return new RecordingLauncherTask(
-                events,
-                "Task-2",
-                TaskResult.failure("failure")
-        );
+        //when
+        OperationResult result = sequentialExecutionStrategy.execute(tasks, context);
+
+        //then
+        assertFalse(result.isSuccess());
+        assertEquals(failure, result.failure().orElseThrow());
     }
 
     @Test
@@ -114,4 +115,33 @@ class SequentialExecutionStrategyTest {
         assertFalse(result.isSuccess());
     }
 
+    private LaunchContext getContext() {
+        return new LaunchContext(
+                new LauncherConfiguration(
+                        URI.create("currentPath"),
+                        Path.of("")
+                )
+        );
+    }
+
+    private RecordingLauncherTask success(
+            RecordingEvents events,
+            String name
+    ) {
+        return new RecordingLauncherTask(
+                events,
+                name,
+                TaskResult.success()
+        );
+    }
+
+    private RecordingLauncherTask failure(
+            RecordingEvents events
+    ) {
+        return new RecordingLauncherTask(
+                events,
+                "Task-2",
+                TaskResult.failure("failure")
+        );
+    }
 }

@@ -1,10 +1,14 @@
 package com.launcher.core.result;
 
-public final class FailureResult implements Result {
-    private final String message;
+import com.launcher.core.operation.failure.OperationFailure;
 
-    public FailureResult(String message) {
-        this.message = message;
+import java.util.Objects;
+
+public final class FailureResult implements Result {
+    private final OperationFailure failure;
+
+    public FailureResult(OperationFailure failure) {
+        this.failure = Objects.requireNonNull(failure, "failure");
     }
 
     @Override
@@ -12,7 +16,11 @@ public final class FailureResult implements Result {
         return false;
     }
 
-    public String getMessage() {
-        return message;
+    public String message() {
+        return failure.message();
+    }
+
+    public OperationFailure failure() {
+        return failure;
     }
 }

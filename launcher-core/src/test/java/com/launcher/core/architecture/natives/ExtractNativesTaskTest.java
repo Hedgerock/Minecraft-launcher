@@ -49,7 +49,7 @@ class ExtractNativesTaskTest {
 
         //then
         assertInstanceOf(FailureResult.class, result);
-        assertTrue(((FailureResult) result).getMessage().contains("Runtime library selection not available"));
+        assertTrue(((FailureResult) result).message().contains("Runtime library selection not available"));
     }
 
     @Test

@@ -84,7 +84,7 @@ class BuildGameLaunchPlanTaskTest {
 
         //then
         assertInstanceOf(FailureResult.class, result);
-        assertTrue(((FailureResult) result).getMessage().contains("Launch info not available"));
+        assertTrue(((FailureResult) result).message().contains("Launch info not available"));
     }
 
     @Test
@@ -103,7 +103,7 @@ class BuildGameLaunchPlanTaskTest {
 
         //then
         assertInstanceOf(FailureResult.class, result);
-        assertTrue(((FailureResult) result).getMessage().contains("Runtime library selection not available"));
+        assertTrue(((FailureResult) result).message().contains("Runtime library selection not available"));
     }
 
     @Test
@@ -117,7 +117,7 @@ class BuildGameLaunchPlanTaskTest {
 
         //then
         assertInstanceOf(FailureResult.class, result);
-        assertTrue(((FailureResult) result).getMessage().contains("Manifest not loaded"));
+        assertTrue(((FailureResult) result).message().contains("Manifest not loaded"));
     }
 
     @Test

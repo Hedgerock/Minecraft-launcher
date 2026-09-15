@@ -6,7 +6,9 @@
 
 Accepted
 
-> Примечание: решение частично реализовано в итерации `feat(core): add generic operation failure context`
+> Примечание: решение частично реализовано в итерациях
+> `feat(core): add generic operation failure context`
+> `feat(core): map operation exceptions to generic failure context`
 
 ---
 

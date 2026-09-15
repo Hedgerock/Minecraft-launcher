@@ -58,3 +58,4 @@
 | [ADR-0044](ADR-0044-java-runtime-version-detection-boundary.md)           | Граница определения Java runtime version                          | java runtime       |
 | [ADR-0045](ADR-0045-java-process-lifecycle-diagnostics-boundary.md)       | Граница Java process lifecycle diagnostics                        | java runtime       |
 | [ADR-0046](ADR-0046-launcher-launch-result-boundary.md)                   | Граница результата запуска Launcher                               | launcher lifecycle |
+| [ADR-0047](ADR-0047-launcher-result-handling-boundary.md)                 | Граница обработки результата запуска Launcher                     | launcher boundary  |

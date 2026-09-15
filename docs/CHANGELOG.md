@@ -10,6 +10,10 @@
 - Added launcher launch result model
 - Documented launcher lifecycle integration testing boundary
 
+### Changed
+
+- Clarified launcher lifecycle integration testing constraints for process boundary and temporary directory cleanup
+
 ---
 
 ## v0.6.0 – Java Runtime Compatibility

@@ -71,6 +71,36 @@ Test doubles должны заменять только внешнюю сред�
 
 ---
 
+## Ограничения process boundary
+
+Launcher lifecycle integration test может доходить до запуска внешнего процесса
+
+Такой тест должен учитывать, что successful launch означает успешный старт процесса, а не его завершение
+
+Если тест использует fake executable, он должен явно разделять сценарии
+
+- Java runtime version detection
+- game process launch
+
+Для Java runtime version detection fake executable должен поддерживать вызов с аргументом `-version` и возвращать output,
+который может быть разобран `JavaRuntimeVersionDetector`
+
+Для game process launch fake executable должен завершиться быстро и не удерживать рабочую директорию launcher
+
+На Windows внешний процесс может блокировать удаление `@TempDir`, если его working directory находится внутри временной
+директории теста
+
+Поэтому fake executable для game process launch должен либо завершаться до удаления временной директории теста,
+либо переходить в директорию за пределами launcher directory перед завершением
+
+Если production launcher считает процесс успешно запущенным сразу после `ProcessBuilder.start()`, тест не должен ожидать
+завершения процесса как часть `LaunchResult`
+
+В таких сценариях допустимо использовать небольшой synchronization marker, чтобы убедиться, что fake process успел
+выполнить тестовую ветку и освободить временную директорию
+
+---
+
 ## Первый целевой сценарий
 
 Первый integration slice должен быть минимальным
@@ -80,7 +110,7 @@ Given
 - launcher configuration с локальным manifest URI
 - временная launcher directory
 - manifest с минимальными ресурсами запуска
-- контролируемый Java executable override
+- контролируемый Java executable override, который поддерживает `-version` и game launch branch
 
 When
 
@@ -92,6 +122,7 @@ Then
 - возвращается `LaunchResult`
 - результат отражает outcome всего launcher lifecycle
 - тест не читает internal state machine напрямую
+- fake game process успевает выполнить synchronization marker и не удерживает launcher directory
 
 ---
 

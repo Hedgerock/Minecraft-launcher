@@ -9,6 +9,16 @@
 Architecture Testing проверяет корректность взаимодействия компонентов системы, а не проверяет
 бизнес-правила отдельных операций
 
+## Граница документа
+
+Данный документ описывает operation-level architecture smoke testing
+
+Он проверяет архитектурный каркас `OperationManager`, `OperationFactory`, `LaunchOperation`, `ExecutionStrategy` и
+`OperationResult`
+
+Launcher lifecycle integration testing описывается отдельно, так как его внешняя граница находится на уровне
+`LauncherEngine.launch(...)` и `LaunchResult`
+
 ## Когда выполняется
 
 Architecture Smoke Test выполняется:

@@ -7,7 +7,7 @@
 - Не расширять operation layer Java-specific failure reason без generic failure context
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Java runtime flow временно закрыт до появления подтвержденного сценария
-- Зафиксировать границу результата запуска Launcher перед усилением integration testing и future UI boundary
+- Зафиксировать границу launcher lifecycle integration testing перед расширением future UI boundary
 
 ---
 

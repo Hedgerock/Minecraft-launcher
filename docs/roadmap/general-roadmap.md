@@ -7,7 +7,7 @@
 - Не расширять operation layer Java-specific failure reason без generic failure context
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Java runtime flow временно закрыт до появления подтвержденного сценария
-- Зафиксировать границу launcher lifecycle integration testing перед расширением future UI boundary
+- Определить внешнюю launcher boundary для использования `LaunchResult` перед развитием future UI boundary
 
 ---
 
@@ -41,3 +41,4 @@
 - Подготовлен release `v0.5.0-java-runtime-foundation`
 - Java version requirement flow доведен до manifest source и подключенной compatibility boundary
 - Подготовлен release `v0.6.0-java-runtime-compatibility`
+- Зафиксирована граница launcher lifecycle integration testing и добавлен первый application assembly integration test

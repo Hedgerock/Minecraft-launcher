@@ -14,6 +14,12 @@ LaunchOperation является границей жизненного цикл�
 Ошибки жизненного цикла преобразуются в OperationResult.failure(...), после чего публикуется
 финальное событие
 
+После failed `OperationResult` публикуется `OperationFailedEvent`
+
+Событие получает `OperationFailure` из `OperationResult`
+
+Readable error message остается производным представлением failure context
+
 ## Общий порядок выполнения
 
 ```text
@@ -26,6 +32,7 @@ OperationStartedEvent
 -> OperationCompletedEvent / OperationFailedEvent
 -> OperationResult
 ```
+
 ---
 
 ## beforeExecute()
@@ -115,6 +122,9 @@ OperationStartedEvent
 
 Завершающий этап жизненного цикла
 
+Ошибка финализации преобразуется в `OperationResult.failure(...)`, после чего публикуется `OperationFailedEvent` с generic
+failure context
+
 ### Разрешено
 
 - Освободить ресурсы
@@ -132,31 +142,3 @@ OperationStartedEvent
 
 - Исключение преобразуется в OperationResult.failure(...)
 - После ошибки финализации публикуется OperationFailedEvent
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

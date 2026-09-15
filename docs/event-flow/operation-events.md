@@ -84,7 +84,8 @@ LaunchOperation
 ### Данные события
 
 - OperationType
-- Сообщение об ошибке (errorMessage)
+- OperationFailure
+- Readable error message как производное представление failure context
 
 ### Гарантии
 
@@ -99,10 +100,13 @@ Operation считается завершенной независимо от п
 
 Перед публикацией всегда выполняется попытка finalizeOperation(...)
 
-Error message формируется на основе OperationResult
+`OperationFailure` передается из `OperationResult`
+
+Readable error message формируется на основе `OperationFailure`
 
 Если ошибка возникла как исключение без сообщения, используется имя класса исключения
 
-Если finalizeOperation(...) выбрасывает исключение, Operation считается завершенной с ошибкой
+Если `finalizeOperation(...)` выбрасывает исключение, Operation считается завершенной с ошибкой
 
-Ошибка финализации преобразуется в OperationResult.failure(...), после чего публикуется OperationFailedEvent
+Ошибка финализации преобразуется в `OperationResult.failure(...)`, после чего публикуется `OperationFailedEvent` с generic
+failure context

@@ -15,6 +15,7 @@
 - Added generic operation failure context model
 - Added operation exception mapping to generic failure context
 - Propagated task failure context through execution strategy
+- Published operation failure context in failed operation events
 
 ### Changed
 

@@ -6,12 +6,15 @@ import com.launcher.core.event.events.OperationFailedEvent;
 import com.launcher.core.event.events.OperationStartedEvent;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;
+import com.launcher.core.operation.failure.OperationFailure;
+import com.launcher.core.operation.failure.OperationFailureCode;
 import com.launcher.core.operation.failure.OperationFailureMapper;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.task.LauncherTask;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class LaunchOperation {
 
@@ -63,12 +66,14 @@ public abstract class LaunchOperation {
             return;
         }
 
-        eventBus.publish(new OperationFailedEvent(
-                operationType,
-                result
-                        .errorMessage()
-                        .orElse("Unknown operation failure")
-        ));
+        OperationFailure failure = result.failure()
+            .orElseGet(() -> new OperationFailure(
+                    OperationFailureCode.UNKNOWN,
+                    "Unknown operation failure",
+                    Map.of()
+            ));
+
+        eventBus.publish(new OperationFailedEvent(operationType, failure));
     }
 
     protected void beforeExecute() {}

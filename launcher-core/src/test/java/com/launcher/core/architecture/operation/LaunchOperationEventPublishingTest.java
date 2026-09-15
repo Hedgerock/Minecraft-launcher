@@ -19,6 +19,8 @@ import com.launcher.core.execution.SequentialExecutionStrategy;
 import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.launch.LaunchContext;
 import com.launcher.core.operation.LaunchOperation;
+import com.launcher.core.operation.failure.OperationFailure;
+import com.launcher.core.operation.failure.OperationFailureCode;
 import com.launcher.core.operation.impl.BuildDownloadPlanOperation;
 import com.launcher.core.operation.impl.DownloadFilesOperation;
 import com.launcher.core.operation.impl.LaunchGameOperation;
@@ -32,6 +34,7 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -48,6 +51,44 @@ class LaunchOperationEventPublishingTest {
     private VerificationPlan getVerificationPlan() {
         return new VerificationPlan(
                 List.of()
+        );
+    }
+
+    @Test
+    void should_publish_failure_context_when_operation_failed() {
+        //given
+        RecordingEventBus eventBus = new RecordingEventBus();
+        OperationFailure failure = new OperationFailure(
+                OperationFailureCode.UNKNOWN,
+                "failure",
+                Map.of("source", "test")
+        );
+
+        LaunchOperation operation = new EventPublishingOperation(
+                getContext(),
+                eventBus,
+                OperationResult.failure(failure)
+        );
+
+        //when
+        operation.execute();
+
+        //then
+        OperationFailedEvent event = eventBus.firstEventOfType(OperationFailedEvent.class);
+
+        assertEquals(
+                OperationType.REPAIR,
+                event.operationType()
+        );
+
+        assertEquals(
+                failure,
+                event.operationFailure()
+        );
+
+        assertEquals(
+                "failure",
+                event.errorMessage()
         );
     }
 

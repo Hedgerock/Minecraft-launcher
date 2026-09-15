@@ -185,7 +185,7 @@ class LaunchOperationEventPublishingTest {
     }
 
     @Test
-    void should_publish_exception_class_name_when_operation_failed_with_error_message() {
+    void should_publish_exception_class_name_when_operation_failed_without_error_message() {
         //given
         EventBus eventBus = new EventBus();
         List<String> events = new ArrayList<>();

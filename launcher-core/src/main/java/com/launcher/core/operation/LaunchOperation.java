@@ -6,6 +6,7 @@ import com.launcher.core.event.events.OperationFailedEvent;
 import com.launcher.core.event.events.OperationStartedEvent;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.launch.LaunchContext;
+import com.launcher.core.operation.failure.OperationFailureMapper;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.task.LauncherTask;
@@ -19,6 +20,8 @@ public abstract class LaunchOperation {
     protected final OperationType operationType;
     protected final EventBus eventBus;
 
+    private final OperationFailureMapper operationFailureMapper;
+
     public LaunchOperation(
             LaunchContext launchContext,
             ExecutionStrategy executionStrategy,
@@ -29,6 +32,7 @@ public abstract class LaunchOperation {
         this.executionStrategy = executionStrategy;
         this.operationType = operationType;
         this.eventBus = eventBus;
+        this.operationFailureMapper = new OperationFailureMapper();
     }
 
     public final OperationResult execute() {
@@ -44,7 +48,7 @@ public abstract class LaunchOperation {
 
             afterExecute(result);
         } catch (Exception e) {
-            result = OperationResult.failure(resolveErrorMessage(e));
+            result = OperationResult.failure(operationFailureMapper.map(e));
         }
 
         result = finalizeSafety(result);
@@ -67,16 +71,6 @@ public abstract class LaunchOperation {
         ));
     }
 
-    private String resolveErrorMessage(Exception exception) {
-        final boolean isEmptyOrBlank = exception.getMessage() == null || exception.getMessage().isBlank();
-
-        if (isEmptyOrBlank) {
-            return exception.getClass().getSimpleName();
-        }
-
-        return exception.getMessage();
-    }
-
     protected void beforeExecute() {}
 
     private OperationResult finalizeSafety(OperationResult result) {
@@ -85,7 +79,7 @@ public abstract class LaunchOperation {
             finalizeOperation(result);
             return result;
         } catch (Exception e) {
-            return OperationResult.failure(resolveErrorMessage(e));
+            return OperationResult.failure(operationFailureMapper.map(e));
         }
 
     }

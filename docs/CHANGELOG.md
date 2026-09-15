@@ -11,6 +11,7 @@
 - Documented launcher lifecycle integration testing boundary
 - Documented launcher result handling boundary decision
 - Added application boundary handler for launcher result
+- Documented generic operation failure context boundary decision
 
 ### Changed
 

@@ -4,7 +4,7 @@
 
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
-- Не расширять operation layer Java-specific failure reason без generic failure context
+- Не расширять operation layer Java-specific failure reason до реализации generic operation failure context
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Java runtime flow временно закрыт до появления подтвержденного сценария
 

@@ -65,7 +65,6 @@ Java executable runtime flow доведен до минимального produc
 - Диагностика прав доступа к Java executable
 - Отдельная модель Java installation
 - Интеграция Java runtime selection с будущим profile/version flow
-- Generic operation failure context
 - Structured operation diagnostics
 - Operation failure source/details model
 

@@ -6,6 +6,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `feat(app): handle launcher result at application boundary`
+
 ---
 
 ## Контекст

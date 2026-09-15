@@ -10,6 +10,7 @@
 - Added launcher launch result model
 - Documented launcher lifecycle integration testing boundary
 - Documented launcher result handling boundary decision
+- Added application boundary handler for launcher result
 
 ### Changed
 

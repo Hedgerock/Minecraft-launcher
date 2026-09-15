@@ -1,6 +1,8 @@
 ## Unreleased
 
-### Added
+### Operation Lifecycle Boundary
+
+#### Added
 
 - Documented Java process lifecycle diagnostics boundary decision
 - Added Java process lifecycle diagnostics for Java runtime version detection
@@ -17,7 +19,7 @@
 - Propagated task failure context through execution strategy
 - Published operation failure context in failed operation events
 
-### Changed
+#### Changed
 
 - Clarified launcher lifecycle integration testing constraints for process boundary and temporary directory cleanup
 

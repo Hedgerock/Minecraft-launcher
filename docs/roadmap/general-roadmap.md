@@ -43,3 +43,4 @@
 - Реализована минимальная обработка `LaunchResult` на application boundary без добавления presentation logic
 - Завершена минимальная реализация generic operation failure context через operation result, task execution boundary
   и failed operation event без расширения `LaunchResult`
+- Подготовлен release `v0.6.1-operation-lifecycle-boundary`

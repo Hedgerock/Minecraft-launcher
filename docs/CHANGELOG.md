@@ -12,6 +12,7 @@
 - Documented launcher result handling boundary decision
 - Added application boundary handler for launcher result
 - Documented generic operation failure context boundary decision
+- Added generic operation failure context model
 
 ### Changed
 

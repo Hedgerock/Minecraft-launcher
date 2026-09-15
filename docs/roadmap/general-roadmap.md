@@ -7,8 +7,7 @@
 - Не расширять operation layer Java-specific failure reason до реализации generic operation failure context
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Java runtime flow временно закрыт до появления подтвержденного сценария
-
----
+- Реализовать generic operation failure context на operation boundary без расширения `LaunchResult`
 
 ## Доменные направления
 

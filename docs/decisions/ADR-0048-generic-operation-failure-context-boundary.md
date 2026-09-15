@@ -6,6 +6,8 @@
 
 Accepted
 
+> Примечание: решение частично реализовано в итерации `feat(core): add generic operation failure context`
+
 ---
 
 ## Контекст

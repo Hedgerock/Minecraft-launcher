@@ -9,6 +9,7 @@ Accepted
 > Примечание: решение частично реализовано в итерациях
 > `feat(core): add generic operation failure context`
 > `feat(core): map operation exceptions to generic failure context`
+> `feat(core): propagate task failure context through execution strategy`
 
 ---
 
@@ -16,13 +17,13 @@ Accepted
 
 На момент принятия решения operation lifecycle использует минимальную модель результата
 
-`TaskResult.failure(...)` хранит readable message
+`TaskResult.failure(...)` хранил readable message
 
-`SequentialExecutionStrategy` преобразует failed task result в `OperationResult.failure(...)`
+`SequentialExecutionStrategy` преобразовывал failed task result в `OperationResult.failure(...)`
 
-`LaunchOperation` преобразует exception в `OperationResult.failure(...)`
+`LaunchOperation` преобразовывал exception в `OperationResult.failure(...)`
 
-`OperationResult` содержит только
+`OperationResult` содержал только
 
 - success flag
 - optional error message

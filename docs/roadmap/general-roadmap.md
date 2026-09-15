@@ -4,10 +4,10 @@
 
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
-- Не расширять operation layer Java-specific failure reason до реализации generic operation failure context
+- Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
 - Java runtime flow временно закрыт до появления подтвержденного сценария
-- Реализовать generic operation failure context на operation boundary без расширения `LaunchResult`
+- Завершить минимальную реализацию generic operation failure context без расширения `LaunchResult`
 
 ## Доменные направления
 
@@ -42,3 +42,4 @@
 - Зафиксирована граница launcher lifecycle integration testing и добавлен первый application assembly integration test
 - Зафиксирована внешняя launcher boundary для обработки `LaunchResult` перед развитием future UI boundary
 - Реализована минимальная обработка `LaunchResult` на application boundary без добавления presentation logic
+- Реализован generic operation failure context на operation boundary и task execution boundary без расширения `LaunchResult`

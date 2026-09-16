@@ -1,5 +1,6 @@
 package com.launcher.model.manifest;
 
+import com.launcher.model.manifest.assets.AssetsIndex;
 import com.launcher.model.runtime.JavaVersionRequirement;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +17,30 @@ class ManifestTest {
                 "sha256-" + path,
                 123L,
                 "https://test-url.com/"+path
+        );
+    }
+
+    @Test
+    void should_convert_null_assets_index_to_empty() {
+        //given
+        List<LibraryEntry> libraries = new ArrayList<>();
+        AssetsIndex expected = new AssetsIndex(List.of());
+
+        libraries.add(getLibraryEntry("libraries/example.jar"));
+
+        //when
+        Manifest result = new Manifest(
+                "1.12.2",
+                getLoaderInfo(),
+                List.of(getFileEntry("test.jar")),
+                getLaunchInfo(),
+                libraries
+        );
+
+        //then
+        assertEquals(
+                expected,
+                result.assetsIndex()
         );
     }
 

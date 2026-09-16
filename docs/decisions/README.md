@@ -60,3 +60,4 @@
 | [ADR-0046](ADR-0046-launcher-launch-result-boundary.md)                   | Граница результата запуска Launcher                               | launcher lifecycle |
 | [ADR-0047](ADR-0047-launcher-result-handling-boundary.md)                 | Граница обработки результата запуска Launcher                     | launcher boundary  |
 | [ADR-0048](ADR-0048-generic-operation-failure-context-boundary.md)        | Граница generic operation failure context                         | operation          |
+| [ADR-0049](ADR-0049-assets-index-flow-boundary.md)                        | Граница assets index flow                                         | assets             |

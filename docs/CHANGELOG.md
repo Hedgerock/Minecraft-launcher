@@ -1,5 +1,9 @@
 ## Unreleased
 
+### Added
+
+- Documented assets index flow boundary decision
+
 ---
 
 ## v0.6.1 – Operation Lifecycle Boundary

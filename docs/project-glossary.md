@@ -151,7 +151,7 @@ Manifest-specific контейнер asset resources
 
 Используется как отдельная semantic boundary для будущего assets index flow
 
-На текущем этапе не подключен к `ManifestResources`, verification/download flow или manifest JSON mapping
+Подключен к `ManifestResources` и участвует в verification/download flow через общий `ResourceEntry` контракт
 
 ---
 

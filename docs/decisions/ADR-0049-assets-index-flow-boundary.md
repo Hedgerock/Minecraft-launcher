@@ -6,9 +6,11 @@
 
 Accepted
 
-> Примечание: решение частично реализовано в итерациях
+> Примечание: решение реализовано в итерациях
 > `feat(model): add assets index model`
 > `feat(model): add assets index to manifest`
+> `feat(api): map assets index from manifest json`
+> `feat(model): include assets in manifest resources`
 
 ---
 

@@ -4,8 +4,7 @@
 
 ## Текущий план
 
-- Следующий candidate flow — assets index flow
-- Assets index flow должен начинаться с отдельного ADR
+- Assets index flow доведен до минимальной manifest resources projection
 - Дальнейшие изменения library/native flow должны добавляться через отдельные ADR
 
 ---
@@ -35,6 +34,24 @@ Library/native flow доведен до состояния, где manifest meta
 - Добавлен `DefaultNativeExtractionService`
 - Добавлена launch variable `${natives_directory}`
 - Добавлена output policy для повторной распаковки natives
+
+---
+
+## Assets index flow
+
+Assets index flow доведен до минимального состояния
+
+### Закрыто
+
+- Зафиксирована граница assets index flow
+- Добавлена модель `AssetEntry`
+- Добавлена модель `AssetsIndex`
+- `AssetsIndex` добавлен в `Manifest`
+- Manifest JSON mapping поддерживает optional `assets`
+- Отсутствие `assets` преобразуется в пустой `AssetsIndex`
+- `ManifestResources` включает assets в общий `ResourceEntry` projection
+
+Дальнейшее развитие assets flow должно выполняться отдельными решениями после появления подтвержденного сценария
 
 ---
 

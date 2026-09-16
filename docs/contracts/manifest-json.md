@@ -117,12 +117,12 @@ RuntimeEnvironment
 
 `ResourceEntry` является общей защитой уровня ресурсов для физической метадаты `path`, `sha256`, `size` и `url`
 
-`ManifestResources` строит список `ResourceEntry` из `Manifest.files` и `Manifest.libraries`
+`ManifestResources` строит список `ResourceEntry` из `Manifest.files`, `Manifest.libraries` и `Manifest.assetsIndex`
 
 `FileEntry` и `LibraryEntry` остаются manifest-specific моделями и не заменяются напрямую `ResourceEntry`
 
-На текущем этапе `ManifestResources` используется как источник verification flow, поэтому `Manifest.files`
-и `Manifest.libraries` участвуют в verification/download lifecycle через общий `ResourceEntry` контракт
+На текущем этапе `ManifestResources` используется как источник verification flow, поэтому `Manifest.files`,
+`Manifest.libraries` и `Manifest.assetsIndex` участвуют в verification/download lifecycle через общий `ResourceEntry` контракт
 
 `libraries` сначала преобразуется в список `RuntimeLibraryMetadata`
 
@@ -204,8 +204,8 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 
 Отсутствие `assets` означает пустой `AssetsIndex`
 
-На текущем этапе `AssetsIndex` является частью `Manifest`, но еще не подключен к `ManifestResources`,
-verification/download flow или launcher lifecycle
+На текущем этапе `AssetsIndex` подключен к `ManifestResources` и участвует в verification/download flow через общий
+`ResourceEntry` контракт
 
 `JsonManifestMapper` не выполняет запуск, загрузку файлов или проверку хеша
 

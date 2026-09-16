@@ -6,6 +6,7 @@
 - Added assets index domain model
 - Added assets index to manifest model
 - Mapped assets index from manifest JSON
+- Included assets in manifest resources projection
 
 ---
 

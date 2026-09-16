@@ -4,7 +4,8 @@
 
 ## Текущий план
 
-- Новых активных задач в library/native flow сейчас нет
+- Следующий candidate flow — assets index flow
+- Assets index flow должен начинаться с отдельного ADR
 - Дальнейшие изменения library/native flow должны добавляться через отдельные ADR
 
 ---
@@ -60,7 +61,10 @@ Library/native flow доведен до состояния, где manifest meta
 
 ### Assets
 
-Добавить отдельную модель assets/index после завершения текущего library/native milestone
+Assets index flow выбран как следующий candidate flow
+
+Первый шаг — определить boundary assets index через отдельный ADR до изменения manifest model, verification/download
+flow или launcher lifecycle
 
 ### Launch metadata
 

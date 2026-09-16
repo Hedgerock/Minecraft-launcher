@@ -119,11 +119,11 @@ architecture/design decision
 
 ---
 
-## Launch workflow
+## Launch workflow & Launcher workflow framework
 
 Перед добавлением auth, profile или version selection лучше не перегружать `LauncherEngine`
 
-Можно заранее подумать о модели
+Можно заранее подумать о модели workflow
 
 ``` text
 LaunchWorkflow
@@ -132,7 +132,11 @@ ConditionalLaunchStep
 LaunchFailurePolicy
 ```
 
-Вернуться к теме стоит, когда количество условных шагов запуска начнет усложнять `LauncherEngine`
+Также к этому направлению относится потенциальное введение concurrent execution model на уровне workflow,
+но только после появления независимых шагов, которые действительно можно выполнять параллельно без нарушения lifecycle
+invariants
+
+Вернуться к теме стоит, когда количество условных шагов запуска начнет усложнять `LauncherEngine` или потребует параллельного выполнения
 
 ## Основное правило
 

@@ -4,6 +4,7 @@
 
 ## Текущий план
 
+- Следующий candidate flow — launch metadata / launch arguments flow
 - Assets index flow доведен до минимальной manifest resources projection
 - Дальнейшие изменения library/native flow должны добавляться через отдельные ADR
 
@@ -64,7 +65,6 @@ Assets index flow доведен до минимального состояни�
 - Architecture-specific natives selection
 - Rules на основе features
 - Дальнейшее развитие assets flow после появления подтвержденного сценария
-- Auth launch arguments
 - Loader-specific правила запуска
 
 ---
@@ -84,8 +84,10 @@ Assets index flow доведен до минимального состояни�
 
 ### Launch metadata
 
-Расширить manifest launch metadata аргументами авторизации, loader-specific правилами и дополнительными
-runtime-подстановками только после появления конкретного сценария
+Launch metadata / launch arguments flow выбран как следующий candidate flow
+
+Первый шаг — определить boundary launch metadata через отдельный ADR до изменения `LaunchInfo`, manifest JSON mapping или
+`GameLaunchPlanBuilder`
 
 ---
 

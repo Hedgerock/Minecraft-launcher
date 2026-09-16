@@ -2,6 +2,7 @@
 
 ## Текущий фокус
 
+- Следующий candidate flow — launch metadata / launch arguments flow как развитие manifest-driven launch realism
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

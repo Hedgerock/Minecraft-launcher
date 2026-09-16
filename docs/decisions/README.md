@@ -61,3 +61,4 @@
 | [ADR-0047](ADR-0047-launcher-result-handling-boundary.md)                 | Граница обработки результата запуска Launcher                     | launcher boundary  |
 | [ADR-0048](ADR-0048-generic-operation-failure-context-boundary.md)        | Граница generic operation failure context                         | operation          |
 | [ADR-0049](ADR-0049-assets-index-flow-boundary.md)                        | Граница assets index flow                                         | assets             |
+| [ADR-0050](ADR-0050-launch-metadata-arguments-boundary.md)                | Граница launch metadata arguments                                 | launch metadata    |

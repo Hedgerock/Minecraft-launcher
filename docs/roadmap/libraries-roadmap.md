@@ -84,10 +84,11 @@ Assets index flow доведен до минимального состояни�
 
 ### Launch metadata
 
-Launch metadata / launch arguments flow выбран как следующий candidate flow
+Граница launch metadata arguments зафиксирована  в [ADR-0050](../decisions/ADR-0050-launch-metadata-arguments-boundary.md)
 
-Первый шаг — определить boundary launch metadata через отдельный ADR до изменения `LaunchInfo`, manifest JSON mapping или
-`GameLaunchPlanBuilder`
+Минимальный auth arguments flow реализован через `LaunchInfo`, manifest JSON mapping и построение `GameLaunchPlan.command`
+
+Следующий шаг — провести ревизию launch metadata flow и определить следующий подтвержденный сценарий развития
 
 ---
 

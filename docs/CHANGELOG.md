@@ -10,6 +10,9 @@
 - Closed assets index flow roadmap after manifest resources projection
 - Selected launch metadata flow as next development candidate
 - Documented launch metadata arguments boundary decision
+- Added auth launch arguments metadata to launch info
+- Mapped auth launch arguments from manifest JSON
+- Included auth launch arguments in game launch command
 
 ---
 

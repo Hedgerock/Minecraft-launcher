@@ -83,7 +83,7 @@ L-5
 После успешного `EXTRACT_NATIVES` `LauncherEngine` запускает `BUILD_GAME_LAUNCH_PLAN`
 
 Во время построения `GameLaunchPlan` launcher создает `LaunchVariables` и применяет поддерживаемые
-подстановки в `jvmArgs` и `gameArgs`
+подстановки в `jvmArgs`, `gameArgs` и `authArgs`
 
 Также в процессе построения `GameLaunchPlan` строит `GameClasspath` из `RuntimeLibrarySelection.libraries`,
 безопасно разрешает classpath entries относительно игровой директории, форматирует его и передает как значение

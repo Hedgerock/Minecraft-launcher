@@ -60,7 +60,8 @@ RuntimeEnvironment
     "javaExecutable": "java",
     "javaVersionRequirement": {
       "minimumMajorVersion": 17
-    }
+    },
+    "authArgs": ["--accessToken", "${access_token}"]
   },
   "libraries": [
     {
@@ -193,6 +194,12 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 `launchInfo.javaVersionRequirement.minimumMajorVersion` описывает минимальную major version Java, необходимую для
 запуска сборки
 
+`launchInfo.authArgs` преобразуются в `LaunchInfo.authArgs`
+
+Отсутствие `launchInfo.authArgs` означает пустой список auth arguments
+
+`launchInfo.authArgs` участвует в построении `GameLaunchPlan.command` после `launchInfo.gameArgs`
+
 `assets` преобразуется в `AssetsIndex`
 
 Каждый asset entry содержит физическую метадату
@@ -227,7 +234,11 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 
 ## Подстановка аргументов запуска
 
-`launchInfo.jvmArgs` и `launchInfo.gameArgs` могут содержать поддерживаемые подстановки
+`launchInfo.jvmArgs`, `launchInfo.gameArgs` и `launchInfo.authArgs` могут содержать поддерживаемые подстановки
+
+`${access_token}` в примере сохраняется без изменения
+
+Получение токена и его подстановка пока не реализованы
 
 На текущем этапе поддерживается
 
@@ -335,7 +346,7 @@ LaunchInfo
 - Автоматический выбор Java runtime
 - Проверка существования Java executable на файловой системе
 - Расширение механизма подстановки переменных
-- Аргументы авторизации
+- Получение auth arguments из authentication flow или session model
 - Loader-specific правила запуска
 - Проверка совместимости выбранного Java executable с `javaVersionRequirement`
 - Автоматический выбор Java installation по `javaVersionRequirement`

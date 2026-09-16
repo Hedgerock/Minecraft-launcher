@@ -6,6 +6,11 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(model): add auth launch argument metadata`
+> `feat(api): map auth launch arguments from manifest json`
+> `feat(core): include auth arguments in launch command`
+
 ---
 
 ## Контекст
@@ -16,8 +21,8 @@ Accepted
 
 - `javaExecutable`
 - `mainClass`
-- `gameArguments`
-- `jvmArguments`
+- `gameArgs`
+- `jvmArgs`
 - `javaVersionRequirement`
 
 `GameLaunchPlanBuilder` преобразует `LaunchInfo`, runtime libraries, natives directory и Java runtime selection в итоговую

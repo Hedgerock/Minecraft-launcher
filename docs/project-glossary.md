@@ -56,7 +56,7 @@ Runtime-контекст текущего запуска лаунчера
 
 Метаданные запуска игры из `Manifest`
 
-Содержит `mainClass`, `javaExecutable`, `javaVersionRequirement`, `jvmArgs`, `gameArgs` и `classpath`
+Содержит `mainClass`, `javaExecutable`, `javaVersionRequirement`, `jvmArgs`, `gameArgs`, `authArgs` и `classpath`
 
 Используется `GameLaunchPlanBuilder` для построения команды запуска
 

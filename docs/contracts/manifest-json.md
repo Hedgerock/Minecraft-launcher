@@ -91,6 +91,14 @@ RuntimeEnvironment
         ]
       }
     }
+  ],
+  "assets": [
+    {
+      "path": "assets/asset.jar",
+      "sha256": "28864708a2073c5871f3ef3bda93e5e4f78f5af68ac144cbee1a1253ea417c83",
+      "size": 123456789,
+      "url": "https://localhost/assets/example/assets.jar"
+    }
   ]
 }
 ```
@@ -184,6 +192,20 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 
 `launchInfo.javaVersionRequirement.minimumMajorVersion` описывает минимальную major version Java, необходимую для
 запуска сборки
+
+`assets` преобразуется в `AssetsIndex`
+
+Каждый asset entry содержит физическую метадату
+
+- `path`
+- `sha256`
+- `size`
+- `url`
+
+Отсутствие `assets` означает пустой `AssetsIndex`
+
+На текущем этапе `AssetsIndex` является частью `Manifest`, но еще не подключен к `ManifestResources`,
+verification/download flow или launcher lifecycle
 
 `JsonManifestMapper` не выполняет запуск, загрузку файлов или проверку хеша
 
@@ -291,6 +313,8 @@ LaunchInfo
 - `FileEntry`
 - `LaunchInfo`
 - `LibraryEntry`
+- `AssetEntry`
+- `AssetsIndex`
 
 Если JSON невозможно прочитать или преобразовать в корректный `Manifest`, mapper завершает работу ошибкой
 `ManifestMappingException`
@@ -298,6 +322,8 @@ LaunchInfo
 `LaunchInfo` требует непустые значения `mainClass` и `javaExecutable`
 
 `Manifest` требует наличие списка `libraries`, пустой список допустим для минимальных сценариев
+
+Отсутствие `assets` допустимо и преобразуется в пустой `AssetsIndex`
 
 ---
 
@@ -310,7 +336,6 @@ LaunchInfo
 - Проверка существования Java executable на файловой системе
 - Расширение механизма подстановки переменных
 - Аргументы авторизации
-- Assets index
 - Loader-specific правила запуска
 - Проверка совместимости выбранного Java executable с `javaVersionRequirement`
 - Автоматический выбор Java installation по `javaVersionRequirement`
@@ -328,3 +353,5 @@ LaunchInfo
 - `LoaderInfo`
 - `FileEntry`
 - `LaunchInfo`
+- `AssetEntry`
+- `AssetsIndex`

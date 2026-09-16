@@ -11,11 +11,16 @@ public record LaunchInfoJson(
         List<String> gameArgs,
         List<String> classpath,
         String javaExecutable,
-        JavaVersionRequirementJson javaVersionRequirement
+        JavaVersionRequirementJson javaVersionRequirement,
+        List<String> authArgs
 ) {
 
     public LaunchInfoJson {
         Objects.requireNonNull(javaVersionRequirement, "javaVersionRequirement");
+
+        if (authArgs == null) {
+            authArgs = List.of();
+        }
     }
 
     LaunchInfo toLaunchInfo() {
@@ -25,7 +30,8 @@ public record LaunchInfoJson(
                 gameArgs,
                 classpath,
                 javaExecutable,
-                javaVersionRequirement.toJavaVersionRequirement()
+                javaVersionRequirement.toJavaVersionRequirement(),
+                authArgs
         );
     }
 

@@ -20,7 +20,8 @@
     "javaExecutable": "java",
     "javaVersionRequirement": {
       "minimumMajorVersion": 21
-    }
+    },
+    "authArgs": ["--accessToken", "${access_token}"]
   },
   "libraries": [
     {

@@ -38,41 +38,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JsonManifestMapperTest {
 
-    private JsonManifestMapper getMapper(RuntimeLibrarySelector runtimeLibrarySelector) {
-        return new JsonManifestMapper(
-                runtimeLibrarySelector,
-                () -> new RuntimeEnvironment(OperatingSystem.WINDOWS)
+    @Test
+    void should_map_empty_auth_args_when_auth_args_field_is_null() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest-without-assets.json");
+
+        //when
+        ManifestLoadResult result = mapper.map(json);
+
+        //then
+        assertEquals(
+                List.of(),
+                result.manifest().launchInfo().authArgs()
         );
-    }
-
-    private JsonManifestMapper getMapper() {
-        return getMapper(new DefaultRuntimeLibrarySelector());
-    }
-
-    private LibraryArtifactMetadata getLibraryArtifactMetadata(OperatingSystem operatingSystem) {
-        return switch (operatingSystem) {
-            case WINDOWS ->
-                new LibraryArtifactMetadata(
-                        "natives-windows.jar",
-                        "natives-windows-sha256",
-                        123456789L,
-                        "https://localhost/files/libraries/org/example/example/natives-windows.jar"
-                );
-            case MACOS ->
-                new LibraryArtifactMetadata(
-                        "natives-osx.jar",
-                        "natives-osx-sha256",
-                        123456789L,
-                        "https://localhost/files/libraries/org/example/example/natives-osx.jar"
-                );
-            case LINUX ->
-                new LibraryArtifactMetadata(
-                        "natives-linux.jar",
-                        "natives-linux-sha256",
-                        123456789L,
-                        "https://localhost/files/libraries/org/example/example/natives-linux.jar"
-                );
-        };
     }
 
     @Test
@@ -407,6 +387,11 @@ class JsonManifestMapperTest {
 
         assertEquals(2, manifest.libraries().size());
 
+        assertEquals(
+                List.of("--accessToken", "${access_token}"),
+                launchInfo.authArgs()
+        );
+
         LibraryEntry libraryEntry = manifest.libraries().getFirst();
         LibraryEntry secondLibraryEntry = manifest.libraries().getLast();
 
@@ -476,4 +461,40 @@ class JsonManifestMapperTest {
         }
     }
 
+    private JsonManifestMapper getMapper(RuntimeLibrarySelector runtimeLibrarySelector) {
+        return new JsonManifestMapper(
+                runtimeLibrarySelector,
+                () -> new RuntimeEnvironment(OperatingSystem.WINDOWS)
+        );
+    }
+
+    private JsonManifestMapper getMapper() {
+        return getMapper(new DefaultRuntimeLibrarySelector());
+    }
+
+    private LibraryArtifactMetadata getLibraryArtifactMetadata(OperatingSystem operatingSystem) {
+        return switch (operatingSystem) {
+            case WINDOWS ->
+                    new LibraryArtifactMetadata(
+                            "natives-windows.jar",
+                            "natives-windows-sha256",
+                            123456789L,
+                            "https://localhost/files/libraries/org/example/example/natives-windows.jar"
+                    );
+            case MACOS ->
+                    new LibraryArtifactMetadata(
+                            "natives-osx.jar",
+                            "natives-osx-sha256",
+                            123456789L,
+                            "https://localhost/files/libraries/org/example/example/natives-osx.jar"
+                    );
+            case LINUX ->
+                    new LibraryArtifactMetadata(
+                            "natives-linux.jar",
+                            "natives-linux-sha256",
+                            123456789L,
+                            "https://localhost/files/libraries/org/example/example/natives-linux.jar"
+                    );
+        };
+    }
 }

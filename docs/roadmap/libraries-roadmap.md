@@ -63,7 +63,7 @@ Assets index flow доведен до минимального состояни�
 - Параллельная поддержка нескольких runtime native sets
 - Architecture-specific natives selection
 - Rules на основе features
-- Assets index
+- Дальнейшее развитие assets flow после появления подтвержденного сценария
 - Auth launch arguments
 - Loader-specific правила запуска
 
@@ -78,10 +78,9 @@ Assets index flow доведен до минимального состояни�
 
 ### Assets
 
-Assets index flow выбран как следующий candidate flow
+Минимальный assets index flow закрыт через manifest model, JSON mapping и `ManifestResources` projection
 
-Первый шаг — определить boundary assets index через отдельный ADR до изменения manifest model, verification/download
-flow или launcher lifecycle
+Дальнейшее развитие assets flow должно начинаться с отдельного подтвержденного сценария и нового решения
 
 ### Launch metadata
 

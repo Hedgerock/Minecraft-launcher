@@ -2,7 +2,6 @@
 
 ## Текущий фокус
 
-- Следующий candidate flow — assets index flow как развитие library/native runtime
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -45,3 +44,4 @@
 - Завершена минимальная реализация generic operation failure context через operation result, task execution boundary
   и failed operation event без расширения `LaunchResult`
 - Подготовлен release `v0.6.1-operation-lifecycle-boundary`
+- Assets index flow доведен до минимальной manifest resources projection

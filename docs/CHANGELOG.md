@@ -7,6 +7,7 @@
 - Added assets index to manifest model
 - Mapped assets index from manifest JSON
 - Included assets in manifest resources projection
+- Closed assets index flow roadmap after manifest resources projection
 
 ---
 

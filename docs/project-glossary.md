@@ -149,7 +149,7 @@ Manifest-specific модель asset resource metadata
 
 Manifest-specific контейнер asset resources
 
-Используется как отдельная semantic boundary для будущего assets index flow
+Используется как отдельная semantic boundary для assets metadata внутри manifest model
 
 Подключен к `ManifestResources` и участвует в verification/download flow через общий `ResourceEntry` контракт
 

@@ -1,5 +1,7 @@
 package com.launcher.model.manifest;
 
+import com.launcher.model.manifest.assets.AssetEntry;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -13,10 +15,13 @@ public final class ManifestResources {
     public static List<ResourceEntry> from(Manifest manifest) {
         Objects.requireNonNull(manifest, "manifest");
 
-        return Stream.concat(
+        return Stream.of(
                 manifest.files().stream().map(ManifestResources::fromFile),
-                manifest.libraries().stream().map(ManifestResources::fromLibrary)
-        ).toList();
+                manifest.libraries().stream().map(ManifestResources::fromLibrary),
+                manifest.assetsIndex().assets().stream().map(ManifestResources::fromAsset)
+        )
+                .flatMap(stream -> stream)
+                .toList();
     }
 
     private static ResourceEntry fromFile(FileEntry file) {
@@ -34,6 +39,15 @@ public final class ManifestResources {
                 library.sha256(),
                 library.size(),
                 library.url()
+        );
+    }
+
+    private static ResourceEntry fromAsset(AssetEntry asset) {
+        return new ResourceEntry(
+                asset.path(),
+                asset.sha256(),
+                asset.size(),
+                asset.url()
         );
     }
 

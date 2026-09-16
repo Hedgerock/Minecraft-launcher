@@ -17,7 +17,7 @@ class ManifestResourcesTest {
     }
 
     @Test
-    void should_return_empty_resource_list_when_manifest_has_no_files_and_libraries() {
+    void should_return_empty_resource_list_when_manifest_has_no_files_libraries_and_assets() {
         //given & when
         Manifest manifestWithEmptyFiles = manifestResourcesFixture.getManifestWithoutResources();
         List<ResourceEntry> resourceEntries = ManifestResources.from(manifestWithEmptyFiles);
@@ -65,24 +65,27 @@ class ManifestResourcesTest {
 
         ResourceEntry resourceEntry = manifestResourcesFixture.getFileEntry();
         ResourceEntry libraryEntry = manifestResourcesFixture.getLibraryEntry();
+        ResourceEntry assetEntry = manifestResourcesFixture.getAssetEntry();
 
         //then
         assertEquals(resourceEntry, resourceEntries.get(0));
         assertEquals(libraryEntry, resourceEntries.get(1));
+        assertEquals(assetEntry, resourceEntries.get(2));
     }
 
     @Test
-    void should_collect_file_and_library_resources_from_manifest() {
+    void should_collect_manifest_resources() {
         //given & when
         Manifest manifest = manifestResourcesFixture.getManifest();
         List<ResourceEntry> resourceEntries = ManifestResources.from(manifest);
 
         ResourceEntry resourceEntry = manifestResourcesFixture.getFileEntry();
         ResourceEntry libraryEntry = manifestResourcesFixture.getLibraryEntry();
+        ResourceEntry assetEntry = manifestResourcesFixture.getAssetEntry();
 
         //then
         assertEquals(
-                List.of(resourceEntry, libraryEntry),
+                List.of(resourceEntry, libraryEntry, assetEntry),
                 resourceEntries
         );
     }

@@ -7,6 +7,8 @@ import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ResourceEntry;
+import com.launcher.model.manifest.assets.AssetEntry;
+import com.launcher.model.manifest.assets.AssetsIndex;
 import com.launcher.model.runtime.JavaVersionRequirement;
 
 import java.util.List;
@@ -25,6 +27,13 @@ public final class ManifestResourcesFixture {
             "library-sha256",
             54321L,
             "library-url"
+    );
+
+    private static final AssetEntry ASSET_ENTRY = new AssetEntry(
+            "asset-path",
+            "asset-sha256",
+            54321L,
+            "asset-url"
     );
 
     private static final String DEFAULT_MINECRAFT_VERSION = "1.12.2";
@@ -48,7 +57,8 @@ public final class ManifestResourcesFixture {
             DEFAULT_LOADER_INFO,
             List.of(FILE_ENTRY),
             DEFAULT_LAUNCH_INFO,
-            List.of(LIBRARY_ENTRY)
+            List.of(LIBRARY_ENTRY),
+            new AssetsIndex(List.of(ASSET_ENTRY))
     );
 
     private static final Manifest MANIFEST_WITHOUT_RESOURCES = new Manifest(
@@ -84,6 +94,16 @@ public final class ManifestResourcesFixture {
         );
     }
 
+    @SuppressWarnings("SameParameterValue")
+    private ResourceEntry toResourceEntry(AssetEntry assetEntry) {
+        return getResourceEntry(
+                assetEntry.path(),
+                assetEntry.sha256(),
+                assetEntry.size(),
+                assetEntry.url()
+        );
+    }
+
     public Manifest getManifest() {
         return MANIFEST;
     }
@@ -98,6 +118,10 @@ public final class ManifestResourcesFixture {
 
     public ResourceEntry getFileEntry() {
         return toResourceEntry(FILE_ENTRY);
+    }
+
+    public ResourceEntry getAssetEntry() {
+        return toResourceEntry(ASSET_ENTRY);
     }
 
     public ResourceEntry generateResourceEntry(String path, String sha256, long size, String url) {

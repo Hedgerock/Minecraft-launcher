@@ -20,6 +20,14 @@
 - финальное состояние лаунчера
 - флаг успешности запуска
 
+### LauncherResultHandler
+
+Application boundary contract для обработки `LaunchResult`
+
+Не принимает presentation decisions внутри `launcher-core`
+
+На текущем этапе application assembly использует минимальную no-op реализацию
+
 ### LauncherState
 
 Состояние приложения `Launcher` в текущий момент времени
@@ -475,6 +483,44 @@ manifest mapping и runtime library selection
 Не создает операции
 
 Не содержит бизнес-логики операций
+
+### OperationResult
+
+Operation-level результат выполнения `LaunchOperation`
+
+Содержит флаг успешности и optional `OperationFailure`
+
+Readable error message является производным представлением failure context
+
+Не описывает outcome всего launcher lifecycle и не заменяет `LaunchResult`
+
+### OperationFailure
+
+Generic operation failure context
+
+Содержит readable message, generic failure code и details
+
+Не зависит от domain-specific failure reasons, UI presentation, retry policy или recovery behavior
+
+### OperationFailureCode
+
+Generic category ошибки на уровне operation lifecycle
+
+На текущем этапе содержит минимальный набор кодов и не заменяет domain-specific failure reasons
+
+### OperationFailureMapper
+
+Компонент, преобразующий exception на operation boundary в `OperationFailure`
+
+Используется `LaunchOperation` для сохранения generic failure context при ошибках lifecycle hooks или execution strategy
+
+### OperationFailedEvent
+
+Событие неуспешного завершения `LaunchOperation`
+
+Публикует `OperationType` и `OperationFailure`
+
+Readable error message остается compatibility view поверх `OperationFailure`
 
 ---
 

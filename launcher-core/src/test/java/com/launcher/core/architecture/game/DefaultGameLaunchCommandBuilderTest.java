@@ -57,7 +57,9 @@ class DefaultGameLaunchCommandBuilderTest {
                         "first-game-argument",
                         "second-game-argument",
                         "-gameDir",
-                        "test-directory"
+                        "test-directory",
+                        "--accessToken",
+                        "${access_token}"
                 ),
                 command
         );

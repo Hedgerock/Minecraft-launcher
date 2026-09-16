@@ -33,6 +33,7 @@ public final class DefaultGameLaunchCommandBuilder implements GameLaunchCommandB
         command.addAll(launchArgumentResolver.resolve(launchInfo.jvmArgs(), launchVariables));
         command.add(launchInfo.mainClass());
         command.addAll(launchArgumentResolver.resolve(launchInfo.gameArgs(), launchVariables));
+        command.addAll(launchArgumentResolver.resolve(launchInfo.authArgs(), launchVariables));
 
         return List.copyOf(command);
     }

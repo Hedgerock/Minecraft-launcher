@@ -136,7 +136,11 @@ public final class RecordingManifestService implements ManifestService {
                         "test-value2.jar"
                 ),
                 "java-custom",
-                new JavaVersionRequirement(17)
+                new JavaVersionRequirement(17),
+                List.of(
+                        "--accessToken",
+                        "${access_token}"
+                )
         );
     }
 

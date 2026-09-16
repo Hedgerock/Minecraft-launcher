@@ -11,8 +11,28 @@ public record LaunchInfo(
         List<String> gameArgs,
         List<String> classpath,
         String javaExecutable,
-        JavaVersionRequirement javaVersionRequirement
+        JavaVersionRequirement javaVersionRequirement,
+        List<String> authArgs
 ) {
+
+    public LaunchInfo(
+            String mainClass,
+            List<String> jvmArgs,
+            List<String> gameArgs,
+            List<String> classpath,
+            String javaExecutable,
+            JavaVersionRequirement javaVersionRequirement
+    ) {
+        this(
+                mainClass,
+                jvmArgs,
+                gameArgs,
+                classpath,
+                javaExecutable,
+                javaVersionRequirement,
+                List.of()
+        );
+    }
 
     public LaunchInfo {
         Objects.requireNonNull(mainClass, "mainClass");
@@ -21,6 +41,7 @@ public record LaunchInfo(
         Objects.requireNonNull(classpath, "classpath");
         Objects.requireNonNull(javaExecutable, "javaExecutable");
         Objects.requireNonNull(javaVersionRequirement, "javaVersionRequirement");
+        Objects.requireNonNull(authArgs, "authArgs");
 
         validateFieldOnBlankValue(mainClass, "mainClass");
         validateFieldOnBlankValue(javaExecutable, "javaExecutable");
@@ -32,6 +53,7 @@ public record LaunchInfo(
         jvmArgs = List.copyOf(jvmArgs);
         gameArgs = List.copyOf(gameArgs);
         classpath = List.copyOf(classpath);
+        authArgs = List.copyOf(authArgs);
     }
 
     private void validateFieldOnBlankValue(String value, String fieldName) {

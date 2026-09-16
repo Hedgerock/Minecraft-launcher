@@ -7,9 +7,124 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LaunchInfoTest {
+
+    @Test
+    void should_use_empty_auth_args_by_default() {
+        //given & when
+        LaunchInfo result = new LaunchInfo(
+                getDefaultMainClass(),
+                getDefaultJvmArgs(),
+                getDefaultGameArgs(),
+                getDefaultClasspath(),
+                getDefaultJavaExecutable(),
+                getDefaultJavaVersionRequirement()
+        );
+
+        //then
+        assertEquals(
+                List.of(),
+                result.authArgs()
+        );
+    }
+
+    @Test
+    void should_reject_auth_args_mutation_from_accessor() {
+        //given
+        List<String> authArgs = new ArrayList<>(List.of("auth-arg-1"));
+
+        LaunchInfo launchInfo = new LaunchInfo(
+                getDefaultMainClass(),
+                getDefaultJvmArgs(),
+                getDefaultGameArgs(),
+                getDefaultClasspath(),
+                getDefaultJavaExecutable(),
+                getDefaultJavaVersionRequirement(),
+                authArgs
+        );
+
+        //when & then
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> launchInfo.authArgs().add("auth-arg-2")
+        );
+    }
+
+    @Test
+    void should_reject_null_auth_arg() {
+        //given
+        List<String> authArgs = new ArrayList<>();
+
+        authArgs.add(null);
+        authArgs.add("--accessToken");
+
+        //when & then
+        assertThrows(
+                NullPointerException.class,
+                () -> new LaunchInfo(
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        getDefaultClasspath(),
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement(),
+                        authArgs
+                )
+        );
+    }
+
+    @Test
+    void should_create_immutable_auth_args() {
+        //given
+        List<String> authArgs = new ArrayList<>();
+        authArgs.add("auth-arg-1");
+
+        LaunchInfo launchInfo = new LaunchInfo(
+                getDefaultMainClass(),
+                getDefaultJvmArgs(),
+                getDefaultGameArgs(),
+                getDefaultClasspath(),
+                getDefaultJavaExecutable(),
+                getDefaultJavaVersionRequirement(),
+                authArgs
+        );
+
+        //when
+        authArgs.add("auth-arg-2");
+
+        //then
+        assertEquals(
+                List.of("auth-arg-1"),
+                launchInfo.authArgs()
+        );
+
+    }
+
+    @Test
+    void should_reject_null_auth_args() {
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new LaunchInfo(
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        getDefaultClasspath(),
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement(),
+                        null
+                )
+        );
+
+        assertEquals(
+                "authArgs",
+                exception.getMessage()
+        );
+    }
 
     @Test
     void should_reject_null_java_version_requirement() {

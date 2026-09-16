@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение частично реализовано в итерациях
+> `feat(model): add assets index model`
+> `feat(model): add assets index to manifest`
+
 ---
 
 ## Контекст

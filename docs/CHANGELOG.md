@@ -3,6 +3,8 @@
 ### Added
 
 - Documented assets index flow boundary decision
+- Added assets index domain model
+- Added assets index to manifest model
 
 ---
 

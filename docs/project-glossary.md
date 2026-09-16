@@ -124,6 +124,27 @@ Configured Java override имеет приоритет над manifest-provided 
 Сохраняет семантику исходных моделей: `FileEntry` и `LibraryEntry` продолжают использоваться в своих
 runtime-сценариях
 
+### AssetEntry
+
+Manifest-specific модель asset resource metadata
+
+Содержит физическую метадату asset resource
+
+- `path`
+- `sha256`
+- `size`
+- `url`
+
+Не заменяет `FileEntry`, `LibraryEntry` или `ResourceEntry`
+
+### AssetsIndex
+
+Manifest-specific контейнер asset resources
+
+Используется как отдельная semantic boundary для будущего assets index flow
+
+На текущем этапе не подключен к `ManifestResources`, verification/download flow или manifest JSON mapping
+
 ---
 
 ## Runtime

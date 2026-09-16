@@ -8,14 +8,36 @@ public record ManifestJson(
         LoaderJson loader,
         List<FileEntryJson> files,
         LaunchInfoJson launchInfo,
-        List<LibraryEntryJson> libraries
+        List<LibraryEntryJson> libraries,
+        List<AssetEntryJson> assets
 ) {
+
+    public ManifestJson(
+            String minecraftVersion,
+            LoaderJson loader,
+            List<FileEntryJson> files,
+            LaunchInfoJson launchInfo,
+            List<LibraryEntryJson> libraries
+    ) {
+        this(
+                minecraftVersion,
+                loader,
+                files,
+                launchInfo,
+                libraries,
+                List.of()
+        );
+    }
 
     public ManifestJson {
         Objects.requireNonNull(loader, "loader");
         Objects.requireNonNull(files, "files");
         Objects.requireNonNull(launchInfo, "launchInfo");
         Objects.requireNonNull(libraries, "libraries");
+        assets = Objects.requireNonNullElseGet(
+                assets,
+                List::of
+        );
     }
 
 }

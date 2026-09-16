@@ -5,6 +5,7 @@ import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
+import com.launcher.model.manifest.assets.AssetsIndex;
 import com.launcher.model.runtime.RuntimeEnvironment;
 
 import java.util.List;
@@ -29,7 +30,12 @@ public final class ManifestJsonConverter {
                         .map(FileEntryJson::toFileEntry)
                         .toList(),
                 manifestJson.launchInfo().toLaunchInfo(),
-                selection.selectedArtifacts()
+                selection.selectedArtifacts(),
+                new AssetsIndex(
+                        manifestJson.assets().stream()
+                                .map(AssetEntryJson::toAssetEntry)
+                                .toList()
+                )
         );
 
         return new ManifestLoadResult(

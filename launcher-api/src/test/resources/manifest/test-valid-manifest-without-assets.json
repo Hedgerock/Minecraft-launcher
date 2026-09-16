@@ -69,13 +69,5 @@
         ]
       }
     }
-  ],
-  "assets": [
-    {
-      "path": "assets.jar",
-      "sha256": "assets-sha256",
-      "size": 123456789,
-      "url": "https://localhost/assets/example/assets.jar"
-    }
   ]
 }

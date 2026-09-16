@@ -9,8 +9,11 @@ import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.manifest.LibraryArtifactMetadata;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
+import com.launcher.model.manifest.assets.AssetEntry;
+import com.launcher.model.manifest.assets.AssetsIndex;
 import com.launcher.model.manifest.classifiers.LibraryClassifiersMetadata;
 import com.launcher.model.manifest.natives.LibraryNativesMetadata;
 import com.launcher.model.manifest.natives.NativeExtractionRules;
@@ -70,6 +73,24 @@ class JsonManifestMapperTest {
                         "https://localhost/files/libraries/org/example/example/natives-linux.jar"
                 );
         };
+    }
+
+    @Test
+    void should_map_empty_assets_index_when_assets_field_is_null() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest-without-assets.json");
+
+        //when
+        ManifestLoadResult result = mapper.map(json);
+
+        //then
+        AssetsIndex expected = new AssetsIndex(List.of());
+        assertEquals(
+                expected,
+                result.manifest().assetsIndex()
+        );
     }
 
     @Test
@@ -421,6 +442,22 @@ class JsonManifestMapperTest {
         assertEquals(
                 123456789L,
                 secondLibraryEntry.size()
+        );
+
+        AssetsIndex expected = new AssetsIndex(
+                List.of(
+                        new AssetEntry(
+                                "assets.jar",
+                                "assets-sha256",
+                                123456789L,
+                                "https://localhost/assets/example/assets.jar"
+                        )
+                )
+        );
+
+        assertEquals(
+                expected,
+                manifest.assetsIndex()
         );
     }
 

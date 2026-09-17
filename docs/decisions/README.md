@@ -62,3 +62,4 @@
 | [ADR-0048](records/ADR-0048-generic-operation-failure-context-boundary.md)        | Граница generic operation failure context                         | operation          |
 | [ADR-0049](records/ADR-0049-assets-index-flow-boundary.md)                        | Граница assets index flow                                         | assets             |
 | [ADR-0050](records/ADR-0050-launch-metadata-arguments-boundary.md)                | Граница launch metadata arguments                                 | launch metadata    |
+| [ADR-0051](records/ADR-0051-manifest-resource-consistency-boundary.md)            | Граница согласованности manifest resources                        | manifest resources|

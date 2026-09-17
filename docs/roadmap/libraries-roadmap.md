@@ -4,8 +4,8 @@
 
 ## Текущий план
 
-- Определить границу проверки согласованности manifest resources через отдельный ADR
-- Зафиксировать правила обработки ресурсов с совпадающим локальным назначением до изменения verification/download flow
+- Реализовать подготовку согласованного набора ресурсов согласно [ADR-0051](../decisions/records/ADR-0051-manifest-resource-consistency-boundary.md)
+- Подключить общий planning-компонент к verification/download flow и покрыть конфликтующие назначения тестами
 - Assets index flow доведен до минимальной manifest resources projection
 - Дальнейшие изменения library/native flow должны добавляться через отдельные ADR
 

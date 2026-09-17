@@ -18,6 +18,7 @@
 - Selected manifest resource consistency as next development candidate
 - Added local Markdown link validation to quality checks
 - Included JSON resources in formatting checks
+- Documented manifest resource consistency boundary decision
 
 ### Changed
 

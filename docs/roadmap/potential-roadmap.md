@@ -84,7 +84,7 @@
 - Поддерживать минимальный CI pipeline для GitHub
 - Не развивать новые launcher features до завершения foundation pass
 
-Reserved modules зафиксированы в [ADR-0037](../decisions/ADR-0037-reserved-modules-policy.md)
+Reserved modules зафиксированы в [ADR-0037](../decisions/records/ADR-0037-reserved-modules-policy.md)
 
 - `launcher-auth` зарезервирован для будущего authentication flow
 - `launcher-ui` зарезервирован для будущего presentation layer

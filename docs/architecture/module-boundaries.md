@@ -167,7 +167,7 @@ environment variables, system properties, process output или process state
 `launcher-auth`, `launcher-common` и `launcher-ui` могут оставаться подключенными к Gradle build как
 reserved modules
 
-Их статус зафиксирован в [ADR-0037](../decisions/ADR-0037-reserved-modules-policy.md)
+Их статус зафиксирован в [ADR-0037](../decisions/records/ADR-0037-reserved-modules-policy.md)
 
 `launcher-common` не должен использоваться как общий utility module без подтвержденного cross-module сценария или
 architecture/design решения

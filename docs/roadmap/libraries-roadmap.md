@@ -102,7 +102,7 @@ Assets index flow доведен до минимального состояни�
 
 ### Launch metadata
 
-Граница launch metadata arguments зафиксирована в [ADR-0050](../decisions/ADR-0050-launch-metadata-arguments-boundary.md)
+Граница launch metadata arguments зафиксирована в [ADR-0050](../decisions/records/ADR-0050-launch-metadata-arguments-boundary.md)
 
 Минимальный auth arguments flow реализован через `LaunchInfo`, manifest JSON mapping и построение `GameLaunchPlan.command`
 

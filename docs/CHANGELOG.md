@@ -16,6 +16,13 @@
 - Added launch metadata planning integration tests
 - Added command building coverage for empty auth arguments and supported placeholders in auth arguments
 - Selected manifest resource consistency as next development candidate
+- Added local Markdown link validation to quality checks
+- Included JSON resources in formatting checks
+
+### Changed
+
+- Moved quality checks into a buildSrc precompiled script plugin
+- Moved architecture decision records into a dedicated records directory
 
 ---
 

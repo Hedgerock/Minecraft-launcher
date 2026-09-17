@@ -105,7 +105,7 @@ Java installation discovery, Java runtime fallback policy и structured operatio
 ### Java process lifecycle diagnostics revision
 
 Java process lifecycle diagnostics была успешно интегрирована в adapter-level detection flow, с покрытием минимального
-набора сценариев согласно принятому решению [ADR-0045](../decisions/ADR-0045-java-process-lifecycle-diagnostics-boundary.md)
+набора сценариев согласно принятому решению [ADR-0045](../decisions/records/ADR-0045-java-process-lifecycle-diagnostics-boundary.md)
 
 Следующий шаг — провести ревизию Java process lifecycle diagnostics flow, чтобы выбрать нового кандидата на реализацию
 или усиление уже существующего flow

@@ -178,8 +178,8 @@ Application assembly использует `DefaultJavaRuntimeCompatibilityChecke
 
 Связанные документы
 
-- [ADR-0003 Launcher Engine Responsibility](../../decisions/ADR-0003-launcher-engine-responsibility.md)
-- [ADR-0005 Context Ownership (Deferred)](../../decisions/ADR-0005-immutable-domain-model.md)
+- [ADR-0003 Launcher Engine Responsibility](../../decisions/records/ADR-0003-launcher-engine-responsibility.md)
+- [ADR-0005 Context Ownership (Deferred)](../../decisions/records/ADR-0005-immutable-domain-model.md)
 - [RFC-0002 Session Lifecycle Management](../../rfc/RFC-0002-session-lifecycle-management.md)
 - [RFC-0003 Task Cancellation](../../rfc/RFC-0003-task-lifecycle.md)
 

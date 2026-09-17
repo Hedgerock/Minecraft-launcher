@@ -129,5 +129,5 @@ Then
 ## Связанные документы
 
 - [Жизненный цикл лаунчера](../architecture/launcher/launcher-lifecycle.md)
-- [ADR-0046: Определить границу результата запуска Launcher](../decisions/ADR-0046-launcher-launch-result-boundary.md)
+- [ADR-0046: Определить границу результата запуска Launcher](../decisions/records/ADR-0046-launcher-launch-result-boundary.md)
 - [Правила написания тестов](../rules/test-guidelines.md)

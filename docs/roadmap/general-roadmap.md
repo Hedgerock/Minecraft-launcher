@@ -24,7 +24,7 @@
 
 ## Выполнено
 
-- Правила безопасности `ResourceEntry.path` зафиксированы в [ADR-0016](../decisions/ADR-0016-resource-path-safety.md) и реализованы через общий `ResourcePathResolver`
+- Правила безопасности `ResourceEntry.path` зафиксированы в [ADR-0016](../decisions/records/ADR-0016-resource-path-safety.md) и реализованы через общий `ResourcePathResolver`
 - Введен минимальный quality gate для проверки кода и документации
 - Зафиксированы правила написания ADR
 - Зафиксированы правила написания git commits

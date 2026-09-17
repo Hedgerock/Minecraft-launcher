@@ -11,54 +11,54 @@
 ## Решения
 
 | ADR                                                                       | Решение                                                           | Область            |
-|---------------------------------------------------------------------------|-------------------------------------------------------------------|--------------------|
-| [ADR-0001](ADR-0001-launch-context-responsibility.md)                     | Ответственность `LaunchContext`                                   | launch context     |
-| [ADR-0002](ADR-0002-launcher-lifecycle.md)                                | Жизненный цикл launcher                                           | launcher lifecycle |
-| [ADR-0003](ADR-0003-launcher-engine-responsibility.md)                    | Ответственность `LauncherEngine`                                  | launcher engine    |
-| [ADR-0004](ADR-0004-file-verification.md)                                 | Проверка файлов                                                   | verification       |
-| [ADR-0005](ADR-0005-immutable-domain-model.md)                            | Immutable domain model                                            | model              |
-| [ADR-0006](ADR-0006-authentication-boundaries.md)                         | Границы аутентификации                                            | authentication     |
-| [ADR-0007](ADR-0007-context-ownership.md)                                 | Владения контекста                                                | context            |
-| [ADR-0008](ADR-0008-operation-resolution-strategy.md)                     | Operation resolution strategy                                     | operation          |
-| [ADR-0009](ADR-0009-download-planning.md)                                 | Планирование загрузки                                             | download           |
-| [ADR-0010](ADR-0010-execution-strategy-selection.md)                      | Execution strategy selection                                      | execution          |
-| [ADR-0011](ADR-0011-failure-policy-extraction.md)                         | Failure policy extraction                                         | failure policy     |
-| [ADR-0012](ADR-0012-launcher-engine-uses-operation-manager.md)            | LauncherEngine использует `OperationManager`                      | operation          |
-| [ADR-0013](ADR-0013-core-owns-orchestration-ports.md)                     | Порты оркестрации принадлежат launcher-core                       | module boundaries  |
-| [ADR-0014](ADR-0014-manifest-resources-verification-flow.md)              | `ManifestResources` как source для verification flow              | verification       |
-| [ADR-0015](ADR-0015-minimal-library-metadata-scope.md)                    | Минимальный scope library metadata                                | libraries          |
-| [ADR-0016](ADR-0016-resource-path-safety.md)                              | Безопасность resource path                                        | resource paths     |
-| [ADR-0017](ADR-0017-library-runtime-metadata-boundary.md)                 | Граница runtime metadata для libraries                            | libraries          |
-| [ADR-0018](ADR-0018-runtime-environment-boundary.md)                      | Runtime environment boundary                                      | runtime            |
-| [ADR-0019](ADR-0019-os-specific-library-rules.md)                         | OS-specific rules для libraries                                   | libraries          |
-| [ADR-0020](ADR-0020-library-classifiers-and-natives-boundary.md)          | Classifiers и natives metadata boundary                           | libraries          |
-| [ADR-0021](ADR-0021-native-artifact-processing-boundary.md)               | Граница обработки native artifacts                                | natives            |
-| [ADR-0022](ADR-0022-manifest-load-result-boundary.md)                     | `ManifestLoadResult` boundary                                     | manifest           |
-| [ADR-0023](ADR-0023-use-libraries-as-game-classpath-source.md)            | `RuntimeLibrarySelection.libraries` как source для game classpath | classpath          |
-| [ADR-0024](ADR-0024-native-extraction-operation-boundary.md)              | Native extraction operation boundary                              | natives            |
-| [ADR-0025](ADR-0025-native-extraction-service-implementation.md)          | Реализация native extraction service                              | natives            |
-| [ADR-0026](ADR-0026-native-extraction-exclude-rules.md)                   | Extract exclude rules для native artifacts                        | natives            |
-| [ADR-0027](ADR-0027-natives-directory-launch-argument.md)                 | Директория natives в launch arguments                             | launch arguments   |
-| [ADR-0028](ADR-0028-native-extraction-output-policy.md)                   | Output policy распакованных native artifacts                      | natives            |
-| [ADR-0029](ADR-0029-java-runtime-selection-boundary.md)                   | Граница выбора Java runtime                                       | java runtime       |
-| [ADR-0030](ADR-0030-java-executable-readiness-boundary.md)                | Граница проверки Java executable                                  | java runtime       |
-| [ADR-0031](ADR-0031-java-executable-reference-boundary.md)                | Граница Java executable reference                                 | java runtime       |
-| [ADR-0032](ADR-0032-java-command-path-resolution-boundary.md)             | Граница PATH resolution для Java command name                     | java runtime       |
-| [ADR-0033](ADR-0033-manifest-java-executable-reference-interpretation.md) | Интерпретация Java executable reference из manifest metadata      | java runtime       |
-| [ADR-0034](ADR-0034-core-boundary-classification.md)                      | Классификация границ launcher-core                                | module boundaries  |
-| [ADR-0035](ADR-0035-java-executable-readiness-adapter-boundary.md)        | Граница реализации Java executable readiness checker              | java runtime       |
-| [ADR-0036](ADR-0036-java-command-path-resolver-boundary.md)               | Граница Java command path resolver                                | java runtime       |
-| [ADR-0037](ADR-0037-reserved-modules-policy.md)                           | Политика reserved modules                                         | module boundaries  |
-| [ADR-0038](ADR-0038-configured-java-override-boundary.md)                 | Граница configured Java override                                  | java runtime       |
-| [ADR-0039](ADR-0039-java-runtime-failure-model.md)                        | Модель ошибок Java runtime                                        | java runtime       |
-| [ADR-0040](ADR-0040-operation-failure-diagnostics-boundary.md)            | Граница operation failure diagnostics                             | operation          |
-| [ADR-0041](ADR-0041-java-version-requirements-boundary.md)                | Граница Java version requirements                                 | java runtime       |
-| [ADR-0042](ADR-0042-manifest-java-version-requirement-source.md)          | Manifest source для Java version requirement                      | java runtime       |
-| [ADR-0043](ADR-0043-java-version-compatibility-boundary.md)               | Граница проверки совместимости Java version                       | java runtime       |
-| [ADR-0044](ADR-0044-java-runtime-version-detection-boundary.md)           | Граница определения Java runtime version                          | java runtime       |
-| [ADR-0045](ADR-0045-java-process-lifecycle-diagnostics-boundary.md)       | Граница Java process lifecycle diagnostics                        | java runtime       |
-| [ADR-0046](ADR-0046-launcher-launch-result-boundary.md)                   | Граница результата запуска Launcher                               | launcher lifecycle |
-| [ADR-0047](ADR-0047-launcher-result-handling-boundary.md)                 | Граница обработки результата запуска Launcher                     | launcher boundary  |
-| [ADR-0048](ADR-0048-generic-operation-failure-context-boundary.md)        | Граница generic operation failure context                         | operation          |
-| [ADR-0049](ADR-0049-assets-index-flow-boundary.md)                        | Граница assets index flow                                         | assets             |
-| [ADR-0050](ADR-0050-launch-metadata-arguments-boundary.md)                | Граница launch metadata arguments                                 | launch metadata    |
+|-----------------------------------------------------------------------------------|-------------------------------------------------------------------|--------------------|
+| [ADR-0001](records/ADR-0001-launch-context-responsibility.md)                     | Ответственность `LaunchContext`                                   | launch context     |
+| [ADR-0002](records/ADR-0002-launcher-lifecycle.md)                                | Жизненный цикл launcher                                           | launcher lifecycle |
+| [ADR-0003](records/ADR-0003-launcher-engine-responsibility.md)                    | Ответственность `LauncherEngine`                                  | launcher engine    |
+| [ADR-0004](records/ADR-0004-file-verification.md)                                 | Проверка файлов                                                   | verification       |
+| [ADR-0005](records/ADR-0005-immutable-domain-model.md)                            | Immutable domain model                                            | model              |
+| [ADR-0006](records/ADR-0006-authentication-boundaries.md)                         | Границы аутентификации                                            | authentication     |
+| [ADR-0007](records/ADR-0007-context-ownership.md)                                 | Владения контекста                                                | context            |
+| [ADR-0008](records/ADR-0008-operation-resolution-strategy.md)                     | Operation resolution strategy                                     | operation          |
+| [ADR-0009](records/ADR-0009-download-planning.md)                                 | Планирование загрузки                                             | download           |
+| [ADR-0010](records/ADR-0010-execution-strategy-selection.md)                      | Execution strategy selection                                      | execution          |
+| [ADR-0011](records/ADR-0011-failure-policy-extraction.md)                         | Failure policy extraction                                         | failure policy     |
+| [ADR-0012](records/ADR-0012-launcher-engine-uses-operation-manager.md)            | LauncherEngine использует `OperationManager`                      | operation          |
+| [ADR-0013](records/ADR-0013-core-owns-orchestration-ports.md)                     | Порты оркестрации принадлежат launcher-core                       | module boundaries  |
+| [ADR-0014](records/ADR-0014-manifest-resources-verification-flow.md)              | `ManifestResources` как source для verification flow              | verification       |
+| [ADR-0015](records/ADR-0015-minimal-library-metadata-scope.md)                    | Минимальный scope library metadata                                | libraries          |
+| [ADR-0016](records/ADR-0016-resource-path-safety.md)                              | Безопасность resource path                                        | resource paths     |
+| [ADR-0017](records/ADR-0017-library-runtime-metadata-boundary.md)                 | Граница runtime metadata для libraries                            | libraries          |
+| [ADR-0018](records/ADR-0018-runtime-environment-boundary.md)                      | Runtime environment boundary                                      | runtime            |
+| [ADR-0019](records/ADR-0019-os-specific-library-rules.md)                         | OS-specific rules для libraries                                   | libraries          |
+| [ADR-0020](records/ADR-0020-library-classifiers-and-natives-boundary.md)          | Classifiers и natives metadata boundary                           | libraries          |
+| [ADR-0021](records/ADR-0021-native-artifact-processing-boundary.md)               | Граница обработки native artifacts                                | natives            |
+| [ADR-0022](records/ADR-0022-manifest-load-result-boundary.md)                     | `ManifestLoadResult` boundary                                     | manifest           |
+| [ADR-0023](records/ADR-0023-use-libraries-as-game-classpath-source.md)            | `RuntimeLibrarySelection.libraries` как source для game classpath | classpath          |
+| [ADR-0024](records/ADR-0024-native-extraction-operation-boundary.md)              | Native extraction operation boundary                              | natives            |
+| [ADR-0025](records/ADR-0025-native-extraction-service-implementation.md)          | Реализация native extraction service                              | natives            |
+| [ADR-0026](records/ADR-0026-native-extraction-exclude-rules.md)                   | Extract exclude rules для native artifacts                        | natives            |
+| [ADR-0027](records/ADR-0027-natives-directory-launch-argument.md)                 | Директория natives в launch arguments                             | launch arguments   |
+| [ADR-0028](records/ADR-0028-native-extraction-output-policy.md)                   | Output policy распакованных native artifacts                      | natives            |
+| [ADR-0029](records/ADR-0029-java-runtime-selection-boundary.md)                   | Граница выбора Java runtime                                       | java runtime       |
+| [ADR-0030](records/ADR-0030-java-executable-readiness-boundary.md)                | Граница проверки Java executable                                  | java runtime       |
+| [ADR-0031](records/ADR-0031-java-executable-reference-boundary.md)                | Граница Java executable reference                                 | java runtime       |
+| [ADR-0032](records/ADR-0032-java-command-path-resolution-boundary.md)             | Граница PATH resolution для Java command name                     | java runtime       |
+| [ADR-0033](records/ADR-0033-manifest-java-executable-reference-interpretation.md) | Интерпретация Java executable reference из manifest metadata      | java runtime       |
+| [ADR-0034](records/ADR-0034-core-boundary-classification.md)                      | Классификация границ launcher-core                                | module boundaries  |
+| [ADR-0035](records/ADR-0035-java-executable-readiness-adapter-boundary.md)        | Граница реализации Java executable readiness checker              | java runtime       |
+| [ADR-0036](records/ADR-0036-java-command-path-resolver-boundary.md)               | Граница Java command path resolver                                | java runtime       |
+| [ADR-0037](records/ADR-0037-reserved-modules-policy.md)                           | Политика reserved modules                                         | module boundaries  |
+| [ADR-0038](records/ADR-0038-configured-java-override-boundary.md)                 | Граница configured Java override                                  | java runtime       |
+| [ADR-0039](records/ADR-0039-java-runtime-failure-model.md)                        | Модель ошибок Java runtime                                        | java runtime       |
+| [ADR-0040](records/ADR-0040-operation-failure-diagnostics-boundary.md)            | Граница operation failure diagnostics                             | operation          |
+| [ADR-0041](records/ADR-0041-java-version-requirements-boundary.md)                | Граница Java version requirements                                 | java runtime       |
+| [ADR-0042](records/ADR-0042-manifest-java-version-requirement-source.md)          | Manifest source для Java version requirement                      | java runtime       |
+| [ADR-0043](records/ADR-0043-java-version-compatibility-boundary.md)               | Граница проверки совместимости Java version                       | java runtime       |
+| [ADR-0044](records/ADR-0044-java-runtime-version-detection-boundary.md)           | Граница определения Java runtime version                          | java runtime       |
+| [ADR-0045](records/ADR-0045-java-process-lifecycle-diagnostics-boundary.md)       | Граница Java process lifecycle diagnostics                        | java runtime       |
+| [ADR-0046](records/ADR-0046-launcher-launch-result-boundary.md)                   | Граница результата запуска Launcher                               | launcher lifecycle |
+| [ADR-0047](records/ADR-0047-launcher-result-handling-boundary.md)                 | Граница обработки результата запуска Launcher                     | launcher boundary  |
+| [ADR-0048](records/ADR-0048-generic-operation-failure-context-boundary.md)        | Граница generic operation failure context                         | operation          |
+| [ADR-0049](records/ADR-0049-assets-index-flow-boundary.md)                        | Граница assets index flow                                         | assets             |
+| [ADR-0050](records/ADR-0050-launch-metadata-arguments-boundary.md)                | Граница launch metadata arguments                                 | launch metadata    |

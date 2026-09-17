@@ -15,6 +15,7 @@
 - Included auth launch arguments in game launch command
 - Added launch metadata planning integration tests
 - Added command building coverage for empty auth arguments and supported placeholders in auth arguments
+- Selected manifest resource consistency as next development candidate
 
 ---
 

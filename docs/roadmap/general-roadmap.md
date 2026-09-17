@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Определить следующий подтвержденный сценарий после завершения минимального launch metadata arguments flow
+- Следующий candidate flow — согласованность manifest resources перед verification/download lifecycle
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

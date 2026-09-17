@@ -13,6 +13,8 @@
 - Added auth launch arguments metadata to launch info
 - Mapped auth launch arguments from manifest JSON
 - Included auth launch arguments in game launch command
+- Added launch metadata planning integration tests
+- Added command building coverage for empty auth arguments and supported placeholders in auth arguments
 
 ---
 

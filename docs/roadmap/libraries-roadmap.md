@@ -4,7 +4,7 @@
 
 ## Текущий план
 
-- Следующий candidate flow — launch metadata / launch arguments flow
+- Определить следующий подтвержденный сценарий после завершения минимального launch metadata arguments flow
 - Assets index flow доведен до минимальной manifest resources projection
 - Дальнейшие изменения library/native flow должны добавляться через отдельные ADR
 
@@ -84,11 +84,18 @@ Assets index flow доведен до минимального состояни�
 
 ### Launch metadata
 
-Граница launch metadata arguments зафиксирована  в [ADR-0050](../decisions/ADR-0050-launch-metadata-arguments-boundary.md)
+Граница launch metadata arguments зафиксирована в [ADR-0050](../decisions/ADR-0050-launch-metadata-arguments-boundary.md)
 
 Минимальный auth arguments flow реализован через `LaunchInfo`, manifest JSON mapping и построение `GameLaunchPlan.command`
 
-Следующий шаг — провести ревизию launch metadata flow и определить следующий подтвержденный сценарий развития
+Связка manifest JSON mapping и launch planning покрыта интеграционными тестами
+
+Проверяются порядок аргументов, поддерживаемые подстановки в `authArgs`, сохранение неизвестных подстановок и отсутствие
+`authArgs` в JSON
+
+Минимальный launch metadata arguments flow завершен
+
+Дальнейшее развитие требует подтвержденного сценария и определения источника новых runtime-данных
 
 ---
 

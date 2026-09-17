@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Следующий candidate flow — launch metadata / launch arguments flow как развитие manifest-driven launch realism
+- Определить следующий подтвержденный сценарий после завершения минимального launch metadata arguments flow
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -46,3 +46,5 @@
   и failed operation event без расширения `LaunchResult`
 - Подготовлен release `v0.6.1-operation-lifecycle-boundary`
 - Assets index flow доведен до минимальной manifest resources projection
+- Минимальный launch metadata arguments flow реализован через manifest model, JSON mapping и command building,
+  с интеграционным покрытием launch planning

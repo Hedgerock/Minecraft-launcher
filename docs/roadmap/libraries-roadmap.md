@@ -5,7 +5,6 @@
 ## Текущий план
 
 - Подготовить minor release manifest resources и launch metadata flow
-- Зафиксировать итоги milestone в ретроспективе
 
 ---
 
@@ -74,6 +73,8 @@ download planning, download и повторную verification
 файлов
 
 Manifest-specific модели сохраняют собственную семантику
+
+Общие итоги manifest resources и launch metadata flow зафиксированы в [ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)
 
 ---
 

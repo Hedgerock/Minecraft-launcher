@@ -20,6 +20,8 @@
 - Included JSON resources in formatting checks
 - Documented manifest resource consistency boundary decision
 - Added resource set planning with structured conflict diagnostics
+- Added integration coverage for compatible resource recovery and rejection of conflicting download targets before
+  resource downloads
 
 ### Changed
 

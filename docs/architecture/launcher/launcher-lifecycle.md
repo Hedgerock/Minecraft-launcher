@@ -37,7 +37,7 @@ L-1
 
 L-2
 
-Каждая `Operation` использует собственный `LaunchContext`
+Один сценарий использует общий `LaunchContext`, который передается между последовательными операциями
 
 L-3
 
@@ -120,8 +120,7 @@ filesystem path
 
 При использовании no-op implementation в тестовой среде `JavaCommandPathResolver` возвращает reference без изменений
 
-После resolution `GameLaunchPlanBuilder` выполняет readiness check через `JavaExecutableReadinessChecker` и передает
-resolved reference в `GameLaunchCommandBuilder`
+После resolution `GameLaunchPlanBuilder` выполняет readiness check через `JavaExecutableReadinessChecker`
 
 `GameLaunchCommandBuilder` использует `JavaExecutableReference.value()` как первый элемент команды запуска
 
@@ -171,7 +170,7 @@ Application assembly использует `DefaultJavaRuntimeCompatibilityChecke
 
 - `Bootstrap` отделен от `LauncherEngine` для изоляции процесса сборки зависимостей
 - `LauncherEngine` не знает деталей конкретных `Operation`
-- `LaunchContext` создается отдельно для каждой `Operation`
+- `LaunchContext` создается для одного сценария запуска и передается его операциям через `OperationManager`
 - `LauncherStateMachine` централизует изменение состояния приложения
 - `OperationManager` управляет запуском `Operation`
 - `ExecutionStrategy` определяет способ выполнения `LauncherTask` внутри `Operation`

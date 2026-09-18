@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Провести ревизию проекта перед выбором следующего шага
+- Подготовить minor release manifest resources и launch metadata flow
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -49,3 +49,5 @@
 - Минимальный launch metadata arguments flow реализован через manifest model, JSON mapping и command building,
   с интеграционным покрытием launch planning
 - Реализована общая подготовка согласованного набора ресурсов перед verification и download
+- Интеграционно подтверждены восстановление совместимых повторных назначений и отклонение конфликтующего download plan до
+  загрузки ресурсов

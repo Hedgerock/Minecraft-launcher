@@ -2,7 +2,9 @@ package com.launcher.downloader.service;
 
 import com.launcher.core.download.DownloadService;
 import com.launcher.core.download.model.DownloadPlan;
-import com.launcher.core.resource.ResourcePathResolver;
+import com.launcher.core.resource.ResourceSetPlanner;
+import com.launcher.core.resource.model.PlannedResource;
+import com.launcher.core.resource.model.ResourceSetPlan;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.downloader.download.FileDownloader;
 import com.launcher.downloader.exception.DownloadException;
@@ -15,25 +17,28 @@ import java.nio.file.Path;
 public class DefaultDownloadService implements DownloadService {
     private final DirectoryProvider directoryProvider;
     private final FileDownloader fileDownloader;
-    private final ResourcePathResolver resourcePathResolver;
+    private final ResourceSetPlanner resourceSetPlanner;
 
     public DefaultDownloadService(
             DirectoryProvider directoryProvider,
             FileDownloader fileDownloader,
-            ResourcePathResolver resourcePathResolver
+            ResourceSetPlanner resourceSetPlanner
     ) {
         this.directoryProvider = directoryProvider;
         this.fileDownloader = fileDownloader;
-        this.resourcePathResolver = resourcePathResolver;
+        this.resourceSetPlanner = resourceSetPlanner;
     }
 
     @Override
     public void download(DownloadPlan plan) {
-        Path gameDirectory = directoryProvider.directories().game();
+        ResourceSetPlan resourceSetPlan = resourceSetPlanner.plan(
+                plan.resources(),
+                directoryProvider.directories().game()
+        );
 
-        for (ResourceEntry resource : plan.resources()) {
-            String resourcePath = resource.path();
-            Path targetPath = resourcePathResolver.resolve(gameDirectory, resourcePath);
+        for (PlannedResource plannedResource : resourceSetPlan.resources()) {
+            ResourceEntry resource = plannedResource.resource();
+            Path targetPath = plannedResource.targetPath();
 
             try {
                 fileDownloader.download(resource.url(), targetPath);

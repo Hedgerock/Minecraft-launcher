@@ -15,6 +15,7 @@ import com.launcher.core.game.GameService;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.natives.NativeExtractionService;
 import com.launcher.core.resource.ResourcePathResolver;
+import com.launcher.core.resource.ResourceSetPlanner;
 import com.launcher.core.runtime.RuntimeEnvironmentProvider;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.core.storage.service.DefaultDirectoryService;
@@ -83,21 +84,21 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
 
     private DownloadService createDownloadService(
             DirectoryProvider directoryProvider,
-            ResourcePathResolver resourcePathResolver
+            ResourceSetPlanner resourceSetPlanner
     ) {
         FileDownloader downloader = new DefaultFileDownloader();
-        return new DefaultDownloadService(directoryProvider, downloader, resourcePathResolver);
+        return new DefaultDownloadService(directoryProvider, downloader, resourceSetPlanner);
     }
 
     private VerificationService createVerificationService(
             DirectoryProvider directoryProvider,
-            ResourcePathResolver resourcePathResolver
+            ResourceSetPlanner resourceSetPlanner
     ) {
         FileMetadataReader metadataReader = new LocalFileMetadataReader();
         HashService hashService = new Sha256HashService();
         FileVerifier fileVerifier = new DefaultFileVerifier(metadataReader, hashService);
 
-        return new DefaultVerificationService(directoryProvider, fileVerifier, resourcePathResolver);
+        return new DefaultVerificationService(directoryProvider, fileVerifier, resourceSetPlanner);
     }
 
     private NativeExtractionService createNativeExtractionService(
@@ -118,12 +119,13 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
 
     @Override
     public LauncherServices createServices() {
+        ResourceSetPlanner resourceSetPlanner = new ResourceSetPlanner(resourcePathResolver);
 
         return new LauncherServices(
                 createManifestService(),
-                createVerificationService(directoryProvider, resourcePathResolver),
+                createVerificationService(directoryProvider, resourceSetPlanner),
                 createDirectoryService(directoryProvider),
-                createDownloadService(directoryProvider, resourcePathResolver),
+                createDownloadService(directoryProvider, resourceSetPlanner),
                 createGameService(),
                 createNativeExtractionService(directoryProvider, resourcePathResolver)
         );

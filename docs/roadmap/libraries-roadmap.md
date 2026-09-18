@@ -4,7 +4,27 @@
 
 ## Текущий план
 
-- Подготовить minor release manifest resources и launch metadata flow
+- Подтвердить проверки release candidate перед созданием тега
+- После релиза провести ревизию проекта перед выбором следующего направления
+
+---
+
+## Milestone v0.7.0 – Manifest Runtime Flow
+
+Manifest resources и launch metadata flow расширены без изменения последовательности launcher operations
+
+Ключевые результаты
+
+- Assets получили собственные модели, manifest JSON mapping и projection в `ManifestResources`
+- `LaunchInfo.authArgs` проходят через JSON mapping и включаются в launch command
+- Manifest mapping и launch planning покрыты интеграционными тестами
+- `ResourceSetPlanner` подготавливает согласованный набор перед verification и download
+- Совместимые локальные назначения объединяются, конфликтующие записи отклоняются до обработки ресурсов
+- Resource recovery flow и отклонение конфликтующего download plan подтверждены интеграционными тестами
+
+Полноценная авторизация, Minecraft asset index compatibility и resource cache policy не входят в milestone
+
+Подробные итоги зафиксированы в [Ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)
 
 ---
 
@@ -33,48 +53,6 @@ Library/native flow доведен до состояния, где manifest meta
 - Добавлен `DefaultNativeExtractionService`
 - Добавлена launch variable `${natives_directory}`
 - Добавлена output policy для повторной распаковки natives
-
----
-
-## Assets index flow
-
-Assets index flow доведен до минимального состояния
-
-### Закрыто
-
-- Зафиксирована граница assets index flow
-- Добавлена модель `AssetEntry`
-- Добавлена модель `AssetsIndex`
-- `AssetsIndex` добавлен в `Manifest`
-- Manifest JSON mapping поддерживает optional `assets`
-- Отсутствие `assets` преобразуется в пустой `AssetsIndex`
-- `ManifestResources` включает assets в общий `ResourceEntry` projection
-
-Дальнейшее развитие assets flow должно выполняться отдельными решениями после появления подтвержденного сценария
-
----
-
-## Согласованность manifest resources — итог
-
-Граница согласованности manifest resources зафиксирована в [ADR-0051](../decisions/records/ADR-0051-manifest-resource-consistency-boundary.md)
-
-`ResourceSetPlanner` подготавливает полный набор ресурсов перед verification и download
-
-Совместимые повторные назначения объединяются с сохранением первой записи и порядка уникальных назначений
-
-Конфликтующие записи отклоняются до начала обработки ресурсов
-
-Поведение planner и его подключение к обоим adapters покрыты тестами
-
-Интеграционные тесты подтверждают восстановление совместимых повторных назначений через manifest loading, verification,
-download planning, download и повторную verification
-
-Отдельный сценарий подтверждает отклонение конфликтующего `DownloadPlan` до HTTP-запросов за ресурсами и записи целевых
-файлов
-
-Manifest-specific модели сохраняют собственную семантику
-
-Общие итоги manifest resources и launch metadata flow зафиксированы в [ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)
 
 ---
 
@@ -108,14 +86,7 @@ Manifest-specific модели сохраняют собственную сем�
 
 Граница launch metadata arguments зафиксирована в [ADR-0050](../decisions/records/ADR-0050-launch-metadata-arguments-boundary.md)
 
-Минимальный auth arguments flow реализован через `LaunchInfo`, manifest JSON mapping и построение `GameLaunchPlan.command`
-
-Связка manifest JSON mapping и launch planning покрыта интеграционными тестами
-
-Проверяются порядок аргументов, поддерживаемые подстановки в `authArgs`, сохранение неизвестных подстановок и отсутствие
-`authArgs` в JSON
-
-Минимальный launch metadata arguments flow завершен
+Минимальный launch metadata arguments flow завершен в рамках milestone `v0.7.0`
 
 Дальнейшее развитие требует подтвержденного сценария и определения источника новых runtime-данных
 

@@ -1,8 +1,10 @@
 ## Unreleased
 
-### Manifest Runtime Flow
+---
 
-#### Added
+## v0.7.0 – Manifest Runtime Flow
+
+### Added
 
 - Documented assets index flow boundary decision
 - Added assets index domain model
@@ -25,7 +27,7 @@
 - Added integration coverage for compatible resource recovery and rejection of conflicting download targets before
   resource downloads
 
-#### Changed
+### Changed
 
 - Moved quality checks into a buildSrc precompiled script plugin
 - Moved architecture decision records into a dedicated records directory

@@ -32,7 +32,7 @@
 На текущем этапе `DownloadPlan` строится из результатов проверки ресурсов
 
 `VerificationPlan` формируется на основе `ManifestResources.from(...)`, поэтому `DownloadPlanBuilder` может включать в
-`DownloadPlan` невалидные ресурсы из `Manifest.files` и `Manifest.libraries`
+`DownloadPlan` невалидные ресурсы из `Manifest.files`, `Manifest.libraries` и `Manifest.assetsIndex`
 
 `DownloadPlan` содержит только ресурсы, требующие восстановления
 
@@ -51,19 +51,23 @@ selected native artifacts
 ---
 
 
-## Разрешение локального пути ресурса
+## Предварительная подготовка ресурсов
 
-Download flow не строит `targetPath` напрямую через
+`DefaultDownloadService` подготавливает полный набор `DownloadPlan.resources` через `ResourceSetPlanner` до начала загрузки
 
-```java
-gameDirectory.resolve(resource.path())
-```
+Подготовка выполняется независимо от происхождения `DownloadPlan`
 
-Перед скачиванием локальный путь ресурса разрешается через общий `ResourcePathResolver`, который
-проверяет, что путь из manifest остается внутри `gameDirectory`
+Planner использует общий `ResourcePathResolver` для определения локальных назначений
 
-После успешного разрешения пути `DefaultDownloadService` передает безопасный `targetPath` в `FileDownloader`,
-а затем выполняет проверку размера скачанного ресурса
+Совместимые повторные назначения объединяются, а конфликтующие записи завершают подготовку с `ResourceSetConflictException`
+
+При ошибке подготовки `FileDownloader` не вызывается
+
+После подготовки сервис использует метадату и локальные пути из `ResourceSetPlan`
+
+Проверка размера скачанного файла сохраняется
+
+Итоговая корректность локального состояния подтверждается повторной verification
 
 ---
 
@@ -81,6 +85,9 @@ LauncherEngine
         -> DownloadFilesTask
             -> DownloadService
                 -> DefaultDownloadService
+                    -> ResourceSetPlanner
+                        -> ResourcePathResolver
+                            -> SafeResourcePathResolver
                     -> FileDownloader
     -> VERIFY_FILES
         -> VerificationPlan
@@ -108,8 +115,10 @@ LauncherEngine
 
 `DownloadFilesTask` получает `DownloadPlan` из `LaunchContext` и передает его в `DownloadService`
 
-`DefaultDownloadService` получает `game directory` через `DirectoryProvider`, разрешает локальный путь каждого ресурса
-через `ResourcePathResolver` и передает `url` и безопасный `targetPath` в `FileDownloader`
+`DefaultDownloadService` получает игровую директорию через `DirectoryProvider` и подготавливает полный набор ресурсов через
+`ResourceSetPlanner`
+
+После успешной подготовки сервис передает `url` и `targetPath` выбранных ресурсов в `FileDownloader`
 
 ### 4. Загрузка отдельного файла
 
@@ -137,6 +146,10 @@ LauncherEngine
   полностью завершенный прогресс
 - Проверка `checksum` не выполняется непосредственно `DownloadService` или `FileDownloader`
 - Итоговая корректность загруженных файлов подтверждается `VERIFY_FILES`
+- Значения количества файлов и суммарного размера в событиях рассчитываются из исходного `DownloadPlan` до adapter-level
+  объединения совместимых назначений
+- Для вручную созданного плана с совместимыми дублями эти значения могут превышать количество и суммарный размер фактически
+  загружаемых ресурсов
 
 ---
 
@@ -168,6 +181,19 @@ LauncherEngine
 - `targetPath`, если ошибка связана с локальным файлом
 - `cause`, если исходная причина доступна
 
+Конфликт подготовки ресурсов завершается с `ResourceSetConflictException`
+
+Исключение передается вызывающему слою без преобразования в `DownloadException`
+
+Диагностика содержит
+
+- `firstResource` — первую запись для локального назначения
+- `conflictingResource` — запись с тем же назначением и различающимися `sha256`, `size` или `url`
+- `targetPath` — общее локальное назначение
+- `message` — краткое описание конфликта
+
+При конфликте `FileDownloader` не вызывается
+
 ---
 
 ## Компоненты
@@ -180,6 +206,11 @@ LauncherEngine
 - `DownloadFilesTask`
 - `DownloadService`
 - `DefaultDownloadService`
+- `ResourceSetPlanner`
+- `ResourcePathResolver`
+- `SafeResourcePathResolver`
+- `PlannedResource`
+- `ResourceSetPlan`
 - `FileDownloader`
 - `DefaultFileDownloader`
 
@@ -197,7 +228,9 @@ D-2
 
 D-3
 
-`DefaultDownloadService` не принимает решений о составе загрузки
+`DefaultDownloadService` не определяет, какие ресурсы требуют восстановления
+
+Сервис подготавливает переданный набор, объединяет совместимые назначения и отклоняет конфликты
 
 D-4
 

@@ -126,10 +126,10 @@ Configured Java override имеет приоритет над manifest-provided 
 
 ### ManifestResources
 
-Компонент доменной модели, который строит список `ResourceEntry` из `Manifest.files` и
-`Manifest.libraries`
+Компонент доменной модели, который строит список `ResourceEntry` из `Manifest.files`,
+`Manifest.libraries` и `Manifest.assetsIndex`
 
-Сохраняет семантику исходных моделей: `FileEntry` и `LibraryEntry` продолжают использоваться в своих
+Сохраняет семантику исходных моделей: `FileEntry`, `LibraryEntry` и `AssetEntry` продолжают использоваться в своих
 runtime-сценариях
 
 ### AssetEntry
@@ -572,6 +572,32 @@ Readable error message остается compatibility view поверх `Operati
 
 ## Планирование
 
+### ResourceSetPlanner
+
+Pure planning-компонент подготовки согласованного набора `ResourceEntry`
+
+Разрешает локальные назначения через `ResourcePathResolver`, объединяет совместимые записи и отклоняет конфликтующие назначения
+
+Не выполняет файловый или сетевой доступ
+
+### PlannedResource
+
+Неизменяемая пара исходной метадаты `ResourceEntry` и разрешенного локального `targetPath`
+
+### ResourceSetPlan
+
+Неизменяемый результат подготовки набора ресурсов
+
+Содержит выбранные ресурсы в порядке первого появления уникальных локальных назначений
+
+Не заменяет `VerificationPlan` или `DownloadPlan`
+
+### ResourceSetConflictException
+
+Ошибка подготовки ресурсов с одинаковым локальным назначением и различающимися `sha256`, `size` или `url`
+
+Содержит локальное назначение, первую запись и конфликтующую запись
+
 ### GameLaunchPlan
 
 Описание входных данных для запуска игры
@@ -606,6 +632,8 @@ Readable error message остается compatibility view поверх `Operati
 
 Используется verification, download и classpath building, когда путь `Manifest` нужно преобразовать
 в локальный `Path`
+
+В verification/download flow `ResourcePathResolver` используется через `ResourceSetPlanner`
 
 ### ClasspathFormatter
 

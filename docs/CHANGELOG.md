@@ -19,11 +19,13 @@
 - Added local Markdown link validation to quality checks
 - Included JSON resources in formatting checks
 - Documented manifest resource consistency boundary decision
+- Added resource set planning with structured conflict diagnostics
 
 ### Changed
 
 - Moved quality checks into a buildSrc precompiled script plugin
 - Moved architecture decision records into a dedicated records directory
+- Applied resource set planning before verification and download
 
 ---
 

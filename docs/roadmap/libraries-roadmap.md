@@ -4,10 +4,8 @@
 
 ## Текущий план
 
-- Реализовать подготовку согласованного набора ресурсов согласно [ADR-0051](../decisions/records/ADR-0051-manifest-resource-consistency-boundary.md)
-- Подключить общий planning-компонент к verification/download flow и покрыть конфликтующие назначения тестами
-- Assets index flow доведен до минимальной manifest resources projection
-- Дальнейшие изменения library/native flow должны добавляться через отдельные ADR
+- Завершить синхронизацию документации после реализации согласованности manifest resources
+- Провести ревизию manifest resources и launch metadata flow перед выбором следующего шага
 
 ---
 
@@ -57,20 +55,19 @@ Assets index flow доведен до минимального состояни�
 
 ---
 
-## Согласованность manifest resources
+## Согласованность manifest resources — итог
 
-Следующий candidate flow — проверка согласованности общего набора ресурсов из `files`, выбранных libraries и assets
+Граница согласованности manifest resources зафиксирована в [ADR-0051](../decisions/records/ADR-0051-manifest-resource-consistency-boundary.md)
 
-Несколько записей могут указывать на один локальный файл и содержать противоречивую физическую метадату
+`ResourceSetPlanner` подготавливает полный набор ресурсов перед verification и download
 
-До реализации нужно определить
+Совместимые повторные назначения объединяются с сохранением первой записи и порядка уникальных назначений
 
-- Правило определения совпадающего локального назначения
-- Поведение для одинаковых ресурсов
-- Поведение при различиях `sha256`, `size` и `url`
-- Границу проверки всего набора до выполнения resource verification и загрузки
+Конфликтующие записи отклоняются до начала обработки ресурсов
 
-Решение должно учитывать общий `ResourcePathResolver` и сохранять semantic ownership manifest-specific моделей
+Поведение planner и его подключение к обоим adapters покрыты тестами
+
+Manifest-specific модели сохраняют собственную семантику
 
 ---
 

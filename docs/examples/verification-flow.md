@@ -15,7 +15,7 @@
 На текущем этапе verification flow использует `ManifestResources.from(...)` как источник проверяемых
 ресурсов
 
-`ManifestResources` представляет resource-level projection для `Manifest.files` и `Manifest.libraries`
+`ManifestResources` представляет resource-level projection для `Manifest.files`, `Manifest.libraries` и `Manifest.assetsIndex`
 
 Проверяемой единицей verification flow является `ResourceEntry`
 
@@ -42,6 +42,9 @@ LauncherEngine
             -> VerifyFilesTask
                 -> VerificationService
                     -> DefaultVerificationService
+                        -> ResourceSetPlanner
+                            -> ResourcePathResolver
+                                -> SafeResourcePathResolver
                         -> FileVerifier
                             -> HashService
                             -> ResourceVerificationResult
@@ -71,6 +74,27 @@ gameDirectory.resolve(resource.path())
 
 ---
 
+## Подготовка набора ресурсов
+
+`DefaultVerificationService` подготавливает полный набор из `ManifestResources.from(...)` через `ResourceSetPlanner`
+
+Planner разрешает локальные назначения через общий `ResourcePathResolver` относительно игровой директории
+
+Совместимые записи с одинаковым нормализованным назначением объединяются с сохранением первой записи и порядка уникальных
+назначений
+
+Записи совместимы, если их значения `sha256`, `size` и `url` равны
+
+При конфликте подготовка завершается с `ResourceSetConflictException`
+
+До успешного завершения подготовки `FileVerifier` не вызывается
+
+После подготовки `FileVerifier` получает исходную метадату выбранного ресурса и локальный путь из `ResourceSetPlan`
+
+Конфликт метаданных является ошибкой выполнения проверки, а не статусом локального файла
+
+---
+
 ## Этапы
 
 ### 1. Получение `Manifest`
@@ -82,6 +106,8 @@ gameDirectory.resolve(resource.path())
 ### 2. Проверка ресурсов
 
 `VerificationService` координирует проверку ресурсов
+
+`ResourceSetPlanner` выполняет проверку входящего списка ресурсов согласно [Подготовке набора ресурсов](verification-flow.md#подготовка-набора-ресурсов)
 
 `FileVerifier` выполняет проверку отдельного файла
 
@@ -154,6 +180,9 @@ VERIFY_FILES
 - `ResourceVerificationResult`
 - `VerificationPlan`
 - `LaunchContext`
+- `ResourceSetPlanner`
+- `PlannedResource`
+- `ResourceSetPlan`
 
 ## Результат
 
@@ -194,3 +223,7 @@ V-6
 
 Повторная проверка после `DOWNLOAD_FILES` обязательна для подтверждения корректности восстановленного локального
 состояния
+
+V-7
+
+Подготовка полного набора ресурсов завершается до проверки первого файла

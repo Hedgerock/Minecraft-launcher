@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(core): prepare consistent resource sets`
+> `feat: apply resource set planning to verification and download`
+
 ---
 
 ## Контекст

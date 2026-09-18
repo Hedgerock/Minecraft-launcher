@@ -162,6 +162,20 @@ environment variables, system properties, process output или process state
 
 ---
 
+## Граница подготовки ресурсов
+
+`launcher-core` владеет `ResourceSetPlanner`, `PlannedResource`, `ResourceSetPlan` и `ResourceSetConflictException`
+
+Подготовка ресурсов является pure policy без файлового или сетевого доступа
+
+`launcher-verification` и `launcher-downloader` используют подготовленный набор для выполнения внешних действий
+
+`launcher-app` создает planner и передает его обоим adapters
+
+`ManifestResources` остается domain projection и не получает ответственность за локальное назначение
+
+---
+
 ## Reserved modules
 
 `launcher-auth`, `launcher-common` и `launcher-ui` могут оставаться подключенными к Gradle build как

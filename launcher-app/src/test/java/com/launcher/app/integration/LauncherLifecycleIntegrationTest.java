@@ -1,6 +1,8 @@
 package com.launcher.app.integration;
 
 import com.launcher.app.assembly.DefaultApplicationAssembly;
+import com.launcher.app.support.JsonProvider;
+import com.launcher.app.support.LocalServerStarter;
 import com.launcher.core.LaunchResult;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
@@ -10,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,17 +23,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LauncherLifecycleIntegrationTest {
+    private final LocalServerStarter localServerStarter = new LocalServerStarter();
 
     @Test
     void should_return_success_result_when_launcher_lifecycle_completed_through_application_assembly(
             @TempDir Path tempDir
     ) throws Exception {
         //given
-        HttpServer server = getServer();
+        String path = "/manifest.json";
+        HttpServer server = localServerStarter.getServer(JsonProvider.MANIFEST_JSON, path);
         server.start();
 
         try {
-            URI manifestUri = URI.create("http://localhost:" + server.getAddress().getPort() + "/manifest.json");
+            URI manifestUri = URI.create("http://localhost:" + server.getAddress().getPort() + path);
             Path gameStartedMarker = tempDir.resolve("gamestarted.marker");
             Path executable = createFakeJavaExecutable(tempDir, gameStartedMarker);
 
@@ -58,50 +60,6 @@ class LauncherLifecycleIntegrationTest {
             server.stop(0);
         }
 
-    }
-
-    private HttpServer getServer() throws IOException {
-        HttpServer server = HttpServer.create(
-                new InetSocketAddress(0),
-                0
-        );
-
-        server.createContext("/manifest.json", exchange -> {
-            byte[] response = getManifestJson().getBytes(StandardCharsets.UTF_8);
-
-            exchange.getResponseHeaders().add("Content-Type", "application/json");
-            exchange.sendResponseHeaders(200, response.length);
-
-            try (OutputStream responseBody = exchange.getResponseBody()) {
-                responseBody.write(response);
-            }
-        });
-
-        return server;
-    }
-
-    private String getManifestJson() {
-        return """
-                {
-                    "minecraftVersion": "1.12.2",
-                    "loader": {
-                        "type": "fabric",
-                        "version": "0.16.10"
-                    },
-                    "files": [],
-                    "launchInfo": {
-                        "mainClass": "net.minecraft.client.main.Main",
-                        "jvmArgs": ["-Xmx2G", "-Djava.class.path=${classpath}"],
-                        "gameArgs": ["--version", "${version_name}"],
-                        "classpath": ["versions/client.jar"],
-                        "javaExecutable": "java",
-                        "javaVersionRequirement": {
-                            "minimumMajorVersion": 17
-                        }
-                    },
-                    "libraries": []
-                }
-                """;
     }
 
     private void waitUntilExists(Path path) throws InterruptedException {

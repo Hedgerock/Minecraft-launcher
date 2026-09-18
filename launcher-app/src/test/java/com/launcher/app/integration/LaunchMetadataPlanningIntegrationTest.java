@@ -3,6 +3,7 @@ package com.launcher.app.integration;
 import com.launcher.api.manifest.library.DefaultRuntimeLibrarySelector;
 import com.launcher.api.manifest.mapper.JsonManifestMapper;
 import com.launcher.app.storage.directory.LocalDirectoryProvider;
+import com.launcher.app.support.JsonProvider;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.game.DefaultGameLaunchPlanBuilder;
 import com.launcher.core.game.GameLaunchPlan;
@@ -50,7 +51,7 @@ class LaunchMetadataPlanningIntegrationTest {
     void should_resolve_supported_placeholders_in_auth_args() {
         //given
         JsonManifestMapper mapper = getMapper();
-        String json = getManifestJsonWithSupportedPlaceholdersInAuthArgs();
+        String json = JsonProvider.getManifestJsonWithSupportedPlaceholdersInAuthArgs();
 
         ManifestLoadResult mapped = mapper.map(json);
 
@@ -85,7 +86,7 @@ class LaunchMetadataPlanningIntegrationTest {
     void should_build_launch_command_without_auth_args() {
         //given
         JsonManifestMapper mapper = getMapper();
-        String json = getManifestJsonWithoutAuthArgs();
+        String json = JsonProvider.getManifestJsonWithoutAuthArgs();
 
         ManifestLoadResult mapped = mapper.map(json);
 
@@ -118,7 +119,7 @@ class LaunchMetadataPlanningIntegrationTest {
     void should_build_launch_command() {
         //given
         JsonManifestMapper mapper = getMapper();
-        String json = getManifestJson();
+        String json = JsonProvider.getModifiedManifestJson();
 
         ManifestLoadResult mapped = mapper.map(json);
 
@@ -176,71 +177,4 @@ class LaunchMetadataPlanningIntegrationTest {
         );
     }
 
-    private String getManifestJsonWithSupportedPlaceholdersInAuthArgs() {
-        String launchInfoJson = """
-                "launchInfo": {
-                    "mainClass": "net.minecraft.client.main.Main",
-                    "jvmArgs": ["-Xmx2G", "-Djava.class.path=${classpath}"],
-                    "gameArgs": [],
-                    "classpath": ["versions/client.jar"],
-                    "javaExecutable": "java",
-                    "javaVersionRequirement": {
-                        "minimumMajorVersion": 17
-                    },
-                    "authArgs": ["--accessToken", "${access_token}", "--version", "${version_name}"]
-                }
-                """;
-
-        return getManifestJson(launchInfoJson);
-    }
-
-    private String getManifestJsonWithoutAuthArgs() {
-        String launchInfoJson = """
-                "launchInfo": {
-                    "mainClass": "net.minecraft.client.main.Main",
-                    "jvmArgs": ["-Xmx2G", "-Djava.class.path=${classpath}"],
-                    "gameArgs": ["--version", "${version_name}"],
-                    "classpath": ["versions/client.jar"],
-                    "javaExecutable": "java",
-                    "javaVersionRequirement": {
-                        "minimumMajorVersion": 17
-                    }
-                }
-                """;
-
-        return getManifestJson(launchInfoJson);
-    }
-
-    private String getManifestJson() {
-        String launchInfoJson = """
-                "launchInfo": {
-                    "mainClass": "net.minecraft.client.main.Main",
-                    "jvmArgs": ["-Xmx2G", "-Djava.class.path=${classpath}"],
-                    "gameArgs": ["--version", "${version_name}"],
-                    "classpath": ["versions/client.jar"],
-                    "javaExecutable": "java",
-                    "javaVersionRequirement": {
-                        "minimumMajorVersion": 17
-                    },
-                    "authArgs": ["--accessToken", "${access_token}"]
-                }
-                """;
-
-        return getManifestJson(launchInfoJson);
-    }
-
-    private String getManifestJson(String currentLaunchInfoJson) {
-        return """
-                {
-                    "minecraftVersion": "1.12.2",
-                    "loader": {
-                        "type": "fabric",
-                        "version": "0.16.10"
-                    },
-                    "files": [],
-                    %s,
-                    "libraries": []
-                }
-                """.formatted(currentLaunchInfoJson);
-    }
 }

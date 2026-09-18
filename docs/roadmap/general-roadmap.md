@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Подтвердить проверки release candidate `v0.7.0-manifest-runtime-flow` перед созданием тега
+- Спроектировать границу запуска launcher lifecycle из presentation layer
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -51,4 +51,4 @@
 - Реализована общая подготовка согласованного набора ресурсов перед verification и download
 - Интеграционно подтверждены восстановление совместимых повторных назначений и отклонение конфликтующего download plan до
   загрузки ресурсов
-- Подготовлены CHANGELOG и [Ретроспектива manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md) для release candidate `v0.7.0-manifest-runtime-flow`
+- Завершен milestone `v0.7.0-manifest-runtime-flow`; подробные итоги зафиксированы в [Ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)

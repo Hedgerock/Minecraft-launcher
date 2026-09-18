@@ -1,5 +1,9 @@
 ## Unreleased
 
+### Added
+
+- Selected presentation launch boundary as next candidate
+
 ---
 
 ## v0.7.0 – Manifest Runtime Flow

@@ -192,7 +192,7 @@ tasks.register("qualityCheck") {
             .filter { it.isFile }
             .sortedBy { it.relativeTo(rootDir).invariantSeparatorsPath }
 
-        val nonStaticWildCardImport = Regex("""^\s*import\s+(?!static\b)[\w.]+\.\*;\s*$""")
+        val wildcardImport = Regex("""^\s*import\s+(?:static\s+)?[\w.]+\.\*;\s*$""")
         val suppressAll = Regex("""@SuppressWarnings\s*\(\s*"all"\s*\)""")
         val emptyCatchBlock = Regex("""catch\s*\([^)]*\)\s*\{\s*}""")
 
@@ -228,11 +228,11 @@ tasks.register("qualityCheck") {
                 }
 
                 if (file.extension == "java") {
-                    if (nonStaticWildCardImport.containsMatchIn(line)) {
+                    if (wildcardImport.containsMatchIn(line)) {
                         violations += QualityViolation(
                             file,
                             lineNumber,
-                            "Non-static wildcard import is not allowed"
+                            "Wildcard import is not allowed"
                         )
                     }
 

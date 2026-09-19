@@ -86,6 +86,21 @@ should_<expected_behavior>
 
 ---
 
+## Импорты
+
+В тестах должны использоваться явные imports
+
+Wildcard imports не используются, включая static wildcard imports для JUnit assertions
+
+Предпочтительно импортировать только фактически используемые assertion methods
+
+```java
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+```
+
+---
+
 ## Автоматическая проверка
 
 На текущем этапе тестовый стиль сначала фиксируется как guideline

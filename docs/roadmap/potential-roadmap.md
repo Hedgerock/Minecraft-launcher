@@ -55,7 +55,7 @@ analysis
 - empty catch blocks
 - local Markdown links
 - formatting JSON resources
-- non-static wildcard imports
+- wildcard imports
 - `System.err.println`
 - `System.out.println`
 - `printStackTrace`

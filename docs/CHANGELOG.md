@@ -7,6 +7,7 @@
 ### Changed
 
 - Aligned project foundation and architecture documentation with the current implementation
+- Extended quality checks to reject static and non-static wildcard imports
 
 ---
 

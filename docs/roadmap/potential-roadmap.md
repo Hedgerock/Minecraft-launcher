@@ -55,6 +55,8 @@ analysis
 - empty catch blocks
 - local Markdown links
 - formatting JSON resources
+- formatting GitHub Actions YAML
+- formatting PlantUML diagrams
 - wildcard imports
 - `System.err.println`
 - `System.out.println`

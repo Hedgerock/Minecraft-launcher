@@ -184,10 +184,14 @@ tasks.register("qualityCheck") {
             include("**/*.md")
             include("**/*.gradle.kts")
             include("**/*.json")
+            include("**/*.yml")
+            include("**/*.yaml")
+            include("**/*.puml")
 
             exclude("**/build/**")
             exclude("**/.git/**")
             exclude("**/.gradle/**")
+            exclude("**/.idea/**")
         }.files
             .filter { it.isFile }
             .sortedBy { it.relativeTo(rootDir).invariantSeparatorsPath }

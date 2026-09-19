@@ -26,8 +26,8 @@
 
 Дальнейшее развитие build foundation пока отложено
 
-Вернуться к теме стоит, когда появится необходимость в convention plugins, version catalog, dependency looking или
-более строгом dependency analysis
+Вернуться к теме стоит, когда появится необходимость в version catalog, dependency locking или более строгом dependency
+analysis
 
 ---
 
@@ -53,12 +53,18 @@
 
 - missing final newline
 - empty catch blocks
+- local Markdown links
+- formatting JSON resources
+- non-static wildcard imports
 - `System.err.println`
+- `System.out.println`
+- `printStackTrace`
+- `@SuppressWarnings("all")`
 - некорректная комбинированная секция `//given && when`
 
 Дальнейшее усиление quality gate остается отложенным
 
-Вернутся к теме стоит во время следующей stabilization iteration, если ручные review снова начнут
+Вернуться к теме стоит во время следующей stabilization iteration, если ручные review снова начнут
 находить повторяющиеся проблемы
 
 ---
@@ -73,16 +79,21 @@
 
 ---
 
-## Project foundation stabilization
+## Project foundation stabilization — итог
 
-Перед следующим runtime milestone нужно завершить короткую foundation stabilization итерацию
+Foundation stabilization завершена
 
-Цель итерации
+В рамках итерации
 
-- Уточнить оставшиеся спорные границы `launcher-core`
-- Поддерживать зафиксированную политику reserved modules
-- Поддерживать минимальный CI pipeline для GitHub
-- Не развивать новые launcher features до завершения foundation pass
+- Уточнены границы `launcher-core`
+- Зафиксирована политика reserved modules
+- Добавлен минимальный Github Actions CI pipeline
+- Централизована общая Gradle configuration
+- Усилен project quality gate
+
+Дальнейшая stabilization не является активным milestone
+
+Возвращаться к теме стоит при появлении повторяющихся проблем, которые выгодно закрепить автоматическими проверками
 
 Reserved modules зафиксированы в [ADR-0037](../decisions/records/ADR-0037-reserved-modules-policy.md)
 

@@ -470,11 +470,11 @@ manifest mapping и runtime library selection
 
 ### LaunchContext
 
-Контекст выполнения одной `LaunchOperation`
+Контекст одного сценария запуска launcher lifecycle
 
-Содержит исключительно данные, необходимые данной операции
+Содержит конфигурацию и артефакты, которые последовательно создаются и используются операциями одного запуска
 
-Создается отдельно для каждой новой Operation
+Создается один раз в `LauncherEngine.launch(...)` и передается операциям через `OperationManager`
 
 ### OperationManager
 

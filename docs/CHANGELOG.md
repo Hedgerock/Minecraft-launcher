@@ -4,6 +4,10 @@
 
 - Selected presentation launch boundary as next candidate
 
+### Changed
+
+- Aligned project foundation and architecture documentation with the current implementation
+
 ---
 
 ## v0.7.0 – Manifest Runtime Flow

@@ -11,7 +11,9 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JavaLauncherHttpClientTest {
     private JavaLauncherHttpClient javaLauncherHttpClient;
@@ -53,7 +55,6 @@ class JavaLauncherHttpClientTest {
         );
 
         assertTrue(exception.getMessage().contains("HTTP GET failed with status code"));
-
     }
 
     @Test

@@ -16,7 +16,10 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LaunchGameTaskTest {
     private RecordingGameService recordingGameService;
@@ -65,6 +68,7 @@ class LaunchGameTaskTest {
 
     @Test
     void should_return_failure_when_game_launch_plan_is_missing() {
+        //given
         context.setGameLaunchPlan(null);
 
         //when
@@ -73,7 +77,6 @@ class LaunchGameTaskTest {
         //then
         assertFalse(result.success());
         assertInstanceOf(FailureResult.class, result);
-
     }
 
     @Test
@@ -90,24 +93,19 @@ class LaunchGameTaskTest {
 
     @Test
     void should_return_success_when_game_is_launched() {
-
         //when
         Result result = gameTask.execute(context);
 
         //then
         assertInstanceOf(SuccessResult.class, result);
-
     }
 
     @Test
     void should_launch_game() {
-
         //when
         gameTask.execute(context);
 
         //then
         assertTrue(recordingGameService.isLaunchCalled());
-
     }
-
 }

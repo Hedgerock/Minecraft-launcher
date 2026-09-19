@@ -5,7 +5,10 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DownloadExceptionTest {
 
@@ -55,7 +58,6 @@ class DownloadExceptionTest {
         assertEquals(path, exception.getTargetPath().orElseThrow());
         assertSame(cause, exception.getCause());
         assertTrue(exception.getMessage().contains("https://example.com/file.jar"));
-
     }
 
     @Test
@@ -98,7 +100,5 @@ class DownloadExceptionTest {
         assertEquals(path, downloadException.getTargetPath().orElseThrow());
         assertSame(cause, downloadException.getCause());
         assertTrue(downloadException.getMessage().contains("mods/file.jar"));
-
     }
-
 }

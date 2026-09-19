@@ -17,7 +17,9 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OperationLifecycleTest {
 
@@ -89,12 +91,11 @@ class OperationLifecycleTest {
                 new EventBus(),
                 events
         );
-        //when
 
+        //when
         OperationResult result = operation.execute();
 
         //then
-
         assertEquals(
                 List.of(
                         LifecycleRecordingOperation.BEFORE_EXECUTE,
@@ -108,5 +109,4 @@ class OperationLifecycleTest {
 
         assertTrue(result.isSuccess());
     }
-
 }

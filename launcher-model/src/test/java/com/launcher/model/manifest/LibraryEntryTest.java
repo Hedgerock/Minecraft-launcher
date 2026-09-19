@@ -2,7 +2,9 @@ package com.launcher.model.manifest;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LibraryEntryTest {
     private static final String DEFAULT_PATH = "test-path";
@@ -140,5 +142,4 @@ class LibraryEntryTest {
     private void getLibraryEntryWithNullUrl() {
         libraryEntry(DEFAULT_PATH, DEFAULT_SHA256, DEFAULT_SIZE, null);
     }
-
 }

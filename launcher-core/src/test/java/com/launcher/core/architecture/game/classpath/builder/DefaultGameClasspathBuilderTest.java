@@ -17,23 +17,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultGameClasspathBuilderTest {
     private RecordingResourcePathResolver resourcePathResolver;
     private DefaultGameClasspathBuilder builder;
-
-    private ManifestLoadResult getManifestWithEmptyLibraries() {
-        return new RecordingManifestService().loadManifestWithEmptyLibraries();
-    }
-
-    private ManifestLoadResult getManifestLoadResult() {
-        return new RecordingManifestService().loadManifest();
-    }
-
-    private ManifestLoadResult getManifestLoadResultWithNativeArtifactsAndWithoutLibraries() {
-        return new RecordingManifestService().loadManifestWithNativeArtifactsAndWithoutLibraries();
-    }
 
     @BeforeEach
     void setUp() {
@@ -271,4 +261,15 @@ class DefaultGameClasspathBuilderTest {
                 .toList();
     }
 
+    private ManifestLoadResult getManifestWithEmptyLibraries() {
+        return new RecordingManifestService().loadManifestWithEmptyLibraries();
+    }
+
+    private ManifestLoadResult getManifestLoadResult() {
+        return new RecordingManifestService().loadManifest();
+    }
+
+    private ManifestLoadResult getManifestLoadResultWithNativeArtifactsAndWithoutLibraries() {
+        return new RecordingManifestService().loadManifestWithNativeArtifactsAndWithoutLibraries();
+    }
 }

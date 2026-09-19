@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameClasspathTest {
 
@@ -93,7 +95,6 @@ class GameClasspathTest {
         );
 
         assertTrue(exception.getMessage().contains("entries"));
-
     }
 
     @Test
@@ -109,7 +110,5 @@ class GameClasspathTest {
 
         //then
         assertEquals(entries, gameClassPath.entries());
-
     }
-
 }

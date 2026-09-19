@@ -13,10 +13,11 @@ import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PrepareDirectoriesTaskTest {
-
     private RecordingDirectoryService directoryService;
     private PrepareDirectoriesTask task;
     private LaunchContext context;
@@ -39,9 +40,7 @@ class PrepareDirectoriesTaskTest {
 
     @Test
     void should_prepare_directories() {
-        //given
-
-        //when
+        //given & when
         task.execute(context);
 
         //then
@@ -50,9 +49,7 @@ class PrepareDirectoriesTaskTest {
 
     @Test
     void should_return_success() {
-        //given
-
-        //when
+        //given & when
         Result result = task.execute(context);
 
         //then
@@ -61,7 +58,6 @@ class PrepareDirectoriesTaskTest {
 
     @Test
     void should_return_preparing_game_state() {
-
         //then
         assertEquals(
                 LauncherState.PREPARING_GAME,

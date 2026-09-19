@@ -11,7 +11,10 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ProcessBuilderGameProcessLauncherTest {
 
@@ -88,7 +91,6 @@ class ProcessBuilderGameProcessLauncherTest {
                 "Failed to launch game process",
                 exception.getMessage()
         );
-
     }
 
     private boolean isWindows() {
@@ -101,5 +103,4 @@ class ProcessBuilderGameProcessLauncherTest {
 
         return Path.of(javaHome, "bin", executable).toString();
     }
-
 }

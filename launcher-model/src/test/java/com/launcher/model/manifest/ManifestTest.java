@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ManifestTest {
 
@@ -104,7 +106,6 @@ class ManifestTest {
                 getLaunchInfo(),
                 libraries
         ));
-
     }
 
     @Test
@@ -144,7 +145,6 @@ class ManifestTest {
                 UnsupportedOperationException.class,
                 () -> manifest.files().add(getFileEntry("third-path.jar"))
         );
-
     }
 
     @Test
@@ -218,5 +218,4 @@ class ManifestTest {
                         )
         );
     }
-
 }

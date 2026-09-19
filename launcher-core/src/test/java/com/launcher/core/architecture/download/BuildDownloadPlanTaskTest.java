@@ -15,42 +15,14 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BuildDownloadPlanTaskTest {
     private final DownloadPlanBuilder builder = new DownloadPlanBuilder();
-
-    private LaunchContext getContext(boolean withVerificationPlan) {
-        LaunchContext launchContext = new LaunchContext(
-                new LauncherConfiguration(
-                        URI.create("currentPath"),
-                        Path.of("")
-                )
-        );
-
-        if (withVerificationPlan) {
-            launchContext.setVerificationPlan(getVerificationPlan());
-        }
-
-        return launchContext;
-    }
-
-    private VerificationPlan getVerificationPlan() {
-        return new VerificationPlan(
-            List.of(
-                    new ResourceVerificationResult(getResourceEntry(), VerificationStatus.MISSING)
-            )
-        );
-    }
-
-    private ResourceEntry getResourceEntry() {
-        return new ResourceEntry(
-                "missing-path.jar",
-                "sha256-missing-path.jar",
-                321L,
-                "https://test-url.com/missing-path.jar"
-        );
-    }
 
     @Test
     void should_store_download_plan_when_verification_plan_exists() {
@@ -85,4 +57,35 @@ class BuildDownloadPlanTaskTest {
         assertNull(context.getDownloadPlan());
     }
 
+    private LaunchContext getContext(boolean withVerificationPlan) {
+        LaunchContext launchContext = new LaunchContext(
+                new LauncherConfiguration(
+                        URI.create("currentPath"),
+                        Path.of("")
+                )
+        );
+
+        if (withVerificationPlan) {
+            launchContext.setVerificationPlan(getVerificationPlan());
+        }
+
+        return launchContext;
+    }
+
+    private VerificationPlan getVerificationPlan() {
+        return new VerificationPlan(
+                List.of(
+                        new ResourceVerificationResult(getResourceEntry(), VerificationStatus.MISSING)
+                )
+        );
+    }
+
+    private ResourceEntry getResourceEntry() {
+        return new ResourceEntry(
+                "missing-path.jar",
+                "sha256-missing-path.jar",
+                321L,
+                "https://test-url.com/missing-path.jar"
+        );
+    }
 }

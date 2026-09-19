@@ -10,18 +10,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DownloadPlanBuilderTest {
     private final DownloadPlanBuilder builder = new DownloadPlanBuilder();
-    private VerificationPlan getVerificationPlan(
-            VerificationStatus status,
-            ResourceEntry resourceEntry
-    ) {
-        return new VerificationPlan(
-                List.of(new ResourceVerificationResult(resourceEntry, status))
-        );
-    }
 
     @Test
     void should_not_include_valid_resources_in_download_plan() {
@@ -97,6 +91,7 @@ class DownloadPlanBuilderTest {
         assertTrue(result.isEmpty());
         assertTrue(result.resources().isEmpty());
     }
+
     private VerificationPlan getLoadedVerificationPlan() {
         ResourceEntry validResourceEntry = getResourceEntry("valid.jar");
         ResourceEntry corruptedResourceEntry = getResourceEntry("corrupted.jar");
@@ -122,4 +117,12 @@ class DownloadPlanBuilderTest {
         );
     }
 
+    private VerificationPlan getVerificationPlan(
+            VerificationStatus status,
+            ResourceEntry resourceEntry
+    ) {
+        return new VerificationPlan(
+                List.of(new ResourceVerificationResult(resourceEntry, status))
+        );
+    }
 }

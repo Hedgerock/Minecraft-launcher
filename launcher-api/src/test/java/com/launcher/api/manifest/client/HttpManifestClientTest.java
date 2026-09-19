@@ -5,10 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HttpManifestClientTest {
-
     private URI getUri() {
         return URI.create("https://example.com/launcher/manifest.json");
     }
@@ -63,5 +64,4 @@ class HttpManifestClientTest {
         assertEquals(manifestUri, launcherHttpClient.getUri());
         assertEquals(launcherHttpClient.getResponse(), result);
     }
-
 }

@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultRuntimeLibrarySelectorTest {
     private final RuntimeLibrarySelector selector = new DefaultRuntimeLibrarySelector();
@@ -473,7 +475,6 @@ class DefaultRuntimeLibrarySelectorTest {
         );
     }
 
-
     private LibraryEntry getLibraryEntry(String path) {
         return new LibraryEntry(
                 path,
@@ -482,5 +483,4 @@ class DefaultRuntimeLibrarySelectorTest {
                 "https://example.com/" + path
         );
     }
-
 }

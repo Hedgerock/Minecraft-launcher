@@ -19,9 +19,41 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class VerifyFilesTaskTest {
+
+    @Test
+    void should_store_verification_plan_when_manifest_is_loaded() {
+        //given
+        VerificationPlan plan = getVerificationPlan();
+        LaunchContext context = getContext(true);
+        VerificationService verificationService = new RecordVerificationService(plan);
+        LauncherTask task = new VerifyFilesTask(verificationService);
+
+        //when
+        Result result = task.execute(context);
+
+        //then
+        assertSame(plan, context.getVerificationPlan());
+        assertTrue(result.success());
+    }
+
+    @Test
+    void should_fail_when_manifest_is_not_loaded() {
+        //given
+        LaunchContext context = getContext(false);
+        VerificationService verificationService = new RecordVerificationService(getVerificationPlan());
+        LauncherTask task = new VerifyFilesTask(verificationService);
+
+        //when
+        Result result = task.execute(context);
+
+        //then
+        assertFalse(result.success());
+    }
 
     private LaunchContext getContext(boolean withManifest) {
         LaunchContext context = new LaunchContext(
@@ -56,36 +88,5 @@ class VerifyFilesTaskTest {
                         )
                 )
         );
-    }
-
-    @Test
-    void should_store_verification_plan_when_manifest_is_loaded() {
-        //given
-        VerificationPlan plan = getVerificationPlan();
-        LaunchContext context = getContext(true);
-        VerificationService verificationService = new RecordVerificationService(plan);
-        LauncherTask task = new VerifyFilesTask(verificationService);
-
-        //when
-        Result result = task.execute(context);
-
-        //then
-        assertSame(plan, context.getVerificationPlan());
-        assertTrue(result.success());
-    }
-
-    @Test
-    void should_fail_when_manifest_is_not_loaded() {
-        //given
-        LaunchContext context = getContext(false);
-        VerificationService verificationService = new RecordVerificationService(getVerificationPlan());
-        LauncherTask task = new VerifyFilesTask(verificationService);
-
-        //when
-        Result result = task.execute(context);
-
-        //then
-
-        assertFalse(result.success());
     }
 }

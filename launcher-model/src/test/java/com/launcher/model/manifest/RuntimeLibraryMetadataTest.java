@@ -12,7 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RuntimeLibraryMetadataTest {
 
@@ -68,7 +71,6 @@ class RuntimeLibraryMetadataTest {
         //then
         assertFalse(runtimeLibraryMetadata.natives().isEmpty());
         assertEquals(1, runtimeLibraryMetadata.natives().classifiers().size());
-
         assertEquals(natives, runtimeLibraryMetadata.natives());
     }
 
@@ -97,7 +99,6 @@ class RuntimeLibraryMetadataTest {
         //then
         assertFalse(runtimeLibraryMetadata.classifiers().isEmpty());
         assertEquals(1, runtimeLibraryMetadata.classifiers().artifacts().size());
-
         assertEquals(classifiers, runtimeLibraryMetadata.classifiers());
     }
 
@@ -185,7 +186,6 @@ class RuntimeLibraryMetadataTest {
                         rules
                 )
         );
-
     }
 
     @Test
@@ -244,7 +244,6 @@ class RuntimeLibraryMetadataTest {
                 List.of(getLibraryRule(LibraryRuleAction.ALLOW)),
                 metadata.rules()
         );
-
     }
 
     @Test
@@ -278,5 +277,4 @@ class RuntimeLibraryMetadataTest {
                 "http://localhost/" + path + ".jar"
         );
     }
-
 }

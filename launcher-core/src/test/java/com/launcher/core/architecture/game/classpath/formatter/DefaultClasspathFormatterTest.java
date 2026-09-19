@@ -8,7 +8,9 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultClasspathFormatterTest {
     private final DefaultClasspathFormatter formatter = new DefaultClasspathFormatter();
@@ -47,5 +49,4 @@ class DefaultClasspathFormatterTest {
                 formattedClasspath
         );
     }
-
 }

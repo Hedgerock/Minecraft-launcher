@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SafeResourcePathResolverTest {
     private final SafeResourcePathResolver resolver = new SafeResourcePathResolver();
@@ -80,7 +82,7 @@ class SafeResourcePathResolverTest {
 
     @Test
     void should_allow_parent_segments_when_result_stays_inside_base_directory() {
-        //when
+        //given & when
         Path result = resolver.resolve(
                 baseDirectory,
                 "mods/../libraries/test.jar"
@@ -92,5 +94,4 @@ class SafeResourcePathResolverTest {
                 result
         );
     }
-
 }

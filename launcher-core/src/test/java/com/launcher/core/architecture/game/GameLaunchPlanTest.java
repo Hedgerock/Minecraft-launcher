@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameLaunchPlanTest {
 
@@ -33,7 +34,7 @@ class GameLaunchPlanTest {
 
     @Test
     void should_reject_empty_command() {
-        //when
+        //when & then
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> new GameLaunchPlan(
@@ -42,13 +43,12 @@ class GameLaunchPlanTest {
                 )
         );
 
-        //then
         assertTrue(exception.getMessage().contains("command must not be empty"));
     }
 
     @Test
     void should_reject_null_command() {
-        //when
+        //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new GameLaunchPlan(
@@ -57,14 +57,12 @@ class GameLaunchPlanTest {
                 )
         );
 
-        //then
         assertTrue(exception.getMessage().contains("command"));
     }
 
     @Test
     void should_reject_null_game_directory() {
-
-        //when
+        //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new GameLaunchPlan(
@@ -73,8 +71,6 @@ class GameLaunchPlanTest {
                 )
         );
 
-        //then
         assertTrue(exception.getMessage().contains("gameDirectory"));
     }
-
 }

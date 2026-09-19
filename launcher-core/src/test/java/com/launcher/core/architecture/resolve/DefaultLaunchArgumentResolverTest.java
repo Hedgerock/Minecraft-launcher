@@ -8,25 +8,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultLaunchArgumentResolverTest {
     private final DefaultLaunchArgumentResolver underTest = new DefaultLaunchArgumentResolver();
-
-    private List<String> getArguments() {
-        return List.of(
-                "--version",
-                "${version_name}",
-                "--gameDir",
-                "${game_directory}",
-                "--unknown",
-                "${unknown_placeholder}",
-                "--cp",
-                "${classpath}",
-                "--nativesDir",
-                "${natives_directory}"
-        );
-    }
 
     @Test
     void should_resolve_natives_directory_placeholder() {
@@ -187,4 +174,18 @@ class DefaultLaunchArgumentResolverTest {
 
     }
 
+    private List<String> getArguments() {
+        return List.of(
+                "--version",
+                "${version_name}",
+                "--gameDir",
+                "${game_directory}",
+                "--unknown",
+                "${unknown_placeholder}",
+                "--cp",
+                "${classpath}",
+                "--nativesDir",
+                "${natives_directory}"
+        );
+    }
 }

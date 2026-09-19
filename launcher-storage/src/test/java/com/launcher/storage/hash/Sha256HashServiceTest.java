@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class Sha256HashServiceTest {
 
@@ -27,7 +30,6 @@ class Sha256HashServiceTest {
 
         //then
         assertTrue(exception.getMessage().contains("Unable to calculate SHA-256 hash for file: " + file));
-
     }
 
     @Test
@@ -45,7 +47,6 @@ class Sha256HashServiceTest {
 
         //then
         assertNotEquals(firstHash, secondHash);
-
     }
 
     @Test
@@ -78,8 +79,5 @@ class Sha256HashServiceTest {
                 "5189f11bf923a205cbbfa764fe12656474279aa04c61bec612c0d4e8daf6e4a7",
                 hash
         );
-
     }
-
-
 }

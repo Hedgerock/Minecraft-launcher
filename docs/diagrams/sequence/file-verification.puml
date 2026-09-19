@@ -14,4 +14,5 @@ FileVerifier --> HashVerifier: calculateSha(path)
 HashVerifier --> FileVerifier: sha256
 FileVerifier --> ResourceVerificationResult: createResult(...)
 ResourceVerificationResult --> VerificationService
+
 @enduml

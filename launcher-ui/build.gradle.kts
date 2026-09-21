@@ -4,7 +4,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":launcher-common"))
+    implementation(project(":launcher-app"))
+    implementation(project(":launcher-core"))
 }
 
 application {

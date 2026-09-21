@@ -2,7 +2,8 @@
 
 ## Текущий фокус
 
-- Спроектировать границу запуска launcher lifecycle из presentation layer
+- Подключить минимальный JavaFX entrypoint к реализованной presentation launch boundary
+- Не вводить полноценную UI state model, progress presentation и retry policy в минимальной JavaFX итерации
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -52,3 +53,5 @@
 - Интеграционно подтверждены восстановление совместимых повторных назначений и отклонение конфликтующего download plan до
   загрузки ресурсов
 - Завершен milestone `v0.7.0-manifest-runtime-flow`; подробные итоги зафиксированы в [Ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)
+- Реализована application boundary для фонового выполнения одного launcher lifecycle из presentation layer
+- Добавлен JavaFX adapter для передачи `LaunchResult` в JavaFX Application Thread

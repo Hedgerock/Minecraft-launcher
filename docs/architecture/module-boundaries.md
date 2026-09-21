@@ -103,6 +103,31 @@
 
 ---
 
+## Граница presentation layer
+
+`launcher-ui` владеет JavaFX entrypoint, JavaFX controls и presentation-specific adapters
+
+`launcher-app` владеет technology-neutral application boundary приема launch request и фоновым выполнением launcher lifecycle
+
+Направление основной зависимости
+
+```text
+launcher-ui
+    -> launcher-app
+```
+
+`launcher-ui` может напрямую зависеть от `launcher-core` только для использования внешних launcher lifecycle models, необходимых
+presentation layer, например `LaunchResult`
+
+Такая зависимость не дает `launcher-ui` право управлять `LauncherEngine`, `OperationManager`, `LaunchOperation` или application
+assembly напрямую
+
+`launcher-app` не должен зависеть от JavaFX classes или presentation-specific реализаций из `launcher-ui`
+
+Перенос обработки результата в JavaFX Application Thread является ответственностью адаптера `launcher-ui`
+
+---
+
 ## Статус переноса
 
 Сборки конкретных приложений, инфраструктурные фабрики и наборы сервисов находятся в модуле `launcher-app`.
@@ -178,10 +203,15 @@ environment variables, system properties, process output или process state
 
 ## Reserved modules
 
-`launcher-auth`, `launcher-common` и `launcher-ui` могут оставаться подключенными к Gradle build как
+`launcher-auth` и `launcher-common` могут оставаться подключенными к Gradle build как
 reserved modules
 
-Их статус зафиксирован в [ADR-0037](../decisions/records/ADR-0037-reserved-modules-policy.md)
+Исходный reserved status этих модулей и `launcher-ui` зафиксирован в [ADR-0037](../decisions/records/ADR-0037-reserved-modules-policy.md)
+
+`launcher-ui` больше не является reserved module
+
+После реализации presentation launch boundary он развивается как активный presentation module, но пока сохраняет минимальный
+scope без полноценной UI state model
 
 `launcher-common` не должен использоваться как общий utility module без подтвержденного cross-module сценария или
 architecture/design решения
@@ -220,10 +250,14 @@ architecture/design решения
 ## Направление зависимостей
 
 ```text
-launcher-app
+launcher-ui
+    -> launcher-app
+        -> launcher-core
+            -> launcher-model
+                -> launcher-common
+
+launcher-ui
     -> launcher-core
-        -> launcher-model
-            -> launcher-common
 ```
 
 `launcher-app` также может зависеть от модулей адаптеров
@@ -240,6 +274,9 @@ launcher-app
 ```text
 launcher-core
     -> Конкретная реализация адаптера
+
+launcher-app
+    -> launcher-ui
 ```
 
 ---

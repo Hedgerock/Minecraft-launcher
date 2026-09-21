@@ -4,6 +4,8 @@
 
 - Selected presentation launch boundary as next candidate
 - Documented presentation launch request boundary decision
+- Added application boundary for background presentation launch requests
+- Added JavaFX result handler for UI-thread delivery of launch results
 
 ### Changed
 
@@ -11,6 +13,7 @@
 - Extended quality checks to reject static and non-static wildcard imports
 - Extended formatting checks to cover GitHub Actions workflows and PlantUML diagrams
 - Extended ADR guidelines with partial implementation notes
+- Updated Gradle wrapper to 9.7.1
 
 ---
 

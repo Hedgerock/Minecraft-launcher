@@ -31,7 +31,6 @@ package "Adapters / Infrastructure" {
     [launcher-game]
 }
 
-[launcher-app] --> [launcher-ui]
 [launcher-app] --> [launcher-core]
 [launcher-app] --> [launcher-api]
 [launcher-app] --> [launcher-auth]
@@ -40,6 +39,7 @@ package "Adapters / Infrastructure" {
 [launcher-app] --> [launcher-downloader]
 [launcher-app] --> [launcher-game]
 
+[launcher-ui] --> [launcher-app]
 [launcher-ui] --> [launcher-core]
 
 [launcher-core] --> [launcher-model]

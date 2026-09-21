@@ -26,7 +26,35 @@ Application boundary contract для обработки `LaunchResult`
 
 Не принимает presentation decisions внутри `launcher-core`
 
-На текущем этапе application assembly использует минимальную no-op реализацию
+Минимальный CLI entrypoint использует no-op реализацию
+
+Presentation launch boundary получает конкретный handler от внешнего entrypoint
+
+### LaunchRequestResult
+
+Немедленный результат приема launch request через `PresentationLaunchBoundary`
+
+Показывает, был ли запрос принят или отклонен из-за уже выполняющегося launcher lifecycle
+
+Не описывает итог выполнения launcher lifecycle и не заменяет `LaunchResult`
+
+### PresentationLaunchBoundary
+
+Application boundary для приема запроса запуска из presentation layer
+
+Выполняет синхронный launcher lifecycle за пределами presentation thread и допускает не более одного активного launch request
+
+Возвращает `LaunchRequestResult` немедленно, а итоговый `LaunchResult` передает через `LauncherResultHandler`
+
+Не управляет UI controls и не изменяет внутреннюю execution model `LauncherEngine`
+
+### JavaFxLauncherResultHandler
+
+JavaFX adapter контракта `LauncherResultHandler`
+
+Переносит обработку `LaunchResult` в JavaFX Application Thread
+
+Не интерпретирует результат запуска и не определяет presentation state или user-facing message
 
 ### LauncherState
 

@@ -153,30 +153,22 @@ invariants
 
 ---
 
-## Presentation launch boundary
+## Расширение presentation layer
 
-Проектирование границы запуска из presentation layer выбрано следующим активным направлением после `v0.7.0-manifest-runtime-flow`
+Минимальная application boundary для presentation launch requests реализована
 
-Первый сценарий должен связать пользовательский запрос запуска с существующим launcher lifecycle
+`launcher-app` принимает launch request, предотвращает одновременное выполнение нескольких launcher lifecycle и передает
+итоговый `LaunchResult` через external result handling boundary
 
-Необходимо определить границы
+`launcher-ui` получил JavaFX adapter для переноса обработки результата в JavaFX Application Thread
 
-- Прием запроса запуска
-- Фоновое выполнение одного последовательного launch flow
-- Предотвращение повторного запуска во время выполнения
-- Передача результата во внешний слой
-- Владение lifecycle фонового выполнения
+Полноценная UI state model, progress presentation, cancel behavior, retry policy и user-facing error model остаются
+отложенными
 
-`LauncherEngine` сохраняет ответственность за orchestration и не получает presentation logic
+Electron client, backend split и shared UX system остаются перспективными направлениями
 
-Фоновое выполнение launch flow не означает введение parallel downloads или concurrent execution strategy внутри core
-
-`LaunchResult` не расширяется без подтвержденной потребности внешнего сценария
-
-Полноценный JavaFX UI, Electron, backend split и shared UX остаются перспективными направлениями
-
-Возвращаться к ним стоит после подтверждения минимальной presentation launch boundary и появления конкретных требований
-к пользовательскому интерфейсу
+Возвращаться к расширению presentation layer стоит после появления первого рабочего JavaFX launch scenario и конкретных
+требований к состояниям пользовательского интерфейса
 
 ---
 

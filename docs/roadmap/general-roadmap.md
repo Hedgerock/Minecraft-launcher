@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Провести ревизию минимального presentation launch flow перед выбором следующего UI scenario
+- Закрепить dependency boundary `launcher-ui` архитектурным тестом перед следующим presentation behavior
 - Не вводить полноценную UI state model, progress presentation и retry policy в минимальной JavaFX итерации
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version

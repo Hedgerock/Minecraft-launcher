@@ -116,8 +116,8 @@ launcher-ui
     -> launcher-app
 ```
 
-`launcher-ui` может напрямую зависеть от `launcher-core` только для использования внешних launcher lifecycle models, необходимых
-presentation layer, например `LaunchResult`
+`launcher-ui` может напрямую зависеть от `launcher-core` только для использования внешних launcher lifecycle или configuration
+models, необходимых presentation layer, например `LaunchResult` и `LauncherConfiguration`
 
 Такая зависимость не дает `launcher-ui` право управлять `LauncherEngine`, `OperationManager`, `LaunchOperation` или application
 assembly напрямую
@@ -268,7 +268,6 @@ launcher-ui
 - `launcher-downloader`
 - `launcher-natives`
 - `launcher-game`
-- `launcher-ui`
 
 Пример запрещенного направления
 ```text
@@ -292,6 +291,7 @@ launcher-app
 - `launcher-core` не создает конкретные инфраструктурные реализации внутри цикла жизни операции
 - `launcher-app` является composition root
 - Конкретные адаптеры находятся вне `launcher-core`
+- `launcher-ui` не импортирует `LauncherEngine`, operation layer или application assembly напрямую
 
 ---
 

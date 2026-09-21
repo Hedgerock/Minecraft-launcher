@@ -10,6 +10,7 @@
 - Aligned project foundation and architecture documentation with the current implementation
 - Extended quality checks to reject static and non-static wildcard imports
 - Extended formatting checks to cover GitHub Actions workflows and PlantUML diagrams
+- Extended ADR guidelines with partial implementation notes
 
 ---
 

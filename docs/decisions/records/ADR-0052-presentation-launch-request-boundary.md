@@ -6,12 +6,11 @@
 
 Accepted
 
-> Примечание: решение частично реализовано в итерациях
+> Примечание: решение реализовано в итерациях
 > `feat(app): add presentation launch request contract`
 > `feat(app): execute presentation launch requests in background`
 > `feat(app): wire presentation launch boundary in bootstrap`
->
-> До полного завершения остается подключение boundary к lifecycle JavaFX entrypoint
+> `feat(ui): connect JavaFX entrypoint to launch boundary`
 
 ---
 

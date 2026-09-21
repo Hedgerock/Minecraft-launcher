@@ -97,10 +97,10 @@ Foundation stabilization завершена
 
 Возвращаться к теме стоит при появлении повторяющихся проблем, которые выгодно закрепить автоматическими проверками
 
-Reserved modules зафиксированы в [ADR-0037](../decisions/records/ADR-0037-reserved-modules-policy.md)
+Исходная политика reserved modules зафиксирована в [ADR-0037](../decisions/records/ADR-0037-reserved-modules-policy.md)
 
 - `launcher-auth` зарезервирован для будущего authentication flow
-- `launcher-ui` зарезервирован для будущего presentation layer
+- `launcher-ui` активирован как минимальный presentation module после реализации presentation launch boundary
 - `launcher-common` остается строго ограниченным reserved shared primitives module
 
 Добавлять код в `launcher-common` можно только после подтвержденного cross-module сценария или отдельного
@@ -162,13 +162,18 @@ invariants
 
 `launcher-ui` получил JavaFX adapter для переноса обработки результата в JavaFX Application Thread
 
+Минимальный JavaFX launch scenario реализован
+
+`LauncherApplication` передает пользовательский launch request в application boundary, не блокирует JavaFX Application Thread
+и закрывает boundary вместе с завершением собственного lifecycle
+
 Полноценная UI state model, progress presentation, cancel behavior, retry policy и user-facing error model остаются
 отложенными
 
 Electron client, backend split и shared UX system остаются перспективными направлениями
 
-Возвращаться к расширению presentation layer стоит после появления первого рабочего JavaFX launch scenario и конкретных
-требований к состояниям пользовательского интерфейса
+Возвращаться к расширению presentation layer стоит после ревизии минимального JavaFX launch scenario и появления конкретного
+требования к состояниям пользовательского интерфейса
 
 ---
 

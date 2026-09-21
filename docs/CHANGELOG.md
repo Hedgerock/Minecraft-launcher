@@ -3,6 +3,7 @@
 ### Added
 
 - Selected presentation launch boundary as next candidate
+- Documented presentation launch request boundary decision
 
 ### Changed
 

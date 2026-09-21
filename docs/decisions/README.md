@@ -10,7 +10,7 @@
 
 ## Решения
 
-| ADR                                                                       | Решение                                                           | Область            |
+| ADR                                                                               | Решение                                                           | Область            |
 |-----------------------------------------------------------------------------------|-------------------------------------------------------------------|--------------------|
 | [ADR-0001](records/ADR-0001-launch-context-responsibility.md)                     | Ответственность `LaunchContext`                                   | launch context     |
 | [ADR-0002](records/ADR-0002-launcher-lifecycle.md)                                | Жизненный цикл launcher                                           | launcher lifecycle |
@@ -62,4 +62,5 @@
 | [ADR-0048](records/ADR-0048-generic-operation-failure-context-boundary.md)        | Граница generic operation failure context                         | operation          |
 | [ADR-0049](records/ADR-0049-assets-index-flow-boundary.md)                        | Граница assets index flow                                         | assets             |
 | [ADR-0050](records/ADR-0050-launch-metadata-arguments-boundary.md)                | Граница launch metadata arguments                                 | launch metadata    |
-| [ADR-0051](records/ADR-0051-manifest-resource-consistency-boundary.md)            | Граница согласованности manifest resources                        | manifest resources|
+| [ADR-0051](records/ADR-0051-manifest-resource-consistency-boundary.md)            | Граница согласованности manifest resources                        | manifest resources |
+| [ADR-0052](records/ADR-0052-presentation-launch-request-boundary.md)              | Граница запроса запуска из presentation layer                     | presentation       |

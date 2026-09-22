@@ -6,6 +6,7 @@ import com.launcher.app.presentation.LaunchRequestResult;
 import com.launcher.app.presentation.PresentationLaunchBoundary;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.ui.result.JavaFxLauncherResultHandler;
+import com.launcher.ui.state.PresentationLaunchStateMachine;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,6 +21,9 @@ public class LauncherApplication extends Application {
     private static final int DEFAULT_WINDOW_HEIGHT = 550;
     private static final int CONTENT_SPACING = 16;
 
+    private final PresentationLaunchStateMachine presentationLaunchStateMachine =
+            new PresentationLaunchStateMachine();
+
     private PresentationLaunchBoundary presentationLaunchBoundary;
 
     @Override
@@ -32,6 +36,8 @@ public class LauncherApplication extends Application {
         launchButton.setOnAction(
                 event -> requestLaunch(launchButton)
         );
+
+        renderLaunchState(launchButton);
 
         VBox content = new VBox(
                 CONTENT_SPACING,
@@ -71,7 +77,10 @@ public class LauncherApplication extends Application {
                 .resolve(args);
 
         JavaFxLauncherResultHandler resultHandler = new JavaFxLauncherResultHandler(
-                result -> launchButton.setDisable(false)
+                result -> {
+                    presentationLaunchStateMachine.onLaunchResult(result);
+                    renderLaunchState(launchButton);
+                }
         );
 
         Bootstrap bootstrap = new Bootstrap(configuration);
@@ -85,9 +94,14 @@ public class LauncherApplication extends Application {
         LaunchRequestResult requestResult =
                 presentationLaunchBoundary.requestLaunch();
 
-        if (requestResult == LaunchRequestResult.ACCEPTED) {
-            launchButton.setDisable(true);
-        }
+        presentationLaunchStateMachine.onLaunchRequest(requestResult);
+        renderLaunchState(launchButton);
+    }
+
+    private void renderLaunchState(Button launchButton) {
+        launchButton.setDisable(
+                !presentationLaunchStateMachine.isLaunchAvailable()
+        );
     }
 
     public static void main(String[] args) {

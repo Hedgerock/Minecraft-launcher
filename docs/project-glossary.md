@@ -6,10 +6,10 @@
 
 Главный координатор жизненного цикла `Launcher`
 
-Запускает `LaunchOperation` и управляет переходами `LauncherStateMachine`
+Запускает `LaunchOperation`, управляет переходами `LauncherStateMachine` и преобразует operation-level или lifecycle-level
+ошибки в `LaunchFailure`
 
-Возвращает `LaunchResult` с минимальным набором данных, а именно финальное состояние лаунчера и булевое
-значение успешности запуска
+Возвращает `LaunchResult` с финальным состоянием, флагом успешности и failure context для неуспешного launcher lifecycle
 
 ### LaunchResult
 
@@ -17,8 +17,24 @@
 
 Содержит
 
-- финальное состояние лаунчера
+- финальное состояние launcher
 - флаг успешности запуска
+- optional `LaunchFailure`
+
+Успешный результат не содержит failure context
+
+Неуспешный результат содержит `LaunchFailure`
+
+### LaunchFailure
+
+Generic launch-level failure context неуспешного launcher lifecycle
+
+Если причиной является failed operation, сохраняет `OperationType` и исходный `OperationFailure`
+
+Если ошибка возникает на уровне координации launcher lifecycle, содержит readable message без искусственного `OperationResult`
+или `OperationFailedEvent`
+
+Не принимает presentation, retry или recovery decisions
 
 ### LauncherResultHandler
 

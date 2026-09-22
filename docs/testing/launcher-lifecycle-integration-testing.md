@@ -32,6 +32,7 @@ Integration test может проверять
 - корректную связку manifest loading, verification, download, native extraction, launch planning и game launch в рамках
   выбранного сценария
 - production wiring между `launcher-app`, `launcher-core` и adapter modules
+- generic failure context, возвращаемый через `LaunchResult` для неуспешного lifecycle scenario
 
 ---
 

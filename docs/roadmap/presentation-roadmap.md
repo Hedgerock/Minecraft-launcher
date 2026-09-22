@@ -4,8 +4,7 @@
 
 ## Текущий план
 
-- Временно не расширять presentation flow до появления generic launch failure context в `LaunchResult`
-- После стабилизации launch failure context провести ревизию presentation error behavior
+- Провести ревизию presentation error behavior после реализации generic launch failure context
 - Не вводить structured user-facing error model, recovery actions или локализацию без подтвержденного сценария
 - Не добавлять progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 

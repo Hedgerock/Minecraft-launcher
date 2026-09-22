@@ -61,6 +61,13 @@ L-5
 Если `LauncherEngine.launch(...)` завершается ошибкой, launcher переходит в `FAILED` и возвращает
 `LaunchResult.failure(...)`
 
+Неуспешный `LaunchResult` содержит `LaunchFailure`
+
+Если launcher lifecycle завершается из-за failed operation, `LaunchFailure` сохраняет `OperationType` и исходный `OperationFailure`
+
+Ошибки координации launcher lifecycle представлены через lifecycle-level `LaunchFailure` без создания искусственного
+`OperationResult`
+
 После успешной загрузки `manifest` `LauncherEngine` сохраняет в `LaunchContext` `Manifest` и `RuntimeLibrarySelection`,
 затем переходит к `VERIFYING_FILES`
 

@@ -25,6 +25,7 @@
 - Управление и выполнение `ExecutionStrategy`
 - Состояние события launcher lifecycle
 - Контракты задач `LauncherTask`
+- Формирование generic launch failure context для результата launcher lifecycle
 
 ### `launcher-core` не отвечает за реализацию
 

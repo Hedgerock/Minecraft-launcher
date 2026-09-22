@@ -2,9 +2,7 @@
 
 ## Текущий фокус
 
-- Реализовать generic launch failure context согласно
-  [ADR-0054](../decisions/records/ADR-0054-generic-launch-failure-context-boundary.md)
-  перед дальнейшим развитием presentation error behavior
+- Провести ревизию generic launch failure context перед дальнейшим развитием presentation error behavior
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -57,3 +55,5 @@
 - Завершен milestone `v0.7.0-manifest-runtime-flow`; подробные итоги зафиксированы в [Ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)
 - Минимальная presentation launch boundary доведена до JavaFX entrypoint и закреплена архитектурным тестом;
   подробности зафиксированы в [Пути развития presentation layer](presentation-roadmap.md)
+- Generic launch failure context проведен через `LauncherEngine` и `LaunchResult` без раскрытия внутренних operation events в
+  presentation layer

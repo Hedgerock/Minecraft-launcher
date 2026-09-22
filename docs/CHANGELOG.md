@@ -14,6 +14,7 @@
 - Added minimal presentation launch state model
 - Added minimal JavaFX launch status presentation
 - Documented generic launch failure context boundary decision
+- Added generic launch failure context model
 
 ### Changed
 
@@ -23,6 +24,7 @@
 - Extended ADR guidelines with partial implementation notes
 - Updated Gradle wrapper to 9.7.1
 - Changed JavaFX launch action availability to derive from presentation launch state
+- Changed launcher lifecycle failures to propagate generic failure context through `LaunchResult`
 
 ---
 

@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(core): add generic launch failure context model`
+> `feat(core): propagate generic launch failure context`
+
 ---
 
 ## Контекст

@@ -48,6 +48,17 @@ Application boundary для приема запроса запуска из pres
 
 Не управляет UI controls и не изменяет внутреннюю execution model `LauncherEngine`
 
+### PresentationLaunchState
+
+Минимальная модель состояния launch interaction в presentation layer
+
+Содержит `READY`, `LAUNCHING`, `LAUNCHED` и `FAILED`
+
+`PresentationLaunchStateMachine` управляет переходами после `LaunchRequestResult` и `LaunchResult` и определяет доступность
+launch action
+
+Модель не зависит от JavaFX controls и не копирует внутренние состояния `LauncherStateMachine`
+
 ### JavaFxLauncherResultHandler
 
 JavaFX adapter контракта `LauncherResultHandler`

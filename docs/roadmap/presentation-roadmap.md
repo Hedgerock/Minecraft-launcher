@@ -4,14 +4,9 @@
 
 ## Текущий план
 
-- Реализовать минимальную presentation launch state model согласно [ADR-0053](../decisions/records/ADR-0053-presentation-launch-state-boundary.md)
-- Добавить состояния `READY`, `LAUNCHING`, `LAUNCHED` и `FAILED`
-- Централизовать переходы после `LaunchRequestResult` и `LaunchResult`
-- Подключить presentation state к JavaFX entrypoint
-- Подтвердить переходы состояния unit-тестами
-- Не расширять минимальную модель до progress presentation, cancel behavior, retry policy и structured user-facing error
-  model без подтвержденного сценария
-- После завершения минимальной state model провести ревизию presentation flow перед выбором следующего поведения
+- Определить минимальное result presentation behavior для состояний `LAUNCHED` и `FAILED`
+- Не вводить structured user-facing error model, recovery actions или локализацию без подтвержденного сценария
+- Не добавлять progress presentation, cancel behavior и retry policy в текущую итерацию
 
 ---
 
@@ -26,8 +21,13 @@
 - Добавлен JavaFX adapter для передачи `LaunchResult` в JavaFX Application Thread
 - Минимальный JavaFX entrypoint подключен к presentation launch boundary и управляет ее lifecycle
 - Dependency boundary `launcher-ui` закреплена архитектурным тестом
+- Добавлена минимальная presentation launch state model
+- JavaFX entrypoint использует presentation state как source of truth для доступности launch action
 
-Архитектурная граница зафиксирована в [ADR-0052](../decisions/records/ADR-0052-presentation-launch-request-boundary.md)
+Архитектурные границы зафиксированы в
+
+- [ADR-0052](../decisions/records/ADR-0052-presentation-launch-request-boundary.md)
+- [ADR-0053](../decisions/records/ADR-0053-presentation-launch-state-boundary.md)
 
 ---
 
@@ -47,12 +47,6 @@
 ---
 
 ## Возможные следующие направления
-
-### Result presentation
-
-После реализации минимальной state model можно определить визуальное представление состояний `LAUNCHED` и `FAILED`
-
-Этот шаг не должен вводить structured error model, recovery actions или локализацию без отдельного подтвержденного сценария
 
 ### Progress presentation
 

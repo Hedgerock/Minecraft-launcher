@@ -109,6 +109,11 @@
 
 `launcher-app` владеет technology-neutral application boundary приема launch request и фоновым выполнением launcher lifecycle
 
+`launcher-ui` также владеет минимальной presentation launch state model и переходами, производными от `LaunchRequestResult`
+и `LaunchResult`
+
+`launcher-app` и `launcher-core` не хранят presentation state и не управляют доступностью UI controls
+
 Направление основной зависимости
 
 ```text

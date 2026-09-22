@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(ui): add presentation launch state model`
+> `feat(ui): wire presentation launch state`
+
 ---
 
 ## Контекст

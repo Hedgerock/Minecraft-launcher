@@ -2,8 +2,8 @@
 
 ## Текущий фокус
 
-- Реализовать минимальную presentation launch state boundary
-  согласно [Пути развития presentation layer](presentation-roadmap.md)
+- Определить минимальное result presentation behavior согласно
+  [Пути развития presentation layer](presentation-roadmap.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

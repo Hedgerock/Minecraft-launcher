@@ -11,6 +11,7 @@
 - Documented presentation launch state boundary decision
 - Added presentation layer development roadmap
 - Documented logging and operational diagnostics as a future direction
+- Added minimal presentation launch state model
 
 ### Changed
 
@@ -19,6 +20,7 @@
 - Extended formatting checks to cover GitHub Actions workflows and PlantUML diagrams
 - Extended ADR guidelines with partial implementation notes
 - Updated Gradle wrapper to 9.7.1
+- Changed JavaFX launch action availability to derive from presentation launch state
 
 ---
 

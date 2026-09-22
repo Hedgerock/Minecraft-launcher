@@ -4,9 +4,9 @@
 
 ## Текущий план
 
-- Определить минимальное result presentation behavior для состояний `LAUNCHED` и `FAILED`
+- Провести ревизию минимального presentation flow перед выбором следующего пользовательского поведения
 - Не вводить structured user-facing error model, recovery actions или локализацию без подтвержденного сценария
-- Не добавлять progress presentation, cancel behavior и retry policy в текущую итерацию
+- Не добавлять progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 
 ---
 
@@ -23,6 +23,7 @@
 - Dependency boundary `launcher-ui` закреплена архитектурным тестом
 - Добавлена минимальная presentation launch state model
 - JavaFX entrypoint использует presentation state как source of truth для доступности launch action
+- Добавлено минимальное status presentation для состояний `READY`, `LAUNCHING`, `LAUNCHED` и `FAILED`
 
 Архитектурные границы зафиксированы в
 

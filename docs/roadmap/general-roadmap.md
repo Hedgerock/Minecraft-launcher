@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Определить минимальное result presentation behavior согласно
+- Провести ревизию минимального presentation flow согласно
   [Пути развития presentation layer](presentation-roadmap.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version

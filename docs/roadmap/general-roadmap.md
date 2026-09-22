@@ -2,8 +2,9 @@
 
 ## Текущий фокус
 
-- Провести ревизию минимального presentation flow согласно
-  [Пути развития presentation layer](presentation-roadmap.md)
+- Реализовать generic launch failure context согласно
+  [ADR-0054](../decisions/records/ADR-0054-generic-launch-failure-context-boundary.md)
+  перед дальнейшим развитием presentation error behavior
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

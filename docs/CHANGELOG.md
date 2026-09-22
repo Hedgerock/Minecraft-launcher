@@ -13,6 +13,7 @@
 - Documented logging and operational diagnostics as a future direction
 - Added minimal presentation launch state model
 - Added minimal JavaFX launch status presentation
+- Documented generic launch failure context boundary decision
 
 ### Changed
 

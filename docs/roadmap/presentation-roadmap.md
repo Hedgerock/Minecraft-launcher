@@ -4,7 +4,8 @@
 
 ## Текущий план
 
-- Провести ревизию минимального presentation flow перед выбором следующего пользовательского поведения
+- Временно не расширять presentation flow до появления generic launch failure context в `LaunchResult`
+- После стабилизации launch failure context провести ревизию presentation error behavior
 - Не вводить structured user-facing error model, recovery actions или локализацию без подтвержденного сценария
 - Не добавлять progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 
@@ -35,7 +36,8 @@
 ## Отложено
 
 - Progress presentation до появления стабильной application boundary для передачи progress events
-- Structured user-facing error model до появления подтвержденного сценария отображения и восстановления после ошибок
+- Structured user-facing error model до появления generic launch failure context и подтвержденного сценария отображения
+  или восстановления после ошибки
 - Cancel behavior до появления cancellation boundary в launcher lifecycle
 - Retry policy до определения допустимых сценариев повторного запуска
 - Game process lifecycle tracking до появления требования отслеживать состояние запущенной игры

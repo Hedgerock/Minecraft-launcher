@@ -65,3 +65,4 @@
 | [ADR-0051](records/ADR-0051-manifest-resource-consistency-boundary.md)            | Граница согласованности manifest resources                        | manifest resources |
 | [ADR-0052](records/ADR-0052-presentation-launch-request-boundary.md)              | Граница запроса запуска из presentation layer                     | presentation       |
 | [ADR-0053](records/ADR-0053-presentation-launch-state-boundary.md)                | Граница состояния запуска в presentation layer                    | presentation       |
+| [ADR-0054](records/ADR-0054-generic-launch-failure-context-boundary.md)           | Граница generic launch failure context                            | launcher lifecycle |

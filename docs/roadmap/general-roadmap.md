@@ -2,9 +2,8 @@
 
 ## Текущий фокус
 
-- Реализовать минимальную presentation launch state model для состояний `READY`, `LAUNCHING`, `LAUNCHED` и `FAILED`
-- Не расширять минимальную presentation model до progress presentation, cancel behavior, retry policy и structured
-  user-facing error model без подтвержденного сценария
+- Реализовать минимальную presentation launch state boundary
+  согласно [Пути развития presentation layer](presentation-roadmap.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -15,6 +14,7 @@
 
 - [Путь развития библиотек](libraries-roadmap.md)
 - [Путь развития Java runtime](java-runtime-roadmap.md)
+- [Путь развития presentation layer](presentation-roadmap.md)
 
 ---
 
@@ -54,7 +54,5 @@
 - Интеграционно подтверждены восстановление совместимых повторных назначений и отклонение конфликтующего download plan до
   загрузки ресурсов
 - Завершен milestone `v0.7.0-manifest-runtime-flow`; подробные итоги зафиксированы в [Ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)
-- Реализована application boundary для фонового выполнения одного launcher lifecycle из presentation layer
-- Добавлен JavaFX adapter для передачи `LaunchResult` в JavaFX Application Thread
-- Минимальный JavaFX entrypoint подключен к presentation launch boundary и управляет ее lifecycle
-- Dependency boundary `launcher-ui` закреплена архитектурным тестом перед развитием следующего presentation behavior
+- Минимальная presentation launch boundary доведена до JavaFX entrypoint и закреплена архитектурным тестом;
+  подробности зафиксированы в [Пути развития presentation layer](presentation-roadmap.md)

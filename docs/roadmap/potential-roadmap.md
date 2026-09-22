@@ -116,6 +116,31 @@ architecture/design decision
 
 ---
 
+## Логирование и эксплуатационная диагностика
+
+Launcher пока не имеет общей политики структурированного логирования, хранения диагностических данных и корреляции событий
+одного launcher lifecycle
+
+Локальное логирование может понадобиться перед развитием user-facing error model, recovery behavior и сценариев технической
+поддержки
+
+До реализации необходимо определить
+
+- Границу между пользовательской ошибкой и технической диагностикой
+- Уровни логирования
+- Правила исключения credentials, tokens и персональных данных
+- Формат и место хранения локальных логов
+- Политику ротации и очистки
+- Идентификатор корреляции одного launcher lifecycle
+- Ответственность модулей за создание диагностических событий
+
+Централизованный monitoring, remote telemetry и crash reporting пока не вводятся
+
+Вернуться к теме стоит при появлении backend integration, support workflow или подтвержденной необходимости собирать
+диагностику за пределами локального launcher process
+
+---
+
 ## Error model
 
 Для лаунчера очень важно, чтобы ошибки были не просто failed, а имели понятный контекст:
@@ -155,25 +180,12 @@ invariants
 
 ## Расширение presentation layer
 
-Минимальная application boundary для presentation launch requests реализована
-
-`launcher-app` принимает launch request, предотвращает одновременное выполнение нескольких launcher lifecycle и передает
-итоговый `LaunchResult` через external result handling boundary
-
-`launcher-ui` получил JavaFX adapter для переноса обработки результата в JavaFX Application Thread
-
-Минимальный JavaFX launch scenario реализован
-
-`LauncherApplication` передает пользовательский launch request в application boundary, не блокирует JavaFX Application Thread
-и закрывает boundary вместе с завершением собственного lifecycle
-
-Полноценная UI state model, progress presentation, cancel behavior, retry policy и user-facing error model остаются
-отложенными
+Активное развитие presentation flow вынесено в [Пути развития presentation layer](presentation-roadmap.md)
 
 Electron client, backend split и shared UX system остаются перспективными направлениями
 
-Возвращаться к расширению presentation layer стоит после ревизии минимального JavaFX launch scenario и появления конкретного
-требования к состояниям пользовательского интерфейса
+Возвращаться к этим перспективным направлениям стоит после стабилизации technology-neutral application boundaries и
+появления подтвержденного multi-client сценария
 
 ---
 

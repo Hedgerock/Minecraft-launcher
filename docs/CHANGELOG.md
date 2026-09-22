@@ -9,6 +9,8 @@
 - Connected JavaFX entrypoint to presentation launch boundary
 - Added architecture coverage for launcher UI dependency boundary
 - Documented presentation launch state boundary decision
+- Added presentation layer development roadmap
+- Documented logging and operational diagnostics as a future direction
 
 ### Changed
 

@@ -8,6 +8,7 @@
 - Added JavaFX result handler for UI-thread delivery of launch results
 - Connected JavaFX entrypoint to presentation launch boundary
 - Added architecture coverage for launcher UI dependency boundary
+- Documented presentation launch state boundary decision
 
 ### Changed
 

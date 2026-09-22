@@ -1,9 +1,12 @@
 package com.launcher.core.architecture.engine;
 
+import com.launcher.core.LaunchFailure;
 import com.launcher.core.LaunchResult;
 import com.launcher.core.architecture.support.fixture.LauncherFlowFixture;
 import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.event.EventBus;
+import com.launcher.core.operation.failure.OperationFailure;
+import com.launcher.core.operation.failure.OperationFailureCode;
 import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.state.LauncherState;
 import com.launcher.core.state.LauncherStateMachine;
@@ -13,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -27,6 +31,33 @@ class LauncherEngineTest {
                 new LauncherStateMachine(
                         new EventBus()
                 )
+        );
+    }
+
+    @Test
+    void should_preserve_structured_failure_context_from_operation_failure() {
+        //given
+        OperationFailure expectedOperationFailure = new OperationFailure(
+                OperationFailureCode.UNKNOWN,
+                "Failed to verify files",
+                Map.of(
+                        "FirstDetail", "FirstDetailValue",
+                        "SecondDetail", "SecondDetailValue"
+                )
+        );
+
+        LaunchResult result = launcherFlowFixture
+                .operationSucceeds(OperationType.LOAD_MANIFEST)
+                .operationFailed(OperationType.VERIFY_FILES, expectedOperationFailure)
+                //when
+                .launch();
+
+        //then
+        LaunchFailure failure = result.failure().orElseThrow();
+
+        assertEquals(
+                expectedOperationFailure,
+                failure.operationFailure().orElseThrow()
         );
     }
 
@@ -75,6 +106,12 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 result.finalState()
         );
+
+        assertOperationFailure(
+                result,
+                OperationType.EXTRACT_NATIVES,
+                "Failed to extract natives"
+        );
     }
 
     @Test
@@ -102,7 +139,6 @@ class LauncherEngineTest {
                 .launch();
 
         //then
-
         assertEquals(
                 List.of(
                         OperationType.LOAD_MANIFEST,
@@ -126,6 +162,8 @@ class LauncherEngineTest {
                 LauncherState.RUNNING,
                 result.finalState()
         );
+
+        assertTrue(result.failure().isEmpty());
     }
 
     @Test
@@ -204,7 +242,6 @@ class LauncherEngineTest {
                 ),
                 launcherFlowFixture.getExecutedOperations()
         );
-
     }
 
     @Test
@@ -255,6 +292,12 @@ class LauncherEngineTest {
         assertEquals(
                 LauncherState.FAILED,
                 result.finalState()
+        );
+
+        assertOperationFailure(
+                result,
+                OperationType.BUILD_GAME_LAUNCH_PLAN,
+                "Failed to build game launch plan"
         );
     }
 
@@ -308,6 +351,12 @@ class LauncherEngineTest {
         assertEquals(
                 LauncherState.FAILED,
                 result.finalState()
+        );
+
+        assertOperationFailure(
+                result,
+                OperationType.LAUNCH_GAME,
+                "Failed to launch game"
         );
     }
 
@@ -554,6 +603,12 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 result.finalState()
         );
+
+        assertOperationFailure(
+                result,
+                OperationType.PREPARE_DIRECTORIES,
+                "Failed to prepare directories"
+        );
     }
 
     @Test
@@ -586,6 +641,50 @@ class LauncherEngineTest {
         assertEquals(
                 LauncherState.FAILED,
                 result.finalState()
+        );
+
+        assertOperationFailure(
+                result,
+                OperationType.VERIFY_FILES,
+                "Failed to verify files"
+        );
+    }
+
+    @Test
+    void should_transition_to_failed_when_verification_after_download_is_null() {
+        //given
+        VerificationPlan notValidVerificationPlan =
+                LauncherFlowFixture.verificationPlan("not-valid.jar", VerificationStatus.MISSING);
+
+        DownloadPlan downloadPlan = LauncherFlowFixture.downloadPlan(notValidVerificationPlan);
+
+        LaunchResult result = launcherFlowFixture
+                .operationSucceeds(OperationType.LOAD_MANIFEST)
+                .operationSucceeds(OperationType.VERIFY_FILES)
+                .verifyFilesReturns(notValidVerificationPlan)
+                .operationSucceeds(OperationType.BUILD_DOWNLOAD_PLAN)
+                .buildDownloadPlanReturns(downloadPlan)
+                .operationSucceeds(OperationType.DOWNLOAD_FILES)
+                .verifyFilesReturns(null)
+                //when
+                .launch();
+
+        //then
+        assertEquals(
+                LauncherState.FAILED,
+                launcherFlowFixture.getCurrentState()
+        );
+
+        assertFalse(result.success());
+
+        assertEquals(
+                LauncherState.FAILED,
+                result.finalState()
+        );
+
+        assertLifecycleFailure(
+                result,
+                "Post-download verification plan is missing"
         );
     }
 
@@ -620,6 +719,11 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 result.finalState()
         );
+
+        assertLifecycleFailure(
+                result,
+                "Post-download verification plan is invalid"
+        );
     }
 
     @Test
@@ -651,6 +755,12 @@ class LauncherEngineTest {
         assertEquals(
                 LauncherState.FAILED,
                 result.finalState()
+        );
+
+        assertOperationFailure(
+                result,
+                OperationType.DOWNLOAD_FILES,
+                "Failed to download files"
         );
     }
 
@@ -776,6 +886,12 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 result.finalState()
         );
+
+        assertOperationFailure(
+                result,
+                OperationType.BUILD_DOWNLOAD_PLAN,
+                "Failed to build download plan"
+        );
     }
 
     @Test
@@ -847,6 +963,12 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 result.finalState()
         );
+
+        assertOperationFailure(
+                result,
+                OperationType.LOAD_MANIFEST,
+                "Failed to load manifest"
+        );
     }
 
     @Test
@@ -874,6 +996,12 @@ class LauncherEngineTest {
         assertEquals(
                 LauncherState.FAILED,
                 result.finalState()
+        );
+
+        assertOperationFailure(
+                result,
+                OperationType.VERIFY_FILES,
+                "Failed to verify files"
         );
     }
 
@@ -904,6 +1032,11 @@ class LauncherEngineTest {
                 LauncherState.FAILED,
                 result.finalState()
         );
+
+        assertLifecycleFailure(
+                result,
+                "Verification plan is missing"
+        );
     }
 
     @Test
@@ -928,7 +1061,6 @@ class LauncherEngineTest {
                 ),
                 launcherFlowFixture.getExecutedOperations()
         );
-
     }
 
     @Test
@@ -969,5 +1101,35 @@ class LauncherEngineTest {
                 LauncherState.RUNNING,
                 result.finalState()
         );
+    }
+
+    private void assertOperationFailure(
+            LaunchResult result,
+            OperationType expectedOperationType,
+            String expectedMessage
+    ) {
+        LaunchFailure failure = result.failure().orElseThrow();
+
+        assertEquals(
+                expectedOperationType,
+                failure.operationType().orElseThrow()
+        );
+
+        OperationFailure operationFailure =
+                failure.operationFailure().orElseThrow();
+
+        assertEquals(expectedMessage, operationFailure.message());
+        assertEquals(expectedMessage, failure.message());
+    }
+
+    private void assertLifecycleFailure(
+            LaunchResult launchResult,
+            String expectedMessage
+    ) {
+        LaunchFailure failure = launchResult.failure().orElseThrow();
+
+        assertTrue(failure.operationType().isEmpty());
+        assertTrue(failure.operationFailure().isEmpty());
+        assertEquals(expectedMessage, failure.message());
     }
 }

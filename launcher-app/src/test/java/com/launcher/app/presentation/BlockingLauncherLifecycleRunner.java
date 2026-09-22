@@ -24,8 +24,7 @@ final class BlockingLauncherLifecycleRunner implements LauncherLifecycleRunner {
         try {
             canComplete.await();
 
-            return new LaunchResult(
-                    true,
+            return LaunchResult.success(
                     LauncherState.RUNNING
             );
         } catch (InterruptedException e) {

@@ -14,7 +14,10 @@ public final class LauncherEngine {
     private final LauncherStateMachine stateMachine;
     private final OperationManager operationManager;
 
-    public LauncherEngine(LauncherStateMachine stateMachine, OperationManager operationManager) {
+    public LauncherEngine(
+            LauncherStateMachine stateMachine,
+            OperationManager operationManager
+    ) {
         this.stateMachine = stateMachine;
         this.operationManager = operationManager;
     }
@@ -23,98 +26,142 @@ public final class LauncherEngine {
     public LaunchResult launch(LauncherConfiguration configuration) {
         LaunchContext context = new LaunchContext(configuration);
 
-        if (operationFailed(
+        OperationResult loadManifestResult = executeOperation(
                 LauncherState.LOADING_MANIFEST,
                 OperationType.LOAD_MANIFEST,
                 context
-        )) {
-            return LaunchResult.failure(LauncherState.FAILED);
+        );
+
+        if (!loadManifestResult.isSuccess()) {
+            return operationFailureResult(
+                    OperationType.LOAD_MANIFEST,
+                    loadManifestResult
+            );
         }
 
-
-        if (operationFailed(
+        OperationResult verifyFilesResult = executeOperation(
                 LauncherState.VERIFYING_FILES,
                 OperationType.VERIFY_FILES,
                 context
-        )) {
-            return LaunchResult.failure(LauncherState.FAILED);
+        );
+
+        if (!verifyFilesResult.isSuccess()) {
+            return operationFailureResult(
+                    OperationType.VERIFY_FILES,
+                    verifyFilesResult
+            );
         }
 
-
-        VerificationPlan verificationPlan = getVerificationPlanOrFail(context);
+        VerificationPlan verificationPlan = context.getVerificationPlan();
 
         if (verificationPlan == null) {
-            return LaunchResult.failure(LauncherState.FAILED);
+            return lifecycleFailureResult(
+                    "Verification plan is missing"
+            );
         }
 
         if (!verificationPlan.isValid()) {
 
-            if (operationFailed(
+            OperationResult buildingDownloadPlanResult = executeOperation(
                     LauncherState.BUILDING_DOWNLOAD_PLAN,
                     OperationType.BUILD_DOWNLOAD_PLAN,
                     context
-            )) {
-                return LaunchResult.failure(LauncherState.FAILED);
+            );
+
+            if (!buildingDownloadPlanResult.isSuccess()) {
+                return operationFailureResult(
+                        OperationType.BUILD_DOWNLOAD_PLAN,
+                        buildingDownloadPlanResult
+                );
             }
 
-            if (operationFailed(
+            OperationResult downloadFilesResult = executeOperation(
                     LauncherState.DOWNLOADING,
                     OperationType.DOWNLOAD_FILES,
                     context
-            )) {
-                return LaunchResult.failure(LauncherState.FAILED);
+            );
+
+            if (!downloadFilesResult.isSuccess()) {
+                return operationFailureResult(
+                        OperationType.DOWNLOAD_FILES,
+                        downloadFilesResult
+                );
             }
 
-            if (operationFailed(
+            OperationResult reverifyFilesResult = executeOperation(
                     LauncherState.VERIFYING_FILES,
                     OperationType.VERIFY_FILES,
                     context
-            )) {
-                return LaunchResult.failure(LauncherState.FAILED);
+            );
+
+            if (!reverifyFilesResult.isSuccess()) {
+                return operationFailureResult(
+                        OperationType.VERIFY_FILES,
+                        reverifyFilesResult
+                );
             }
 
-            VerificationPlan downloadedVerificationPlan = getVerificationPlanOrFail(context);
+            VerificationPlan downloadedVerificationPlan = context.getVerificationPlan();
 
             if (downloadedVerificationPlan == null) {
-                return LaunchResult.failure(LauncherState.FAILED);
+                return lifecycleFailureResult("Post-download verification plan is missing");
             }
 
             if (!downloadedVerificationPlan.isValid()) {
-                stateMachine.transition(LauncherState.FAILED);
-                return LaunchResult.failure(LauncherState.FAILED);
+                return lifecycleFailureResult("Post-download verification plan is invalid");
             }
         }
 
-        if (operationFailed(
+        OperationResult prepareDirectoriesResult = executeOperation(
                 LauncherState.PREPARING_GAME,
                 OperationType.PREPARE_DIRECTORIES,
                 context
-        )) {
-            return LaunchResult.failure(LauncherState.FAILED);
+        );
+
+        if (!prepareDirectoriesResult.isSuccess()) {
+            return operationFailureResult(
+                    OperationType.PREPARE_DIRECTORIES,
+                    prepareDirectoriesResult
+            );
         }
 
-        if (operationFailed(
+        OperationResult extractNativesResult = executeOperation(
                 LauncherState.EXTRACTING_NATIVES,
                 OperationType.EXTRACT_NATIVES,
                 context
-        )) {
-            return LaunchResult.failure(LauncherState.FAILED);
+        );
+
+        if (!extractNativesResult.isSuccess()) {
+            return operationFailureResult(
+                    OperationType.EXTRACT_NATIVES,
+                    extractNativesResult
+            );
         }
 
-        if (operationFailed(
+        OperationResult buildGameLaunchPlanResult = executeOperation(
                 LauncherState.BUILDING_GAME_LAUNCH_PLAN,
                 OperationType.BUILD_GAME_LAUNCH_PLAN,
                 context
-        )) {
-            return LaunchResult.failure(LauncherState.FAILED);
+        );
+
+        if (!buildGameLaunchPlanResult.isSuccess()) {
+            return operationFailureResult(
+                    OperationType.BUILD_GAME_LAUNCH_PLAN,
+                    buildGameLaunchPlanResult
+            );
         }
 
-        if (operationFailed(
+        OperationResult launchGameResult = executeOperation(
                 LauncherState.LAUNCHING,
                 OperationType.LAUNCH_GAME,
                 context
-        )) {
-            return LaunchResult.failure(LauncherState.FAILED);
+        );
+
+        if (!launchGameResult.isSuccess()) {
+            return operationFailureResult(
+                    OperationType.LAUNCH_GAME,
+                    launchGameResult
+            );
         }
 
         stateMachine.transition(LauncherState.RUNNING);
@@ -122,31 +169,42 @@ public final class LauncherEngine {
         return LaunchResult.success(LauncherState.RUNNING);
     }
 
-    private boolean operationFailed(
+    private OperationResult executeOperation(
             LauncherState state,
-            OperationType type,
+            OperationType operationType,
             LaunchContext context
     ) {
 
         stateMachine.transition(state);
 
-        OperationResult result = operationManager.execute(type, context);
-
-        if (!result.isSuccess()) {
-            stateMachine.transition(LauncherState.FAILED);
-            return true;
-        }
-
-        return false;
+        return operationManager.execute(operationType, context);
     }
 
-    private VerificationPlan getVerificationPlanOrFail(LaunchContext context) {
-        VerificationPlan plan = context.getVerificationPlan();
+    private LaunchResult operationFailureResult(
+            OperationType operationType,
+            OperationResult result
+    ) {
+        LaunchFailure failure = LaunchFailure.operation(
+                operationType,
+                result.failure().orElseThrow()
+        );
 
-        if (plan == null) {
-            stateMachine.transition(LauncherState.FAILED);
-        }
+        stateMachine.transition(LauncherState.FAILED);
 
-        return plan;
+        return LaunchResult.failure(
+                LauncherState.FAILED,
+                failure
+        );
+    }
+
+    private LaunchResult lifecycleFailureResult(
+            String message
+    ) {
+        stateMachine.transition(LauncherState.FAILED);
+
+        return LaunchResult.failure(
+                LauncherState.FAILED,
+                LaunchFailure.lifecycle(message)
+        );
     }
 }

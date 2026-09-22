@@ -4,6 +4,7 @@ import com.launcher.app.result.LauncherResultHandler;
 import com.launcher.app.result.NoOpLauncherResultHandler;
 import com.launcher.app.support.RecordingLauncherLifecycleRunner;
 import com.launcher.app.support.RecordingLauncherResultHandler;
+import com.launcher.core.LaunchFailure;
 import com.launcher.core.LaunchResult;
 import com.launcher.core.state.LauncherState;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,10 @@ class DefaultPresentationLaunchBoundaryTest {
 
         DefaultPresentationLaunchBoundary boundary = createBoundary(
                 new RecordingLauncherLifecycleRunner(
-                        LaunchResult.failure(LauncherState.FAILED)
+                        LaunchResult.failure(
+                                LauncherState.FAILED,
+                                LaunchFailure.lifecycle("failed to run")
+                        )
                 ),
                 new NoOpLauncherResultHandler(),
                 executorService
@@ -52,7 +56,10 @@ class DefaultPresentationLaunchBoundaryTest {
 
         try (DefaultPresentationLaunchBoundary boundary = createBoundary(
                 new RecordingLauncherLifecycleRunner(
-                        LaunchResult.failure(LauncherState.FAILED)
+                        LaunchResult.failure(
+                                LauncherState.FAILED,
+                                LaunchFailure.lifecycle("failed to run")
+                        )
                 ),
                 new NoOpLauncherResultHandler(),
                 executorService

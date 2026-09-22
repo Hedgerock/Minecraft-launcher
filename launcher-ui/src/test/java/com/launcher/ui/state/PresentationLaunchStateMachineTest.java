@@ -1,6 +1,7 @@
 package com.launcher.ui.state;
 
 import com.launcher.app.presentation.LaunchRequestResult;
+import com.launcher.core.LaunchFailure;
 import com.launcher.core.LaunchResult;
 import com.launcher.core.state.LauncherState;
 import org.junit.jupiter.api.Test;
@@ -69,7 +70,12 @@ class PresentationLaunchStateMachineTest {
         //when & then
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
-                () -> stateMachine.onLaunchResult(LaunchResult.failure(LauncherState.FAILED))
+                () -> stateMachine.onLaunchResult(
+                        LaunchResult.failure(
+                                LauncherState.FAILED,
+                                LaunchFailure.lifecycle("Something went wrong")
+                        )
+                )
         );
 
         assertTrue(stateMachine.isLaunchAvailable());
@@ -107,7 +113,10 @@ class PresentationLaunchStateMachineTest {
 
         //when
         stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
-        stateMachine.onLaunchResult(LaunchResult.failure(LauncherState.FAILED));
+        stateMachine.onLaunchResult(LaunchResult.failure(
+                LauncherState.FAILED,
+                LaunchFailure.lifecycle("Something went wrong")
+        ));
 
         stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
 
@@ -147,7 +156,10 @@ class PresentationLaunchStateMachineTest {
 
         //when
         stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
-        stateMachine.onLaunchResult(LaunchResult.failure(LauncherState.FAILED));
+        stateMachine.onLaunchResult(LaunchResult.failure(
+                LauncherState.FAILED,
+                LaunchFailure.lifecycle("Something went wrong")
+        ));
 
         //then
         assertEquals(

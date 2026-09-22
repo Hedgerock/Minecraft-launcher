@@ -7,6 +7,7 @@ import com.launcher.core.architecture.support.recording.RecordingOperationManage
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.download.model.DownloadPlan;
+import com.launcher.core.operation.failure.OperationFailure;
 import com.launcher.core.operation.result.OperationResult;
 import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.state.LauncherState;
@@ -94,6 +95,18 @@ public final class LauncherFlowFixture {
 
     public LauncherFlowFixture operationFailed(OperationType operationType, String message) {
         operationManager.registerResult(operationType, OperationResult.failure(message));
+
+        return this;
+    }
+
+    public LauncherFlowFixture operationFailed(
+            OperationType operationType,
+            OperationFailure failure
+    ) {
+        operationManager.registerResult(
+                operationType,
+                OperationResult.failure(failure)
+        );
 
         return this;
     }

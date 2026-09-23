@@ -1,5 +1,9 @@
 ## Unreleased
 
+---
+
+## v0.8.0 – Presentation Launch Boundary
+
 ### Added
 
 - Selected presentation launch boundary as next candidate

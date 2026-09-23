@@ -5,7 +5,7 @@ import com.launcher.app.configuration.LauncherConfigurationResolver;
 import com.launcher.app.presentation.LaunchRequestResult;
 import com.launcher.app.presentation.PresentationLaunchBoundary;
 import com.launcher.core.configuration.LauncherConfiguration;
-import com.launcher.ui.result.JavaFxLauncherResultHandler;
+import com.launcher.ui.result.JavaFxPresentationLaunchCompletionHandler;
 import com.launcher.ui.state.PresentationLaunchState;
 import com.launcher.ui.state.PresentationLaunchStateMachine;
 import javafx.application.Application;
@@ -83,9 +83,9 @@ public class LauncherApplication extends Application {
         LauncherConfiguration configuration = new LauncherConfigurationResolver()
                 .resolve(args);
 
-        JavaFxLauncherResultHandler resultHandler = new JavaFxLauncherResultHandler(
+        JavaFxPresentationLaunchCompletionHandler resultHandler = new JavaFxPresentationLaunchCompletionHandler(
                 result -> {
-                    presentationLaunchStateMachine.onLaunchResult(result);
+                    presentationLaunchStateMachine.onLaunchCompletion(result);
                     renderLaunchState(launchButton, launchStatusLabel);
                 }
         );

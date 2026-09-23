@@ -1,12 +1,12 @@
 package com.launcher.app.bootstrap;
 
+import com.launcher.app.assembly.ApplicationAssembly;
+import com.launcher.app.assembly.DefaultApplicationAssembly;
 import com.launcher.app.presentation.DefaultPresentationLaunchBoundary;
 import com.launcher.app.presentation.LauncherLifecycleRunner;
 import com.launcher.app.presentation.PresentationLaunchBoundary;
-import com.launcher.app.result.LauncherResultHandler;
+import com.launcher.app.presentation.completion.PresentationLaunchCompletionHandler;
 import com.launcher.core.LauncherEngine;
-import com.launcher.app.assembly.ApplicationAssembly;
-import com.launcher.app.assembly.DefaultApplicationAssembly;
 import com.launcher.core.configuration.LauncherConfiguration;
 
 import java.util.Objects;
@@ -39,13 +39,13 @@ public final class Bootstrap {
     }
 
     public PresentationLaunchBoundary createPresentationLaunchBoundary(
-            LauncherResultHandler launcherResultHandler
+            PresentationLaunchCompletionHandler presentationLaunchCompletionHandler
     ) {
-        Objects.requireNonNull(launcherResultHandler, "launcherResultHandler");
+        Objects.requireNonNull(presentationLaunchCompletionHandler, "presentationLaunchCompletionHandler");
 
         return new DefaultPresentationLaunchBoundary(
                 launcherLifecycleRunner,
-                launcherResultHandler
+                presentationLaunchCompletionHandler
         );
     }
 

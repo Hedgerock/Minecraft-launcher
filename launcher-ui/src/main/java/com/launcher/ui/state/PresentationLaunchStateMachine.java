@@ -1,6 +1,7 @@
 package com.launcher.ui.state;
 
 import com.launcher.app.presentation.LaunchRequestResult;
+import com.launcher.app.presentation.completion.PresentationLaunchCompletion;
 import com.launcher.core.LaunchResult;
 import com.launcher.ui.failure.PresentationLaunchFailure;
 import com.launcher.ui.failure.PresentationLaunchFailureMapper;
@@ -43,23 +44,32 @@ public final class PresentationLaunchStateMachine {
         }
     }
 
-    public void onLaunchResult(LaunchResult result) {
-        Objects.requireNonNull(result, "result");
+    public void onLaunchCompletion(PresentationLaunchCompletion completion) {
+        Objects.requireNonNull(completion, "completion");
 
         if (this.currentState != PresentationLaunchState.LAUNCHING) {
             throw new IllegalStateException(
-                    "Unexpected state for launch result"
+                    "Unexpected state for completion"
             );
         }
 
-        if (result.success()) {
+        if (completion.executionFailed()) {
+            this.currentState = PresentationLaunchState.FAILED;
+
+            launchFailure = mapper.mapExecutionFailure();
+            return;
+        }
+
+        LaunchResult launchResult = completion.launchResult().orElseThrow();
+
+        if (launchResult.success()) {
             this.currentState = PresentationLaunchState.LAUNCHED;
 
             launchFailure = null;
             return;
         }
 
-        launchFailure = mapper.map(result.failure().orElseThrow());
+        launchFailure = mapper.map(launchResult.failure().orElseThrow());
 
         this.currentState = PresentationLaunchState.FAILED;
     }

@@ -1,9 +1,10 @@
 package com.launcher.app.presentation;
 
-import com.launcher.app.result.LauncherResultHandler;
-import com.launcher.app.result.NoOpLauncherResultHandler;
+import com.launcher.app.presentation.completion.PresentationLaunchCompletion;
+import com.launcher.app.presentation.completion.PresentationLaunchCompletionHandler;
+import com.launcher.app.support.NoOpPresentationLaunchCompletionHandler;
 import com.launcher.app.support.RecordingLauncherLifecycleRunner;
-import com.launcher.app.support.RecordingLauncherResultHandler;
+import com.launcher.app.support.RecordingPresentationLaunchCompletionHandler;
 import com.launcher.core.LaunchFailure;
 import com.launcher.core.LaunchResult;
 import com.launcher.core.state.LauncherState;
@@ -16,12 +17,120 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultPresentationLaunchBoundaryTest {
+
+    @Test
+    void should_reject_second_request_while_completion_handler_is_running()
+            throws InterruptedException {
+        //given
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        AtomicReference<PresentationLaunchCompletion> currentCompletion = new AtomicReference<>();
+        CountDownLatch started = new CountDownLatch(1);
+        CountDownLatch canComplete = new CountDownLatch(1);
+
+        PresentationLaunchCompletionHandler handler = completion -> {
+            currentCompletion.set(completion);
+            started.countDown();
+            try {
+                canComplete.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(e);
+            }
+        };
+
+        LaunchResult launchResult = LaunchResult.failure(
+                LauncherState.FAILED,
+                LaunchFailure.lifecycle("Failed to run")
+        );
+
+        try (DefaultPresentationLaunchBoundary boundary = createBoundary(
+                () -> launchResult, handler, executorService
+        )) {
+            //when
+            LaunchRequestResult firstResult = boundary.requestLaunch();
+
+            try {
+                assertTrue(started.await(5, TimeUnit.SECONDS));
+
+                LaunchRequestResult secondResult = boundary.requestLaunch();
+
+                //then
+                assertEquals(LaunchRequestResult.ACCEPTED, firstResult);
+                assertEquals(LaunchRequestResult.REJECTED_ALREADY_RUNNING, secondResult);
+                assertSame(launchResult, currentCompletion.get().launchResult().orElseThrow());
+
+            } finally {
+                canComplete.countDown();
+            }
+        }
+    }
+
+    @Test
+    void should_not_deliver_second_completion_when_handler_throws()
+            throws InterruptedException, TimeoutException, ExecutionException {
+        //given
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        AtomicInteger calls = new AtomicInteger();
+        AtomicReference<PresentationLaunchCompletion> firstCompletion = new AtomicReference<>();
+        LaunchResult launchResult = LaunchResult.failure(
+                LauncherState.FAILED,
+                LaunchFailure.lifecycle("Failed to run")
+        );
+
+        PresentationLaunchCompletionHandler handler = completion -> {
+            if (calls.incrementAndGet() == 1) {
+                firstCompletion.set(completion);
+                throw new IllegalStateException("handler failed");
+            }
+        };
+
+        try (DefaultPresentationLaunchBoundary boundary = createBoundary(
+                () -> launchResult, handler, executorService
+        )) {
+            //when
+            LaunchRequestResult firstResult = boundary.requestLaunch();
+            executorService.submit(() -> {}).get(5, TimeUnit.SECONDS);
+
+            //then
+            assertEquals(LaunchRequestResult.ACCEPTED, firstResult);
+            assertEquals(1, calls.get());
+            assertSame(launchResult, firstCompletion.get().launchResult().orElseThrow());
+
+            //when & then
+            assertEquals(LaunchRequestResult.ACCEPTED, boundary.requestLaunch());
+        }
+    }
+
+    @Test
+    void should_deliver_execution_failure_when_runner_throws() throws InterruptedException {
+        //given
+        LauncherLifecycleRunner runner = () -> {
+            throw new IllegalStateException("internal path: error");
+        };
+
+        RecordingPresentationLaunchCompletionHandler handler =
+                new RecordingPresentationLaunchCompletionHandler();
+
+        try (DefaultPresentationLaunchBoundary boundary = createBoundary(runner, handler)) {
+            //when
+            LaunchRequestResult requestResult = boundary.requestLaunch();
+            assertTrue(handler.awaitHandled(5, TimeUnit.SECONDS));
+
+            //then
+            assertEquals(LaunchRequestResult.ACCEPTED, requestResult);
+            assertTrue(handler.getResult().executionFailed());
+            assertTrue(handler.getResult().launchResult().isEmpty());
+        }
+    }
 
     @Test
     void should_fail_when_launch_request_cannot_be_submitted() {
@@ -35,7 +144,7 @@ class DefaultPresentationLaunchBoundaryTest {
                                 LaunchFailure.lifecycle("failed to run")
                         )
                 ),
-                new NoOpLauncherResultHandler(),
+                new NoOpPresentationLaunchCompletionHandler(),
                 executorService
         );
 
@@ -46,6 +155,7 @@ class DefaultPresentationLaunchBoundaryTest {
                 RejectedExecutionException.class,
                 boundary::requestLaunch
         );
+
     }
 
     @Test
@@ -61,7 +171,7 @@ class DefaultPresentationLaunchBoundaryTest {
                                 LaunchFailure.lifecycle("failed to run")
                         )
                 ),
-                new NoOpLauncherResultHandler(),
+                new NoOpPresentationLaunchCompletionHandler(),
                 executorService
         )) {
             //when
@@ -92,7 +202,7 @@ class DefaultPresentationLaunchBoundaryTest {
                 new RecordingLauncherLifecycleRunner(
                         LaunchResult.success(LauncherState.RUNNING)
                 ),
-                new NoOpLauncherResultHandler(),
+                new NoOpPresentationLaunchCompletionHandler(),
                 executorService
         );
 
@@ -115,7 +225,7 @@ class DefaultPresentationLaunchBoundaryTest {
 
         try (DefaultPresentationLaunchBoundary boundary = createBoundary(
                 runner,
-                new NoOpLauncherResultHandler(),
+                new NoOpPresentationLaunchCompletionHandler(),
                 executorService
         )) {
             //when
@@ -143,7 +253,7 @@ class DefaultPresentationLaunchBoundaryTest {
         RecordingLauncherLifecycleRunner runner = new RecordingLauncherLifecycleRunner(
                 LaunchResult.success(LauncherState.RUNNING)
         );
-        RecordingLauncherResultHandler handler = new RecordingLauncherResultHandler();
+        RecordingPresentationLaunchCompletionHandler handler = new RecordingPresentationLaunchCompletionHandler();
         try (DefaultPresentationLaunchBoundary boundary = createBoundary(
                 runner,
                 handler
@@ -157,7 +267,7 @@ class DefaultPresentationLaunchBoundaryTest {
             assertEquals(LaunchRequestResult.ACCEPTED, result);
             assertEquals(
                     runner.getLaunchResult(),
-                    handler.getResult()
+                    handler.getResult().launchResult().orElseThrow()
             );
         }
     }
@@ -169,7 +279,7 @@ class DefaultPresentationLaunchBoundaryTest {
         CountDownLatch canComplete = new CountDownLatch(1);
         try (DefaultPresentationLaunchBoundary boundary = createBoundary(
                 new BlockingLauncherLifecycleRunner(started, canComplete),
-                new NoOpLauncherResultHandler()
+                new NoOpPresentationLaunchCompletionHandler()
         )) {
             //when
             LaunchRequestResult firstResult = boundary.requestLaunch();
@@ -195,7 +305,7 @@ class DefaultPresentationLaunchBoundaryTest {
                 new RecordingLauncherLifecycleRunner(
                         LaunchResult.success(LauncherState.RUNNING)
                 ),
-                new NoOpLauncherResultHandler()
+                new NoOpPresentationLaunchCompletionHandler()
         )) {
             //when
             LaunchRequestResult result = boundary.requestLaunch();
@@ -214,7 +324,7 @@ class DefaultPresentationLaunchBoundaryTest {
                         new RecordingLauncherLifecycleRunner(
                                 LaunchResult.success(LauncherState.RUNNING)
                         ),
-                        new NoOpLauncherResultHandler(),
+                        new NoOpPresentationLaunchCompletionHandler(),
                         null
                 )
         );
@@ -235,7 +345,7 @@ class DefaultPresentationLaunchBoundaryTest {
                 )
         );
 
-        assertEquals("launcherResultHandler", exception.getMessage());
+        assertEquals("presentationLaunchCompletionHandler", exception.getMessage());
     }
 
     @Test
@@ -245,7 +355,7 @@ class DefaultPresentationLaunchBoundaryTest {
                 NullPointerException.class,
                 () -> createBoundary(
                         null,
-                        new NoOpLauncherResultHandler()
+                        new NoOpPresentationLaunchCompletionHandler()
                 )
         );
 
@@ -254,7 +364,7 @@ class DefaultPresentationLaunchBoundaryTest {
 
     private DefaultPresentationLaunchBoundary createBoundary(
             LauncherLifecycleRunner launcherLifecycleRunner,
-            LauncherResultHandler handler
+            PresentationLaunchCompletionHandler handler
     ) {
         return new DefaultPresentationLaunchBoundary(
                 launcherLifecycleRunner,
@@ -264,7 +374,7 @@ class DefaultPresentationLaunchBoundaryTest {
 
     private DefaultPresentationLaunchBoundary createBoundary(
             LauncherLifecycleRunner launcherLifecycleRunner,
-            LauncherResultHandler handler,
+            PresentationLaunchCompletionHandler handler,
             ExecutorService executorService
     ) {
         return new DefaultPresentationLaunchBoundary(

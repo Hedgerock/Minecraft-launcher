@@ -1,7 +1,7 @@
 package com.launcher.app.presentation;
 
-import com.launcher.app.result.LauncherResultHandler;
-import com.launcher.core.LaunchResult;
+import com.launcher.app.presentation.completion.PresentationLaunchCompletion;
+import com.launcher.app.presentation.completion.PresentationLaunchCompletionHandler;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -11,31 +11,31 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class DefaultPresentationLaunchBoundary implements PresentationLaunchBoundary {
     private final LauncherLifecycleRunner launcherLifecycleRunner;
-    private final LauncherResultHandler launcherResultHandler;
+    private final PresentationLaunchCompletionHandler presentationLaunchCompletionHandler;
     private final AtomicBoolean launchRunning = new AtomicBoolean();
     private final ExecutorService executorService;
 
     public DefaultPresentationLaunchBoundary(
             LauncherLifecycleRunner launcherLifecycleRunner,
-            LauncherResultHandler launcherResultHandler
+            PresentationLaunchCompletionHandler presentationLaunchCompletionHandler
     ) {
         this(
                 launcherLifecycleRunner,
-                launcherResultHandler,
+                presentationLaunchCompletionHandler,
                 Executors.newSingleThreadExecutor()
         );
     }
 
     DefaultPresentationLaunchBoundary(
             LauncherLifecycleRunner launcherLifecycleRunner,
-            LauncherResultHandler launcherResultHandler,
+            PresentationLaunchCompletionHandler presentationLaunchCompletionHandler,
             ExecutorService executorService
     ) {
         this.launcherLifecycleRunner = Objects.requireNonNull(
                 launcherLifecycleRunner, "launcherLifecycleRunner"
         );
-        this.launcherResultHandler = Objects.requireNonNull(
-                launcherResultHandler, "launcherResultHandler"
+        this.presentationLaunchCompletionHandler = Objects.requireNonNull(
+                presentationLaunchCompletionHandler, "presentationLaunchCompletionHandler"
         );
         this.executorService = Objects.requireNonNull(
                 executorService, "executorService"
@@ -53,9 +53,15 @@ public final class DefaultPresentationLaunchBoundary implements PresentationLaun
         try {
             executorService.execute(() -> {
                 try {
-                    LaunchResult result = launcherLifecycleRunner.launch();
+                    PresentationLaunchCompletion completion;
 
-                    launcherResultHandler.handle(result);
+                    try {
+                        completion = PresentationLaunchCompletion.fromLaunchResult(launcherLifecycleRunner.launch());
+                    } catch (RuntimeException e) {
+                        completion = PresentationLaunchCompletion.executionFailure();
+                    }
+
+                    presentationLaunchCompletionHandler.handle(completion);
                 } finally {
                     launchRunning.set(false);
                 }

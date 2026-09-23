@@ -19,6 +19,10 @@ public final class PresentationLaunchFailureMapper {
         return relativeMessage(operationType);
     }
 
+    public PresentationLaunchFailure mapExecutionFailure() {
+        return new PresentationLaunchFailure("Launch failed");
+    }
+
     private PresentationLaunchFailure relativeMessage(OperationType operationType) {
         return switch (operationType) {
             case LOAD_MANIFEST

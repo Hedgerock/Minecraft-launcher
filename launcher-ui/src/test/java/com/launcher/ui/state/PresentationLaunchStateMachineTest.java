@@ -1,6 +1,7 @@
 package com.launcher.ui.state;
 
 import com.launcher.app.presentation.LaunchRequestResult;
+import com.launcher.app.presentation.completion.PresentationLaunchCompletion;
 import com.launcher.core.LaunchFailure;
 import com.launcher.core.LaunchResult;
 import com.launcher.core.operation.failure.OperationFailure;
@@ -20,23 +21,46 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PresentationLaunchStateMachineTest {
 
     @Test
+    void should_return_failed_state_when_completion_has_execution_failure() {
+        //given
+        PresentationLaunchStateMachine stateMachine = new PresentationLaunchStateMachine();
+
+        //when
+        stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
+        stateMachine.onLaunchCompletion(PresentationLaunchCompletion.executionFailure());
+
+        //then
+        assertEquals(PresentationLaunchState.FAILED, stateMachine.currentState());
+        assertFalse(stateMachine.launchFailure().isEmpty());
+        assertEquals(
+                "Launch failed",
+                stateMachine.launchFailure().get().message()
+        );
+        assertTrue(stateMachine.isLaunchAvailable());
+    }
+
+    @Test
     void should_return_specific_message_for_operation_failure() {
         //given
         PresentationLaunchStateMachine stateMachine = new PresentationLaunchStateMachine();
 
         //when
         stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
-        stateMachine.onLaunchResult(LaunchResult.failure(
-                LauncherState.FAILED,
-                LaunchFailure.operation(
-                        OperationType.LAUNCH_GAME,
-                        new OperationFailure(
-                                OperationFailureCode.UNKNOWN,
-                                "Something went wrong",
-                                Map.of()
+        stateMachine.onLaunchCompletion(
+                PresentationLaunchCompletion.fromLaunchResult(
+                        LaunchResult.failure(
+                                LauncherState.FAILED,
+                                LaunchFailure.operation(
+                                        OperationType.LAUNCH_GAME,
+                                        new OperationFailure(
+                                                OperationFailureCode.UNKNOWN,
+                                                "Something went wrong",
+                                                Map.of()
+                                        )
+                                )
                         )
                 )
-        ));
+        );
 
         //then
         assertEquals(
@@ -51,21 +75,21 @@ class PresentationLaunchStateMachineTest {
     }
 
     @Test
-    void should_reject_null_launch_result() {
+    void should_reject_null_completion() {
         //given
         PresentationLaunchStateMachine stateMachine = new PresentationLaunchStateMachine();
 
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> stateMachine.onLaunchResult(null)
+                () -> stateMachine.onLaunchCompletion(null)
         );
 
-        assertEquals("result", exception.getMessage());
+        assertEquals("completion", exception.getMessage());
     }
 
     @Test
-    void should_reject_null_launch_request_result() {
+    void should_reject_null_launch_request() {
         //given
         PresentationLaunchStateMachine stateMachine = new PresentationLaunchStateMachine();
 
@@ -101,24 +125,26 @@ class PresentationLaunchStateMachineTest {
     }
 
     @Test
-    void should_reject_launch_result_when_launch_is_not_running() {
+    void should_reject_completion_when_launch_is_not_running() {
         //given
         PresentationLaunchStateMachine stateMachine = new PresentationLaunchStateMachine();
 
         //when & then
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
-                () -> stateMachine.onLaunchResult(
-                        LaunchResult.failure(
-                                LauncherState.FAILED,
-                                LaunchFailure.lifecycle("Something went wrong")
+                () -> stateMachine.onLaunchCompletion(
+                        PresentationLaunchCompletion.fromLaunchResult(
+                                LaunchResult.failure(
+                                        LauncherState.FAILED,
+                                        LaunchFailure.lifecycle("Something went wrong")
+                                )
                         )
                 )
         );
 
         assertTrue(stateMachine.isLaunchAvailable());
         assertEquals(
-                "Unexpected state for launch result",
+                "Unexpected state for completion",
                 exception.getMessage()
         );
         assertTrue(stateMachine.launchFailure().isEmpty());
@@ -153,9 +179,11 @@ class PresentationLaunchStateMachineTest {
 
         //when
         stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
-        stateMachine.onLaunchResult(LaunchResult.failure(
-                LauncherState.FAILED,
-                LaunchFailure.lifecycle("Something went wrong")
+        stateMachine.onLaunchCompletion(PresentationLaunchCompletion.fromLaunchResult(
+                LaunchResult.failure(
+                        LauncherState.FAILED,
+                        LaunchFailure.lifecycle("Something went wrong")
+                )
         ));
 
         assertLaunchFailure(
@@ -182,7 +210,9 @@ class PresentationLaunchStateMachineTest {
 
         //when
         stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
-        stateMachine.onLaunchResult(LaunchResult.success(LauncherState.RUNNING));
+        stateMachine.onLaunchCompletion(PresentationLaunchCompletion.fromLaunchResult(
+                LaunchResult.success(LauncherState.RUNNING)
+        ));
 
         stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
 
@@ -203,9 +233,11 @@ class PresentationLaunchStateMachineTest {
 
         //when
         stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
-        stateMachine.onLaunchResult(LaunchResult.failure(
-                LauncherState.FAILED,
-                LaunchFailure.lifecycle("Something went wrong")
+        stateMachine.onLaunchCompletion(PresentationLaunchCompletion.fromLaunchResult(
+                LaunchResult.failure(
+                        LauncherState.FAILED,
+                        LaunchFailure.lifecycle("Something went wrong")
+                )
         ));
 
         //then
@@ -227,7 +259,9 @@ class PresentationLaunchStateMachineTest {
 
         //when
         stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
-        stateMachine.onLaunchResult(LaunchResult.success(LauncherState.RUNNING));
+        stateMachine.onLaunchCompletion(PresentationLaunchCompletion.fromLaunchResult(
+                LaunchResult.success(LauncherState.RUNNING)
+        ));
 
         //then
         assertEquals(

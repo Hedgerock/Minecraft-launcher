@@ -16,6 +16,18 @@ class PresentationLaunchFailureMapperTest {
     private final PresentationLaunchFailureMapper mapper = new PresentationLaunchFailureMapper();
 
     @Test
+    void should_return_generic_message_for_execution_failure() {
+        //given
+        PresentationLaunchFailure expected = new PresentationLaunchFailure("Launch failed");
+
+        //when
+        PresentationLaunchFailure result = mapper.mapExecutionFailure();
+
+        //then
+        assertEquals(expected, result);
+    }
+
+    @Test
     void should_not_expose_technical_details_in_presentation_failure() {
         //given
         String technicalPath =

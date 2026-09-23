@@ -3,9 +3,9 @@ package com.launcher.app.bootstrap;
 import com.launcher.app.presentation.DefaultPresentationLaunchBoundary;
 import com.launcher.app.presentation.LaunchRequestResult;
 import com.launcher.app.presentation.PresentationLaunchBoundary;
-import com.launcher.app.result.NoOpLauncherResultHandler;
+import com.launcher.app.support.NoOpPresentationLaunchCompletionHandler;
 import com.launcher.app.support.RecordingLauncherLifecycleRunner;
-import com.launcher.app.support.RecordingLauncherResultHandler;
+import com.launcher.app.support.RecordingPresentationLaunchCompletionHandler;
 import com.launcher.core.LaunchResult;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
@@ -31,7 +31,7 @@ class BootstrapTest {
         RecordingLauncherLifecycleRunner runner = new RecordingLauncherLifecycleRunner(launchResult);
         Bootstrap bootstrap = new Bootstrap(getDefaultConfiguration(), runner);
 
-        RecordingLauncherResultHandler handler = new RecordingLauncherResultHandler();
+        RecordingPresentationLaunchCompletionHandler handler = new RecordingPresentationLaunchCompletionHandler();
 
         try (PresentationLaunchBoundary boundary = bootstrap.createPresentationLaunchBoundary(handler)) {
             //when
@@ -41,7 +41,7 @@ class BootstrapTest {
 
             //then
             assertEquals(LaunchRequestResult.ACCEPTED, result);
-            assertEquals(runner.getLaunchResult(), handler.getResult());
+            assertEquals(runner.getLaunchResult(), handler.getResult().launchResult().orElseThrow());
         }
     }
 
@@ -56,7 +56,7 @@ class BootstrapTest {
                 () -> bootstrap.createPresentationLaunchBoundary(null)
         );
 
-        assertEquals("launcherResultHandler", exception.getMessage());
+        assertEquals("presentationLaunchCompletionHandler", exception.getMessage());
     }
 
     @Test
@@ -66,7 +66,7 @@ class BootstrapTest {
 
         //when
         try (PresentationLaunchBoundary boundary =
-                     bootstrap.createPresentationLaunchBoundary(new NoOpLauncherResultHandler())
+                     bootstrap.createPresentationLaunchBoundary(new NoOpPresentationLaunchCompletionHandler())
         ) {
             //then
             assertInstanceOf(DefaultPresentationLaunchBoundary.class, boundary);

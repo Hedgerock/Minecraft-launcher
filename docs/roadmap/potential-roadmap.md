@@ -152,7 +152,8 @@ Launcher пока не имеет общей политики структури
 - нужно ли удалить поврежденный файл
 - к какому типу относится ошибка: network, manifest, hash, storage, permission или runtime
 
-Минимальное presentation-safe отображение launch failure перенесено в активный [Путь развития presentation layer](presentation-roadmap.md)
+Минимальное presentation-safe отображение launch failure реализовано в presentation layer согласно
+[ADR-0055](../decisions/records/ADR-0055-presentation-launch-failure-boundary.md)
 
 Расширенная классификация ошибок, recovery behavior и retry policy остаются перспективными направлениями
 

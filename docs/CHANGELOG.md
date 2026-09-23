@@ -16,6 +16,7 @@
 - Documented generic launch failure context boundary decision
 - Added generic launch failure context model
 - Documented presentation launch failure boundary decision
+- Added presentation launch failure model and safe message mapping
 
 ### Changed
 
@@ -26,6 +27,7 @@
 - Updated Gradle wrapper to 9.7.1
 - Changed JavaFX launch action availability to derive from presentation launch state
 - Changed launcher lifecycle failures to propagate generic failure context through `LaunchResult`
+- Changed JavaFX failed launch status to display the presentation failure message
 
 ---
 

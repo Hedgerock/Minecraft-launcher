@@ -75,6 +75,20 @@ launch action
 
 Модель не зависит от JavaFX controls и не копирует внутренние состояния `LauncherStateMachine`
 
+### PresentationLaunchFailure
+
+Минимальная модель безопасного пользовательского сообщения о неуспешном запуске
+
+Хранится в presentation state только при `FAILED` и очищается после принятия нового launch request
+
+### PresentationLaunchFailureMapper
+
+Преобразует `LaunchFailure` в `PresentationLaunchFailure` внутри `launcher-ui`
+
+Выбирает сообщение по `OperationType` или возвращает общее сообщение для lifecycle-level failure
+
+Не использует исходные technical messages и details при формировании пользовательского сообщения
+
 ### JavaFxLauncherResultHandler
 
 JavaFX adapter контракта `LauncherResultHandler`

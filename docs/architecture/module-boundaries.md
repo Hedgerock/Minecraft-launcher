@@ -125,6 +125,12 @@ launcher-ui
 `launcher-ui` может напрямую зависеть от `launcher-core` только для использования внешних launcher lifecycle или configuration
 models, необходимых presentation layer, например `LaunchResult` и `LauncherConfiguration`
 
+`OperationType` используется в `launcher-ui` только как метаданные `LaunchFailure` для выбора безопасного пользовательского
+сообщения
+
+При неуспешном `LaunchResult` presentation state хранит `PresentationLaunchFailure`, полученный через `PresentationLaunchFailureMapper`,
+и очищает его после принятия нового launch request
+
 Такая зависимость не дает `launcher-ui` право управлять `LauncherEngine`, `OperationManager`, `LaunchOperation` или application
 assembly напрямую
 
@@ -297,7 +303,8 @@ launcher-app
 - `launcher-core` не создает конкретные инфраструктурные реализации внутри цикла жизни операции
 - `launcher-app` является composition root
 - Конкретные адаптеры находятся вне `launcher-core`
-- `launcher-ui` не импортирует `LauncherEngine`, operation layer или application assembly напрямую
+- `launcher-ui` не импортирует `LauncherEngine`, внутренние типы operation layer или application assembly напрямую;
+  `OperationType` допускается только для преобразования `LaunchFailure`
 
 ---
 

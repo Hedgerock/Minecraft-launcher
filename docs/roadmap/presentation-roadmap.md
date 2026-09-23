@@ -4,8 +4,7 @@
 
 ## Текущий план
 
-- Реализовать минимальное presentation-safe отображение launch failure согласно
-  [ADR-0055](../decisions/records/ADR-0055-presentation-launch-failure-boundary.md)
+- Провести ревизию presentation launch flow после реализации безопасного отображения ошибки запуска
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 
@@ -25,11 +24,14 @@
 - Добавлена минимальная presentation launch state model
 - JavaFX entrypoint использует presentation state как source of truth для доступности launch action
 - Добавлено минимальное status presentation для состояний `READY`, `LAUNCHING`, `LAUNCHED` и `FAILED`
+- Реализовано безопасное отображение launch failure через presentation model и mapper
+- JavaFX entrypoint отображает сообщение из presentation state без раскрытия технического failure context
 
 Архитектурные границы зафиксированы в
 
 - [ADR-0052](../decisions/records/ADR-0052-presentation-launch-request-boundary.md)
 - [ADR-0053](../decisions/records/ADR-0053-presentation-launch-state-boundary.md)
+- [ADR-0055](../decisions/records/ADR-0055-presentation-launch-failure-boundary.md)
 
 ---
 
@@ -59,8 +61,8 @@
 
 ### Presentation error model
 
-Минимальная граница преобразования `LaunchFailure` в безопасное пользовательское представление зафиксирована в
-[ADR-0055](../decisions/records/ADR-0055-presentation-launch-failure-boundary.md)
+Минимальная граница преобразования `LaunchFailure` в безопасное пользовательское представление зафиксирована и реализована в
+согласно [ADR-0055](../decisions/records/ADR-0055-presentation-launch-failure-boundary.md)
 
 Дальнейшее развитие error categories, recovery actions и localization откладывается до появления отдельных подтвержденных
 сценариев

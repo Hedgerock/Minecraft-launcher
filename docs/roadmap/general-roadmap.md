@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Реализовать минимальное presentation-safe отображение согласно [Пути развития presentation layer](presentation-roadmap.md)
+- Провести ревизию presentation flow согласно [Пути развития presentation layer](presentation-roadmap.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -57,3 +57,4 @@
   подробности зафиксированы в [Пути развития presentation layer](presentation-roadmap.md)
 - Generic launch failure context проведен через `LauncherEngine` и `LaunchResult` без раскрытия внутренних operation events в
   presentation layer
+- Безопасное отображение launch failure реализовано в `launcher-ui` без передачи technical messages и details в JavaFX

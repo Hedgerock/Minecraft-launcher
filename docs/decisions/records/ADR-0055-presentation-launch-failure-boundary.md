@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(ui): add presentation launch failure mapping`
+> `feat(ui): present launch failure context`
+
 ---
 
 ## Контекст

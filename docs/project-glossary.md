@@ -44,7 +44,7 @@ Application boundary contract для обработки `LaunchResult`
 
 Минимальный CLI entrypoint использует no-op реализацию
 
-Presentation launch boundary получает конкретный handler от внешнего entrypoint
+Для завершения presentation launch request используется отдельный `PresentationLaunchCompletionHandler`
 
 ### LaunchRequestResult
 
@@ -54,13 +54,26 @@ Presentation launch boundary получает конкретный handler от 
 
 Не описывает итог выполнения launcher lifecycle и не заменяет `LaunchResult`
 
+### PresentationLaunchCompletion
+
+Application-level модель терминального исхода принятого launch request
+
+Содержит полученный `LaunchResult` либо фиксирует неожиданный сбой выполнения до его получения
+
+Не создает искусственный `LauncherState` и не заменяет `LaunchResult`
+
+### PresentationLaunchCompletionHandler
+
+Application boundary contract для передачи `PresentationLaunchCompletion` внешнему presentation adapter
+
 ### PresentationLaunchBoundary
 
 Application boundary для приема запроса запуска из presentation layer
 
 Выполняет синхронный launcher lifecycle за пределами presentation thread и допускает не более одного активного launch request
 
-Возвращает `LaunchRequestResult` немедленно, а итоговый `LaunchResult` передает через `LauncherResultHandler`
+Возвращает `LaunchRequestResult` немедленно, а терминальный исход принятого запроса передает как `PresentationLaunchCompletion`
+через `PresentationLaunchCompletionHandler`
 
 Не управляет UI controls и не изменяет внутреннюю execution model `LauncherEngine`
 
@@ -70,8 +83,8 @@ Application boundary для приема запроса запуска из pres
 
 Содержит `READY`, `LAUNCHING`, `LAUNCHED` и `FAILED`
 
-`PresentationLaunchStateMachine` управляет переходами после `LaunchRequestResult` и `LaunchResult` и определяет доступность
-launch action
+`PresentationLaunchStateMachine` управляет переходами после `LaunchRequestResult` и `PresentationLaunchCompletion` и определяет
+доступность launch action
 
 Модель не зависит от JavaFX controls и не копирует внутренние состояния `LauncherStateMachine`
 
@@ -89,13 +102,15 @@ launch action
 
 Не использует исходные technical messages и details при формировании пользовательского сообщения
 
-### JavaFxLauncherResultHandler
+Для неожиданного сбоя выполнения без `LaunchResult` возвращает общее безопасное сообщение
 
-JavaFX adapter контракта `LauncherResultHandler`
+### JavaFxPresentationLaunchCompletionHandler
 
-Переносит обработку `LaunchResult` в JavaFX Application Thread
+JavaFX adapter контракта `PresentationLaunchCompletionHandler`
 
-Не интерпретирует результат запуска и не определяет presentation state или user-facing message
+Переносит обработку `PresentationLaunchCompletion` в JavaFX Application Thread
+
+Не определяет presentation state или user-facing message
 
 ### LauncherState
 

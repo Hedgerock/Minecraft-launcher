@@ -18,6 +18,7 @@
 - Documented presentation launch failure boundary decision
 - Added presentation launch failure model and safe message mapping
 - Documented presentation launch completion boundary decision
+- Added application-level completion outcome for accepted presentation launch requests
 
 ### Changed
 
@@ -29,6 +30,7 @@
 - Changed JavaFX launch action availability to derive from presentation launch state
 - Changed launcher lifecycle failures to propagate generic failure context through `LaunchResult`
 - Changed JavaFX failed launch status to display the presentation failure message
+- Changed JavaFX launch handling to present unexpected execution failures without fabricating a `LaunchResult`
 
 ---
 

@@ -110,8 +110,14 @@
 
 `launcher-app` владеет technology-neutral application boundary приема launch request и фоновым выполнением launcher lifecycle
 
-`launcher-ui` также владеет минимальной presentation launch state model и переходами, производными от `LaunchRequestResult`
-и `LaunchResult`
+`launcher-app` формирует `PresentationLaunchCompletion` из полученного `LaunchResult` либо фиксирует неожиданный сбой фонового
+выполнения до получения результата
+
+`launcher-ui` владеет переходами presentation state после `LaunchRequestResult` и `PresentationLaunchCompletion`
+
+Для исхода без `LaunchResult` `launcher-ui` переводит состояние в `FAILED` и отображает общее безопасное сообщение
+
+`launcher-core` не зависит от `PresentationLaunchCompletion` и не управляет доставкой результата в presentation layer
 
 `launcher-app` и `launcher-core` не хранят presentation state и не управляют доступностью UI controls
 

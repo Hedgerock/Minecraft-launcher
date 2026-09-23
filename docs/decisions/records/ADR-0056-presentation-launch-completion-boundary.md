@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(app): add presentation launch completion contract`
+> `feat(presentation): deliver launch completion outcomes`
+
 ---
 
 ## Контекст

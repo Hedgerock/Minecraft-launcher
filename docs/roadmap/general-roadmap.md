@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Провести итоговую ревизию presentation launch flow согласно [Пути развития presentation layer](presentation-roadmap.md)
+- Провести ревизию для выбора нового кандидата в будущий milestone
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -52,9 +52,6 @@
 - Реализована общая подготовка согласованного набора ресурсов перед verification и download
 - Интеграционно подтверждены восстановление совместимых повторных назначений и отклонение конфликтующего download plan до
   загрузки ресурсов
-- Завершен milestone `v0.7.0-manifest-runtime-flow`; подробные итоги зафиксированы в [Ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)
-- Минимальная presentation launch boundary доведена до JavaFX entrypoint и закреплена архитектурным тестом;
-  подробности зафиксированы в [Пути развития presentation layer](presentation-roadmap.md)
-- Generic launch failure context проведен через `LauncherEngine` и `LaunchResult` без раскрытия внутренних operation events в
-  presentation layer
-- Безопасное отображение launch failure реализовано в `launcher-ui` без передачи technical messages и details в JavaFX
+- Завершен milestone `v0.7.0-manifest-runtime-flow`; подробные итоги зафиксированы в [ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)
+- Завершен milestone `v0.8.0-presentation-launch-boundary`; подробные итоги зафиксированы
+  в [ретроспективе presentation launch boundary](../retrospective/2026-09-presentation-launch-boundary.md)

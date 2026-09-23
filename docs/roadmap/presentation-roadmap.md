@@ -4,30 +4,22 @@
 
 ## Текущий план
 
-- Провести итоговую ревизию presentation launch flow перед подготовкой milestone release
+- Выбрать следующее направление после ревизии подтвержденных presentation-сценариев
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 
 ---
 
-## Milestone — Presentation launch boundary
+## Milestone `v0.8.0-presentation-launch-boundary` — Presentation launch boundary
 
-Минимальная presentation launch boundary доведена до JavaFX entrypoint без переноса presentation concerns в `launcher-app`
-или `launcher-core`
+Минимальный presentation launch flow доведен до JavaFX entrypoint через application boundary
 
-### Закрыто
+Presentation state управляет доступностью launch action и отображением статуса
 
-- Реализована application boundary для фонового выполнения одного launcher lifecycle
-- Минимальный JavaFX entrypoint подключен к presentation launch boundary и управляет ее lifecycle
-- Dependency boundary `launcher-ui` закреплена архитектурным тестом
-- Добавлена минимальная presentation launch state model
-- JavaFX entrypoint использует presentation state как source of truth для доступности launch action
-- Добавлено минимальное status presentation для состояний `READY`, `LAUNCHING`, `LAUNCHED` и `FAILED`
-- Реализовано безопасное отображение launch failure через presentation model и mapper
-- JavaFX entrypoint отображает сообщение из presentation state без раскрытия технического failure context
-- Добавлен JavaFX adapter для передачи `PresentationLaunchCompletion` в JavaFX Application Thread
-- Принятый launch request получает терминальный исход при наличии `LaunchResult` и при неожиданном сбое выполнения
-- Неожиданный сбой выполнения отображается как безопасное состояние `FAILED` без искусственного `LaunchResult`
+Полученный `LaunchResult` и неожиданный сбой выполнения различаются через `PresentationLaunchCompletion` без изменения смысла
+результата launcher lifecycle
+
+Подробные итоги зафиксированы в [ретроспективе presentation launch boundary](../retrospective/2026-09-presentation-launch-boundary.md)
 
 Архитектурные границы зафиксированы в
 

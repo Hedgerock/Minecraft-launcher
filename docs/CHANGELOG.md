@@ -17,6 +17,7 @@
 - Added generic launch failure context model
 - Documented presentation launch failure boundary decision
 - Added presentation launch failure model and safe message mapping
+- Documented presentation launch completion boundary decision
 
 ### Changed
 

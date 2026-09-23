@@ -4,7 +4,7 @@
 
 ## Текущий план
 
-- Провести ревизию presentation launch flow после реализации безопасного отображения ошибки запуска
+- Реализовать границу завершения принятого запроса запуска согласно [ADR-0056](../decisions/records/ADR-0056-presentation-launch-completion-boundary.md)
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 
@@ -61,7 +61,7 @@
 
 ### Presentation error model
 
-Минимальная граница преобразования `LaunchFailure` в безопасное пользовательское представление зафиксирована и реализована в
+Минимальная граница преобразования `LaunchFailure` в безопасное пользовательское представление зафиксирована и реализована
 согласно [ADR-0055](../decisions/records/ADR-0055-presentation-launch-failure-boundary.md)
 
 Дальнейшее развитие error categories, recovery actions и localization откладывается до появления отдельных подтвержденных

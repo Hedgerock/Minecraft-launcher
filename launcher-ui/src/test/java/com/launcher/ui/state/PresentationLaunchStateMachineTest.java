@@ -3,8 +3,14 @@ package com.launcher.ui.state;
 import com.launcher.app.presentation.LaunchRequestResult;
 import com.launcher.core.LaunchFailure;
 import com.launcher.core.LaunchResult;
+import com.launcher.core.operation.failure.OperationFailure;
+import com.launcher.core.operation.failure.OperationFailureCode;
+import com.launcher.core.operation.type.OperationType;
 import com.launcher.core.state.LauncherState;
+import com.launcher.ui.failure.PresentationLaunchFailure;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,6 +18,37 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PresentationLaunchStateMachineTest {
+
+    @Test
+    void should_return_specific_message_for_operation_failure() {
+        //given
+        PresentationLaunchStateMachine stateMachine = new PresentationLaunchStateMachine();
+
+        //when
+        stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
+        stateMachine.onLaunchResult(LaunchResult.failure(
+                LauncherState.FAILED,
+                LaunchFailure.operation(
+                        OperationType.LAUNCH_GAME,
+                        new OperationFailure(
+                                OperationFailureCode.UNKNOWN,
+                                "Something went wrong",
+                                Map.of()
+                        )
+                )
+        ));
+
+        //then
+        assertEquals(
+                PresentationLaunchState.FAILED,
+                stateMachine.currentState()
+        );
+
+        assertLaunchFailure(
+                stateMachine,
+                "Could not start the game"
+        );
+    }
 
     @Test
     void should_reject_null_launch_result() {
@@ -60,6 +97,7 @@ class PresentationLaunchStateMachineTest {
                 exception.getMessage()
         );
 
+        assertTrue(stateMachine.launchFailure().isEmpty());
     }
 
     @Test
@@ -83,6 +121,7 @@ class PresentationLaunchStateMachineTest {
                 "Unexpected state for launch result",
                 exception.getMessage()
         );
+        assertTrue(stateMachine.launchFailure().isEmpty());
     }
 
     @Test
@@ -104,6 +143,7 @@ class PresentationLaunchStateMachineTest {
         );
 
         assertFalse(stateMachine.isLaunchAvailable());
+        assertTrue(stateMachine.launchFailure().isEmpty());
     }
 
     @Test
@@ -118,6 +158,11 @@ class PresentationLaunchStateMachineTest {
                 LaunchFailure.lifecycle("Something went wrong")
         ));
 
+        assertLaunchFailure(
+                stateMachine,
+                "Launch failed"
+        );
+
         stateMachine.onLaunchRequest(LaunchRequestResult.ACCEPTED);
 
         //then
@@ -127,6 +172,7 @@ class PresentationLaunchStateMachineTest {
         );
 
         assertFalse(stateMachine.isLaunchAvailable());
+        assertTrue(stateMachine.launchFailure().isEmpty());
     }
 
     @Test
@@ -147,6 +193,7 @@ class PresentationLaunchStateMachineTest {
         );
 
         assertFalse(stateMachine.isLaunchAvailable());
+        assertTrue(stateMachine.launchFailure().isEmpty());
     }
 
     @Test
@@ -166,6 +213,11 @@ class PresentationLaunchStateMachineTest {
                 PresentationLaunchState.FAILED,
                 stateMachine.currentState()
         );
+
+        assertLaunchFailure(
+                stateMachine,
+                "Launch failed"
+        );
     }
 
     @Test
@@ -182,6 +234,8 @@ class PresentationLaunchStateMachineTest {
                 PresentationLaunchState.LAUNCHED,
                 stateMachine.currentState()
         );
+
+        assertTrue(stateMachine.launchFailure().isEmpty());
     }
 
     @Test
@@ -197,6 +251,8 @@ class PresentationLaunchStateMachineTest {
                 PresentationLaunchState.READY,
                 stateMachine.currentState()
         );
+
+        assertTrue(stateMachine.launchFailure().isEmpty());
     }
 
     @Test
@@ -214,6 +270,7 @@ class PresentationLaunchStateMachineTest {
         );
 
         assertFalse(stateMachine.isLaunchAvailable());
+        assertTrue(stateMachine.launchFailure().isEmpty());
     }
 
     @Test
@@ -226,7 +283,9 @@ class PresentationLaunchStateMachineTest {
                 PresentationLaunchState.READY,
                 stateMachine.currentState()
         );
+
         assertTrue(stateMachine.isLaunchAvailable());
+        assertTrue(stateMachine.launchFailure().isEmpty());
     }
 
     @Test
@@ -239,5 +298,18 @@ class PresentationLaunchStateMachineTest {
                 PresentationLaunchState.READY,
                 stateMachine.currentState()
         );
+
+        assertTrue(stateMachine.launchFailure().isEmpty());
+    }
+
+    private void assertLaunchFailure(
+            PresentationLaunchStateMachine stateMachine,
+            String expectedMessage
+    ) {
+        assertFalse(stateMachine.launchFailure().isEmpty());
+
+        PresentationLaunchFailure failure = stateMachine.launchFailure().get();
+
+        assertEquals(expectedMessage, failure.message());
     }
 }

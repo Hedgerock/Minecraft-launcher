@@ -121,7 +121,10 @@ public class LauncherApplication extends Application {
         );
 
         launchStatusLabel.setText(
-                PresentationLaunchStatusText.forState(state)
+                PresentationLaunchStatusText.forState(
+                        state,
+                        presentationLaunchStateMachine.launchFailure()
+                )
         );
     }
 

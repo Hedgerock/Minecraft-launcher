@@ -25,7 +25,9 @@ class LauncherUiBoundaryTest {
 
     private static final Set<String> ALLOWED_CORE_IMPORTS = Set.of(
             "import com.launcher.core.LaunchResult;",
-            "import com.launcher.core.configuration.LauncherConfiguration;"
+            "import com.launcher.core.LaunchFailure;",
+            "import com.launcher.core.configuration.LauncherConfiguration;",
+            "import com.launcher.core.operation.type.OperationType;"
     );
 
     private static final Set<String> ALLOWED_APPLICATION_IMPORTS = Set.of(

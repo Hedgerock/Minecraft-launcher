@@ -4,8 +4,9 @@
 
 ## Текущий план
 
-- Провести ревизию presentation error behavior после реализации generic launch failure context
-- Не вводить structured user-facing error model, recovery actions или локализацию без подтвержденного сценария
+- Реализовать минимальное presentation-safe отображение launch failure согласно
+  [ADR-0055](../decisions/records/ADR-0055-presentation-launch-failure-boundary.md)
+- Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 
 ---
@@ -35,8 +36,7 @@
 ## Отложено
 
 - Progress presentation до появления стабильной application boundary для передачи progress events
-- Structured user-facing error model до появления generic launch failure context и подтвержденного сценария отображения
-  или восстановления после ошибки
+- Recovery actions до появления подтвержденного сценария пользовательского восстановления после ошибки
 - Cancel behavior до появления cancellation boundary в launcher lifecycle
 - Retry policy до определения допустимых сценариев повторного запуска
 - Game process lifecycle tracking до появления требования отслеживать состояние запущенной игры
@@ -59,11 +59,11 @@
 
 ### Presentation error model
 
-Перед добавлением детализированных сообщений и recovery actions необходимо определить преобразование launcher failure
-context в безопасное пользовательское представление
+Минимальная граница преобразования `LaunchFailure` в безопасное пользовательское представление зафиксирована в
+[ADR-0055](../decisions/records/ADR-0055-presentation-launch-failure-boundary.md)
 
-Presentation error model не должна раскрывать внутренние exception details, credentials или технические данные без явной
-необходимости
+Дальнейшее развитие error categories, recovery actions и localization откладывается до появления отдельных подтвержденных
+сценариев
 
 ### UI composition
 

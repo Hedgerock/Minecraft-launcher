@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Провести ревизию generic launch failure context перед дальнейшим развитием presentation error behavior
+- Реализовать минимальное presentation-safe отображение согласно [Пути развития presentation layer](presentation-roadmap.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

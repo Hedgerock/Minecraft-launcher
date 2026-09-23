@@ -15,6 +15,7 @@
 - Added minimal JavaFX launch status presentation
 - Documented generic launch failure context boundary decision
 - Added generic launch failure context model
+- Documented presentation launch failure boundary decision
 
 ### Changed
 

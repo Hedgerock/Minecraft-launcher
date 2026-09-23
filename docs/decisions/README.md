@@ -66,3 +66,4 @@
 | [ADR-0052](records/ADR-0052-presentation-launch-request-boundary.md)              | Граница запроса запуска из presentation layer                     | presentation       |
 | [ADR-0053](records/ADR-0053-presentation-launch-state-boundary.md)                | Граница состояния запуска в presentation layer                    | presentation       |
 | [ADR-0054](records/ADR-0054-generic-launch-failure-context-boundary.md)           | Граница generic launch failure context                            | launcher lifecycle |
+| [ADR-0055](records/ADR-0055-presentation-launch-failure-boundary.md)              | Граница отображения launch failure в presentation layer           | presentation       |

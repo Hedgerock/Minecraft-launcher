@@ -1,5 +1,9 @@
 ## Unreleased
 
+### Added
+
+- Selected local diagnostics for unexpected presentation launch failures as the next development candidate
+
 ---
 
 ## v0.8.0 – Presentation Launch Boundary

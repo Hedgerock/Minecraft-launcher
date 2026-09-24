@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Провести ревизию для выбора нового кандидата в будущий milestone
+- Определить границу локальной диагностики неожиданных сбоев принятого presentation launch request
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

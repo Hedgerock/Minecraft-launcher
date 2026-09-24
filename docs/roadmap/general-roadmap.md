@@ -2,7 +2,8 @@
 
 ## Текущий фокус
 
-- Провести ревизию подтвержденных сценариев после реализации локальной диагностики presentation launch request
+- Реализовать передачу этапов принятого presentation launch request
+  согласно [ADR-0058](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

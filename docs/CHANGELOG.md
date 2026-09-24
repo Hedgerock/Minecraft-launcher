@@ -6,6 +6,7 @@
 - Documented local presentation launch diagnostics boundary decision
 - Added local diagnostics for unexpected presentation launch execution and completion handler failures
 - Added controlled logging of diagnostic source and exception type without raw exception messages
+- Documented presentation launch phase reporting boundary decision
 
 ---
 

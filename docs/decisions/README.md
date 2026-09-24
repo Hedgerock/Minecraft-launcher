@@ -69,3 +69,4 @@
 | [ADR-0055](records/ADR-0055-presentation-launch-failure-boundary.md)              | Граница отображения launch failure в presentation layer             | presentation       |
 | [ADR-0056](records/ADR-0056-presentation-launch-completion-boundary.md)           | Граница завершения принятого запроса запуска                        | presentation       |
 | [ADR-0057](records/ADR-0057-presentation-launch-diagnostics-boundary.md)          | Граница локальной диагностики при неожиданных сбоях запроса запуска | presentation       |
+| [ADR-0058](records/ADR-0058-presentation-launch-phase-reporting-boundary.md)      | Граница передачи этапов presentation launch request                 | presentation       |

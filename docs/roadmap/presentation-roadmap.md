@@ -4,7 +4,8 @@
 
 ## Текущий план
 
-- Выбрать следующее направление после ревизии подтвержденных presentation-сценариев
+- Реализовать отображение текущего этапа принятого launch request без потокового download progress
+  согласно [ADR-0058](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 
@@ -32,9 +33,10 @@ Presentation state управляет доступностью launch action и 
 
 ## Отложено
 
-- Progress presentation до появления стабильной application boundary для передачи progress events
+- Потоковый progress отдельных операций до появления промежуточных обновлений и отдельного решения об их передаче в
+  presentation layer
 - Recovery actions до появления подтвержденного сценария пользовательского восстановления после ошибки
-- Cancel behavior до появления cancellation boundary в launcher lifecycle
+- Не добавлять потоковый progress отдельных операций, cancel behavior и retry policy без отдельных архитектурных решений
 - Retry policy до определения допустимых сценариев повторного запуска
 - Game process lifecycle tracking до появления требования отслеживать состояние запущенной игры
 - Локализация до появления устойчивого набора пользовательских текстов
@@ -49,8 +51,10 @@ Presentation state управляет доступностью launch action и 
 
 ### Progress presentation
 
-Если длительность verification, download или native extraction потребует пользовательской обратной связи, необходимо
-определить application-level boundary для передачи progress events
+Минимальная граница передачи этапов presentation launch request зафиксирована в [ADR-0058](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)
+
+Потоковый progress verification, download и native extraction остается отложенным до появления промежуточных данных и
+отдельного решения об их передаче в presentation layer
 
 `launcher-ui` не должен подписываться на внутренние события `launcher-core` напрямую
 

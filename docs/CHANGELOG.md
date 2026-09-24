@@ -3,6 +3,7 @@
 ### Added
 
 - Selected local diagnostics for unexpected presentation launch failures as the next development candidate
+- Documented local presentation launch diagnostics boundary decision
 
 ---
 

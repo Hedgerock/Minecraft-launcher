@@ -2,7 +2,8 @@
 
 ## Текущий фокус
 
-- Определить границу локальной диагностики неожиданных сбоев принятого presentation launch request
+- Реализовать локальную диагностику неожиданных сбоев принятого presentation launch request согласно
+  [ADR-0057](../decisions/records/ADR-0057-presentation-launch-diagnostics-boundary.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

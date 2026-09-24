@@ -2,7 +2,11 @@ package com.launcher.app.presentation;
 
 import com.launcher.app.presentation.completion.PresentationLaunchCompletion;
 import com.launcher.app.presentation.completion.PresentationLaunchCompletionHandler;
+import com.launcher.app.presentation.report.PresentationLaunchDiagnosticReporter;
+import com.launcher.app.presentation.report.PresentationLaunchDiagnosticSource;
+import com.launcher.app.support.NoOpPresentationLaunchDiagnosticReporter;
 import com.launcher.app.support.NoOpPresentationLaunchCompletionHandler;
+import com.launcher.app.support.RecordingFailingPresentationLaunchDiagnosticReporter;
 import com.launcher.app.support.RecordingLauncherLifecycleRunner;
 import com.launcher.app.support.RecordingPresentationLaunchCompletionHandler;
 import com.launcher.core.LaunchFailure;
@@ -26,6 +30,122 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultPresentationLaunchBoundaryTest {
+
+    @Test
+    void should_accept_new_request_when_completion_handler_and_diagnostic_reporter_failed()
+            throws InterruptedException, TimeoutException, ExecutionException {
+        //given
+        LauncherLifecycleRunner runner =
+                () -> LaunchResult.success(LauncherState.RUNNING);
+
+        RuntimeException handlerFailure =
+                new RuntimeException("Completion handler failed");
+
+        PresentationLaunchCompletionHandler failingHandler = completion -> {
+            throw handlerFailure;
+        };
+
+        RecordingFailingPresentationLaunchDiagnosticReporter failingReporter =
+                new RecordingFailingPresentationLaunchDiagnosticReporter();
+
+        ExecutorService executorService =
+                Executors.newSingleThreadExecutor();
+
+        try (DefaultPresentationLaunchBoundary boundary = createBoundary(
+                runner,
+                failingHandler,
+                failingReporter,
+                executorService
+        )) {
+            //when
+            LaunchRequestResult firstResult = boundary.requestLaunch();
+
+            executorService.submit(() -> {}).get(5, TimeUnit.SECONDS);
+
+            LaunchRequestResult secondResult = boundary.requestLaunch();
+
+            //then
+            assertEquals(
+                    LaunchRequestResult.ACCEPTED,
+                    firstResult
+            );
+
+            assertEquals(
+                    LaunchRequestResult.ACCEPTED,
+                    secondResult
+            );
+
+            assertEquals(
+                    PresentationLaunchDiagnosticSource.COMPLETION_HANDLER,
+                    failingReporter.getSource()
+            );
+
+            assertSame(
+                    handlerFailure,
+                    failingReporter.getCause()
+            );
+        }
+    }
+
+    @Test
+    void should_deliver_execution_failure_when_diagnostic_reporter_failed()
+    throws InterruptedException, TimeoutException, ExecutionException {
+        //given
+        RuntimeException cause = new RuntimeException("Failed to launch");
+
+        LauncherLifecycleRunner failingRunner = () -> {
+            throw cause;
+        };
+
+        RecordingPresentationLaunchCompletionHandler completionHandler =
+                new RecordingPresentationLaunchCompletionHandler();
+
+        RecordingFailingPresentationLaunchDiagnosticReporter failingReporter =
+                new RecordingFailingPresentationLaunchDiagnosticReporter();
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        try (DefaultPresentationLaunchBoundary boundary = createBoundary(
+                failingRunner,
+                completionHandler,
+                failingReporter,
+                executorService
+        )) {
+            //when
+            LaunchRequestResult requestResult = boundary.requestLaunch();
+
+            assertTrue(
+                    completionHandler.awaitHandled(5, TimeUnit.SECONDS)
+            );
+
+            executorService.submit(() -> {}).get(5, TimeUnit.SECONDS);
+
+            LaunchRequestResult secondResult = boundary.requestLaunch();
+
+            //then
+            assertEquals(
+                    LaunchRequestResult.ACCEPTED,
+                    requestResult
+            );
+
+            PresentationLaunchCompletion completion = completionHandler.getResult();
+
+            assertTrue(completion.executionFailed());
+            assertTrue(completion.launchResult().isEmpty());
+
+            assertEquals(
+                    PresentationLaunchDiagnosticSource.LAUNCH_EXECUTION,
+                    failingReporter.getSource()
+            );
+
+            assertSame(cause, failingReporter.getCause());
+
+            assertEquals(
+                    LaunchRequestResult.ACCEPTED,
+                    secondResult
+            );
+        }
+    }
 
     @Test
     void should_reject_second_request_while_completion_handler_is_running()
@@ -316,6 +436,23 @@ class DefaultPresentationLaunchBoundaryTest {
     }
 
     @Test
+    void should_reject_null_presentation_launch_diagnostic_reporter() {
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> createBoundary(
+                        new RecordingLauncherLifecycleRunner(
+                                LaunchResult.success(LauncherState.RUNNING)
+                        ),
+                        new NoOpPresentationLaunchCompletionHandler(),
+                        (PresentationLaunchDiagnosticReporter) null
+                )
+        );
+
+        assertEquals("presentationLaunchDiagnosticReporter", exception.getMessage());
+    }
+
+    @Test
     void should_reject_null_executor_service() {
         //when & then
         NullPointerException exception = assertThrows(
@@ -325,7 +462,7 @@ class DefaultPresentationLaunchBoundaryTest {
                                 LaunchResult.success(LauncherState.RUNNING)
                         ),
                         new NoOpPresentationLaunchCompletionHandler(),
-                        null
+                        (ExecutorService) null
                 )
         );
 
@@ -366,9 +503,36 @@ class DefaultPresentationLaunchBoundaryTest {
             LauncherLifecycleRunner launcherLifecycleRunner,
             PresentationLaunchCompletionHandler handler
     ) {
+        return createBoundary(
+                launcherLifecycleRunner,
+                handler,
+                new NoOpPresentationLaunchDiagnosticReporter()
+        );
+    }
+
+    private DefaultPresentationLaunchBoundary createBoundary(
+            LauncherLifecycleRunner launcherLifecycleRunner,
+            PresentationLaunchCompletionHandler handler,
+            PresentationLaunchDiagnosticReporter reporter
+    ) {
         return new DefaultPresentationLaunchBoundary(
                 launcherLifecycleRunner,
-                handler
+                handler,
+                reporter
+        );
+    }
+
+    private DefaultPresentationLaunchBoundary createBoundary(
+            LauncherLifecycleRunner launcherLifecycleRunner,
+            PresentationLaunchCompletionHandler handler,
+            PresentationLaunchDiagnosticReporter reporter,
+            ExecutorService executorService
+    ) {
+        return new DefaultPresentationLaunchBoundary(
+                launcherLifecycleRunner,
+                handler,
+                reporter,
+                executorService
         );
     }
 
@@ -377,9 +541,10 @@ class DefaultPresentationLaunchBoundaryTest {
             PresentationLaunchCompletionHandler handler,
             ExecutorService executorService
     ) {
-        return new DefaultPresentationLaunchBoundary(
+        return createBoundary(
                 launcherLifecycleRunner,
                 handler,
+                new NoOpPresentationLaunchDiagnosticReporter(),
                 executorService
         );
     }

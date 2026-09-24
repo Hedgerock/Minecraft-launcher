@@ -6,6 +6,8 @@ import com.launcher.app.presentation.DefaultPresentationLaunchBoundary;
 import com.launcher.app.presentation.LauncherLifecycleRunner;
 import com.launcher.app.presentation.PresentationLaunchBoundary;
 import com.launcher.app.presentation.completion.PresentationLaunchCompletionHandler;
+import com.launcher.app.presentation.report.DefaultPresentationLaunchDiagnosticReporter;
+import com.launcher.app.presentation.report.PresentationLaunchDiagnosticReporter;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
 
@@ -43,9 +45,13 @@ public final class Bootstrap {
     ) {
         Objects.requireNonNull(presentationLaunchCompletionHandler, "presentationLaunchCompletionHandler");
 
+        PresentationLaunchDiagnosticReporter reporter =
+                new DefaultPresentationLaunchDiagnosticReporter();
+
         return new DefaultPresentationLaunchBoundary(
                 launcherLifecycleRunner,
-                presentationLaunchCompletionHandler
+                presentationLaunchCompletionHandler,
+                reporter
         );
     }
 

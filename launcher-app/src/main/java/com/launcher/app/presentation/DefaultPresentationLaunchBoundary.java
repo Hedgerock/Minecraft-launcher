@@ -2,8 +2,11 @@ package com.launcher.app.presentation;
 
 import com.launcher.app.presentation.completion.PresentationLaunchCompletion;
 import com.launcher.app.presentation.completion.PresentationLaunchCompletionHandler;
+import com.launcher.app.presentation.phase.PresentationLaunchPhase;
+import com.launcher.app.presentation.phase.PresentationLaunchPhaseHandler;
 import com.launcher.app.presentation.report.PresentationLaunchDiagnosticReporter;
 import com.launcher.app.presentation.report.PresentationLaunchDiagnosticSource;
+import com.launcher.core.LaunchResult;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -17,16 +20,19 @@ public final class DefaultPresentationLaunchBoundary implements PresentationLaun
     private final AtomicBoolean launchRunning = new AtomicBoolean();
     private final ExecutorService executorService;
     private final PresentationLaunchDiagnosticReporter presentationLaunchDiagnosticReporter;
+    private final PresentationLaunchPhaseHandler presentationLaunchPhaseHandler;
 
     public DefaultPresentationLaunchBoundary(
             LauncherLifecycleRunner launcherLifecycleRunner,
             PresentationLaunchCompletionHandler presentationLaunchCompletionHandler,
-            PresentationLaunchDiagnosticReporter presentationLaunchDiagnosticReporter
+            PresentationLaunchDiagnosticReporter presentationLaunchDiagnosticReporter,
+            PresentationLaunchPhaseHandler presentationLaunchPhaseHandler
     ) {
         this(
                 launcherLifecycleRunner,
                 presentationLaunchCompletionHandler,
                 presentationLaunchDiagnosticReporter,
+                presentationLaunchPhaseHandler,
                 Executors.newSingleThreadExecutor()
         );
     }
@@ -35,6 +41,7 @@ public final class DefaultPresentationLaunchBoundary implements PresentationLaun
             LauncherLifecycleRunner launcherLifecycleRunner,
             PresentationLaunchCompletionHandler presentationLaunchCompletionHandler,
             PresentationLaunchDiagnosticReporter presentationLaunchDiagnosticReporter,
+            PresentationLaunchPhaseHandler presentationLaunchPhaseHandler,
             ExecutorService executorService
     ) {
         this.launcherLifecycleRunner = Objects.requireNonNull(
@@ -45,6 +52,9 @@ public final class DefaultPresentationLaunchBoundary implements PresentationLaun
         );
         this.presentationLaunchDiagnosticReporter = Objects.requireNonNull(
                 presentationLaunchDiagnosticReporter, "presentationLaunchDiagnosticReporter"
+        );
+        this.presentationLaunchPhaseHandler = Objects.requireNonNull(
+                presentationLaunchPhaseHandler, "presentationLaunchPhaseHandler"
         );
         this.executorService = Objects.requireNonNull(
                 executorService, "executorService"
@@ -65,7 +75,8 @@ public final class DefaultPresentationLaunchBoundary implements PresentationLaun
                     PresentationLaunchCompletion completion;
 
                     try {
-                        completion = PresentationLaunchCompletion.fromLaunchResult(launcherLifecycleRunner.launch());
+                        LaunchResult launchResult = launcherLifecycleRunner.launch(this::handleSafely);
+                        completion = PresentationLaunchCompletion.fromLaunchResult(launchResult);
                     } catch (RuntimeException e) {
                         completion = PresentationLaunchCompletion.executionFailure();
 
@@ -98,6 +109,14 @@ public final class DefaultPresentationLaunchBoundary implements PresentationLaun
     @Override
     public void close() {
         executorService.shutdown();
+    }
+
+    private void handleSafely(PresentationLaunchPhase phase) {
+        try {
+            presentationLaunchPhaseHandler.handle(phase);
+        } catch (RuntimeException e) {
+            reportSafely(PresentationLaunchDiagnosticSource.PHASE_HANDLER, e);
+        }
     }
 
     private void reportSafely(

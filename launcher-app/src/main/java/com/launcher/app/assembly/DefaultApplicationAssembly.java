@@ -14,6 +14,8 @@ import com.launcher.app.storage.directory.LocalDirectoryProvider;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
+import com.launcher.core.event.EventListener;
+import com.launcher.core.event.events.StateChangedEvent;
 import com.launcher.core.execution.ExecutionStrategy;
 import com.launcher.core.execution.SequentialExecutionStrategy;
 import com.launcher.core.game.DefaultGameLaunchPlanBuilder;
@@ -47,6 +49,8 @@ import com.launcher.core.runtime.javaexecutable.resolver.provider.JavaCommandPat
 import com.launcher.core.state.LauncherStateMachine;
 import com.launcher.core.storage.directory.DirectoryProvider;
 
+import java.util.Objects;
+
 public final class DefaultApplicationAssembly implements ApplicationAssembly {
     private final LauncherConfiguration launcherConfiguration;
 
@@ -54,17 +58,26 @@ public final class DefaultApplicationAssembly implements ApplicationAssembly {
         this.launcherConfiguration = launcherConfiguration;
     }
 
-    @Override
-    public LauncherEngine createEngine() {
+    public LauncherEngine createEngine(EventListener<StateChangedEvent> stateListener) {
+        Objects.requireNonNull(stateListener, "stateListener");
 
         LauncherInfrastructureFactory infrastructureFactory =
                 new DefaultLauncherInfrastructureFactory();
 
         LauncherInfrastructure launcherInfrastructure = infrastructureFactory.createInfrastructure();
+
+        launcherInfrastructure.eventBus()
+                .subscribe(StateChangedEvent.class, stateListener);
+
         OperationManager operationManager = createOperationManager(launcherInfrastructure);
         LauncherStateMachine stateMachine = new LauncherStateMachine(launcherInfrastructure.eventBus());
 
         return new LauncherEngine(stateMachine, operationManager);
+    }
+
+    @Override
+    public LauncherEngine createEngine() {
+        return createEngine(event -> {});
     }
 
     private GameLaunchCommandBuilder getLaunchCommandBuilder() {

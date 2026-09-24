@@ -1,6 +1,7 @@
 package com.launcher.app.support;
 
 import com.launcher.app.presentation.LauncherLifecycleRunner;
+import com.launcher.app.presentation.phase.PresentationLaunchPhaseHandler;
 import com.launcher.core.LaunchResult;
 
 public final class RecordingLauncherLifecycleRunner implements LauncherLifecycleRunner {
@@ -11,7 +12,7 @@ public final class RecordingLauncherLifecycleRunner implements LauncherLifecycle
     }
 
     @Override
-    public LaunchResult launch() {
+    public LaunchResult launch(PresentationLaunchPhaseHandler presentationLaunchPhaseHandler) {
         return launchResult;
     }
 

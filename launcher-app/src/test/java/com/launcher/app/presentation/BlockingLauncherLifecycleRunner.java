@@ -1,5 +1,6 @@
 package com.launcher.app.presentation;
 
+import com.launcher.app.presentation.phase.PresentationLaunchPhaseHandler;
 import com.launcher.core.LaunchResult;
 import com.launcher.core.state.LauncherState;
 
@@ -18,7 +19,7 @@ final class BlockingLauncherLifecycleRunner implements LauncherLifecycleRunner {
     }
 
     @Override
-    public LaunchResult launch() {
+    public LaunchResult launch(PresentationLaunchPhaseHandler presentationLaunchPhaseHandler) {
         started.countDown();
 
         try {

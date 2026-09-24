@@ -2,10 +2,13 @@ package com.launcher.app.bootstrap;
 
 import com.launcher.app.presentation.DefaultPresentationLaunchBoundary;
 import com.launcher.app.presentation.LaunchRequestResult;
+import com.launcher.app.presentation.LauncherLifecycleRunner;
 import com.launcher.app.presentation.PresentationLaunchBoundary;
+import com.launcher.app.presentation.phase.PresentationLaunchPhase;
 import com.launcher.app.support.NoOpPresentationLaunchCompletionHandler;
 import com.launcher.app.support.RecordingLauncherLifecycleRunner;
 import com.launcher.app.support.RecordingPresentationLaunchCompletionHandler;
+import com.launcher.app.support.RecordingPresentationLaunchPhaseHandler;
 import com.launcher.core.LaunchResult;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
@@ -23,6 +26,54 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BootstrapTest {
+
+    @Test
+    void should_execute_presentation_phase_handler_through_presentation_boundary() throws InterruptedException {
+        //given
+        LaunchResult launchResult =
+                LaunchResult.success(LauncherState.RUNNING);
+
+        PresentationLaunchPhase expectedPhase =
+                PresentationLaunchPhase.LOADING_MANIFEST;
+
+        LauncherLifecycleRunner runner = handler -> {
+            handler.handle(expectedPhase);
+
+            return launchResult;
+        };
+
+        Bootstrap bootstrap =
+                new Bootstrap(getDefaultConfiguration(), runner);
+
+        RecordingPresentationLaunchCompletionHandler completionHandler =
+                new RecordingPresentationLaunchCompletionHandler();
+
+        RecordingPresentationLaunchPhaseHandler phaseHandler =
+                new RecordingPresentationLaunchPhaseHandler();
+
+        try (PresentationLaunchBoundary boundary = bootstrap.createPresentationLaunchBoundary(
+                completionHandler,
+                phaseHandler
+        )) {
+            //when
+            LaunchRequestResult requestResult = boundary.requestLaunch();
+
+            assertTrue(
+                    completionHandler.awaitHandled(5, TimeUnit.SECONDS)
+            );
+
+            //then
+            assertEquals(
+                    LaunchRequestResult.ACCEPTED,
+                    requestResult
+            );
+
+            assertEquals(
+                    expectedPhase,
+                    phaseHandler.getPhase()
+            );
+        }
+    }
 
     @Test
     void should_execute_configured_lifecycle_runner_through_presentation_boundary() throws InterruptedException {

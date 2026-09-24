@@ -113,6 +113,12 @@
 `launcher-app` формирует `PresentationLaunchCompletion` из полученного `LaunchResult` либо фиксирует неожиданный сбой фонового
 выполнения до получения результата
 
+`launcher-app` передает исходную причину неожиданного сбоя выполнения или синхронного вызова completion handler через
+локальную диагностическую границу
+
+Диагностика не изменяет `PresentationLaunchCompletion`, не препятствует освобождению активного запроса и не передает
+техническое исключение в `launcher-ui`
+
 `launcher-ui` владеет переходами presentation state после `LaunchRequestResult` и `PresentationLaunchCompletion`
 
 Для исхода без `LaunchResult` `launcher-ui` переводит состояние в `FAILED` и отображает общее безопасное сообщение

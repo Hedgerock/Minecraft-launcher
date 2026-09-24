@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(app): add presentation launch diagnostic reporter`
+> `feat(app): report unexpected presentation launch failures`
+
 ---
 
 ## Контекст

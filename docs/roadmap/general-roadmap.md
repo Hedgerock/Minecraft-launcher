@@ -2,8 +2,7 @@
 
 ## Текущий фокус
 
-- Реализовать локальную диагностику неожиданных сбоев принятого presentation launch request согласно
-  [ADR-0057](../decisions/records/ADR-0057-presentation-launch-diagnostics-boundary.md)
+- Провести ревизию подтвержденных сценариев после реализации локальной диагностики presentation launch request
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -56,3 +55,5 @@
 - Завершен milestone `v0.7.0-manifest-runtime-flow`; подробные итоги зафиксированы в [ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)
 - Завершен milestone `v0.8.0-presentation-launch-boundary`; подробные итоги зафиксированы
   в [ретроспективе presentation launch boundary](../retrospective/2026-09-presentation-launch-boundary.md)
+- Реализована локальная диагностика неожиданных сбоев принятого presentation launch request согласно
+  [ADR-0057](../decisions/records/ADR-0057-presentation-launch-diagnostics-boundary.md) без передачи технической причины в UI

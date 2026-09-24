@@ -77,6 +77,26 @@ Application boundary для приема запроса запуска из pres
 
 Не управляет UI controls и не изменяет внутреннюю execution model `LauncherEngine`
 
+### PresentationLaunchDiagnosticReporter
+
+Application-level контракт локальной диагностики неожиданных сбоев принятого presentation launch request
+
+Получает источник сбоя и исходное исключение
+
+Его отказ не изменяет исход запроса
+
+Production adapter вводит контролируемую запись с источником сбоя и типом исключения без исходного сообщения
+
+Различает неожиданный сбой выполнения launcher lifecycle до получения `LaunchResult` и сбой синхронного вызова
+`PresentationLaunchCompletion`
+
+### PresentationLaunchDiagnosticSource
+
+Указывает источник неожиданного сбоя: выполнения launcher lifecycle до получения `LaunchResult` или синхронный вызов
+`PresentationLaunchCompletionHandler`
+
+Не классифицирует обычный неуспешный `LaunchResult`
+
 ### PresentationLaunchState
 
 Минимальная модель состояния launch interaction в presentation layer

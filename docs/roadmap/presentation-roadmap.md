@@ -4,8 +4,8 @@
 
 ## Текущий план
 
-- Определить минимальный источник manifest URI для запуска из UI
-  согласно [ADR-0059](../decisions/records/ADR-0059-launcher-manifest-source-boundary.md)
+- Подключить локальный источник manifest URI и платформенные каталоги к startup configuration согласно
+  [ADR-0059](../decisions/records/ADR-0059-launcher-manifest-source-boundary.md) и [ADR-0060](../decisions/records/ADR-0060-launcher-user-directories-boundary.md)
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 

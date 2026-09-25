@@ -12,6 +12,7 @@
 - Added diagnostics for synchronous presentation phase handler failures without changing launch completion
 - Added integration coverage for presentation launch phase delivery through production Bootstrap
 - Documented launcher manifest source boundary decision
+- Documented launcher user directories boundary decision
 
 ---
 

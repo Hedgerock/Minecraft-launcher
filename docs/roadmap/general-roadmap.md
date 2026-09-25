@@ -2,8 +2,8 @@
 
 ## Текущий фокус
 
-- Определить минимальный источник manifest URI для запуска из UI
-  согласно [ADR-0059](../decisions/records/ADR-0059-launcher-manifest-source-boundary.md)
+- Подключить локальный источник manifest URI и платформенные каталоги к startup configuration согласно
+  [ADR-0059](../decisions/records/ADR-0059-launcher-manifest-source-boundary.md) и [ADR-0060](../decisions/records/ADR-0060-launcher-user-directories-boundary.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

@@ -71,3 +71,4 @@
 | [ADR-0057](records/ADR-0057-presentation-launch-diagnostics-boundary.md)          | Граница локальной диагностики при неожиданных сбоях запроса запуска | presentation       |
 | [ADR-0058](records/ADR-0058-presentation-launch-phase-reporting-boundary.md)      | Граница передачи этапов presentation launch request                 | presentation       |
 | [ADR-0059](records/ADR-0059-launcher-manifest-source-boundary.md)                 | Граница источника manifest URI для запуска из UI                    | presentation       |
+| [ADR-0060](records/ADR-0060-launcher-user-directories-boundary.md)                | Пользовательские каталоги конфигурации и данных                     | configuration      |

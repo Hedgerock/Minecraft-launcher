@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Провести ревизию реализованного presentation launch phase flow перед выбором следующего кандидата
+- Оценить необходимость воспроизводимого локального UI smoke-сценария
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

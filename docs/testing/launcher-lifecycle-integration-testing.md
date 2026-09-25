@@ -7,7 +7,10 @@
 Эти тесты должны подтверждать, что собранный launcher способен пройти выбранный lifecycle scenario через production
 wiring и вернуть наблюдаемый результат запуска
 
-Основной observable result для таких тестов — `LaunchResult`
+Для базового launcher lifecycle integration test основной observable result — `LaunchResult`
+
+Для integration test на application-level presentation boundary наблюдаемыми результатами являются последовательность
+`PresentationLaunchPhase` и терминальный `PresentationLaunchCompletion`
 
 ---
 
@@ -44,7 +47,7 @@ Integration test не должен превращаться в полный end-
 
 - реальная внешняя сеть
 - реальный Minecraft client
-- UI presentation
+- JavaFX controls и визуальное отображение
 - retry policy
 - recovery behavior
 - structured operation diagnostics
@@ -127,8 +130,23 @@ Then
 
 ---
 
+## Передача этапов через application boundary
+
+Отдельный integration slice проверяет передачу `PresentationLaunchPhase` через production `Bootstrap` и `PresentationLaunchBoundary`
+при выполнении реального launcher lifecycle
+
+Сценарий использует локальный HTTP server, временную launcher directory и fake Java executable
+
+Тест подтверждает порядок этапов и передачу `PresentationLaunchCompletion` после них, не подменяя orchestration внутри
+`LauncherEngine`
+
+Этот тест не проверяет JavaFX controls, длительность отображения этапов или визуальное поведение окна
+
+---
+
 ## Связанные документы
 
 - [Жизненный цикл лаунчера](../architecture/launcher/launcher-lifecycle.md)
 - [ADR-0046: Определить границу результата запуска Launcher](../decisions/records/ADR-0046-launcher-launch-result-boundary.md)
 - [Правила написания тестов](../rules/test-guidelines.md)
+- [ADR-0058: Определить границу передачи этапов presentation launch request](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)

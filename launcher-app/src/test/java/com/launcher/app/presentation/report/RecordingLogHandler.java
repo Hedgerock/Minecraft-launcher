@@ -3,7 +3,7 @@ package com.launcher.app.presentation.report;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-final class RecordingLogHandler extends Handler {
+public final class RecordingLogHandler extends Handler {
 
     private LogRecord record;
 

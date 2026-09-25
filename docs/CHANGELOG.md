@@ -13,6 +13,7 @@
 - Added integration coverage for presentation launch phase delivery through production Bootstrap
 - Documented launcher manifest source boundary decision
 - Documented launcher user directories boundary decision
+- Added platform-aware resolution of user configuration and data paths
 
 ---
 

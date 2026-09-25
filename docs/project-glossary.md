@@ -11,6 +11,18 @@
 
 Возвращает `LaunchResult` с финальным состоянием, флагом успешности и failure context для неуспешного launcher lifecycle
 
+### LauncherUserPaths
+
+Набор пользовательских путей приложения: файл конфигурации и каталог данных по умолчанию
+
+Не создает файл или каталоги и не выбирает явно заданную launcher directory
+
+### LauncherUserPathsResolver
+
+Компонент `launcher-app`, определяющий `LauncherUserPaths` для Windows, Linux и macOS
+
+Не читает manifest URI и не создает `LauncherConfiguration`
+
 ### LaunchResult
 
 Модель результата работы launcher lifecycle flow

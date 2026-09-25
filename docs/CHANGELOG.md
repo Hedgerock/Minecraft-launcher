@@ -15,6 +15,10 @@
 - Documented launcher user directories boundary decision
 - Added platform-aware resolution of user configuration and data paths
 
+### Changed
+
+- Connected local manifest URI configuration and platform-aware user directories to startup configuration
+
 ---
 
 ## v0.8.0 – Presentation Launch Boundary

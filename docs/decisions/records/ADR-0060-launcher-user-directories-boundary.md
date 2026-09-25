@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(app): resolve launcher user directories`
+> `feat(app): wire local startup configuration`
+
 ---
 
 ## Контекст

@@ -2,8 +2,7 @@
 
 ## Текущий фокус
 
-- Подключить локальный источник manifest URI и платформенные каталоги к startup configuration согласно
-  [ADR-0059](../decisions/records/ADR-0059-launcher-manifest-source-boundary.md) и [ADR-0060](../decisions/records/ADR-0060-launcher-user-directories-boundary.md)
+- Провести ревизию startup configuration flow перед выбором следующего подтвержденного сценария presentation layer
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -60,3 +59,5 @@
   [ADR-0057](../decisions/records/ADR-0057-presentation-launch-diagnostics-boundary.md) без передачи технической причины в UI
 - Реализована передача этапов принятого presentation launch request от launcher lifecycle до JavaFX UI согласно
   [ADR-0058](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)
+- Подключены локальный источник manifest URI и платформенные пользовательские каталоги к startup configuration согласно
+  [ADR-0059](../decisions/records/ADR-0059-launcher-manifest-source-boundary.md) и [ADR-0060](../decisions/records/ADR-0060-launcher-user-directories-boundary.md)

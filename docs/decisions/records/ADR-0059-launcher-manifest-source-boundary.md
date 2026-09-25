@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(app): load manifest URI from local configuration`
+> `feat(app): wire local startup configuration`
+
 ---
 
 ## Контекст

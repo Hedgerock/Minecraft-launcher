@@ -4,7 +4,8 @@
 
 ## Текущий план
 
-- Оценить необходимость воспроизводимого локального UI smoke-сценария
+- Определить минимальный источник manifest URI для запуска из UI
+  согласно [ADR-0059](../decisions/records/ADR-0059-launcher-manifest-source-boundary.md)
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 

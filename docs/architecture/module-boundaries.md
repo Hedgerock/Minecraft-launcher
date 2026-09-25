@@ -119,6 +119,15 @@
 Диагностика не изменяет `PresentationLaunchCompletion`, не препятствует освобождению активного запроса и не передает
 техническое исключение в `launcher-ui`
 
+`launcher-app` преобразует переходы launcher lifecycle в ограниченную модель `PresentationLaunchPhase` и передает этапы
+обработчику конкретного принятого launch request до терминального исхода
+
+Синхронный сбой обработчика этапа передается через локальную диагностическую границу и не изменяет launcher lifecycle или
+`PresentationLaunchCompletion`
+
+`launcher-ui` переносит обработку этапа в JavaFX Application Thread и определяет пользовательский текст без прямой подписки
+на внутренний `EventBus` или `StateChangedEvent`
+
 `launcher-ui` владеет переходами presentation state после `LaunchRequestResult` и `PresentationLaunchCompletion`
 
 Для исхода без `LaunchResult` `launcher-ui` переводит состояние в `FAILED` и отображает общее безопасное сообщение

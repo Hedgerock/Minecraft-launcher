@@ -6,6 +6,11 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(app): map launcher states to presentation launch phases`
+> `feat(app): deliver presentation launch phase updates`
+> `feat(ui): display presentation launch phases`
+
 ---
 
 ## Контекст
@@ -98,7 +103,7 @@ launcher lifecycle
 
 Presentation layer получает ограниченную информацию о текущем этапе принятого запроса без доступа к внутреннему `EventBus`
 
-`PresentationLaunchState` и `PresentationLaunchCompletion` сохраняет существующий смысл
+`PresentationLaunchState` и `PresentationLaunchCompletion` сохраняют существующий смысл
 
 `launcher-app` получает ответственность за наблюдение переходов конкретного launcher lifecycle,
 преобразование этапов и изоляцию синхронных сбоев их обработчика

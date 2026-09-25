@@ -4,10 +4,9 @@
 
 ## Текущий план
 
-- Реализовать отображение текущего этапа принятого launch request без потокового download progress
-  согласно [ADR-0058](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)
+- Провести ревизию реализованной передачи этапов presentation launch request перед выбором следующего направления
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
-- Не добавлять progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
+- Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 
 ---
 
@@ -33,8 +32,6 @@ Presentation state управляет доступностью launch action и 
 
 ## Отложено
 
-- Потоковый progress отдельных операций до появления промежуточных обновлений и отдельного решения об их передаче в
-  presentation layer
 - Recovery actions до появления подтвержденного сценария пользовательского восстановления после ошибки
 - Не добавлять потоковый progress отдельных операций, cancel behavior и retry policy без отдельных архитектурных решений
 - Retry policy до определения допустимых сценариев повторного запуска
@@ -51,12 +48,15 @@ Presentation state управляет доступностью launch action и 
 
 ### Progress presentation
 
-Минимальная граница передачи этапов presentation launch request зафиксирована в [ADR-0058](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)
+Передача и отображение текущего этапа принятого presentation launch request реализованы согласно
+[ADR-0058](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)
+
+Этап не заменяет presentation state или терминальный исход запроса
 
 Потоковый progress verification, download и native extraction остается отложенным до появления промежуточных данных и
 отдельного решения об их передаче в presentation layer
 
-`launcher-ui` не должен подписываться на внутренние события `launcher-core` напрямую
+`launcher-ui` не подписывается на внутренние события `launcher-core` напрямую
 
 ### Presentation error model
 

@@ -66,6 +66,18 @@ Application-level модель терминального исхода прин�
 
 Application boundary contract для передачи `PresentationLaunchCompletion` внешнему presentation adapter
 
+### PresentationLaunchPhase
+
+Application-level модель текущего этапа принятого launch request
+
+Формируется из переходов launcher lifecycle и не заменяет `PresentationLaunchState` или терминальный исход запроса
+
+### PresentationLaunchPhaseHandler
+
+Application boundary contract для передачи текущего этапа внешнему presentation adapter
+
+Синхронный сбой обработчика диагностируется, но не изменяет launcher lifecycle и `PresentationLaunchCompletion`
+
 ### PresentationLaunchBoundary
 
 Application boundary для приема запроса запуска из presentation layer
@@ -74,6 +86,8 @@ Application boundary для приема запроса запуска из pres
 
 Возвращает `LaunchRequestResult` немедленно, а терминальный исход принятого запроса передает как `PresentationLaunchCompletion`
 через `PresentationLaunchCompletionHandler`
+
+Для принятого запроса передает текущие этапы через `PresentationLaunchPhaseHandler` до терминального исхода
 
 Не управляет UI controls и не изменяет внутреннюю execution model `LauncherEngine`
 
@@ -87,13 +101,14 @@ Application-level контракт локальной диагностики н�
 
 Production adapter вводит контролируемую запись с источником сбоя и типом исключения без исходного сообщения
 
-Различает неожиданный сбой выполнения launcher lifecycle до получения `LaunchResult` и сбой синхронного вызова
-`PresentationLaunchCompletion`
+Различает неожиданный сбой выполнения launcher lifecycle до получения `LaunchResult`, сбой синхронного вызова
+`PresentationLaunchCompletion` и сбой синхронного вызова `PresentationLaunchPhaseHandler`
 
 ### PresentationLaunchDiagnosticSource
 
 Указывает источник неожиданного сбоя: выполнения launcher lifecycle до получения `LaunchResult` или синхронный вызов
-`PresentationLaunchCompletionHandler`
+`PresentationLaunchCompletionHandler`, синхронный вызов `PresentationLaunchPhaseHandler` или синхронный вызов
+`PresentationLaunchPhaseHandler`
 
 Не классифицирует обычный неуспешный `LaunchResult`
 
@@ -131,6 +146,14 @@ JavaFX adapter контракта `PresentationLaunchCompletionHandler`
 Переносит обработку `PresentationLaunchCompletion` в JavaFX Application Thread
 
 Не определяет presentation state или user-facing message
+
+### JavaFxPresentationLaunchPhaseHandler
+
+JavaFX adapter контракта `PresentationLaunchPhaseHandler`
+
+Переносит обработку `PresentationLaunchPhase` в JavaFX Application Thread
+
+Пользовательский текст этапа определяется в `launcher-ui`
 
 ### LauncherState
 

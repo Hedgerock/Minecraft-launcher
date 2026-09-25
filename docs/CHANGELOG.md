@@ -7,6 +7,9 @@
 - Added local diagnostics for unexpected presentation launch execution and completion handler failures
 - Added controlled logging of diagnostic source and exception type without raw exception messages
 - Documented presentation launch phase reporting boundary decision
+- Added application-level mapping and per-request delivery of presentation launch phases
+- Added JavaFX display of the current presentation launch phase
+- Added diagnostics for synchronous presentation phase handler failures without changing launch completion
 
 ---
 

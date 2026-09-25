@@ -2,8 +2,7 @@
 
 ## Текущий фокус
 
-- Реализовать передачу этапов принятого presentation launch request
-  согласно [ADR-0058](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)
+- Провести ревизию реализованного presentation launch phase flow перед выбором следующего кандидата
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -58,3 +57,5 @@
   в [ретроспективе presentation launch boundary](../retrospective/2026-09-presentation-launch-boundary.md)
 - Реализована локальная диагностика неожиданных сбоев принятого presentation launch request согласно
   [ADR-0057](../decisions/records/ADR-0057-presentation-launch-diagnostics-boundary.md) без передачи технической причины в UI
+- Реализована передача этапов принятого presentation launch request от launcher lifecycle до JavaFX UI согласно
+  [ADR-0058](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)

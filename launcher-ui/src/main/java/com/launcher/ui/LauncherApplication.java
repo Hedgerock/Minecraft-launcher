@@ -5,6 +5,7 @@ import com.launcher.app.configuration.LauncherConfigurationResolver;
 import com.launcher.app.presentation.LaunchRequestResult;
 import com.launcher.app.presentation.PresentationLaunchBoundary;
 import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.ui.phase.JavaFxPresentationLaunchPhaseHandler;
 import com.launcher.ui.result.JavaFxPresentationLaunchCompletionHandler;
 import com.launcher.ui.state.PresentationLaunchState;
 import com.launcher.ui.state.PresentationLaunchStateMachine;
@@ -32,11 +33,16 @@ public class LauncherApplication extends Application {
         Label titleLabel = new Label(APPLICATION_NAME);
         Button launchButton = new Button("Launch");
         Label launchStatusLabel = new Label();
+        Label phaseStatusLabel = new Label();
 
-        presentationLaunchBoundary = createPresentationLaunchBoundary(launchButton, launchStatusLabel);
+        presentationLaunchBoundary = createPresentationLaunchBoundary(launchButton, launchStatusLabel, phaseStatusLabel);
 
         launchButton.setOnAction(
-                event -> requestLaunch(launchButton, launchStatusLabel)
+                event -> requestLaunch(
+                        launchButton,
+                        launchStatusLabel,
+                        phaseStatusLabel
+                )
         );
 
         renderLaunchState(
@@ -48,6 +54,7 @@ public class LauncherApplication extends Application {
                 CONTENT_SPACING,
                 titleLabel,
                 launchStatusLabel,
+                phaseStatusLabel,
                 launchButton
         );
 
@@ -74,7 +81,8 @@ public class LauncherApplication extends Application {
 
     private PresentationLaunchBoundary createPresentationLaunchBoundary(
             Button launchButton,
-            Label launchStatusLabel
+            Label launchStatusLabel,
+            Label phaseStatusLabel
     ) {
         String[] args = getParameters()
                 .getRaw()
@@ -86,26 +94,47 @@ public class LauncherApplication extends Application {
         JavaFxPresentationLaunchCompletionHandler resultHandler = new JavaFxPresentationLaunchCompletionHandler(
                 result -> {
                     presentationLaunchStateMachine.onLaunchCompletion(result);
+                    phaseStatusLabel.setText("");
                     renderLaunchState(launchButton, launchStatusLabel);
+                }
+        );
+
+        JavaFxPresentationLaunchPhaseHandler phaseHandler = new JavaFxPresentationLaunchPhaseHandler(
+                phase -> {
+                    PresentationLaunchState state = presentationLaunchStateMachine.currentState();
+
+                    if (state == PresentationLaunchState.LAUNCHING) {
+                        phaseStatusLabel.setText(
+                                PresentationLaunchPhaseText.forPhase(phase)
+                        );
+                    }
                 }
         );
 
         Bootstrap bootstrap = new Bootstrap(configuration);
 
         return bootstrap.createPresentationLaunchBoundary(
-                resultHandler
+                resultHandler,
+                phaseHandler
         );
     }
 
     private void requestLaunch(
             Button launchButton,
-            Label launchStatusLabel
+            Label launchStatusLabel,
+            Label phaseStatusLabel
     ) {
         LaunchRequestResult requestResult =
                 presentationLaunchBoundary.requestLaunch();
 
         presentationLaunchStateMachine.onLaunchRequest(requestResult);
+
+        if (requestResult == LaunchRequestResult.ACCEPTED) {
+            phaseStatusLabel.setText("");
+        }
+
         renderLaunchState(launchButton, launchStatusLabel);
+
     }
 
     private void renderLaunchState(

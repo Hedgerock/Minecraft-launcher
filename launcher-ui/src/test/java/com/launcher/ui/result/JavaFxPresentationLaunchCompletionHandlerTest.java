@@ -3,6 +3,7 @@ package com.launcher.ui.result;
 import com.launcher.app.presentation.completion.PresentationLaunchCompletion;
 import com.launcher.core.LaunchResult;
 import com.launcher.core.state.LauncherState;
+import com.launcher.ui.support.RecordingUiThreadExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

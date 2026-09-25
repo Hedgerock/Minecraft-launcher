@@ -2,6 +2,7 @@ package com.launcher.ui.result;
 
 import com.launcher.app.presentation.completion.PresentationLaunchCompletion;
 import com.launcher.app.presentation.completion.PresentationLaunchCompletionHandler;
+import com.launcher.ui.UiThreadExecutor;
 import javafx.application.Platform;
 
 import java.util.Objects;

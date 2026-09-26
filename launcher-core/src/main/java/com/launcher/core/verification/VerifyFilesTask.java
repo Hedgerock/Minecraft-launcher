@@ -8,7 +8,7 @@ import com.launcher.core.task.TaskResult;
 import com.launcher.core.verification.model.VerificationPlan;
 import com.launcher.model.manifest.Manifest;
 
-public class VerifyFilesTask implements LauncherTask {
+public final class VerifyFilesTask implements LauncherTask {
 
     private final VerificationService verificationService;
 

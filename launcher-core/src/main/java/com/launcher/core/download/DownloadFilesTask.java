@@ -14,7 +14,7 @@ import com.launcher.model.manifest.ResourceEntry;
 
 import java.util.List;
 
-public class DownloadFilesTask implements LauncherTask {
+public final class DownloadFilesTask implements LauncherTask {
     private final DownloadService downloadService;
     private final EventBus eventBus;
 

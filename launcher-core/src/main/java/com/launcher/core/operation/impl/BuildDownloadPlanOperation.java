@@ -11,7 +11,7 @@ import com.launcher.core.task.LauncherTask;
 
 import java.util.List;
 
-public class BuildDownloadPlanOperation extends LaunchOperation {
+public final class BuildDownloadPlanOperation extends LaunchOperation {
     private final DownloadPlanBuilder downloadPlanBuilder;
 
     public BuildDownloadPlanOperation(

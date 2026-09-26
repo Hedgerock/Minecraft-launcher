@@ -6,7 +6,7 @@ import com.launcher.core.state.LauncherState;
 import com.launcher.core.task.LauncherTask;
 import com.launcher.core.task.TaskResult;
 
-public class LaunchGameTask implements LauncherTask {
+public final class LaunchGameTask implements LauncherTask {
     private final GameService gameService;
 
     public LaunchGameTask(GameService gameService) {

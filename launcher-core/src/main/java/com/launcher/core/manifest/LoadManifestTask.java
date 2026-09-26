@@ -9,7 +9,7 @@ import com.launcher.core.result.Result;
 import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
 
-public class LoadManifestTask implements LauncherTask {
+public final class LoadManifestTask implements LauncherTask {
 
     private final ManifestService manifestService;
 

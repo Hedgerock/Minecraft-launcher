@@ -11,7 +11,7 @@ import com.launcher.core.task.LauncherTask;
 
 import java.util.List;
 
-public class PrepareDirectoriesOperation extends LaunchOperation {
+public final class PrepareDirectoriesOperation extends LaunchOperation {
 
     private final DirectoryService directoryService;
 

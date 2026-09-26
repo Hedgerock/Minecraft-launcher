@@ -11,7 +11,7 @@ import com.launcher.core.task.LauncherTask;
 
 import java.util.List;
 
-public class DownloadFilesOperation extends LaunchOperation {
+public final class DownloadFilesOperation extends LaunchOperation {
     private final DownloadService downloadService;
 
     public DownloadFilesOperation(

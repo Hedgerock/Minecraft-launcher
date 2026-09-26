@@ -8,7 +8,7 @@ import com.launcher.core.task.LauncherTask;
 import com.launcher.core.task.TaskResult;
 import com.launcher.core.verification.model.VerificationPlan;
 
-public class BuildDownloadPlanTask implements LauncherTask {
+public final class BuildDownloadPlanTask implements LauncherTask {
     private final DownloadPlanBuilder builder;
 
     public BuildDownloadPlanTask(DownloadPlanBuilder builder) {

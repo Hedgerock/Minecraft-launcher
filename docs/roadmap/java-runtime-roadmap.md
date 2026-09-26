@@ -35,7 +35,7 @@ Java runtime compatibility flow доведен до production-ready состо�
 
 ---
 
-## Milestone — Java executable runtime flow
+## Milestone `v0.5.0-java-executable-runtime-flow` — Java executable runtime flow
 
 Java executable runtime flow доведен до минимального production-ready состояния
 

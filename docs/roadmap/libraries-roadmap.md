@@ -9,7 +9,7 @@
 
 ---
 
-## Milestone v0.7.0 – Manifest Runtime Flow
+## Milestone `v0.7.0-manifest-runtime-flow` — Manifest runtime flow
 
 Manifest resources и launch metadata flow расширены без изменения последовательности launcher operations
 
@@ -28,7 +28,7 @@ Manifest resources и launch metadata flow расширены без измен�
 
 ---
 
-## Milestone v0.4.0 — Library Native Flow
+## Milestone `v0.4.0-library-native-flow` — Library native flow
 
 Library/native flow доведен до состояния, где manifest metadata проходит путь от JSON-контракта
 до runtime selection, verification/download lifecycle, native extraction и построения launch command

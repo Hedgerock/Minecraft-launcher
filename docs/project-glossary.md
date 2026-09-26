@@ -114,12 +114,12 @@ Application-level контракт локальной диагностики н�
 Production adapter вводит контролируемую запись с источником сбоя и типом исключения без исходного сообщения
 
 Различает неожиданный сбой выполнения launcher lifecycle до получения `LaunchResult`, сбой синхронного вызова
-`PresentationLaunchCompletion` и сбой синхронного вызова `PresentationLaunchPhaseHandler`
+`PresentationLaunchCompletionHandler` и сбой синхронного вызова `PresentationLaunchPhaseHandler`
 
 ### PresentationLaunchDiagnosticSource
 
 Указывает источник неожиданного сбоя: выполнения launcher lifecycle до получения `LaunchResult` или синхронный вызов
-`PresentationLaunchCompletionHandler`, синхронный вызов `PresentationLaunchPhaseHandler` или синхронный вызов
+`PresentationLaunchCompletionHandler`, синхронный вызов `PresentationLaunchCompletionHandler` или синхронный вызов
 `PresentationLaunchPhaseHandler`
 
 Не классифицирует обычный неуспешный `LaunchResult`

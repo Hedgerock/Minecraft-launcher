@@ -132,8 +132,11 @@
 
 `launcher-ui` отдельно владеет `PresentationStartupState`, описывающим подготовку launch boundary до приема launch request
 
-Ожидаемая ошибка чтения или проверки локального manifest URI отображается безопасным сообщением и не преобразуется в
-`LaunchResult`, `PresentationLaunchCompletion` или `PresentationLaunchState.FAILED`
+`launcher-app` проверяет manifest URI из локальной конфигурации и явного аргумента по единым требованиям до создания
+`LauncherConfiguration`
+
+Ожидаемая ошибка чтения локальной конфигурации или проверки manifest URI отображается безопасным сообщением и не преобразуется
+в `LaunchResult`, `PresentationLaunchCompletion` или `PresentationLaunchState.FAILED`
 
 Launch action доступен только после успешной startup-подготовки и при доступности запроса согласно `PresentationLaunchStateMachine`
 

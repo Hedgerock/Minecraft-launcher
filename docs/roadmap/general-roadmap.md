@@ -2,8 +2,7 @@
 
 ## Текущий фокус
 
-- Реализовать единую проверку manifest URI для локальной конфигурации и явного аргумента
-  согласно [ADR-0062](../decisions/records/ADR-0062-startup-manifest-uri-validation-boundary.md)
+- Провести ревизию startup configuration flow после унификации проверки manifest URI
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -64,3 +63,5 @@
   [ADR-0059](../decisions/records/ADR-0059-launcher-manifest-source-boundary.md) и [ADR-0060](../decisions/records/ADR-0060-launcher-user-directories-boundary.md)
 - JavaFX startup отображает безопасную ошибку локальной конфигурации и не допускает launch request до успешной подготовки
   согласно [ADR-0061](../decisions/records/ADR-0061-presentation-startup-configuration-failure-boundary.md)
+- Локальная конфигурация и явный аргумент запуска проходят единую проверку manifest URI
+  согласно [ADR-0062](../decisions/records/ADR-0062-startup-manifest-uri-validation-boundary.md)

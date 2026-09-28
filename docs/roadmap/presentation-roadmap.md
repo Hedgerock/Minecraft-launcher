@@ -4,8 +4,7 @@
 
 ## Текущий план
 
-- Реализовать единую проверку manifest URI для локальной конфигурации и явного аргумента
-  согласно [ADR-0062](../decisions/records/ADR-0062-startup-manifest-uri-validation-boundary.md)
+- Провести ревизию startup configuration flow после унификации проверки manifest URI
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 

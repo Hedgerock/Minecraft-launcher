@@ -6,6 +6,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `feat(app): validate startup manifest URI across sources`
+
 ---
 
 ## Контекст

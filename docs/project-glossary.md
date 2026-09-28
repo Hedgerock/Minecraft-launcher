@@ -23,6 +23,9 @@
 
 Не читает manifest URI и не создает `LauncherConfiguration`
 
+При невозможности определить необходимые пользовательские пути после применения платформенных правил завершает разрешение
+`LauncherUserPathsResolutionException`
+
 ### LaunchResult
 
 Модель результата работы launcher lifecycle flow
@@ -134,8 +137,8 @@ Production adapter вводит контролируемую запись с и�
 
 `AVAILABLE` устанавливается после успешного разрешения конфигурации и создания presentation launch boundary
 
-`CONFIGURATION_FAILED` означает ожидаемую ошибку чтения локальной конфигурации или проверки manifest URI из локального файла
-либо явного аргумента
+`CONFIGURATION_FAILED` означает ожидаемую ошибку чтения локальной конфигурации, проверки manifest URI или определения
+пользовательских путей по умолчанию
 
 Launch action доступен только при `AVAILABLE` и доступности запроса по `PresentationLaunchStateMachine`
 

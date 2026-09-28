@@ -6,6 +6,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `feat(startup): handle user paths resolution failure`
+
 ---
 
 ## Контекст

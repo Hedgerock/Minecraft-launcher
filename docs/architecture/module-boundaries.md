@@ -135,10 +135,15 @@
 `launcher-app` проверяет manifest URI из локальной конфигурации и явного аргумента по единым требованиям до создания
 `LauncherConfiguration`
 
-Ожидаемая ошибка чтения локальной конфигурации или проверки manifest URI отображается безопасным сообщением и не преобразуется
-в `LaunchResult`, `PresentationLaunchCompletion` или `PresentationLaunchState.FAILED`
+Ожидаемая ошибка чтения локальной конфигурации, проверки manifest URI или определения пользовательских путей
+отображается безопасным сообщением и не преобразуется в `LaunchResult`, `PresentationLaunchCompletion` или `PresentationLaunchState.FAILED`
 
 Launch action доступен только после успешной startup-подготовки и при доступности запроса согласно `PresentationLaunchStateMachine`
+
+`launcher-app` отдельно классифицирует ожидаемый отказ определения пользовательских путей по умолчанию как
+`LauncherUserPathsResolutionException`
+
+При явно заданном manifest URI его проверка предшествует определению пользовательских путей по умолчанию
 
 Для исхода принятого launch request без `LaunchResult` `launcher-ui` переводит состояние в `FAILED` и отображает общее
 безопасное сообщение

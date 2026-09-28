@@ -4,8 +4,7 @@
 
 ## Текущий план
 
-- Отображать ожидаемый отказ определения пользовательских путей через существующее `CONFIGURATION_FAILED`
-  согласно [ADR-0063](../decisions/records/ADR-0063-startup-user-paths-failure-boundary.md)
+- Проверить, какие ошибки startup еще возникают до показа JavaFX window и требуют отдельного решения
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 

@@ -7,6 +7,7 @@ import com.launcher.app.presentation.PresentationLaunchBoundary;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.ui.phase.JavaFxPresentationLaunchPhaseHandler;
 import com.launcher.ui.result.JavaFxPresentationLaunchCompletionHandler;
+import com.launcher.ui.startup.PresentationStartupState;
 import com.launcher.ui.state.PresentationLaunchState;
 import com.launcher.ui.state.PresentationLaunchStateMachine;
 import javafx.application.Application;
@@ -26,6 +27,8 @@ public class LauncherApplication extends Application {
     private final PresentationLaunchStateMachine presentationLaunchStateMachine =
             new PresentationLaunchStateMachine();
 
+    private PresentationStartupState startupState = PresentationStartupState.IDLE;
+
     private PresentationLaunchBoundary presentationLaunchBoundary;
 
     @Override
@@ -34,20 +37,19 @@ public class LauncherApplication extends Application {
         Button launchButton = new Button("Launch");
         Label launchStatusLabel = new Label();
         Label phaseStatusLabel = new Label();
+        Label startupStatusLabel = new Label();
 
-        presentationLaunchBoundary = createPresentationLaunchBoundary(launchButton, launchStatusLabel, phaseStatusLabel);
-
-        launchButton.setOnAction(
-                event -> requestLaunch(
-                        launchButton,
-                        launchStatusLabel,
-                        phaseStatusLabel
-                )
+        initializePresentationLaunchBoundary(
+                launchButton,
+                launchStatusLabel,
+                phaseStatusLabel,
+                startupStatusLabel
         );
 
         renderLaunchState(
                 launchButton,
-                launchStatusLabel
+                launchStatusLabel,
+                startupStatusLabel
         );
 
         VBox content = new VBox(
@@ -55,6 +57,7 @@ public class LauncherApplication extends Application {
                 titleLabel,
                 launchStatusLabel,
                 phaseStatusLabel,
+                startupStatusLabel,
                 launchButton
         );
 
@@ -79,23 +82,50 @@ public class LauncherApplication extends Application {
         }
     }
 
-    private PresentationLaunchBoundary createPresentationLaunchBoundary(
+    private void initializePresentationLaunchBoundary(
             Button launchButton,
             Label launchStatusLabel,
-            Label phaseStatusLabel
+            Label phaseStatusLabel,
+            Label startupStatusLabel
     ) {
-        String[] args = getParameters()
-                .getRaw()
-                .toArray(String[]::new);
+        String[] args = getParameters().getRaw().toArray(String[]::new);
 
-        LauncherConfiguration configuration = new LauncherConfigurationResolver()
-                .resolve(args);
+        PresentationStartupInitializer initializer = new PresentationStartupInitializer();
 
+        startupState = initializer.initialize(
+                () -> new LauncherConfigurationResolver().resolve(args),
+                configuration ->
+                        presentationLaunchBoundary = createPresentationLaunchBoundary(
+                                configuration,
+                                launchButton,
+                                launchStatusLabel,
+                                phaseStatusLabel,
+                                startupStatusLabel
+                        )
+        );
+
+        if (startupState == PresentationStartupState.AVAILABLE) {
+            launchButton.setOnAction(event -> requestLaunch(
+                    launchButton,
+                    launchStatusLabel,
+                    phaseStatusLabel,
+                    startupStatusLabel
+            ));
+        }
+    }
+
+    private PresentationLaunchBoundary createPresentationLaunchBoundary(
+            LauncherConfiguration configuration,
+            Button launchButton,
+            Label launchStatusLabel,
+            Label phaseStatusLabel,
+            Label startupStatusLabel
+    ) {
         JavaFxPresentationLaunchCompletionHandler resultHandler = new JavaFxPresentationLaunchCompletionHandler(
                 result -> {
                     presentationLaunchStateMachine.onLaunchCompletion(result);
                     phaseStatusLabel.setText("");
-                    renderLaunchState(launchButton, launchStatusLabel);
+                    renderLaunchState(launchButton, launchStatusLabel, startupStatusLabel);
                 }
         );
 
@@ -122,7 +152,8 @@ public class LauncherApplication extends Application {
     private void requestLaunch(
             Button launchButton,
             Label launchStatusLabel,
-            Label phaseStatusLabel
+            Label phaseStatusLabel,
+            Label startupStatusLabel
     ) {
         LaunchRequestResult requestResult =
                 presentationLaunchBoundary.requestLaunch();
@@ -133,26 +164,37 @@ public class LauncherApplication extends Application {
             phaseStatusLabel.setText("");
         }
 
-        renderLaunchState(launchButton, launchStatusLabel);
+        renderLaunchState(launchButton, launchStatusLabel, startupStatusLabel);
 
     }
 
     private void renderLaunchState(
             Button launchButton,
-            Label launchStatusLabel
+            Label launchStatusLabel,
+            Label startupStatusLabel
     ) {
 
         PresentationLaunchState state = presentationLaunchStateMachine
                 .currentState();
 
-        launchButton.setDisable(
-                !presentationLaunchStateMachine.isLaunchAvailable()
+        boolean isAvailable = startupState.allowsLaunch(
+                presentationLaunchStateMachine.isLaunchAvailable()
         );
 
-        launchStatusLabel.setText(
-                PresentationLaunchStatusText.forState(
-                        state,
-                        presentationLaunchStateMachine.launchFailure()
+        launchButton.setDisable(!isAvailable);
+
+        if (startupState == PresentationStartupState.AVAILABLE) {
+            launchStatusLabel.setText(
+                    PresentationLaunchStatusText.forState(
+                            state,
+                            presentationLaunchStateMachine.launchFailure()
+                    )
+            );
+        }
+
+        startupStatusLabel.setText(
+                PresentationStartupStatusText.forState(
+                        startupState
                 )
         );
     }

@@ -38,7 +38,8 @@ class LauncherUiBoundaryTest {
             "import com.launcher.app.presentation.completion.PresentationLaunchCompletion;",
             "import com.launcher.app.presentation.completion.PresentationLaunchCompletionHandler;",
             "import com.launcher.app.presentation.phase.PresentationLaunchPhase;",
-            "import com.launcher.app.presentation.phase.PresentationLaunchPhaseHandler;"
+            "import com.launcher.app.presentation.phase.PresentationLaunchPhaseHandler;",
+            "import com.launcher.app.configuration.ManifestUriConfigurationException;"
     );
 
     @Test

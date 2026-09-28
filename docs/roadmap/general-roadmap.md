@@ -2,7 +2,8 @@
 
 ## Текущий фокус
 
-- Провести ревизию startup configuration flow перед выбором следующего подтвержденного сценария presentation layer
+- Реализовать обработку ошибки локальной startup-конфигурации в JavaFX
+  согласно [ADR-0061](../decisions/records/ADR-0061-presentation-startup-configuration-failure-boundary.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

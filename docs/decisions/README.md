@@ -73,3 +73,4 @@
 | [ADR-0059](records/ADR-0059-launcher-manifest-source-boundary.md)                   | Граница источника manifest URI для запуска из UI                   | presentation       |
 | [ADR-0060](records/ADR-0060-launcher-user-directories-boundary.md)                  | Пользовательские каталоги конфигурации и данных                    | configuration      |
 | [ADR-0061](records/ADR-0061-presentation-startup-configuration-failure-boundary.md) | Граница ошибки startup конфигурации в presentation layer           | presentation       |
+| [ADR-0062](records/ADR-0062-startup-manifest-uri-validation-boundary.md)            | Граница проверки Manifest URI при startup                          | configuration      |

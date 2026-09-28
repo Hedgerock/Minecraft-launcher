@@ -2,7 +2,8 @@
 
 ## Текущий фокус
 
-- Провести ревизию presentation startup flow после реализации обработки ошибки локальной конфигурации
+- Реализовать единую проверку manifest URI для локальной конфигурации и явного аргумента
+  согласно [ADR-0062](../decisions/records/ADR-0062-startup-manifest-uri-validation-boundary.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

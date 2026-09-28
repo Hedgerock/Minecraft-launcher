@@ -16,6 +16,7 @@
 - Added platform-aware resolution of user configuration and data paths
 - Documented presentation startup configuration failure boundary decision
 - Added presentation startup state and safe configuration failure message
+- Documented unified startup manifest URI validation boundary decision
 
 ### Changed
 

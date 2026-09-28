@@ -4,7 +4,8 @@
 
 ## Текущий план
 
-- Провести ревизию presentation startup flow после реализации обработки ошибки локальной конфигурации
+- Реализовать единую проверку manifest URI для локальной конфигурации и явного аргумента
+  согласно [ADR-0062](../decisions/records/ADR-0062-startup-manifest-uri-validation-boundary.md)
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 

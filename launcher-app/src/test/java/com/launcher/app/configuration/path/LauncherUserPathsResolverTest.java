@@ -4,11 +4,13 @@ import com.launcher.model.runtime.OperatingSystem;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LauncherUserPathsResolverTest {
@@ -31,10 +33,68 @@ class LauncherUserPathsResolverTest {
     }
 
     @Test
+    void should_reject_non_absolute_path() {
+        //when & then
+        LauncherUserPathsResolutionException exception = assertThrows(
+                LauncherUserPathsResolutionException.class,
+                () -> LauncherUserPathsResolver.resolveSystemUserHome("relative-path")
+        );
+
+        assertEquals(
+                "userHome must be absolute",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void should_reject_invalid_path_value() {
+        //when & then
+        LauncherUserPathsResolutionException exception = assertThrows(
+                LauncherUserPathsResolutionException.class,
+                () -> LauncherUserPathsResolver.resolveSystemUserHome("invalid\0path")
+        );
+
+        assertEquals(
+                "userHome is invalid",
+                exception.getMessage()
+        );
+
+        assertInstanceOf(InvalidPathException.class, exception.getCause());
+    }
+
+    @Test
+    void should_reject_missing_user_home() {
+        //when & then
+        LauncherUserPathsResolutionException exception = assertThrows(
+                LauncherUserPathsResolutionException.class,
+                () -> LauncherUserPathsResolver.resolveSystemUserHome(null)
+        );
+
+        assertEquals(
+                "userHome is unavailable",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void should_reject_blank_user_home() {
+        //when & then
+        LauncherUserPathsResolutionException exception = assertThrows(
+                LauncherUserPathsResolutionException.class,
+                () -> LauncherUserPathsResolver.resolveSystemUserHome(" ")
+        );
+
+        assertEquals(
+                "userHome is unavailable",
+                exception.getMessage()
+        );
+    }
+
+    @Test
     void should_reject_non_absolute_user_home_path() {
         //when & then
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        LauncherUserPathsResolutionException exception = assertThrows(
+                LauncherUserPathsResolutionException.class,
                 () -> new LauncherUserPathsResolver(
                         Map.of(),
                         Path.of("relative")
@@ -235,8 +295,8 @@ class LauncherUserPathsResolverTest {
         );
 
         //when & then
-        IllegalStateException exception = assertThrows(
-                IllegalStateException.class,
+        LauncherUserPathsResolutionException exception = assertThrows(
+                LauncherUserPathsResolutionException.class,
                 () -> resolver.resolve(OperatingSystem.WINDOWS)
         );
 
@@ -244,6 +304,30 @@ class LauncherUserPathsResolverTest {
                 "LOCALAPPDATA must be absolute",
                 exception.getMessage()
         );
+    }
+
+    @Test
+    void should_reject_invalid_path_app_data_property_for_windows(@TempDir Path tempDir) {
+        //given
+        LauncherUserPathsResolver resolver = new LauncherUserPathsResolver(
+                Map.of(
+                        "LOCALAPPDATA", "invalid\0path"
+                ),
+                tempDir
+        );
+
+        //when & then
+        LauncherUserPathsResolutionException exception = assertThrows(
+                LauncherUserPathsResolutionException.class,
+                () -> resolver.resolve(OperatingSystem.WINDOWS)
+        );
+
+        assertEquals(
+                "LOCALAPPDATA is invalid",
+                exception.getMessage()
+        );
+
+        assertInstanceOf(InvalidPathException.class, exception.getCause());
     }
 
     @Test
@@ -257,8 +341,8 @@ class LauncherUserPathsResolverTest {
         );
 
         //when & then
-        IllegalStateException exception = assertThrows(
-                IllegalStateException.class,
+        LauncherUserPathsResolutionException exception = assertThrows(
+                LauncherUserPathsResolutionException.class,
                 () -> resolver.resolve(OperatingSystem.WINDOWS)
         );
 
@@ -280,8 +364,8 @@ class LauncherUserPathsResolverTest {
         );
 
         //when & then
-        IllegalStateException exception = assertThrows(
-                IllegalStateException.class,
+        LauncherUserPathsResolutionException exception = assertThrows(
+                LauncherUserPathsResolutionException.class,
                 () -> resolver.resolve(OperatingSystem.WINDOWS)
         );
 

@@ -2,6 +2,7 @@ package com.launcher.ui;
 
 import com.launcher.app.configuration.LauncherConfigurationResolver;
 import com.launcher.app.configuration.ManifestUriConfigurationException;
+import com.launcher.app.configuration.path.LauncherUserPathsResolutionException;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.ui.startup.PresentationStartupState;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,31 @@ class PresentationStartupInitializerTest {
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void should_propagate_exception_when_configuration_resolver_failed() {
+        //given
+        RuntimeException configurationFailure = new RuntimeException(
+                "Configuration resolver failed"
+        );
+
+        Supplier<LauncherConfiguration> configurationResolver = () -> {
+            throw configurationFailure;
+        };
+
+        Consumer<LauncherConfiguration> boundaryInitializer = config -> {};
+
+        //when & then
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> initializer.initialize(
+                        configurationResolver,
+                        boundaryInitializer
+                )
+        );
+
+        assertSame(configurationFailure, exception);
+    }
 
     @Test
     void should_propagate_exception_when_boundary_initializer_failed() {
@@ -89,7 +115,26 @@ class PresentationStartupInitializerTest {
     }
 
     @Test
-    void should_return_configuration_failed_for_failing_configuration_resolver() {
+    void should_return_configuration_failed_when_user_paths_resolution_fails() {
+        //given
+        AtomicBoolean boundaryInitialized = new AtomicBoolean();
+
+        //when
+        PresentationStartupState startupState = initializer
+                .initialize(
+                        () -> {
+                            throw new LauncherUserPathsResolutionException("test failure");
+                        },
+                        configuration -> boundaryInitialized.set(true)
+                );
+
+        //then
+        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, startupState);
+        assertFalse(boundaryInitialized.get());
+    }
+
+    @Test
+    void should_return_configuration_failed_for_failing_configuration_resolver_manifest_uri() {
         //given
         AtomicBoolean boundaryInitialized = new AtomicBoolean();
 

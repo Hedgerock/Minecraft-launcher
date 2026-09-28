@@ -20,6 +20,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class LauncherConfigurationResolverTest {
 
     @Test
+    void should_reject_explicit_manifest_uri_before_resolving_user_paths() {
+        //given
+        Supplier<LauncherUserPaths> failingSupplier = () -> {
+            throw new AssertionError("Something went wrong");
+        };
+
+        String[] args = {"ftp://example.org/manifest.json"};
+        LauncherConfigurationResolver resolver = new LauncherConfigurationResolver(failingSupplier);
+
+        //when & then
+        assertThrows(
+                ManifestUriConfigurationException.class,
+                () -> resolver.resolve(args)
+        );
+    }
+
+    @Test
     void should_throw_when_uri_argument_is_not_valid(@TempDir Path tempDir) throws IOException {
         //given
         LauncherUserPaths userPaths = new LauncherUserPaths(

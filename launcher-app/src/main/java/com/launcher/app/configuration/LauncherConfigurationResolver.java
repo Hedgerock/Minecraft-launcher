@@ -28,12 +28,16 @@ public final class LauncherConfigurationResolver {
         ManifestUriParser parser = new DefaultManifestUriParser();
         PropertiesManifestUriSource manifestUriSource = new PropertiesManifestUriSource(parser);
 
+        URI explicitManifestUri = args.length > 0
+                ? parser.parse(args[0])
+                : null;
+
         LauncherUserPaths paths = args.length < 2
                 ? launcherUserPathsSupplier.get()
                 : null;
 
-        URI manifestUri = args.length > 0
-                ? parser.parse(args[0])
+        URI manifestUri = explicitManifestUri != null
+                ? explicitManifestUri
                 : manifestUriSource.load(paths.configurationFile());
 
         Path launcherDirectory = args.length > 1

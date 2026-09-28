@@ -17,7 +17,7 @@ public final class LauncherUserPathsResolver {
     public LauncherUserPathsResolver() {
         this(
                 System.getenv(),
-                Path.of(System.getProperty("user.home"))
+                resolveSystemUserHome(System.getProperty("user.home"))
         );
     }
 
@@ -31,8 +31,27 @@ public final class LauncherUserPathsResolver {
         this.userHome = Objects.requireNonNull(userHome, "userHome");
 
         if (!userHome.isAbsolute()) {
-            throw new IllegalArgumentException("userHome must be absolute");
+            throw new LauncherUserPathsResolutionException("userHome must be absolute");
         }
+    }
+
+    static Path resolveSystemUserHome(String value) {
+        if (value == null || value.isBlank()) {
+            throw new LauncherUserPathsResolutionException("userHome is unavailable");
+        }
+
+        Path path;
+        try {
+            path = Path.of(value);
+        } catch (InvalidPathException e) {
+            throw new LauncherUserPathsResolutionException("userHome is invalid", e);
+        }
+
+        if (!path.isAbsolute()) {
+            throw new LauncherUserPathsResolutionException("userHome must be absolute");
+        }
+
+        return path;
     }
 
     public LauncherUserPaths resolve(OperatingSystem operatingSystem) {
@@ -81,19 +100,19 @@ public final class LauncherUserPathsResolver {
         String value = environment.get("LOCALAPPDATA");
 
         if (value == null || value.isBlank()) {
-            throw new IllegalStateException("LOCALAPPDATA is unavailable");
+            throw new LauncherUserPathsResolutionException("LOCALAPPDATA is unavailable");
         }
 
         try {
             Path path = Path.of(value);
 
             if (!path.isAbsolute()) {
-                throw new IllegalStateException("LOCALAPPDATA must be absolute");
+                throw new LauncherUserPathsResolutionException("LOCALAPPDATA must be absolute");
             }
 
             return path;
         } catch (InvalidPathException e) {
-            throw new IllegalStateException(
+            throw new LauncherUserPathsResolutionException(
                     "LOCALAPPDATA is invalid",
                     e
             );

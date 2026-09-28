@@ -2,8 +2,7 @@
 
 ## Текущий фокус
 
-- Реализовать обработку ошибки локальной startup-конфигурации в JavaFX
-  согласно [ADR-0061](../decisions/records/ADR-0061-presentation-startup-configuration-failure-boundary.md)
+- Провести ревизию presentation startup flow после реализации обработки ошибки локальной конфигурации
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -62,3 +61,5 @@
   [ADR-0058](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)
 - Подключены локальный источник manifest URI и платформенные пользовательские каталоги к startup configuration согласно
   [ADR-0059](../decisions/records/ADR-0059-launcher-manifest-source-boundary.md) и [ADR-0060](../decisions/records/ADR-0060-launcher-user-directories-boundary.md)
+- JavaFX startup отображает безопасную ошибку локальной конфигурации и не допускает launch request до успешной подготовки
+  согласно [ADR-0061](../decisions/records/ADR-0061-presentation-startup-configuration-failure-boundary.md)

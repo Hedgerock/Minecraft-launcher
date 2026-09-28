@@ -130,7 +130,15 @@
 
 `launcher-ui` владеет переходами presentation state после `LaunchRequestResult` и `PresentationLaunchCompletion`
 
-Для исхода без `LaunchResult` `launcher-ui` переводит состояние в `FAILED` и отображает общее безопасное сообщение
+`launcher-ui` отдельно владеет `PresentationStartupState`, описывающим подготовку launch boundary до приема launch request
+
+Ожидаемая ошибка чтения или проверки локального manifest URI отображается безопасным сообщением и не преобразуется в
+`LaunchResult`, `PresentationLaunchCompletion` или `PresentationLaunchState.FAILED`
+
+Launch action доступен только после успешной startup-подготовки и при доступности запроса согласно `PresentationLaunchStateMachine`
+
+Для исхода принятого launch request без `LaunchResult` `launcher-ui` переводит состояние в `FAILED` и отображает общее
+безопасное сообщение
 
 `launcher-core` не зависит от `PresentationLaunchCompletion` и не управляет доставкой результата в presentation layer
 

@@ -4,8 +4,7 @@
 
 ## Текущий план
 
-- Реализовать минимальную startup-модель и отображение ошибки локальной конфигурации
-  согласно [ADR-0061](../decisions/records/ADR-0061-presentation-startup-configuration-failure-boundary.md)
+- Провести ревизию presentation startup flow после реализации обработки ошибки локальной конфигурации
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 

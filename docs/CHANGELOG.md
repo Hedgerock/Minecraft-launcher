@@ -15,10 +15,12 @@
 - Documented launcher user directories boundary decision
 - Added platform-aware resolution of user configuration and data paths
 - Documented presentation startup configuration failure boundary decision
+- Added presentation startup state and safe configuration failure message
 
 ### Changed
 
 - Connected local manifest URI configuration and platform-aware user directories to startup configuration
+- Changed JavaFX startup to show the window and launch action disabled when local manifest URI configuration cannot be loaded
 
 ---
 

@@ -6,6 +6,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `feat(ui): present startup configuration failure`
+
 ---
 
 ## Контекст

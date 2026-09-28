@@ -124,6 +124,22 @@ Production adapter вводит контролируемую запись с и�
 
 Не классифицирует обычный неуспешный `LaunchResult`
 
+### PresentationStartupState
+
+Минимальная модель состояния подготовки JavaFX launch boundary до приема launch request
+
+Содержит `IDLE`, `AVAILABLE` и `CONFIGURATION_FAILED`
+
+`IDLE` означает, что подготовка еще не завершена
+
+`AVAILABLE` устанавливается после успешного разрешения конфигурации и создания presentation launch boundary
+
+`CONFIGURATION_FAILED` означает ожидаемую ошибку локальной конфигурации manifest URI
+
+Launch action доступен только при `AVAILABLE` и доступности запроса по `PresentationLaunchStateMachine`
+
+Модель не описывает результат launcher lifecycle и не заменяет `PresentationLaunchState`
+
 ### PresentationLaunchState
 
 Минимальная модель состояния launch interaction в presentation layer
@@ -131,7 +147,7 @@ Production adapter вводит контролируемую запись с и�
 Содержит `READY`, `LAUNCHING`, `LAUNCHED` и `FAILED`
 
 `PresentationLaunchStateMachine` управляет переходами после `LaunchRequestResult` и `PresentationLaunchCompletion` и определяет
-доступность launch action
+доступность launch action после успешной startup-подготовки
 
 Модель не зависит от JavaFX controls и не копирует внутренние состояния `LauncherStateMachine`
 

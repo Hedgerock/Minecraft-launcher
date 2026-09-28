@@ -1,5 +1,6 @@
 package com.launcher.ui;
 
+import com.launcher.app.configuration.LauncherConfigurationResolver;
 import com.launcher.app.configuration.ManifestUriConfigurationException;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.ui.startup.PresentationStartupState;
@@ -63,6 +64,28 @@ class PresentationStartupInitializerTest {
         );
 
         assertEquals("configuration", exception.getMessage());
+    }
+
+    @Test
+    void should_return_configuration_failed_for_invalid_uri_argument() {
+        //given
+        AtomicBoolean boundaryInitialized = new AtomicBoolean();
+
+        Supplier<LauncherConfiguration> failingSupplier = () -> {
+            String[] args = {"ftp://example.org/manifest.jar", tempDir.toString()};
+            return new LauncherConfigurationResolver().resolve(args);
+        };
+
+        //when
+        PresentationStartupState startupState = initializer
+                .initialize(
+                        failingSupplier,
+                        configuration -> boundaryInitialized.set(true)
+                );
+
+        //then
+        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, startupState);
+        assertFalse(boundaryInitialized.get());
     }
 
     @Test

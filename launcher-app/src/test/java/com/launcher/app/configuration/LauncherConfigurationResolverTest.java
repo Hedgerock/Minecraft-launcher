@@ -20,6 +20,32 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class LauncherConfigurationResolverTest {
 
     @Test
+    void should_throw_when_uri_argument_is_not_valid(@TempDir Path tempDir) throws IOException {
+        //given
+        LauncherUserPaths userPaths = new LauncherUserPaths(
+                tempDir.resolve("keystone.properties"),
+                tempDir.resolve("keystone")
+        );
+
+        String[] args = { "ftp://test-value-for-manifest:8080/manifest.json" };
+
+        Files.writeString(
+                userPaths.configurationFile(),
+                "manifest.uri=https://keystone.com/manifest.json",
+                StandardCharsets.UTF_8
+        );
+
+        LauncherConfigurationResolver resolver =
+                new LauncherConfigurationResolver(() -> userPaths);
+
+        //when & then
+        assertThrows(
+                ManifestUriConfigurationException.class,
+                () -> resolver.resolve(args)
+        );
+    }
+
+    @Test
     void should_use_launcher_directory_from_second_argument() {
         //given
         String[] args = {

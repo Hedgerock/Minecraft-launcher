@@ -2,7 +2,8 @@
 
 ## Текущий фокус
 
-- Провести ревизию startup configuration flow после унификации проверки manifest URI
+- Реализовать обработку ожидаемого отказа определения пользовательских путей при startup
+  согласно [ADR-0063](../decisions/records/ADR-0063-startup-user-paths-failure-boundary.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

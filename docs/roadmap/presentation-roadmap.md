@@ -4,7 +4,8 @@
 
 ## Текущий план
 
-- Провести ревизию startup configuration flow после унификации проверки manifest URI
+- Отображать ожидаемый отказ определения пользовательских путей через существующее `CONFIGURATION_FAILED`
+  согласно [ADR-0063](../decisions/records/ADR-0063-startup-user-paths-failure-boundary.md)
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 

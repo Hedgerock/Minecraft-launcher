@@ -2,6 +2,7 @@ package com.launcher.ui;
 
 import com.launcher.app.configuration.LauncherConfigurationResolver;
 import com.launcher.app.configuration.LauncherDirectoryConfigurationException;
+import com.launcher.app.configuration.LocalManifestUriConfigurationException;
 import com.launcher.app.configuration.ManifestUriConfigurationException;
 import com.launcher.app.configuration.path.LauncherUserPathsResolutionException;
 import com.launcher.core.configuration.LauncherConfiguration;
@@ -107,6 +108,28 @@ class PresentationStartupInitializerTest {
         PresentationStartupState startupState = initializer
                 .initialize(
                         failingSupplier,
+                        configuration -> boundaryInitialized.set(true)
+                );
+
+        //then
+        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, startupState);
+        assertFalse(boundaryInitialized.get());
+    }
+
+    @Test
+    void should_return_configuration_failed_when_local_manifest_configuration_fails() {
+        //given
+        AtomicBoolean boundaryInitialized = new AtomicBoolean();
+
+        //when
+        PresentationStartupState startupState = initializer
+                .initialize(
+                        () -> {
+                            throw new LocalManifestUriConfigurationException(
+                                    "test failure",
+                                    new ManifestUriConfigurationException("Something went wrong")
+                            );
+                        },
                         configuration -> boundaryInitialized.set(true)
                 );
 

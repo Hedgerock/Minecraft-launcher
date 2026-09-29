@@ -196,13 +196,45 @@ class LauncherConfigurationResolverTest {
         );
 
         //when & then
-        ManifestUriConfigurationException exception = assertThrows(
-                ManifestUriConfigurationException.class,
+        LocalManifestUriConfigurationException exception = assertThrows(
+                LocalManifestUriConfigurationException.class,
                 () -> resolver.resolve(args)
         );
 
+        ManifestUriConfigurationException sourceFailure = assertInstanceOf(
+                ManifestUriConfigurationException.class,
+                exception.getCause()
+        );
+
+        assertInstanceOf(NoSuchFileException.class, sourceFailure.getCause());
+    }
+
+    @Test
+    void should_wrap_invalid_manifest_uri_from_local_configuration(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        LauncherUserPaths userPaths = new LauncherUserPaths(
+                tempDir.resolve("keystone.properties"),
+                tempDir.resolve("keystone")
+        );
+
+        Files.writeString(
+                userPaths.configurationFile(),
+                "manifest.uri=ftp://example.org/manifest.json"
+        );
+
+        LauncherConfigurationResolver resolver =
+                new LauncherConfigurationResolver(() -> userPaths);
+
+        //when & then
+        LocalManifestUriConfigurationException exception = assertThrows(
+                LocalManifestUriConfigurationException.class,
+                () -> resolver.resolve(new String[0])
+        );
+
         assertInstanceOf(
-                NoSuchFileException.class,
+                ManifestUriConfigurationException.class,
                 exception.getCause()
         );
     }

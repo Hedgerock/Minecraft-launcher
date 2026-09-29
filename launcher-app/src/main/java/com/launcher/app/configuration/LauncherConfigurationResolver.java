@@ -39,7 +39,7 @@ public final class LauncherConfigurationResolver {
 
         URI manifestUri = explicitManifestUri != null
                 ? explicitManifestUri
-                : manifestUriSource.load(paths.configurationFile());
+                : loadLocalManifestUri(manifestUriSource, paths.configurationFile());
 
         Path launcherDirectory = args.length > 1
                 ? resolveLauncherDirectory(args[1])
@@ -62,6 +62,20 @@ public final class LauncherConfigurationResolver {
         } catch (InvalidPathException e) {
             throw new LauncherDirectoryConfigurationException(
                     "Invalid launcher directory path", e);
+        }
+    }
+
+    private URI loadLocalManifestUri(
+            PropertiesManifestUriSource source,
+            Path configurationFile
+    ) {
+        try {
+            return source.load(configurationFile);
+        } catch (ManifestUriConfigurationException exception) {
+            throw new LocalManifestUriConfigurationException(
+                    "Local manifest URI configuration is unavailable",
+                    exception
+            );
         }
     }
 

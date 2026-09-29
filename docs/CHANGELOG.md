@@ -53,6 +53,8 @@
 - Added presentation launch failure model and safe message mapping
 - Documented presentation launch completion boundary decision
 - Added application-level completion outcome for accepted presentation launch requests
+- Documented presentation startup configuration retry boundary decision
+- Documented manifest trust and local resource integrity as a future direction
 
 ### Changed
 

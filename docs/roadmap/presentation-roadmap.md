@@ -4,9 +4,9 @@
 
 ## Текущий план
 
-- Провести ревизию presentation launch flow после подтверждения локального UI-сценария и выбрать следующий пользовательский
-  сценарий
-- Не добавлять recovery actions или локализацию без подтвержденного сценария
+- Реализовать повторную подготовку локальной startup-конфигурации после ожидаемой ошибки
+  согласно [ADR-0065](../decisions/records/ADR-0065-presentation-startup-configuration-retry-boundary.md)
+- Не добавлять recovery actions после launch failure или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 
 ---
@@ -33,7 +33,7 @@ Presentation state управляет доступностью launch action и 
 
 ## Отложено
 
-- Recovery actions до появления подтвержденного сценария пользовательского восстановления после ошибки
+- Recovery actions после неуспешного launch request до появления подтвержденного пользовательского сценария
 - Не добавлять потоковый progress отдельных операций, cancel behavior и retry policy без отдельных архитектурных решений
 - Retry policy до определения допустимых сценариев повторного запуска
 - Game process lifecycle tracking до появления требования отслеживать состояние запущенной игры

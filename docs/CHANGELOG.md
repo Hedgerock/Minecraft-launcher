@@ -26,6 +26,8 @@
 - Changed JavaFX startup to show the window and launch action disabled when local manifest URI configuration cannot be loaded
 - Applied unified startup manifest URI validation to local configuration and explicit launch arguments
 - Handled expected user paths resolution failures in JavaFX startup without a working-directory fallback
+- Handled invalid explicit launcher directory arguments as startup configuration failures without changing relative path
+  support
 
 ---
 

@@ -2,8 +2,7 @@
 
 ## Текущий фокус
 
-- Реализовать обработку ошибки явно заданной launcher directory при startup
-  согласно [ADR-0064](../decisions/records/ADR-0064-explicit-launcher-directory-failure-boundary.md)
+- Проверить воспроизводимость локального UI launch flow после завершения границ ожидаемых ошибок startup configuration
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -56,15 +55,7 @@
 - Завершен milestone `v0.7.0-manifest-runtime-flow`; подробные итоги зафиксированы в [ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)
 - Завершен milestone `v0.8.0-presentation-launch-boundary`; подробные итоги зафиксированы
   в [ретроспективе presentation launch boundary](../retrospective/2026-09-presentation-launch-boundary.md)
-- Реализована локальная диагностика неожиданных сбоев принятого presentation launch request согласно
-  [ADR-0057](../decisions/records/ADR-0057-presentation-launch-diagnostics-boundary.md) без передачи технической причины в UI
-- Реализована передача этапов принятого presentation launch request от launcher lifecycle до JavaFX UI согласно
-  [ADR-0058](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)
-- Подключены локальный источник manifest URI и платформенные пользовательские каталоги к startup configuration согласно
-  [ADR-0059](../decisions/records/ADR-0059-launcher-manifest-source-boundary.md) и [ADR-0060](../decisions/records/ADR-0060-launcher-user-directories-boundary.md)
-- JavaFX startup отображает безопасную ошибку локальной конфигурации и не допускает launch request до успешной подготовки
-  согласно [ADR-0061](../decisions/records/ADR-0061-presentation-startup-configuration-failure-boundary.md)
-- Локальная конфигурация и явный аргумент запуска проходят единую проверку manifest URI
-  согласно [ADR-0062](../decisions/records/ADR-0062-startup-manifest-uri-validation-boundary.md)
-- Реализована обработка ожидаемого отказа определения пользовательских путей при startup
-  согласно [ADR-0063](../decisions/records/ADR-0063-startup-user-paths-failure-boundary.md)
+- Реализованы локальная диагностика неожиданных сбоев и передача этапов принятого presentation launch request в JavaFX UI
+- Подключены локальный источник manifest URI и платформенные пользовательские каталоги; manifest URI и явно заданная
+  launcher directory проверяются до создания `LauncherConfiguration`
+- JavaFX startup отображает ожидаемые ошибки исходной конфигурации безопасным сообщением до приема launch request

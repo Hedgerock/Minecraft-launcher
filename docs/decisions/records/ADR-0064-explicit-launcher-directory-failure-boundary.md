@@ -6,6 +6,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `feat(startup): handle explicit launcher directory failure`
+
 ---
 
 ## Контекст
@@ -21,7 +23,7 @@ Accepted
 
 Синтаксически некорректное значение может завершить startup до показа JavaFX window
 
-[ADR-0061](ADR-0061-presentation-startup-configuration-failure-boundary.md) и [ADR-0063](ADR-0063-startup-user-paths-failure-boundary.md) определяет контролируемый исход для ожидаемых ошибок исходной конфигурации, но не охватывают ошибку
+[ADR-0061](ADR-0061-presentation-startup-configuration-failure-boundary.md) и [ADR-0063](ADR-0063-startup-user-paths-failure-boundary.md) определяют контролируемый исход для ожидаемых ошибок исходной конфигурации, но не охватывают ошибку
 явно заданной launcher directory
 
 Необходимо определить границу проверки этого аргумента, не меняя существующее поведение корректных относительных путей и

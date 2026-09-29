@@ -4,8 +4,7 @@
 
 ## Текущий план
 
-- Отобразить ожидаемую ошибку явно заданной launcher directory в JavaFX startup
-  согласно [ADR-0064](../decisions/records/ADR-0064-explicit-launcher-directory-failure-boundary.md)
+- Проверить, позволяет ли текущий JavaFX startup воспроизводимо пройти несколько launch phases без специального dev mode
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 

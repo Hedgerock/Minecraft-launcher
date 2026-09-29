@@ -4,7 +4,8 @@
 
 ## Текущий план
 
-- Проверить, какие ошибки startup еще возникают до показа JavaFX window и требуют отдельного решения
+- Отобразить ожидаемую ошибку явно заданной launcher directory в JavaFX startup
+  согласно [ADR-0064](../decisions/records/ADR-0064-explicit-launcher-directory-failure-boundary.md)
 - Не добавлять recovery actions или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 

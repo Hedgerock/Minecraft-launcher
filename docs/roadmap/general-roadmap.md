@@ -2,7 +2,8 @@
 
 ## Текущий фокус
 
-- Проверить оставшиеся границы startup configuration после реализации [ADR-0063](../decisions/records/ADR-0063-startup-user-paths-failure-boundary.md)
+- Реализовать обработку ошибки явно заданной launcher directory при startup
+  согласно [ADR-0064](../decisions/records/ADR-0064-explicit-launcher-directory-failure-boundary.md)
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария

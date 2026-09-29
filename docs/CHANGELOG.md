@@ -18,6 +18,7 @@
 - Added presentation startup state and safe configuration failure message
 - Documented unified startup manifest URI validation boundary decision
 - Documented startup user paths failure boundary decision
+- Documented explicit launcher directory failure boundary decision
 
 ### Changed
 

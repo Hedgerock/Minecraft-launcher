@@ -75,3 +75,4 @@
 | [ADR-0061](records/ADR-0061-presentation-startup-configuration-failure-boundary.md) | Граница ошибки startup конфигурации в presentation layer           | presentation       |
 | [ADR-0062](records/ADR-0062-startup-manifest-uri-validation-boundary.md)            | Граница проверки Manifest URI при startup                          | configuration      |
 | [ADR-0063](records/ADR-0063-startup-user-paths-failure-boundary.md)                 | Граница ошибки пользовательских путей при startup                  | configuration      |
+| [ADR-0064](records/ADR-0064-explicit-launcher-directory-failure-boundary.md)        | Граница ошибки явно заданной launcher directory при startup        | configuration      |

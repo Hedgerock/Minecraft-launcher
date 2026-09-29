@@ -19,6 +19,7 @@
 - Documented unified startup manifest URI validation boundary decision
 - Documented startup user paths failure boundary decision
 - Documented explicit launcher directory failure boundary decision
+- Added opt-in JavaFX smoke coverage for local manifest loading, launch phase display and successful process start
 
 ### Changed
 

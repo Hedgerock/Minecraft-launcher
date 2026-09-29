@@ -2,7 +2,6 @@
 
 ## Текущий фокус
 
-- Проверить воспроизводимость локального UI launch flow после завершения границ ожидаемых ошибок startup configuration
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -59,3 +58,4 @@
 - Подключены локальный источник manifest URI и платформенные пользовательские каталоги; manifest URI и явно заданная
   launcher directory проверяются до создания `LauncherConfiguration`
 - JavaFX startup отображает ожидаемые ошибки исходной конфигурации безопасным сообщением до приема launch request
+- Воспроизводимость локального UI launch flow подтверждена opt-in JavaFX smoke-тестом без отдельного runtime dev mode

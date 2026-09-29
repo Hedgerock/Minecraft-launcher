@@ -150,3 +150,4 @@ Then
 - [ADR-0046: Определить границу результата запуска Launcher](../decisions/records/ADR-0046-launcher-launch-result-boundary.md)
 - [Правила написания тестов](../rules/test-guidelines.md)
 - [ADR-0058: Определить границу передачи этапов presentation launch request](../decisions/records/ADR-0058-presentation-launch-phase-reporting-boundary.md)
+- [Smoke-тест JavaFX launch flow](../testing/launcher-ui-smoke-testing.md)

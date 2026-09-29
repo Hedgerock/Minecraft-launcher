@@ -40,7 +40,8 @@ class LauncherUiBoundaryTest {
             "import com.launcher.app.presentation.phase.PresentationLaunchPhase;",
             "import com.launcher.app.presentation.phase.PresentationLaunchPhaseHandler;",
             "import com.launcher.app.configuration.ManifestUriConfigurationException;",
-            "import com.launcher.app.configuration.path.LauncherUserPathsResolutionException;"
+            "import com.launcher.app.configuration.path.LauncherUserPathsResolutionException;",
+            "import com.launcher.app.configuration.LauncherDirectoryConfigurationException;"
     );
 
     @Test

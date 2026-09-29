@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.function.Supplier;
@@ -18,6 +19,67 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LauncherConfigurationResolverTest {
+
+    @Test
+    void should_reject_invalid_explicit_launcher_directory_value() {
+        //given
+        String[] args = {"https://example.org/manifest.json", "invalid\0path"};
+        LauncherConfigurationResolver resolver = new LauncherConfigurationResolver();
+
+        //when & then
+        LauncherDirectoryConfigurationException exception = assertThrows(
+                LauncherDirectoryConfigurationException.class,
+                () -> resolver.resolve(args)
+        );
+
+        assertEquals("Invalid launcher directory path", exception.getMessage());
+        assertInstanceOf(InvalidPathException.class, exception.getCause());
+    }
+
+    @Test
+    void should_reject_empty_explicit_launcher_directory_value() {
+        //given
+        String[] args = {"https://example.org/manifest.json", ""};
+        LauncherConfigurationResolver resolver = new LauncherConfigurationResolver();
+
+        //when & then
+        LauncherDirectoryConfigurationException exception = assertThrows(
+                LauncherDirectoryConfigurationException.class,
+                () -> resolver.resolve(args)
+        );
+
+        assertEquals("Launcher directory path cannot be blank", exception.getMessage());
+    }
+
+    @Test
+    void should_reject_blank_explicit_launcher_directory_value() {
+        //given
+        String[] args = {"https://example.org/manifest.json", " "};
+        LauncherConfigurationResolver resolver = new LauncherConfigurationResolver();
+
+        //when & then
+        LauncherDirectoryConfigurationException exception = assertThrows(
+                LauncherDirectoryConfigurationException.class,
+                () -> resolver.resolve(args)
+        );
+
+        assertEquals("Launcher directory path cannot be blank", exception.getMessage());
+    }
+
+    @Test
+    void should_reject_null_explicit_launcher_directory_value() {
+        //given
+        String[] args = {"https://example.org/manifest.json", null};
+        LauncherConfigurationResolver resolver = new LauncherConfigurationResolver();
+
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> resolver.resolve(args)
+        );
+
+        assertEquals("value", exception.getMessage());
+    }
 
     @Test
     void should_reject_explicit_manifest_uri_before_resolving_user_paths() {

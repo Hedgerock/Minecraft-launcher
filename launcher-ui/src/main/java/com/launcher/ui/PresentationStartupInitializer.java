@@ -1,5 +1,6 @@
 package com.launcher.ui;
 
+import com.launcher.app.configuration.LauncherDirectoryConfigurationException;
 import com.launcher.app.configuration.ManifestUriConfigurationException;
 import com.launcher.app.configuration.path.LauncherUserPathsResolutionException;
 import com.launcher.core.configuration.LauncherConfiguration;
@@ -22,7 +23,8 @@ final class PresentationStartupInitializer {
 
         try {
             configuration = Objects.requireNonNull(configurationResolver.get(), "configuration");
-        } catch (ManifestUriConfigurationException | LauncherUserPathsResolutionException exception) {
+        } catch (ManifestUriConfigurationException | LauncherUserPathsResolutionException |
+                 LauncherDirectoryConfigurationException exception) {
             return PresentationStartupState.CONFIGURATION_FAILED;
         }
 

@@ -6,6 +6,7 @@ import com.launcher.app.runtime.SystemRuntimeEnvironmentProvider;
 import com.launcher.core.configuration.LauncherConfiguration;
 
 import java.net.URI;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -41,10 +42,27 @@ public final class LauncherConfigurationResolver {
                 : manifestUriSource.load(paths.configurationFile());
 
         Path launcherDirectory = args.length > 1
-                ? Path.of(args[1])
+                ? resolveLauncherDirectory(args[1])
                 : paths.defaultLauncherDirectory();
 
         return new LauncherConfiguration(manifestUri, launcherDirectory);
+    }
+
+    private Path resolveLauncherDirectory(String value) {
+        Objects.requireNonNull(value, "value");
+
+        if (value.isBlank()) {
+            throw new LauncherDirectoryConfigurationException(
+                    "Launcher directory path cannot be blank"
+            );
+        }
+
+        try {
+            return Path.of(value);
+        } catch (InvalidPathException e) {
+            throw new LauncherDirectoryConfigurationException(
+                    "Invalid launcher directory path", e);
+        }
     }
 
     private static LauncherUserPaths resolveSystemUserPaths() {

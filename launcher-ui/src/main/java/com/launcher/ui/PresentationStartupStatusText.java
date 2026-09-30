@@ -1,15 +1,19 @@
 package com.launcher.ui;
 
-import com.launcher.ui.startup.PresentationStartupState;
+import com.launcher.ui.startup.PresentationStartupResult;
 
 import java.util.Objects;
 
 final class PresentationStartupStatusText {
 
-    static String forState(PresentationStartupState state) {
-        Objects.requireNonNull(state, "state");
+    static String forResult(PresentationStartupResult startupResult) {
+        Objects.requireNonNull(startupResult, "startupResult");
 
-        return switch (state) {
+        if (startupResult.retryAvailable()) {
+            return "Check keystone.properties, then press Retry";
+        }
+
+        return switch (startupResult.state()) {
             case AVAILABLE, IDLE -> "";
             case CONFIGURATION_FAILED -> "Could not load launch configuration";
         };

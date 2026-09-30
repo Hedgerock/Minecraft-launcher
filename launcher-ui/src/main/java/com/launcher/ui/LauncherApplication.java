@@ -256,8 +256,8 @@ public class LauncherApplication extends Application {
         }
 
         startupStatusLabel.setText(
-                PresentationStartupStatusText.forState(
-                        startupState
+                PresentationStartupStatusText.forResult(
+                        startupResult
                 )
         );
     }

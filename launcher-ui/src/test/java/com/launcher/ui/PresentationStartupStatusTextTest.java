@@ -1,5 +1,6 @@
 package com.launcher.ui;
 
+import com.launcher.ui.startup.PresentationStartupResult;
 import com.launcher.ui.startup.PresentationStartupState;
 import org.junit.jupiter.api.Test;
 
@@ -10,12 +11,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PresentationStartupStatusTextTest {
 
     @Test
-    void should_return_safe_message_for_configuration_failed_state() {
+    void should_return_safe_message_for_local_configuration_failed_state() {
         //given
-        PresentationStartupState startupState = PresentationStartupState.CONFIGURATION_FAILED;
+        PresentationStartupResult startupResult = PresentationStartupResult.localConfigurationFailed();
 
         //when
-        String result = PresentationStartupStatusText.forState(startupState);
+        String result = PresentationStartupStatusText.forResult(startupResult);
+
+        //then
+        assertEquals(
+                "Check keystone.properties, then press Retry",
+                result
+        );
+    }
+
+    @Test
+    void should_return_safe_message_for_configuration_failed_state() {
+        //given
+        PresentationStartupResult startupResult = PresentationStartupResult.configurationFailed();
+
+        //when
+        String result = PresentationStartupStatusText.forResult(startupResult);
 
         //then
         assertEquals(
@@ -27,10 +43,10 @@ class PresentationStartupStatusTextTest {
     @Test
     void should_return_empty_message_for_available_state() {
         //given
-        PresentationStartupState startupState = PresentationStartupState.AVAILABLE;
+        PresentationStartupResult startupResult = PresentationStartupResult.available();
 
         //when
-        String result = PresentationStartupStatusText.forState(startupState);
+        String result = PresentationStartupStatusText.forResult(startupResult);
 
         //then
         assertTrue(result.isEmpty());
@@ -39,10 +55,13 @@ class PresentationStartupStatusTextTest {
     @Test
     void should_return_empty_message_for_idle_state() {
         //given
-        PresentationStartupState startupState = PresentationStartupState.IDLE;
+        PresentationStartupResult startupResult = new PresentationStartupResult(
+                PresentationStartupState.IDLE,
+                false
+        );
 
         //when
-        String result = PresentationStartupStatusText.forState(startupState);
+        String result = PresentationStartupStatusText.forResult(startupResult);
 
         //then
         assertTrue(result.isEmpty());
@@ -53,9 +72,9 @@ class PresentationStartupStatusTextTest {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> PresentationStartupStatusText.forState(null)
+                () -> PresentationStartupStatusText.forResult(null)
         );
 
-        assertEquals("state", exception.getMessage());
+        assertEquals("startupResult", exception.getMessage());
     }
 }

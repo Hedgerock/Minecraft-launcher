@@ -34,6 +34,7 @@
 - Handled expected user paths resolution failures in JavaFX startup without a working-directory fallback
 - Handled invalid explicit launcher directory arguments as startup configuration failures without changing relative path
   support
+- Changed JavaFX startup status to guide local configuration retry without exposing the manifest URI or file path
 
 ---
 

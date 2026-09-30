@@ -4,8 +4,6 @@
 
 ## Текущий план
 
-- Добавить безопасную подсказку для ошибки локального `keystone.properties` и действия Retry без отображения исходного URI
-  или локального пути в UI
 - Не добавлять recovery actions после launch failure или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 
@@ -42,6 +40,8 @@ Presentation state управляет доступностью launch action и 
 - Полноценная navigation model до появления нескольких самостоятельных screens
 - Electron client до стабилизации technology-neutral application boundaries
 - Backend split до появления подтвержденного remote client scenario
+- Создание и редактирование `keystone.properties` в UI до определения отдельного пользовательского сценария настройки источника
+  манифеста
 
 ---
 

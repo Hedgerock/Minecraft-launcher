@@ -24,6 +24,7 @@
 - Documented manifest trust and local resource integrity as a future direction
 - Added retry of local startup configuration after external correction of `keystone.properties`
 - Distinguished retryable local manifest configuration failures from other startup configuration failures
+- Documented the local manifest URI configuration file contract
 
 ### Changed
 

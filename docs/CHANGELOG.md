@@ -1,5 +1,9 @@
 ## Unreleased
 
+---
+
+## v0.9.0 – Local UI Launch Flow
+
 ### Added
 
 - Selected local diagnostics for unexpected presentation launch failures as the next development candidate
@@ -19,12 +23,13 @@
 - Documented unified startup manifest URI validation boundary decision
 - Documented startup user paths failure boundary decision
 - Documented explicit launcher directory failure boundary decision
-- Added opt-in JavaFX smoke coverage for local manifest loading, launch phase display and successful process start
+- Added opt-in JavaFX smoke coverage for explicit local HTTP manifest URI, launch phase display and successful process start
 - Documented presentation startup configuration retry boundary decision
 - Documented manifest trust and local resource integrity as a future direction
 - Added retry of local startup configuration after external correction of `keystone.properties`
 - Distinguished retryable local manifest configuration failures from other startup configuration failures
 - Documented the local manifest URI configuration file contract
+- Documented Gradle project version alignment with release tags
 
 ### Changed
 
@@ -35,6 +40,7 @@
 - Handled invalid explicit launcher directory arguments as startup configuration failures without changing relative path
   support
 - Changed JavaFX startup status to guide local configuration retry without exposing the manifest URI or file path
+- Aligned Gradle project version with v0.9.0
 
 ---
 

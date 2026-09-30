@@ -14,6 +14,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -29,6 +30,88 @@ class PresentationStartupInitializerTest {
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void should_keep_retry_available_when_local_configuration_still_fails() {
+        //given
+        AtomicInteger attempts = new AtomicInteger();
+        AtomicInteger boundaryInitializations = new AtomicInteger();
+
+        Supplier<LauncherConfiguration> configurationResolver = () -> {
+            attempts.incrementAndGet();
+
+            throw new LocalManifestUriConfigurationException(
+                    "Local configuration failed",
+                    new ManifestUriConfigurationException("Invalid manifest URI")
+            );
+        };
+
+        Consumer<LauncherConfiguration> boundaryInitializer =
+                configuration -> boundaryInitializations.incrementAndGet();
+
+        //when
+        PresentationStartupResult firstResult = initializer.initialize(
+                configurationResolver,
+                boundaryInitializer
+        );
+
+        PresentationStartupResult retryResult = initializer.initialize(
+                configurationResolver,
+                boundaryInitializer
+        );
+
+        //then
+        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, firstResult.state());
+        assertTrue(firstResult.retryAvailable());
+
+        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, retryResult.state());
+        assertTrue(retryResult.retryAvailable());
+
+        assertEquals(2, attempts.get());
+        assertEquals(0, boundaryInitializations.get());
+    }
+
+    @Test
+    void should_initialize_boundary_after_local_configuration_is_fixed() {
+        //given
+        AtomicInteger attempts = new AtomicInteger();
+        AtomicInteger boundaryInitializations = new AtomicInteger();
+
+        Supplier<LauncherConfiguration> configurationResolver = () -> {
+            if (attempts.getAndIncrement() == 0) {
+                throw new LocalManifestUriConfigurationException(
+                        "Local configuration failed",
+                        new ManifestUriConfigurationException("Invalid manifest URI")
+                );
+            }
+
+            return getConfiguration();
+        };
+
+        Consumer<LauncherConfiguration> boundaryInitializer =
+                configuration -> boundaryInitializations.incrementAndGet();
+
+        //when
+        PresentationStartupResult firstResult = initializer.initialize(
+                configurationResolver,
+                boundaryInitializer
+        );
+
+        PresentationStartupResult retryResult = initializer.initialize(
+                configurationResolver,
+                boundaryInitializer
+        );
+
+        //then
+        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, firstResult.state());
+        assertTrue(firstResult.retryAvailable());
+
+        assertEquals(PresentationStartupState.AVAILABLE, retryResult.state());
+        assertFalse(retryResult.retryAvailable());
+
+        assertEquals(2, attempts.get());
+        assertEquals(1, boundaryInitializations.get());
+    }
 
     @Test
     void should_propagate_exception_when_configuration_resolver_failed() {

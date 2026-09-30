@@ -28,20 +28,22 @@ public class LauncherApplication extends Application {
     private final PresentationLaunchStateMachine presentationLaunchStateMachine =
             new PresentationLaunchStateMachine();
 
-    private PresentationStartupState startupState = PresentationStartupState.IDLE;
+    private PresentationStartupResult startupResult;
 
     private PresentationLaunchBoundary presentationLaunchBoundary;
 
     @Override
     public void start(Stage primaryStage) {
         Label titleLabel = new Label(APPLICATION_NAME);
-        Button launchButton = new Button("Launch");
+        Button launchButton = createButton("Launch", "launch-button");
+        Button retryButton = createButton("Retry", "retry-configuration-button");
         Label launchStatusLabel = new Label();
         Label phaseStatusLabel = new Label();
         Label startupStatusLabel = new Label();
 
         initializePresentationLaunchBoundary(
                 launchButton,
+                retryButton,
                 launchStatusLabel,
                 phaseStatusLabel,
                 startupStatusLabel
@@ -49,9 +51,18 @@ public class LauncherApplication extends Application {
 
         renderLaunchState(
                 launchButton,
+                retryButton,
                 launchStatusLabel,
                 startupStatusLabel
         );
+
+        retryButton.setOnAction(event -> retryStartupConfiguration(
+                launchButton,
+                retryButton,
+                launchStatusLabel,
+                phaseStatusLabel,
+                startupStatusLabel
+        ));
 
         VBox content = new VBox(
                 CONTENT_SPACING,
@@ -59,6 +70,7 @@ public class LauncherApplication extends Application {
                 launchStatusLabel,
                 phaseStatusLabel,
                 startupStatusLabel,
+                retryButton,
                 launchButton
         );
 
@@ -85,6 +97,7 @@ public class LauncherApplication extends Application {
 
     private void initializePresentationLaunchBoundary(
             Button launchButton,
+            Button retryButton,
             Label launchStatusLabel,
             Label phaseStatusLabel,
             Label startupStatusLabel
@@ -93,23 +106,23 @@ public class LauncherApplication extends Application {
 
         PresentationStartupInitializer initializer = new PresentationStartupInitializer();
 
-        PresentationStartupResult presentationStartupResult = initializer.initialize(
+        startupResult = initializer.initialize(
                 () -> new LauncherConfigurationResolver().resolve(args),
                 configuration ->
                         presentationLaunchBoundary = createPresentationLaunchBoundary(
                                 configuration,
                                 launchButton,
+                                retryButton,
                                 launchStatusLabel,
                                 phaseStatusLabel,
                                 startupStatusLabel
                         )
         );
 
-        startupState = presentationStartupResult.state();
-
-        if (startupState == PresentationStartupState.AVAILABLE) {
+        if (startupResult.state() == PresentationStartupState.AVAILABLE) {
             launchButton.setOnAction(event -> requestLaunch(
                     launchButton,
+                    retryButton,
                     launchStatusLabel,
                     phaseStatusLabel,
                     startupStatusLabel
@@ -117,9 +130,37 @@ public class LauncherApplication extends Application {
         }
     }
 
+    private void retryStartupConfiguration(
+            Button launchButton,
+            Button retryButton,
+            Label launchStatusLabel,
+            Label phaseStatusLabel,
+            Label startupStatusLabel
+    ) {
+        if (!startupResult.retryAvailable()) {
+            return;
+        }
+
+        initializePresentationLaunchBoundary(
+                launchButton,
+                retryButton,
+                launchStatusLabel,
+                phaseStatusLabel,
+                startupStatusLabel
+        );
+
+        renderLaunchState(
+                launchButton,
+                retryButton,
+                launchStatusLabel,
+                startupStatusLabel
+        );
+    }
+
     private PresentationLaunchBoundary createPresentationLaunchBoundary(
             LauncherConfiguration configuration,
             Button launchButton,
+            Button retryButton,
             Label launchStatusLabel,
             Label phaseStatusLabel,
             Label startupStatusLabel
@@ -128,7 +169,12 @@ public class LauncherApplication extends Application {
                 result -> {
                     presentationLaunchStateMachine.onLaunchCompletion(result);
                     phaseStatusLabel.setText("");
-                    renderLaunchState(launchButton, launchStatusLabel, startupStatusLabel);
+                    renderLaunchState(
+                            launchButton,
+                            retryButton,
+                            launchStatusLabel,
+                            startupStatusLabel
+                    );
                 }
         );
 
@@ -154,6 +200,7 @@ public class LauncherApplication extends Application {
 
     private void requestLaunch(
             Button launchButton,
+            Button retryButton,
             Label launchStatusLabel,
             Label phaseStatusLabel,
             Label startupStatusLabel
@@ -167,12 +214,18 @@ public class LauncherApplication extends Application {
             phaseStatusLabel.setText("");
         }
 
-        renderLaunchState(launchButton, launchStatusLabel, startupStatusLabel);
+        renderLaunchState(
+                launchButton,
+                retryButton,
+                launchStatusLabel,
+                startupStatusLabel
+        );
 
     }
 
     private void renderLaunchState(
             Button launchButton,
+            Button retryButton,
             Label launchStatusLabel,
             Label startupStatusLabel
     ) {
@@ -180,13 +233,20 @@ public class LauncherApplication extends Application {
         PresentationLaunchState state = presentationLaunchStateMachine
                 .currentState();
 
+        PresentationStartupState startupState = startupResult.state();
+
         boolean isAvailable = startupState.allowsLaunch(
                 presentationLaunchStateMachine.isLaunchAvailable()
         );
 
-        launchButton.setDisable(!isAvailable);
+        boolean retryAvailable = startupResult.retryAvailable();
 
-        if (startupState == PresentationStartupState.AVAILABLE) {
+        launchButton.setDisable(!isAvailable);
+        retryButton.setDisable(!retryAvailable);
+        retryButton.setVisible(retryAvailable);
+        retryButton.setManaged(retryAvailable);
+
+        if (startupResult.state() == PresentationStartupState.AVAILABLE) {
             launchStatusLabel.setText(
                     PresentationLaunchStatusText.forState(
                             state,
@@ -200,6 +260,12 @@ public class LauncherApplication extends Application {
                         startupState
                 )
         );
+    }
+
+    private Button createButton(String label, String id) {
+        Button button = new Button(label);
+        button.setId(id);
+        return button;
     }
 
     public static void main(String[] args) {

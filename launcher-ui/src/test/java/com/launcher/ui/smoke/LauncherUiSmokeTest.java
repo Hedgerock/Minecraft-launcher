@@ -46,7 +46,7 @@ public class LauncherUiSmokeTest {
                 Stage activeStage = stage;
 
                 Button launchButton = FxTestProbe.call(() ->
-                        (Button) activeStage.getScene().lookup(".button")
+                        (Button) activeStage.getScene().lookup("#launch-button")
                 );
 
                 assertFalse(FxTestProbe.call(launchButton::isDisabled));

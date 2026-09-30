@@ -6,6 +6,7 @@ import com.launcher.app.configuration.LocalManifestUriConfigurationException;
 import com.launcher.app.configuration.ManifestUriConfigurationException;
 import com.launcher.app.configuration.path.LauncherUserPathsResolutionException;
 import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.ui.startup.PresentationStartupResult;
 import com.launcher.ui.startup.PresentationStartupState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PresentationStartupInitializerTest {
     private final PresentationStartupInitializer initializer = new PresentationStartupInitializer();
@@ -105,14 +107,15 @@ class PresentationStartupInitializerTest {
         };
 
         //when
-        PresentationStartupState startupState = initializer
+        PresentationStartupResult result = initializer
                 .initialize(
                         failingSupplier,
                         configuration -> boundaryInitialized.set(true)
                 );
 
         //then
-        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, startupState);
+        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, result.state());
+        assertFalse(result.retryAvailable());
         assertFalse(boundaryInitialized.get());
     }
 
@@ -122,7 +125,7 @@ class PresentationStartupInitializerTest {
         AtomicBoolean boundaryInitialized = new AtomicBoolean();
 
         //when
-        PresentationStartupState startupState = initializer
+        PresentationStartupResult result = initializer
                 .initialize(
                         () -> {
                             throw new LocalManifestUriConfigurationException(
@@ -134,7 +137,8 @@ class PresentationStartupInitializerTest {
                 );
 
         //then
-        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, startupState);
+        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, result.state());
+        assertTrue(result.retryAvailable());
         assertFalse(boundaryInitialized.get());
     }
 
@@ -144,7 +148,7 @@ class PresentationStartupInitializerTest {
         AtomicBoolean boundaryInitialized = new AtomicBoolean();
 
         //when
-        PresentationStartupState startupState = initializer
+        PresentationStartupResult result = initializer
                 .initialize(
                         () -> {
                             throw new LauncherDirectoryConfigurationException("test failure");
@@ -153,7 +157,8 @@ class PresentationStartupInitializerTest {
                 );
 
         //then
-        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, startupState);
+        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, result.state());
+        assertFalse(result.retryAvailable());
         assertFalse(boundaryInitialized.get());
     }
 
@@ -163,7 +168,7 @@ class PresentationStartupInitializerTest {
         AtomicBoolean boundaryInitialized = new AtomicBoolean();
 
         //when
-        PresentationStartupState startupState = initializer
+        PresentationStartupResult result = initializer
                 .initialize(
                         () -> {
                             throw new LauncherUserPathsResolutionException("test failure");
@@ -172,7 +177,8 @@ class PresentationStartupInitializerTest {
                 );
 
         //then
-        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, startupState);
+        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, result.state());
+        assertFalse(result.retryAvailable());
         assertFalse(boundaryInitialized.get());
     }
 
@@ -182,7 +188,7 @@ class PresentationStartupInitializerTest {
         AtomicBoolean boundaryInitialized = new AtomicBoolean();
 
         //when
-        PresentationStartupState startupState = initializer
+        PresentationStartupResult result = initializer
                 .initialize(
                         () -> {
                             throw new ManifestUriConfigurationException("test failure");
@@ -191,7 +197,8 @@ class PresentationStartupInitializerTest {
                 );
 
         //then
-        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, startupState);
+        assertEquals(PresentationStartupState.CONFIGURATION_FAILED, result.state());
+        assertFalse(result.retryAvailable());
         assertFalse(boundaryInitialized.get());
     }
 
@@ -202,14 +209,15 @@ class PresentationStartupInitializerTest {
         LauncherConfiguration expectedConfiguration = getConfiguration();
 
         //when
-        PresentationStartupState startupState = initializer
+        PresentationStartupResult result = initializer
                 .initialize(
                         () -> expectedConfiguration,
                         configurationAtomicReference::set
                 );
 
         //then
-        assertEquals(PresentationStartupState.AVAILABLE, startupState);
+        assertEquals(PresentationStartupState.AVAILABLE, result.state());
+        assertFalse(result.retryAvailable());
         assertSame(expectedConfiguration, configurationAtomicReference.get());
     }
 

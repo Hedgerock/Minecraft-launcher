@@ -7,6 +7,7 @@ import com.launcher.app.presentation.PresentationLaunchBoundary;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.ui.phase.JavaFxPresentationLaunchPhaseHandler;
 import com.launcher.ui.result.JavaFxPresentationLaunchCompletionHandler;
+import com.launcher.ui.startup.PresentationStartupResult;
 import com.launcher.ui.startup.PresentationStartupState;
 import com.launcher.ui.state.PresentationLaunchState;
 import com.launcher.ui.state.PresentationLaunchStateMachine;
@@ -92,7 +93,7 @@ public class LauncherApplication extends Application {
 
         PresentationStartupInitializer initializer = new PresentationStartupInitializer();
 
-        startupState = initializer.initialize(
+        PresentationStartupResult presentationStartupResult = initializer.initialize(
                 () -> new LauncherConfigurationResolver().resolve(args),
                 configuration ->
                         presentationLaunchBoundary = createPresentationLaunchBoundary(
@@ -103,6 +104,8 @@ public class LauncherApplication extends Application {
                                 startupStatusLabel
                         )
         );
+
+        startupState = presentationStartupResult.state();
 
         if (startupState == PresentationStartupState.AVAILABLE) {
             launchButton.setOnAction(event -> requestLaunch(

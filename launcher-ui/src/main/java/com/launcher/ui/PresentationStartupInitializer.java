@@ -5,7 +5,7 @@ import com.launcher.app.configuration.LocalManifestUriConfigurationException;
 import com.launcher.app.configuration.ManifestUriConfigurationException;
 import com.launcher.app.configuration.path.LauncherUserPathsResolutionException;
 import com.launcher.core.configuration.LauncherConfiguration;
-import com.launcher.ui.startup.PresentationStartupState;
+import com.launcher.ui.startup.PresentationStartupResult;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 final class PresentationStartupInitializer {
 
-    PresentationStartupState initialize(
+    PresentationStartupResult initialize(
             Supplier<LauncherConfiguration> configurationResolver,
             Consumer<LauncherConfiguration> boundaryInitializer
     ) {
@@ -24,14 +24,15 @@ final class PresentationStartupInitializer {
 
         try {
             configuration = Objects.requireNonNull(configurationResolver.get(), "configuration");
+        } catch (LocalManifestUriConfigurationException exception) {
+            return PresentationStartupResult.localConfigurationFailed();
         } catch (ManifestUriConfigurationException |
-                 LocalManifestUriConfigurationException |
                  LauncherUserPathsResolutionException |
                  LauncherDirectoryConfigurationException exception) {
-            return PresentationStartupState.CONFIGURATION_FAILED;
+            return PresentationStartupResult.configurationFailed();
         }
 
         boundaryInitializer.accept(configuration);
-        return PresentationStartupState.AVAILABLE;
+        return PresentationStartupResult.available();
     }
 }

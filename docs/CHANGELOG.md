@@ -20,6 +20,10 @@
 - Documented startup user paths failure boundary decision
 - Documented explicit launcher directory failure boundary decision
 - Added opt-in JavaFX smoke coverage for local manifest loading, launch phase display and successful process start
+- Documented presentation startup configuration retry boundary decision
+- Documented manifest trust and local resource integrity as a future direction
+- Added retry of local startup configuration after external correction of `keystone.properties`
+- Distinguished retryable local manifest configuration failures from other startup configuration failures
 
 ### Changed
 
@@ -53,8 +57,6 @@
 - Added presentation launch failure model and safe message mapping
 - Documented presentation launch completion boundary decision
 - Added application-level completion outcome for accepted presentation launch requests
-- Documented presentation startup configuration retry boundary decision
-- Documented manifest trust and local resource integrity as a future direction
 
 ### Changed
 

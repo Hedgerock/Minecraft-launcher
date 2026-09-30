@@ -6,6 +6,11 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(startup): distinguish local manifest configuration failures`
+> `feat(ui): classify retryable startup configuration failure`
+> `feat(ui): retry local startup configuration`
+
 ---
 
 ## Контекст

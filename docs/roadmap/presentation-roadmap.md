@@ -4,8 +4,6 @@
 
 ## Текущий план
 
-- Реализовать повторную подготовку локальной startup-конфигурации после ожидаемой ошибки
-  согласно [ADR-0065](../decisions/records/ADR-0065-presentation-startup-configuration-retry-boundary.md)
 - Не добавлять recovery actions после launch failure или локализацию без подтвержденного сценария
 - Не добавлять потоковый progress presentation, cancel behavior и retry policy без отдельного архитектурного решения
 

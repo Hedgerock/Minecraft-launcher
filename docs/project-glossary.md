@@ -127,6 +127,15 @@ Production adapter вводит контролируемую запись с и�
 
 Не классифицирует обычный неуспешный `LaunchResult`
 
+### PresentationStartupResult
+
+Результат подготовки presentation launch boundary до приема launch request
+
+Содержит `PresentationStartupState` и признак доступности повторной подготовки локальной конфигурации
+
+Доступность повторной подготовки не определяется по одному лишь `CONFIGURATION_FAILED`: ожидаемые ошибки явных аргументов
+и пользовательских путей также приводят к этому состоянию, но не допускают Retry
+
 ### PresentationStartupState
 
 Минимальная модель состояния подготовки JavaFX launch boundary до приема launch request

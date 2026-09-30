@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Довести локальный UI startup до повторной подготовки конфигурации после ожидаемой ошибки
+- Провести ревизию проекта для определения кандидата
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -60,3 +60,5 @@
   launcher directory проверяются до создания `LauncherConfiguration`
 - JavaFX startup отображает ожидаемые ошибки исходной конфигурации безопасным сообщением до приема launch request
 - Воспроизводимость локального UI launch flow подтверждена opt-in JavaFX smoke-тестом без отдельного runtime dev mode
+- Реализована повторная подготовка локальной startup-конфигурации после исправления `keystone.properties` без перезапуска
+  JavaFX-приложения

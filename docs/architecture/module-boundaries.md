@@ -132,10 +132,15 @@
 
 `launcher-ui` отдельно владеет `PresentationStartupState`, описывающим подготовку launch boundary до приема launch request
 
+`launcher-ui` отдельно сохраняет в `PresentationStartupResult` доступность повторной подготовки. Действие Retry доступно только
+при ожидаемой ошибке локального источника manifest URI
+
+Ошибки явных аргументов и определения пользовательских путей не получают это действие
+
 `launcher-app` проверяет manifest URI из локальной конфигурации и явного аргумента по единым требованиям до создания
 `LauncherConfiguration`
 
-Ожидаемая ошибка чтения локальной конфигурации, проверки manifest URI определения пользовательских путей, или проверка
+Ожидаемая ошибка чтения локальной конфигурации, проверки manifest URI, определения пользовательских путей или проверки
 явно заданной launcher directory отображается безопасным сообщением и не преобразуется в `LaunchResult`,
 `PresentationLaunchCompletion` или `PresentationLaunchState.FAILED`
 

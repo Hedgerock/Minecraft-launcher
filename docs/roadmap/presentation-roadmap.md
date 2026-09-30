@@ -9,6 +9,24 @@
 
 ---
 
+## Milestone `v0.9.0-local-ui-launch-flow` — Local UI launch flow
+
+Локальный UI launch flow дополнен источником manifest URI из `keystone.properties` и платформенными пользовательскими каталогами
+
+Startup-конфигурация проверяется до принятия launch request
+
+Ожидаемые ошибки отображаются безопасно, а после внешнего исправления локального файла доступна повторная подготовка
+
+UI показывает этапы принятого запроса и сохраняет отдельную диагностику неожиданных сбоев presentation boundary
+
+Opt-in JavaFX smoke-тест подтверждает запуск через явно заданный URI локального HTTP-сервера
+
+Сценарий чтения `keystone.properties` и Retry в этот smoke-тест пока не входит
+
+Подробные итоги зафиксированы в [ретроспективе local UI launch flow](../retrospective/2026-09-local-ui-launch-flow.md)
+
+---
+
 ## Milestone `v0.8.0-presentation-launch-boundary` — Presentation launch boundary
 
 Минимальный presentation launch flow доведен до JavaFX entrypoint через application boundary
@@ -33,7 +51,7 @@ Presentation state управляет доступностью launch action и 
 
 - Recovery actions после неуспешного launch request до появления подтвержденного пользовательского сценария
 - Не добавлять потоковый progress отдельных операций, cancel behavior и retry policy без отдельных архитектурных решений
-- Retry policy до определения допустимых сценариев повторного запуска
+- Retry policy для повторного launch request до определения допустимых сценариев повторного запуска
 - Game process lifecycle tracking до появления требования отслеживать состояние запущенной игры
 - Локализация до появления устойчивого набора пользовательских текстов
 - Shared UX system до появления нескольких независимых presentation clients

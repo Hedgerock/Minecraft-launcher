@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Провести ревизию после завершения локального UI startup flow и определить следующего кандидата
+- Провести ревизию после `v0.9.0-local-ui-launch-flow` и определить следующего кандидата
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -55,11 +55,4 @@
 - Завершен milestone `v0.7.0-manifest-runtime-flow`; подробные итоги зафиксированы в [ретроспективе manifest runtime flow](../retrospective/2026-09-manifest-runtime-flow.md)
 - Завершен milestone `v0.8.0-presentation-launch-boundary`; подробные итоги зафиксированы
   в [ретроспективе presentation launch boundary](../retrospective/2026-09-presentation-launch-boundary.md)
-- Реализованы локальная диагностика неожиданных сбоев и передача этапов принятого presentation launch request в JavaFX UI
-- Подключены локальный источник manifest URI и платформенные пользовательские каталоги; manifest URI и явно заданная
-  launcher directory проверяются до создания `LauncherConfiguration`
-- JavaFX startup отображает ожидаемые ошибки исходной конфигурации безопасным сообщением до приема launch request
-- Воспроизводимость локального UI launch flow подтверждена opt-in JavaFX smoke-тестом без отдельного runtime dev mode
-- Реализована повторная подготовка локальной startup-конфигурации после исправления `keystone.properties` без перезапуска
-  JavaFX-приложения
-- Добавлена безопасная подсказка для исправления локальной startup-конфигурации перед действием Retry без редактора в UI
+- Завершен milestone `v0.9.0-local-ui-launch-flow`; подробные итоги зафиксированы в [ретроспективе local UI launch flow](../retrospective/2026-09-local-ui-launch-flow.md)

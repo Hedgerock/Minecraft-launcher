@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public final class LauncherConfigurationResolver {
+    private static final String LOCAL_CONFIGURATION_ARGUMENT = "--local-config";
+
     private final Supplier<LauncherUserPaths> launcherUserPathsSupplier;
 
     LauncherConfigurationResolver(Supplier<LauncherUserPaths> launcherUserPathsSupplier) {
@@ -29,11 +31,14 @@ public final class LauncherConfigurationResolver {
         ManifestUriParser parser = new DefaultManifestUriParser();
         PropertiesManifestUriSource manifestUriSource = new PropertiesManifestUriSource(parser);
 
-        URI explicitManifestUri = args.length > 0
+        boolean localConfigurationSelected =
+                args.length > 0 && LOCAL_CONFIGURATION_ARGUMENT.equals(args[0]);
+
+        URI explicitManifestUri = args.length > 0 && !localConfigurationSelected
                 ? parser.parse(args[0])
                 : null;
 
-        LauncherUserPaths paths = args.length < 2
+        LauncherUserPaths paths = localConfigurationSelected || args.length < 2
                 ? launcherUserPathsSupplier.get()
                 : null;
 

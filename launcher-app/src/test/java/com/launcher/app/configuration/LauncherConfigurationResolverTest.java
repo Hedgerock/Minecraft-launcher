@@ -240,6 +240,47 @@ class LauncherConfigurationResolverTest {
     }
 
     @Test
+    void should_use_local_manifest_uri_and_explicit_path_directory_when_configuration_provided(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        LauncherUserPaths userPaths = new LauncherUserPaths(
+                tempDir.resolve("keystone.properties"),
+                tempDir.resolve("keystone")
+        );
+
+        Files.writeString(
+                userPaths.configurationFile(),
+                "manifest.uri=https://keystone.com/manifest.json",
+                StandardCharsets.UTF_8
+        );
+
+        Supplier<LauncherUserPaths> launcherUserPathsSupplier = () -> userPaths;
+
+        LauncherConfigurationResolver resolver =
+                new LauncherConfigurationResolver(launcherUserPathsSupplier);
+
+        String[] args = {
+                "--local-config",
+                "game-directory"
+        };
+
+        //when
+        LauncherConfiguration configuration = resolver.resolve(args);
+
+        //then
+        assertEquals(
+                URI.create("https://keystone.com/manifest.json"),
+                configuration.manifestUri()
+        );
+
+        assertEquals(
+                Path.of("game-directory"),
+                configuration.launcherDirectory()
+        );
+    }
+
+    @Test
     void should_not_request_user_paths_when_manifest_uri_and_launcher_directory_are_provided() {
         //given
         Supplier<LauncherUserPaths> failingSupplier = () -> {
@@ -266,6 +307,80 @@ class LauncherConfigurationResolverTest {
         assertEquals(
                 Path.of("keystone"),
                 configuration.launcherDirectory()
+        );
+    }
+
+    @Test
+    void should_throw_when_explicitly_selected_local_configuration_file_is_missing(@TempDir Path tempDir) {
+        //given
+        LauncherUserPaths userPaths = new LauncherUserPaths(
+                tempDir.resolve("keystone.properties"),
+                tempDir.resolve("keystone")
+        );
+
+        String[] args = {
+                "--local-config",
+                "game-directory"
+        };
+        LauncherConfigurationResolver resolver = new LauncherConfigurationResolver(
+                () -> userPaths
+        );
+
+        //when
+        LocalManifestUriConfigurationException exception = assertThrows(
+                LocalManifestUriConfigurationException.class,
+                () -> resolver.resolve(args)
+        );
+
+        assertEquals(
+                "Local manifest URI configuration is unavailable",
+                exception.getMessage()
+        );
+
+        Throwable reason = exception.getCause();
+
+        assertInstanceOf(ManifestUriConfigurationException.class, reason);
+        assertInstanceOf(NoSuchFileException.class, reason.getCause());
+    }
+
+    @Test
+    void should_use_local_manifest_uri_when_local_configuration_is_explicitly_selected(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        LauncherUserPaths userPaths = new LauncherUserPaths(
+                tempDir.resolve("keystone.properties"),
+                tempDir.resolve("keystone")
+        );
+
+        Files.writeString(
+                userPaths.configurationFile(),
+                "manifest.uri=https://keystone.com/manifest.json",
+                StandardCharsets.UTF_8
+        );
+
+        String[] args = {
+                "--local-config"
+        };
+        LauncherConfigurationResolver resolver = new LauncherConfigurationResolver(
+                () -> userPaths
+        );
+
+        //when
+        LauncherConfiguration configuration = resolver.resolve(args);
+
+        //then
+        URI manifest = configuration.manifestUri();
+        Path launcherDirectory = configuration.launcherDirectory();
+
+        assertEquals(
+                "https://keystone.com/manifest.json",
+                manifest.toString()
+        );
+
+        assertEquals(
+                userPaths.defaultLauncherDirectory(),
+                launcherDirectory
         );
     }
 

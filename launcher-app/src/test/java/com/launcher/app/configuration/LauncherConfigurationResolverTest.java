@@ -5,7 +5,9 @@ import com.launcher.core.configuration.LauncherConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,6 +21,125 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LauncherConfigurationResolverTest {
+
+    @Test
+    void should_return_manifest_uri_property_from_source(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        LauncherUserPaths userPaths = new LauncherUserPaths(
+                tempDir.resolve("keystone.properties"),
+                tempDir.resolve("keystone")
+        );
+
+        Files.writeString(
+                userPaths.configurationFile(),
+                "manifest.uri=https://local.example/manifest.json"
+        );
+
+        LauncherConfigurationResolver resolver = new LauncherConfigurationResolver(
+                () -> userPaths,
+                getSource(new ByteArrayInputStream(
+                        "manifest.uri=https://example.org/manifest.json"
+                                .getBytes(StandardCharsets.UTF_8)
+                ))
+        );
+
+        //when
+        LauncherConfiguration configuration = resolver.resolve(new String[0]);
+
+        //then
+        assertEquals(
+                URI.create("https://example.org/manifest.json"),
+                configuration.manifestUri()
+        );
+    }
+
+    @Test
+    void should_fail_when_source_cannot_read_manifest_uri(@TempDir Path tempDir) {
+        //given
+        LauncherUserPaths userPaths = new LauncherUserPaths(
+                tempDir.resolve("keystone.properties"),
+                tempDir.resolve("keystone")
+        );
+
+        LauncherConfigurationResolver resolver = new LauncherConfigurationResolver(
+                () -> userPaths,
+                getSource(new InputStream() {
+                    @Override
+                    public int read() throws IOException {
+                        throw new IOException("Bad read");
+                    }
+                })
+        );
+
+        //when & then
+        ManifestUriConfigurationException exception = assertThrows(
+                ManifestUriConfigurationException.class,
+                () -> resolver.resolve(new String[0])
+        );
+
+        assertEquals(
+                "Failed to read bundled manifest properties",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void should_fail_when_source_has_missing_manifest_uri(@TempDir Path tempDir) {
+        //given
+        LauncherUserPaths userPaths = new LauncherUserPaths(
+                tempDir.resolve("keystone.properties"),
+                tempDir.resolve("keystone")
+        );
+
+        LauncherConfigurationResolver resolver = new LauncherConfigurationResolver(
+                () -> userPaths,
+                getSource(new ByteArrayInputStream(
+                        "manifest.name=keystone-name"
+                                .getBytes(StandardCharsets.UTF_8)
+                ))
+        );
+
+        //when & then
+        ManifestUriConfigurationException exception = assertThrows(
+                ManifestUriConfigurationException.class,
+                () -> resolver.resolve(new String[0])
+        );
+
+        assertEquals(
+                "Manifest URI is not configured",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void should_fail_when_source_has_unsupported_manifest_uri(@TempDir Path tempDir) {
+        //given
+        LauncherUserPaths userPaths = new LauncherUserPaths(
+                tempDir.resolve("keystone.properties"),
+                tempDir.resolve("keystone")
+        );
+
+        LauncherConfigurationResolver resolver = new LauncherConfigurationResolver(
+                () -> userPaths,
+                getSource(new ByteArrayInputStream(
+                        "manifest.uri=ftp://example.org/manifest.json"
+                                .getBytes(StandardCharsets.UTF_8)
+                ))
+        );
+
+        //when & then
+        ManifestUriConfigurationException exception = assertThrows(
+                ManifestUriConfigurationException.class,
+                () -> resolver.resolve(new String[0])
+        );
+
+        assertEquals(
+                "Manifest URI must be an absolute HTTP(S) URI with a host",
+                exception.getMessage()
+        );
+    }
 
     @Test
     void should_reject_invalid_explicit_launcher_directory_value() {
@@ -64,6 +185,25 @@ class LauncherConfigurationResolverTest {
         );
 
         assertEquals("Launcher directory path cannot be blank", exception.getMessage());
+    }
+
+    @Test
+    void should_reject_null_source(@TempDir Path tempDir) {
+        LauncherUserPaths userPaths = new LauncherUserPaths(
+                tempDir.resolve("keystone.properties"),
+                tempDir.resolve("keystone")
+        );
+
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new LauncherConfigurationResolver(
+                        () -> userPaths,
+                        null
+                )
+        );
+
+        assertEquals("source", exception.getMessage());
     }
 
     @Test
@@ -190,7 +330,7 @@ class LauncherConfigurationResolverTest {
                 tempDir.resolve("keystone")
         );
 
-        String[] args = {};
+        String[] args = {"--local-config"};
         LauncherConfigurationResolver resolver = new LauncherConfigurationResolver(
                 () -> userPaths
         );
@@ -227,10 +367,12 @@ class LauncherConfigurationResolverTest {
         LauncherConfigurationResolver resolver =
                 new LauncherConfigurationResolver(() -> userPaths);
 
+        String[] args = {"--local-config"};
+
         //when & then
         LocalManifestUriConfigurationException exception = assertThrows(
                 LocalManifestUriConfigurationException.class,
-                () -> resolver.resolve(new String[0])
+                () -> resolver.resolve(args)
         );
 
         assertInstanceOf(
@@ -385,7 +527,9 @@ class LauncherConfigurationResolverTest {
     }
 
     @Test
-    void should_use_default_configuration_when_no_args_are_provided(@TempDir Path tempDir) throws IOException {
+    void should_not_fallback_to_local_configuration_when_bundled_resource_is_missing(
+            @TempDir Path tempDir
+    ) throws IOException {
         //given
         LauncherUserPaths userPaths = new LauncherUserPaths(
                 tempDir.resolve("keystone.properties"),
@@ -394,30 +538,31 @@ class LauncherConfigurationResolverTest {
 
         Files.writeString(
                 userPaths.configurationFile(),
-                "manifest.uri=https://keystone.com/manifest.json",
-                StandardCharsets.UTF_8
+                "https://local-example.com/manifest.json"
         );
 
         String[] args = {};
         LauncherConfigurationResolver resolver = new LauncherConfigurationResolver(
-                () -> userPaths
+                () -> userPaths,
+                getSource(null)
         );
 
         //when
-        LauncherConfiguration configuration = resolver.resolve(args);
-
-        //then
-        URI manifest = configuration.manifestUri();
-        Path launcherDirectory = configuration.launcherDirectory();
-
-        assertEquals(
-                "https://keystone.com/manifest.json",
-                manifest.toString()
+        ManifestUriConfigurationException exception = assertThrows(
+                ManifestUriConfigurationException.class,
+                () -> resolver.resolve(args)
         );
 
         assertEquals(
-                userPaths.defaultLauncherDirectory(),
-                launcherDirectory
+                "Bundled manifest properties are unavailable",
+                exception.getMessage()
+        );
+    }
+
+    private BundledManifestUriSource getSource(InputStream inputStream) {
+        return new BundledManifestUriSource(
+                new DefaultManifestUriParser(),
+                () -> inputStream
         );
     }
 }

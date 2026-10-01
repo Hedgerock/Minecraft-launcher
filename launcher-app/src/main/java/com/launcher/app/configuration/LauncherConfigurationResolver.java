@@ -15,11 +15,30 @@ public final class LauncherConfigurationResolver {
     private static final String LOCAL_CONFIGURATION_ARGUMENT = "--local-config";
 
     private final Supplier<LauncherUserPaths> launcherUserPathsSupplier;
+    private final BundledManifestUriSource source;
+    private final ManifestUriParser parser = new DefaultManifestUriParser();
 
-    LauncherConfigurationResolver(Supplier<LauncherUserPaths> launcherUserPathsSupplier) {
+    LauncherConfigurationResolver(
+            Supplier<LauncherUserPaths> launcherUserPathsSupplier,
+            BundledManifestUriSource source
+    ) {
         this.launcherUserPathsSupplier = Objects.requireNonNull(
                 launcherUserPathsSupplier,
                 "launcherUserPathsSupplier"
+        );
+
+        this.source = Objects.requireNonNull(
+                source,
+                "source"
+        );
+    }
+
+    LauncherConfigurationResolver(Supplier<LauncherUserPaths> pathsSupplier) {
+        this(
+                pathsSupplier,
+                new BundledManifestUriSource(
+                        new DefaultManifestUriParser()
+                )
         );
     }
 
@@ -28,7 +47,6 @@ public final class LauncherConfigurationResolver {
     }
 
     public LauncherConfiguration resolve(String[] args) {
-        ManifestUriParser parser = new DefaultManifestUriParser();
         PropertiesManifestUriSource manifestUriSource = new PropertiesManifestUriSource(parser);
 
         boolean localConfigurationSelected =
@@ -42,9 +60,15 @@ public final class LauncherConfigurationResolver {
                 ? launcherUserPathsSupplier.get()
                 : null;
 
-        URI manifestUri = explicitManifestUri != null
-                ? explicitManifestUri
-                : loadLocalManifestUri(manifestUriSource, paths.configurationFile());
+        URI manifestUri;
+
+        if (explicitManifestUri != null) {
+            manifestUri = explicitManifestUri;
+        } else if (localConfigurationSelected) {
+            manifestUri = loadLocalManifestUri(manifestUriSource, paths.configurationFile());
+        } else {
+            manifestUri = source.load();
+        }
 
         Path launcherDirectory = args.length > 1
                 ? resolveLauncherDirectory(args[1])

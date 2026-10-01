@@ -77,3 +77,4 @@
 | [ADR-0063](records/ADR-0063-startup-user-paths-failure-boundary.md)                 | Граница ошибки пользовательских путей при startup                  | configuration      |
 | [ADR-0064](records/ADR-0064-explicit-launcher-directory-failure-boundary.md)        | Граница ошибки явно заданной launcher directory при startup        | configuration      |
 | [ADR-0065](records/ADR-0065-presentation-startup-configuration-retry-boundary.md)   | Граница повторной подготовки локальной startup-конфигурации        | configuration      |
+| [ADR-0066](records/ADR-0066-publisher-managed-manifest-source-boundary.md)          | Граница управляемого источника манифеста                           | configuration      |

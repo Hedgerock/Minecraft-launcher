@@ -1,5 +1,9 @@
 ## Unreleased
 
+### Added
+
+- Documented publisher-managed manifest source boundary decision
+
 ---
 
 ## v0.9.0 – Local UI Launch Flow

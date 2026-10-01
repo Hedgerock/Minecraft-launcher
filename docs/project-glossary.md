@@ -146,8 +146,8 @@ Production adapter вводит контролируемую запись с и�
 
 `AVAILABLE` устанавливается после успешного разрешения конфигурации и создания presentation launch boundary
 
-`CONFIGURATION_FAILED` означает ожидаемую ошибку чтения локальной конфигурации, проверки manifest URI, определения
-пользовательских путей по умолчанию или проверки явно заданной launcher directory
+`CONFIGURATION_FAILED` означает ошибку подготовки manifest URI из упакованного или явно выбранного локального источника,
+проверки явного URI, определения пользовательских путей или проверки явно заданной launcher directory
 
 Launch action доступен только при `AVAILABLE` и доступности запроса по `PresentationLaunchStateMachine`
 

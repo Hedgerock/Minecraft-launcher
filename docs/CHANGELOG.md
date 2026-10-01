@@ -6,6 +6,10 @@
 - Documented startup manifest source selection boundary decision
 - Documented bundled managed manifest URI source decision
 
+### Changed
+
+- Selected the bundled manifest URI source for default startup and required `--local-config` for local file selection
+
 ---
 
 ## v0.9.0 – Local UI Launch Flow

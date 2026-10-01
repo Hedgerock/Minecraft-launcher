@@ -3,6 +3,7 @@
 ### Added
 
 - Documented publisher-managed manifest source boundary decision
+- Documented startup manifest source selection boundary decision
 
 ---
 

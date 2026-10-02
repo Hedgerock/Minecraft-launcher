@@ -7,6 +7,7 @@
 - Documented bundled managed manifest URI source decision
 - Documented managed manifest acceptance boundary decision
 - Documented managed manifest authenticity boundary decision
+- Documented managed manifest signature delivery contract decision
 
 ### Changed
 

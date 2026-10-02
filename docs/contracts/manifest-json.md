@@ -17,9 +17,11 @@
 
 Получение manifest JSON по HTTP принадлежит модулю `launcher-api`
 
-`JavaLauncherHttpClient` выполняет HTTP GET и возвращает тело ответа как строку
+`JavaLauncherHttpClient` выполняет HTTP GET и возвращает тело ответа как строку либо исходные байты
 
-`HttpManifestClient` использует `LauncherHttpClient` для загрузки JSON по `manifestUri`
+`HttpManifestClient` предоставляет оба способа загрузки манифеста по `manifestUri`
+
+`HttpManifestService` использует строковый результат для преобразования JSON в `ManifestLoadResult`
 
 ```text
 JSON manifest

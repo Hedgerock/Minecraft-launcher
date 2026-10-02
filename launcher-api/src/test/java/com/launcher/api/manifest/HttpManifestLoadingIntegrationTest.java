@@ -4,6 +4,7 @@ import com.launcher.api.http.JavaLauncherHttpClient;
 import com.launcher.api.manifest.client.HttpManifestClient;
 import com.launcher.api.manifest.library.DefaultRuntimeLibrarySelector;
 import com.launcher.api.manifest.mapper.JsonManifestMapper;
+import com.launcher.api.manifest.support.ManifestJsonProvider;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.runtime.OperatingSystem;
@@ -30,7 +31,8 @@ class HttpManifestLoadingIntegrationTest {
         );
 
         server.createContext("/manifest.json", exchange -> {
-            byte[] response = getManifestJson().getBytes(StandardCharsets.UTF_8);
+            byte[] response = ManifestJsonProvider.getMinimumValidManifestJson()
+                    .getBytes(StandardCharsets.UTF_8);
 
             exchange.getResponseHeaders().add("Content-Type", "application/json");
             exchange.sendResponseHeaders(200, response.length);
@@ -83,35 +85,4 @@ class HttpManifestLoadingIntegrationTest {
             HttpManifestClient client,
             JsonManifestMapper mapper
     ) {}
-
-    private String getManifestJson() {
-        return """
-                {
-                    "minecraftVersion": "1.12.2",
-                    "loader": {
-                        "type": "fabric",
-                        "version": "0.16.10"
-                    },
-                    "files": [],
-                    "launchInfo": {
-                        "mainClass": "net.minecraft.client.main.Main",
-                        "jvmArgs": ["-Xmx2G", "-Djava.class.path=${classpath}"],
-                        "gameArgs": ["--version", "${version_name}"],
-                        "classpath": ["versions/client.jar"],
-                        "javaExecutable": "java",
-                        "javaVersionRequirement": {
-                            "minimumMajorVersion": 17
-                        }
-                    },
-                    "libraries": [
-                        {
-                            "path": "libraries/org/example/example.jar",
-                            "sha256": "library-sha256",
-                            "size": 123,
-                            "url": "https://example.com/libraries/org/example/example.jar"
-                        }
-                    ]
-                }
-                """;
-    }
 }

@@ -80,3 +80,4 @@
 | [ADR-0066](records/ADR-0066-publisher-managed-manifest-source-boundary.md)          | Граница управляемого источника манифеста                           | configuration      |
 | [ADR-0067](records/ADR-0067-startup-manifest-source-selection-boundary.md)          | Граница выбора источника манифеста при startup                     | configuration      |
 | [ADR-0068](records/ADR-0068-bundled-manifest-uri-source-boundary.md)                | Поставка URI управляемого манифеста в составе приложения           | configuration      |
+| [ADR-0069](records/ADR-0069-managed-manifest-acceptance-boundary.md)                | Граница принятия управляемого манифеста                            | manifest           |

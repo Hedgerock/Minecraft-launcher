@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(app): add explicit local manifest source selection`
+> `feat(app): select bundled manifest URI for default startup`
+
 ---
 
 ## Контекст

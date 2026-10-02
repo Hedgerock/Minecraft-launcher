@@ -5,6 +5,7 @@
 - Documented publisher-managed manifest source boundary decision
 - Documented startup manifest source selection boundary decision
 - Documented bundled managed manifest URI source decision
+- Documented managed manifest acceptance boundary decision
 
 ### Changed
 

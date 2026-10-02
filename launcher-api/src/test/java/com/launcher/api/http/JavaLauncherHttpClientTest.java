@@ -11,6 +11,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,6 +41,24 @@ class JavaLauncherHttpClientTest {
     }
 
     @Test
+    void should_throw_exception_for_byte_result_when_status_not_success() {
+        //given
+        registerResponse(
+                "/manifest.json",
+                404,
+                ""
+        );
+
+        //when & then
+        HttpRequestException exception = assertThrows(
+                HttpRequestException.class,
+                () -> javaLauncherHttpClient.getBytes(uri("/manifest.json"))
+        );
+
+        assertTrue(exception.getMessage().contains("HTTP GET failed with status code"));
+    }
+
+    @Test
     void should_throw_exception_for_non_success_status() {
         //given
         registerResponse(
@@ -55,6 +74,27 @@ class JavaLauncherHttpClientTest {
         );
 
         assertTrue(exception.getMessage().contains("HTTP GET failed with status code"));
+    }
+
+    @Test
+    void should_return_response_body_as_bytes_for_successful_get() {
+        //given
+        byte[] expectedBody = {(byte) 0xFF, 0x00, 0x41};
+
+        registerResponse(
+                "/manifest.json",
+                200,
+                expectedBody
+        );
+
+        //when
+        byte[] result = javaLauncherHttpClient.getBytes(uri("/manifest.json"));
+
+        //then
+        assertArrayEquals(
+                expectedBody,
+                result
+        );
     }
 
     @Test
@@ -74,14 +114,31 @@ class JavaLauncherHttpClientTest {
     }
 
     @Test
+    void should_reject_null_uri_for_byte_result() {
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> javaLauncherHttpClient.getBytes(null)
+        );
+
+        assertEquals(
+                "uri",
+                exception.getMessage()
+        );
+    }
+
+    @Test
     void should_reject_null_uri() {
         //when & then
-        NullPointerException nullPointerException = assertThrows(
+        NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> javaLauncherHttpClient.get(null)
         );
 
-        assertTrue(nullPointerException.getMessage().contains("uri"));
+        assertEquals(
+                "uri",
+                exception.getMessage()
+        );
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -99,17 +156,27 @@ class JavaLauncherHttpClientTest {
             int statusCode,
             String body
     ) {
+        registerResponse(
+                path,
+                statusCode,
+                body.getBytes(StandardCharsets.UTF_8)
+        );
+    }
+
+    private void registerResponse(
+            String path,
+            int statusCode,
+            byte[] body
+    ) {
         httpServer.createContext(
                 path,
                 exchange -> {
-                    byte[] response = body.getBytes(StandardCharsets.UTF_8);
-
                     exchange.sendResponseHeaders(
                             statusCode,
-                            response.length
+                            body.length
                     );
 
-                    exchange.getResponseBody().write(response);
+                    exchange.getResponseBody().write(body);
                     exchange.close();
                 }
         );

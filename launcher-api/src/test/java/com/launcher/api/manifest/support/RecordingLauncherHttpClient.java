@@ -6,6 +6,7 @@ import java.net.URI;
 
 public final class RecordingLauncherHttpClient implements LauncherHttpClient {
     private String response = "{}";
+    private byte[] responseOfBytes;
     private URI uri;
 
     @Override
@@ -14,8 +15,18 @@ public final class RecordingLauncherHttpClient implements LauncherHttpClient {
         return response;
     }
 
+    @Override
+    public byte[] getBytes(URI uri) {
+        this.uri = uri;
+        return responseOfBytes;
+    }
+
     public void setResponse(String response) {
         this.response = response;
+    }
+
+    public void setResponse(byte[] response) {
+        this.responseOfBytes = response;
     }
 
     public URI getUri() {

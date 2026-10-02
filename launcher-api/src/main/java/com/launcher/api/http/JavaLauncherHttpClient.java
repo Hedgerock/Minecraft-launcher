@@ -22,6 +22,35 @@ public class JavaLauncherHttpClient implements LauncherHttpClient {
     }
 
     @Override
+    public byte[] getBytes(URI uri) {
+        Objects.requireNonNull(uri, "uri");
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .GET()
+                .build();
+
+        try {
+            HttpResponse<byte[]> response = httpClient.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofByteArray()
+            );
+
+            validateResponseStatusCode(response);
+
+            return response.body();
+        } catch (IOException e) {
+            throw new HttpRequestException(
+                    "HTTP GET failed",
+                    e
+            );
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new HttpRequestException("HTTP GET interrupted", e);
+        }
+    }
+
+    @Override
     public String get(URI uri) {
         Objects.requireNonNull(uri, "uri");
 
@@ -33,11 +62,7 @@ public class JavaLauncherHttpClient implements LauncherHttpClient {
                     HttpResponse.BodyHandlers.ofString()
             );
 
-            if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                throw new HttpRequestException(
-                        "HTTP GET failed with status code: " + response.statusCode()
-                );
-            }
+            validateResponseStatusCode(response);
 
             return response.body();
 
@@ -46,6 +71,14 @@ public class JavaLauncherHttpClient implements LauncherHttpClient {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new HttpRequestException("HTTP GET interrupted", e);
+        }
+    }
+
+    private <T> void validateResponseStatusCode(HttpResponse<T> response) {
+        if (response.statusCode() < 200 || response.statusCode() >= 300) {
+            throw new HttpRequestException(
+                    "HTTP GET failed with status code: " + response.statusCode()
+            );
         }
     }
 }

@@ -25,4 +25,9 @@ public class HttpManifestClient implements ManifestClient {
     public String download() {
         return launcherHttpClient.get(this.manifestUri);
     }
+
+    @Override
+    public byte[] downloadBytes() {
+        return launcherHttpClient.getBytes(this.manifestUri);
+    }
 }

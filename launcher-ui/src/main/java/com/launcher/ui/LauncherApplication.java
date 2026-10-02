@@ -2,9 +2,9 @@ package com.launcher.ui;
 
 import com.launcher.app.bootstrap.Bootstrap;
 import com.launcher.app.configuration.LauncherConfigurationResolver;
+import com.launcher.app.configuration.ResolvedLauncherConfiguration;
 import com.launcher.app.presentation.LaunchRequestResult;
 import com.launcher.app.presentation.PresentationLaunchBoundary;
-import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.ui.phase.JavaFxPresentationLaunchPhaseHandler;
 import com.launcher.ui.result.JavaFxPresentationLaunchCompletionHandler;
 import com.launcher.ui.startup.PresentationStartupResult;
@@ -158,7 +158,7 @@ public class LauncherApplication extends Application {
     }
 
     private PresentationLaunchBoundary createPresentationLaunchBoundary(
-            LauncherConfiguration configuration,
+            ResolvedLauncherConfiguration configuration,
             Button launchButton,
             Button retryButton,
             Label launchStatusLabel,

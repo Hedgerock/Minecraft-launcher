@@ -1,6 +1,8 @@
 package com.launcher.app.integration;
 
 import com.launcher.api.http.JavaLauncherHttpClient;
+import com.launcher.app.configuration.ManifestSourceKind;
+import com.launcher.app.configuration.ResolvedLauncherConfiguration;
 import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.app.runtime.SystemRuntimeEnvironmentProvider;
 import com.launcher.app.service.LauncherServices;
@@ -78,8 +80,12 @@ public class ManifestResourceRecoveryIntegrationTest {
                     tempDir.resolve("launch-directory")
             );
 
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration =
+                    new ResolvedLauncherConfiguration(configuration, ManifestSourceKind.EXPLICIT_URI);
+
             DirectoryProvider directoryProvider = new LocalDirectoryProvider(configuration);
-            DefaultLauncherServiceFactory defaultLauncherServiceFactory = getFactory(configuration, directoryProvider);
+            DefaultLauncherServiceFactory defaultLauncherServiceFactory =
+                    getFactory(resolvedLauncherConfiguration, directoryProvider);
             LauncherServices services = defaultLauncherServiceFactory.createServices();
 
             ResourceEntry ordinaryResource = new ResourceEntry(
@@ -193,8 +199,12 @@ public class ManifestResourceRecoveryIntegrationTest {
                     tempDir.resolve("launch-directory")
             );
 
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration =
+                    new ResolvedLauncherConfiguration(configuration, ManifestSourceKind.EXPLICIT_URI);
+
             DirectoryProvider directoryProvider = new LocalDirectoryProvider(configuration);
-            DefaultLauncherServiceFactory defaultLauncherServiceFactory = getFactory(configuration, directoryProvider);
+            DefaultLauncherServiceFactory defaultLauncherServiceFactory =
+                    getFactory(resolvedLauncherConfiguration, directoryProvider);
             LauncherServices services = defaultLauncherServiceFactory.createServices();
 
             ManifestLoadResult result = services.manifestService().loadManifest();
@@ -237,11 +247,11 @@ public class ManifestResourceRecoveryIntegrationTest {
     }
 
     private DefaultLauncherServiceFactory getFactory(
-            LauncherConfiguration configuration,
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration,
             DirectoryProvider directoryProvider
     ) {
         return new DefaultLauncherServiceFactory(
-                configuration,
+                resolvedLauncherConfiguration,
                 new LauncherInfrastructure(
                         new JavaLauncherHttpClient(),
                         new LocalFileStorage(),

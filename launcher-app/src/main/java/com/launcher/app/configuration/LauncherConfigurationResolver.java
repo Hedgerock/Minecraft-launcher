@@ -46,7 +46,7 @@ public final class LauncherConfigurationResolver {
         this(LauncherConfigurationResolver::resolveSystemUserPaths);
     }
 
-    public LauncherConfiguration resolve(String[] args) {
+    public ResolvedLauncherConfiguration resolve(String[] args) {
         PropertiesManifestUriSource manifestUriSource = new PropertiesManifestUriSource(parser);
 
         boolean localConfigurationSelected =
@@ -61,20 +61,27 @@ public final class LauncherConfigurationResolver {
                 : null;
 
         URI manifestUri;
+        ManifestSourceKind sourceKind;
 
         if (explicitManifestUri != null) {
             manifestUri = explicitManifestUri;
+            sourceKind = ManifestSourceKind.EXPLICIT_URI;
         } else if (localConfigurationSelected) {
             manifestUri = loadLocalManifestUri(manifestUriSource, paths.configurationFile());
+            sourceKind = ManifestSourceKind.LOCAL_CONFIG;
         } else {
             manifestUri = source.load();
+            sourceKind = ManifestSourceKind.MANAGED;
         }
 
         Path launcherDirectory = args.length > 1
                 ? resolveLauncherDirectory(args[1])
                 : paths.defaultLauncherDirectory();
 
-        return new LauncherConfiguration(manifestUri, launcherDirectory);
+        return new ResolvedLauncherConfiguration(
+                new LauncherConfiguration(manifestUri, launcherDirectory),
+                sourceKind
+        );
     }
 
     private Path resolveLauncherDirectory(String value) {

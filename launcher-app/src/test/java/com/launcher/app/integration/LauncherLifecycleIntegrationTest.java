@@ -2,6 +2,8 @@ package com.launcher.app.integration;
 
 import com.launcher.app.assembly.DefaultApplicationAssembly;
 import com.launcher.app.bootstrap.Bootstrap;
+import com.launcher.app.configuration.ManifestSourceKind;
+import com.launcher.app.configuration.ResolvedLauncherConfiguration;
 import com.launcher.app.presentation.LaunchRequestResult;
 import com.launcher.app.presentation.PresentationLaunchBoundary;
 import com.launcher.app.presentation.completion.PresentationLaunchCompletion;
@@ -58,13 +60,16 @@ class LauncherLifecycleIntegrationTest {
                     Optional.of(executable.toString())
             );
 
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration =
+                    new ResolvedLauncherConfiguration(config, ManifestSourceKind.MANAGED);
+
             List<Object> callbacks = new CopyOnWriteArrayList<>();
             AtomicReference<PresentationLaunchCompletion> receivedCompletion =
                     new AtomicReference<>();
 
             CountDownLatch completionHandled = new CountDownLatch(1);
 
-            Bootstrap bootstrap = new Bootstrap(config);
+            Bootstrap bootstrap = new Bootstrap(resolvedLauncherConfiguration);
 
             try (PresentationLaunchBoundary boundary =
                     bootstrap.createPresentationLaunchBoundary(
@@ -138,7 +143,10 @@ class LauncherLifecycleIntegrationTest {
                     Optional.of(executable.toString())
             );
 
-            DefaultApplicationAssembly assembly = new DefaultApplicationAssembly(config);
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration =
+                    new ResolvedLauncherConfiguration(config, ManifestSourceKind.MANAGED);
+
+            DefaultApplicationAssembly assembly = new DefaultApplicationAssembly(resolvedLauncherConfiguration);
 
             LauncherEngine engine = assembly.createEngine();
 

@@ -1,5 +1,6 @@
 package com.launcher.app.assembly;
 
+import com.launcher.app.configuration.ResolvedLauncherConfiguration;
 import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.app.infrastructure.factory.DefaultLauncherInfrastructureFactory;
 import com.launcher.app.infrastructure.factory.LauncherInfrastructureFactory;
@@ -12,7 +13,6 @@ import com.launcher.app.service.factory.DefaultLauncherServiceFactory;
 import com.launcher.app.service.factory.LauncherServicesFactory;
 import com.launcher.app.storage.directory.LocalDirectoryProvider;
 import com.launcher.core.LauncherEngine;
-import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.event.EventListener;
 import com.launcher.core.event.events.StateChangedEvent;
@@ -52,10 +52,10 @@ import com.launcher.core.storage.directory.DirectoryProvider;
 import java.util.Objects;
 
 public final class DefaultApplicationAssembly implements ApplicationAssembly {
-    private final LauncherConfiguration launcherConfiguration;
+    private final ResolvedLauncherConfiguration resolvedLauncherConfiguration;
 
-    public DefaultApplicationAssembly(LauncherConfiguration launcherConfiguration) {
-        this.launcherConfiguration = launcherConfiguration;
+    public DefaultApplicationAssembly(ResolvedLauncherConfiguration resolvedLauncherConfiguration) {
+        this.resolvedLauncherConfiguration = resolvedLauncherConfiguration;
     }
 
     public LauncherEngine createEngine(EventListener<StateChangedEvent> stateListener) {
@@ -127,11 +127,11 @@ public final class DefaultApplicationAssembly implements ApplicationAssembly {
 
     private OperationManager createOperationManager(LauncherInfrastructure launcherInfrastructure) {
         ResourcePathResolver resourcePathResolver = new SafeResourcePathResolver();
-        DirectoryProvider directoryProvider = new LocalDirectoryProvider(launcherConfiguration);
+        DirectoryProvider directoryProvider = new LocalDirectoryProvider(resolvedLauncherConfiguration.configuration());
         RuntimeEnvironmentProvider environmentProvider = new SystemRuntimeEnvironmentProvider();
 
         LauncherServicesFactory servicesFactory = new DefaultLauncherServiceFactory(
-                launcherConfiguration,
+                resolvedLauncherConfiguration,
                 launcherInfrastructure,
                 resourcePathResolver,
                 directoryProvider,

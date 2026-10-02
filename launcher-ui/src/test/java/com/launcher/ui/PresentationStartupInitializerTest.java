@@ -3,7 +3,9 @@ package com.launcher.ui;
 import com.launcher.app.configuration.LauncherConfigurationResolver;
 import com.launcher.app.configuration.LauncherDirectoryConfigurationException;
 import com.launcher.app.configuration.LocalManifestUriConfigurationException;
+import com.launcher.app.configuration.ManifestSourceKind;
 import com.launcher.app.configuration.ManifestUriConfigurationException;
+import com.launcher.app.configuration.ResolvedLauncherConfiguration;
 import com.launcher.app.configuration.path.LauncherUserPathsResolutionException;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.ui.startup.PresentationStartupResult;
@@ -37,7 +39,7 @@ class PresentationStartupInitializerTest {
         AtomicInteger attempts = new AtomicInteger();
         AtomicInteger boundaryInitializations = new AtomicInteger();
 
-        Supplier<LauncherConfiguration> configurationResolver = () -> {
+        Supplier<ResolvedLauncherConfiguration> configurationResolver = () -> {
             attempts.incrementAndGet();
 
             throw new LocalManifestUriConfigurationException(
@@ -46,7 +48,7 @@ class PresentationStartupInitializerTest {
             );
         };
 
-        Consumer<LauncherConfiguration> boundaryInitializer =
+        Consumer<ResolvedLauncherConfiguration> boundaryInitializer =
                 configuration -> boundaryInitializations.incrementAndGet();
 
         //when
@@ -77,7 +79,7 @@ class PresentationStartupInitializerTest {
         AtomicInteger attempts = new AtomicInteger();
         AtomicInteger boundaryInitializations = new AtomicInteger();
 
-        Supplier<LauncherConfiguration> configurationResolver = () -> {
+        Supplier<ResolvedLauncherConfiguration> configurationResolver = () -> {
             if (attempts.getAndIncrement() == 0) {
                 throw new LocalManifestUriConfigurationException(
                         "Local configuration failed",
@@ -85,10 +87,10 @@ class PresentationStartupInitializerTest {
                 );
             }
 
-            return getConfiguration();
+            return new ResolvedLauncherConfiguration(getConfiguration(), ManifestSourceKind.LOCAL_CONFIG);
         };
 
-        Consumer<LauncherConfiguration> boundaryInitializer =
+        Consumer<ResolvedLauncherConfiguration> boundaryInitializer =
                 configuration -> boundaryInitializations.incrementAndGet();
 
         //when
@@ -120,11 +122,11 @@ class PresentationStartupInitializerTest {
                 "Configuration resolver failed"
         );
 
-        Supplier<LauncherConfiguration> configurationResolver = () -> {
+        Supplier<ResolvedLauncherConfiguration> configurationResolver = () -> {
             throw configurationFailure;
         };
 
-        Consumer<LauncherConfiguration> boundaryInitializer = config -> {};
+        Consumer<ResolvedLauncherConfiguration> boundaryInitializer = config -> {};
 
         //when & then
         RuntimeException exception = assertThrows(
@@ -143,13 +145,14 @@ class PresentationStartupInitializerTest {
         //given
         LauncherConfiguration configuration = getConfiguration();
 
-        Supplier<LauncherConfiguration> configurationResolver = () -> configuration;
+        Supplier<ResolvedLauncherConfiguration> configurationResolver = () ->
+                new ResolvedLauncherConfiguration(configuration, ManifestSourceKind.LOCAL_CONFIG);
 
         RuntimeException boundaryFailure = new RuntimeException(
                 "Boundary initialization failed"
         );
 
-        Consumer<LauncherConfiguration> boundaryInitializer = config -> {
+        Consumer<ResolvedLauncherConfiguration> boundaryInitializer = config -> {
             throw boundaryFailure;
         };
 
@@ -166,7 +169,7 @@ class PresentationStartupInitializerTest {
     }
 
     @Test
-    void should_reject_null_configuration() {
+    void should_reject_null_resolved_launcher_configuration() {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
@@ -176,7 +179,7 @@ class PresentationStartupInitializerTest {
                 )
         );
 
-        assertEquals("configuration", exception.getMessage());
+        assertEquals("resolvedLauncherConfiguration", exception.getMessage());
     }
 
     @Test
@@ -184,7 +187,7 @@ class PresentationStartupInitializerTest {
         //given
         AtomicBoolean boundaryInitialized = new AtomicBoolean();
 
-        Supplier<LauncherConfiguration> failingSupplier = () -> {
+        Supplier<ResolvedLauncherConfiguration> failingSupplier = () -> {
             String[] args = {"ftp://example.org/manifest.jar", tempDir.toString()};
             return new LauncherConfigurationResolver().resolve(args);
         };
@@ -288,20 +291,21 @@ class PresentationStartupInitializerTest {
     @Test
     void should_return_available_state_for_success_configuration_resolver() {
         //given
-        AtomicReference<LauncherConfiguration> configurationAtomicReference = new AtomicReference<>();
-        LauncherConfiguration expectedConfiguration = getConfiguration();
+        AtomicReference<ResolvedLauncherConfiguration> configurationAtomicReference = new AtomicReference<>();
+        ResolvedLauncherConfiguration expectedResolvedConfiguration =
+                new ResolvedLauncherConfiguration(getConfiguration(), ManifestSourceKind.LOCAL_CONFIG);
 
         //when
         PresentationStartupResult result = initializer
                 .initialize(
-                        () -> expectedConfiguration,
+                        () -> expectedResolvedConfiguration,
                         configurationAtomicReference::set
                 );
 
         //then
         assertEquals(PresentationStartupState.AVAILABLE, result.state());
         assertFalse(result.retryAvailable());
-        assertSame(expectedConfiguration, configurationAtomicReference.get());
+        assertSame(expectedResolvedConfiguration, configurationAtomicReference.get());
     }
 
     @Test
@@ -310,7 +314,11 @@ class PresentationStartupInitializerTest {
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> initializer.initialize(
-                        this::getConfiguration,
+                        () ->
+                                new ResolvedLauncherConfiguration(
+                                        getConfiguration(),
+                                        ManifestSourceKind.LOCAL_CONFIG
+                                ),
                         null
                 )
         );

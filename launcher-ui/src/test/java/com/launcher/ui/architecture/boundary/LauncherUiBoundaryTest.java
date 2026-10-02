@@ -26,7 +26,6 @@ class LauncherUiBoundaryTest {
     private static final Set<String> ALLOWED_CORE_IMPORTS = Set.of(
             "import com.launcher.core.LaunchResult;",
             "import com.launcher.core.LaunchFailure;",
-            "import com.launcher.core.configuration.LauncherConfiguration;",
             "import com.launcher.core.operation.type.OperationType;"
     );
 
@@ -42,7 +41,8 @@ class LauncherUiBoundaryTest {
             "import com.launcher.app.configuration.ManifestUriConfigurationException;",
             "import com.launcher.app.configuration.path.LauncherUserPathsResolutionException;",
             "import com.launcher.app.configuration.LauncherDirectoryConfigurationException;",
-            "import com.launcher.app.configuration.LocalManifestUriConfigurationException;"
+            "import com.launcher.app.configuration.LocalManifestUriConfigurationException;",
+            "import com.launcher.app.configuration.ResolvedLauncherConfiguration;"
     );
 
     @Test

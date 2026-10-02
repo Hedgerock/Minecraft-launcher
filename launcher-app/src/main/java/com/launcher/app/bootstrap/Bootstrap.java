@@ -2,6 +2,7 @@ package com.launcher.app.bootstrap;
 
 import com.launcher.app.assembly.ApplicationAssembly;
 import com.launcher.app.assembly.DefaultApplicationAssembly;
+import com.launcher.app.configuration.ResolvedLauncherConfiguration;
 import com.launcher.app.presentation.DefaultPresentationLaunchBoundary;
 import com.launcher.app.presentation.LauncherLifecycleRunner;
 import com.launcher.app.presentation.PresentationLaunchBoundary;
@@ -12,21 +13,20 @@ import com.launcher.app.presentation.phase.PresentationLaunchPhaseMapper;
 import com.launcher.app.presentation.report.DefaultPresentationLaunchDiagnosticReporter;
 import com.launcher.app.presentation.report.PresentationLaunchDiagnosticReporter;
 import com.launcher.core.LauncherEngine;
-import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.event.EventListener;
 import com.launcher.core.event.events.StateChangedEvent;
 
 import java.util.Objects;
 
 public final class Bootstrap {
-    private final LauncherConfiguration launcherConfiguration;
+    private final ResolvedLauncherConfiguration resolvedLauncherConfiguration;
     private final LauncherLifecycleRunner launcherLifecycleRunner;
     private final PresentationLaunchPhaseMapper presentationLaunchPhaseMapper = new PresentationLaunchPhaseMapper();
 
-    public Bootstrap(LauncherConfiguration launcherConfiguration) {
-        this.launcherConfiguration = Objects.requireNonNull(
-                launcherConfiguration,
-                "launcherConfiguration"
+    public Bootstrap(ResolvedLauncherConfiguration resolvedLauncherConfiguration) {
+        this.resolvedLauncherConfiguration = Objects.requireNonNull(
+                resolvedLauncherConfiguration,
+                "resolvedLauncherConfiguration"
         );
         this.launcherLifecycleRunner =
                 phaseHandler -> {
@@ -34,17 +34,17 @@ public final class Bootstrap {
                             presentationLaunchPhaseMapper.map(event.newState())
                                     .ifPresent(phaseHandler::handle);
 
-                    return createEngine(listener).launch(launcherConfiguration);
+                    return createEngine(listener).launch(resolvedLauncherConfiguration.configuration());
         };
     }
 
     Bootstrap(
-            LauncherConfiguration launcherConfiguration,
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration,
             LauncherLifecycleRunner launcherLifecycleRunner
     ) {
-        this.launcherConfiguration = Objects.requireNonNull(
-                launcherConfiguration,
-                "launcherConfiguration"
+        this.resolvedLauncherConfiguration = Objects.requireNonNull(
+                resolvedLauncherConfiguration,
+                "resolvedLauncherConfiguration"
         );
         this.launcherLifecycleRunner = Objects.requireNonNull(
                 launcherLifecycleRunner,
@@ -79,7 +79,7 @@ public final class Bootstrap {
     }
 
     private LauncherEngine createEngine(EventListener<StateChangedEvent> eventListener) {
-        ApplicationAssembly applicationAssembly = new DefaultApplicationAssembly(launcherConfiguration);
+        ApplicationAssembly applicationAssembly = new DefaultApplicationAssembly(resolvedLauncherConfiguration);
         return applicationAssembly.createEngine(eventListener);
     }
 

@@ -1,5 +1,7 @@
 package com.launcher.app.assembly;
 
+import com.launcher.app.configuration.ManifestSourceKind;
+import com.launcher.app.configuration.ResolvedLauncherConfiguration;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,10 @@ class DefaultApplicationAssemblyTest {
                 Path.of("")
         );
 
-        ApplicationAssembly assembly = new DefaultApplicationAssembly(configuration);
+        ResolvedLauncherConfiguration resolvedLauncherConfiguration =
+                new ResolvedLauncherConfiguration(configuration, ManifestSourceKind.EXPLICIT_URI);
+
+        ApplicationAssembly assembly = new DefaultApplicationAssembly(resolvedLauncherConfiguration);
 
         //when
         LauncherEngine launcherEngine = assembly.createEngine();

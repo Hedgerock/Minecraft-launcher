@@ -3,8 +3,8 @@ package com.launcher.ui;
 import com.launcher.app.configuration.LauncherDirectoryConfigurationException;
 import com.launcher.app.configuration.LocalManifestUriConfigurationException;
 import com.launcher.app.configuration.ManifestUriConfigurationException;
+import com.launcher.app.configuration.ResolvedLauncherConfiguration;
 import com.launcher.app.configuration.path.LauncherUserPathsResolutionException;
-import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.ui.startup.PresentationStartupResult;
 
 import java.util.Objects;
@@ -14,16 +14,19 @@ import java.util.function.Supplier;
 final class PresentationStartupInitializer {
 
     PresentationStartupResult initialize(
-            Supplier<LauncherConfiguration> configurationResolver,
-            Consumer<LauncherConfiguration> boundaryInitializer
+            Supplier<ResolvedLauncherConfiguration> configurationResolver,
+            Consumer<ResolvedLauncherConfiguration> boundaryInitializer
     ) {
         Objects.requireNonNull(configurationResolver, "configurationResolver");
         Objects.requireNonNull(boundaryInitializer, "boundaryInitializer");
 
-        LauncherConfiguration configuration;
+        ResolvedLauncherConfiguration resolvedLauncherConfiguration;
 
         try {
-            configuration = Objects.requireNonNull(configurationResolver.get(), "configuration");
+            resolvedLauncherConfiguration = Objects.requireNonNull(
+                    configurationResolver.get(),
+                    "resolvedLauncherConfiguration"
+            );
         } catch (LocalManifestUriConfigurationException exception) {
             return PresentationStartupResult.localConfigurationFailed();
         } catch (ManifestUriConfigurationException |
@@ -32,7 +35,7 @@ final class PresentationStartupInitializer {
             return PresentationStartupResult.configurationFailed();
         }
 
-        boundaryInitializer.accept(configuration);
+        boundaryInitializer.accept(resolvedLauncherConfiguration);
         return PresentationStartupResult.available();
     }
 }

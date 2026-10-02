@@ -7,9 +7,9 @@ import com.launcher.api.manifest.library.RuntimeLibrarySelector;
 import com.launcher.api.manifest.mapper.JsonManifestMapper;
 import com.launcher.api.manifest.mapper.ManifestMapper;
 import com.launcher.api.manifest.service.HttpManifestService;
+import com.launcher.app.configuration.ResolvedLauncherConfiguration;
 import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.app.service.LauncherServices;
-import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadService;
 import com.launcher.core.game.GameService;
 import com.launcher.core.manifest.ManifestService;
@@ -36,20 +36,20 @@ import com.launcher.verification.file.FileVerifier;
 import com.launcher.verification.service.DefaultVerificationService;
 
 public final class DefaultLauncherServiceFactory implements LauncherServicesFactory {
-    private final LauncherConfiguration configuration;
+    private final ResolvedLauncherConfiguration resolvedLauncherConfiguration;
     private final LauncherInfrastructure infrastructure;
     private final ResourcePathResolver resourcePathResolver;
     private final DirectoryProvider directoryProvider;
     private final RuntimeEnvironmentProvider environmentProvider;
 
     public DefaultLauncherServiceFactory(
-            LauncherConfiguration configuration,
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration,
             LauncherInfrastructure infrastructure,
             ResourcePathResolver resourcePathResolver,
             DirectoryProvider directoryProvider,
             RuntimeEnvironmentProvider environmentProvider
     ) {
-        this.configuration = configuration;
+        this.resolvedLauncherConfiguration = resolvedLauncherConfiguration;
         this.infrastructure = infrastructure;
         this.resourcePathResolver = resourcePathResolver;
         this.directoryProvider = directoryProvider;
@@ -59,7 +59,7 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
     private ManifestService createManifestService() {
         ManifestClient manifestClient = new HttpManifestClient(
                 infrastructure.launcherHttpClient(),
-                configuration.manifestUri()
+                resolvedLauncherConfiguration.configuration().manifestUri()
         );
         RuntimeLibrarySelector runtimeLibrarySelector = new DefaultRuntimeLibrarySelector();
 

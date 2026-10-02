@@ -1,5 +1,7 @@
 package com.launcher.app.bootstrap;
 
+import com.launcher.app.configuration.ManifestSourceKind;
+import com.launcher.app.configuration.ResolvedLauncherConfiguration;
 import com.launcher.app.presentation.DefaultPresentationLaunchBoundary;
 import com.launcher.app.presentation.LaunchRequestResult;
 import com.launcher.app.presentation.LauncherLifecycleRunner;
@@ -43,7 +45,7 @@ class BootstrapTest {
         };
 
         Bootstrap bootstrap =
-                new Bootstrap(getDefaultConfiguration(), runner);
+                new Bootstrap(getResolvedLauncherConfiguration(), runner);
 
         RecordingPresentationLaunchCompletionHandler completionHandler =
                 new RecordingPresentationLaunchCompletionHandler();
@@ -80,7 +82,7 @@ class BootstrapTest {
         //given
         LaunchResult launchResult = LaunchResult.success(LauncherState.RUNNING);
         RecordingLauncherLifecycleRunner runner = new RecordingLauncherLifecycleRunner(launchResult);
-        Bootstrap bootstrap = new Bootstrap(getDefaultConfiguration(), runner);
+        Bootstrap bootstrap = new Bootstrap(getResolvedLauncherConfiguration(), runner);
 
         RecordingPresentationLaunchCompletionHandler handler = new RecordingPresentationLaunchCompletionHandler();
 
@@ -99,7 +101,7 @@ class BootstrapTest {
     @Test
     void should_reject_null_launcher_result_handler_in_presentation_launch_boundary_creation() {
         //given
-        Bootstrap bootstrap = new Bootstrap(getDefaultConfiguration());
+        Bootstrap bootstrap = new Bootstrap(getResolvedLauncherConfiguration());
 
         //when & then
         NullPointerException exception = assertThrows(
@@ -113,7 +115,7 @@ class BootstrapTest {
     @Test
     void should_create_launch_presentation_launch_boundary() {
         //given
-        Bootstrap bootstrap = new Bootstrap(getDefaultConfiguration());
+        Bootstrap bootstrap = new Bootstrap(getResolvedLauncherConfiguration());
 
         //when
         try (PresentationLaunchBoundary boundary =
@@ -130,7 +132,7 @@ class BootstrapTest {
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new Bootstrap(
-                        getDefaultConfiguration(),
+                        getResolvedLauncherConfiguration(),
                         null
                 )
         );
@@ -139,22 +141,44 @@ class BootstrapTest {
     }
 
     @Test
-    void should_reject_null_launcher_configuration() {
+    void should_reject_null_resolved_launcher_configuration() {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new Bootstrap(null)
         );
 
-        assertEquals("launcherConfiguration", exception.getMessage());
+        assertEquals("resolvedLauncherConfiguration", exception.getMessage());
+    }
+
+    @Test
+    void should_reject_null_resolved_launcher_configuration_for_package_private_constructor() {
+        //given
+        LaunchResult launchResult =
+                LaunchResult.success(LauncherState.RUNNING);
+
+        PresentationLaunchPhase expectedPhase =
+                PresentationLaunchPhase.LOADING_MANIFEST;
+
+        LauncherLifecycleRunner runner = handler -> {
+            handler.handle(expectedPhase);
+
+            return launchResult;
+        };
+
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new Bootstrap(null, runner)
+        );
+
+        assertEquals("resolvedLauncherConfiguration", exception.getMessage());
     }
 
     @Test
     void should_create_launcher_engine_through_bootstrap() {
         //given
-        LauncherConfiguration configuration = getDefaultConfiguration();
-
-        Bootstrap bootstrap = new Bootstrap(configuration);
+        Bootstrap bootstrap = new Bootstrap(getResolvedLauncherConfiguration());
 
         //when
         LauncherEngine launcherEngine = bootstrap.createEngine();
@@ -163,10 +187,13 @@ class BootstrapTest {
         assertNotNull(launcherEngine);
     }
 
-    private LauncherConfiguration getDefaultConfiguration() {
-        return new LauncherConfiguration(
-                URI.create("https://localhost/manifest.json"),
-                Path.of("")
+    private ResolvedLauncherConfiguration getResolvedLauncherConfiguration() {
+        return new ResolvedLauncherConfiguration(
+                new LauncherConfiguration(
+                        URI.create("https://localhost/manifest.json"),
+                        Path.of("")
+                ),
+                ManifestSourceKind.EXPLICIT_URI
         );
     }
 }

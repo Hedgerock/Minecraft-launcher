@@ -10,6 +10,7 @@
 ### Changed
 
 - Selected the bundled manifest URI source for default startup and required `--local-config` for local file selection
+- Preserved the selected manifest source kind through startup and application assembly without passing it to launcher-core
 
 ---
 

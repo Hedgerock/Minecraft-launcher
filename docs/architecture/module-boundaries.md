@@ -146,6 +146,11 @@
 
 Launch action доступен только после успешной startup-подготовки и при доступности запроса согласно `PresentationLaunchStateMachine`
 
+`launcher-app` сохраняет выбранный `ManifestSourceKind` вместе с `LauncherConfiguration` в `ResolvedLauncherConfiguration` до
+application assembly
+
+`launcher-ui` передает результат разрешения в `Bootstrap`, не интерпретируя режим источника
+
 `launcher-app` отдельно классифицирует ожидаемый отказ определения пользовательских путей по умолчанию как
 `LauncherUserPathsResolutionException`
 
@@ -168,8 +173,8 @@ launcher-ui
     -> launcher-app
 ```
 
-`launcher-ui` может напрямую зависеть от `launcher-core` только для использования внешних launcher lifecycle или configuration
-models, необходимых presentation layer, например `LaunchResult` и `LauncherConfiguration`
+`launcher-ui` может напрямую зависеть от `launcher-core` только для использования внешних моделей launcher lifecycle, необходимых
+presentation layer, например `LaunchResult` и `LaunchFailure`
 
 `OperationType` используется в `launcher-ui` только как метаданные `LaunchFailure` для выбора безопасного пользовательского
 сообщения

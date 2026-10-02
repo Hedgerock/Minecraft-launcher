@@ -26,6 +26,22 @@
 При невозможности определить необходимые пользовательские пути после применения платформенных правил завершает разрешение
 `LauncherUserPathsResolutionException`
 
+### ManifestSourceKind
+
+Модель `launcher-app`, фиксирующая выбранный при startup режим источника манифеста: `MANAGED`, `EXPLICIT_URI` или `LOCAL_CONFIG`
+
+Формируется по ветке выбора источника, а не по значению URI
+
+Не подтверждает подлинность загруженного манифеста
+
+### ResolvedLauncherConfiguration
+
+Результат разрешения startup-конфигурации в `launcher-app`
+
+Содержит `LauncherConfiguration` и `ManifestSourceKind` и сохраняет режим источника до application assembly
+
+В `launcher-core` передается только `LauncherConfiguration`
+
 ### LaunchResult
 
 Модель результата работы launcher lifecycle flow

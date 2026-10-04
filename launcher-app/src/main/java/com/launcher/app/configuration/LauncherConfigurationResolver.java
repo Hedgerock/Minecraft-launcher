@@ -9,6 +9,7 @@ import java.net.URI;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public final class LauncherConfigurationResolver {
@@ -62,6 +63,7 @@ public final class LauncherConfigurationResolver {
 
         URI manifestUri;
         ManifestSourceKind sourceKind;
+        ManagedManifestUris managedManifestUris = null;
 
         if (explicitManifestUri != null) {
             manifestUri = explicitManifestUri;
@@ -70,7 +72,8 @@ public final class LauncherConfigurationResolver {
             manifestUri = loadLocalManifestUri(manifestUriSource, paths.configurationFile());
             sourceKind = ManifestSourceKind.LOCAL_CONFIG;
         } else {
-            manifestUri = source.load();
+            managedManifestUris = source.load();
+            manifestUri = managedManifestUris.manifestUri();
             sourceKind = ManifestSourceKind.MANAGED;
         }
 
@@ -78,9 +81,14 @@ public final class LauncherConfigurationResolver {
                 ? resolveLauncherDirectory(args[1])
                 : paths.defaultLauncherDirectory();
 
+        Optional<ManagedManifestUris> managedManifestUrisOptional = managedManifestUris != null
+                        ? Optional.of(managedManifestUris)
+                        : Optional.empty();
+
         return new ResolvedLauncherConfiguration(
                 new LauncherConfiguration(manifestUri, launcherDirectory),
-                sourceKind
+                sourceKind,
+                managedManifestUrisOptional
         );
     }
 

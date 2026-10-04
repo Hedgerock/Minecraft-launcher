@@ -15,23 +15,70 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class BundledManifestUriSourceTest {
 
     @Test
-    void should_return_uri_from_properties() {
+    void should_fail_when_manifest_signature_uri_is_missing() {
         //given
         BundledManifestUriSource source = new BundledManifestUriSource(
                 new DefaultManifestUriParser(),
                 () -> new ByteArrayInputStream(
-                        "manifest.uri=https://example.org/manifest.json"
+                        " manifest.uri=https://example.org/manifest.json"
+                                .getBytes(StandardCharsets.UTF_8)
+                )
+        );
+
+        //when & then
+        assertThrows(
+                ManifestUriConfigurationException.class,
+                source::load
+        );
+    }
+
+    @Test
+    void should_fail_when_manifest_signature_uri_is_not_https() {
+        //given
+        BundledManifestUriSource source = new BundledManifestUriSource(
+                new DefaultManifestUriParser(),
+                () -> new ByteArrayInputStream(
+                        """
+                                manifest.uri=https://example.org/manifest.json
+                                manifest.signature.uri=http://example.org/sig
+                                """
+                                .getBytes(StandardCharsets.UTF_8)
+                )
+        );
+
+        //when & then
+        assertThrows(
+                ManifestUriConfigurationException.class,
+                source::load
+        );
+    }
+
+    @Test
+    void should_return_manifest_uri_and_signature_uri_from_properties() {
+        //given
+        BundledManifestUriSource source = new BundledManifestUriSource(
+                new DefaultManifestUriParser(),
+                () -> new ByteArrayInputStream(
+                        """
+                                manifest.uri=https://example.org/manifest.json
+                                manifest.signature.uri=https://example.org/sig
+                                """
                                 .getBytes(StandardCharsets.UTF_8)
                 )
         );
 
         //when
-        URI result = source.load();
+        ManagedManifestUris result = source.load();
 
         //then
         assertEquals(
                 URI.create("https://example.org/manifest.json"),
-                result
+                result.manifestUri()
+        );
+
+        assertEquals(
+                URI.create("https://example.org/sig"),
+                result.signatureUri()
         );
     }
 
@@ -108,7 +155,7 @@ class BundledManifestUriSourceTest {
         );
 
         assertEquals(
-                "Manifest URI must be an absolute HTTP(S) URI with a host",
+                "URI must be an absolute HTTPS URI with a host for managed",
                 exception.getMessage()
         );
     }

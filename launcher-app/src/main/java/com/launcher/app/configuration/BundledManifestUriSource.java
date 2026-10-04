@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Properties;
@@ -12,6 +11,7 @@ import java.util.function.Supplier;
 
 final class BundledManifestUriSource {
     private static final String MANIFEST_URI_PROPERTY = "manifest.uri";
+    private static final String MANIFEST_SIGNATURE_URI_PROPERTY = "manifest.signature.uri";
 
     private final ManifestUriParser manifestUriParser;
     private final Supplier<InputStream> propertiesResolver;
@@ -37,7 +37,7 @@ final class BundledManifestUriSource {
         );
     }
 
-    URI load() {
+    ManagedManifestUris load() {
         InputStream stream = propertiesResolver.get();
 
         if (stream == null) {
@@ -57,8 +57,13 @@ final class BundledManifestUriSource {
             );
         }
 
-        return manifestUriParser.parse(
-                properties.getProperty(MANIFEST_URI_PROPERTY)
+        return new ManagedManifestUris(
+                manifestUriParser.parseManaged(
+                        properties.getProperty(MANIFEST_URI_PROPERTY)
+                ),
+                manifestUriParser.parseManaged(
+                        properties.getProperty(MANIFEST_SIGNATURE_URI_PROPERTY)
+                )
         );
     }
 }

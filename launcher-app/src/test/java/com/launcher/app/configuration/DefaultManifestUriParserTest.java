@@ -12,6 +12,33 @@ class DefaultManifestUriParserTest {
     private final DefaultManifestUriParser parser = new DefaultManifestUriParser();
 
     @Test
+    void should_create_uri_for_managed_source_kind() {
+        //given
+        String candidate = "https://example.org/manifest.json";
+
+        //when
+        URI result = parser.parseManaged(candidate);
+
+        //then
+        assertEquals(
+                URI.create(candidate),
+                result
+        );
+    }
+
+    @Test
+    void should_reject_non_https_for_managed_uri() {
+        //given
+        String candidate = "http://localhost:3000/manifest.json";
+
+        //when & then
+        assertThrows(
+                ManifestUriConfigurationException.class,
+                () -> parser.parseManaged(candidate)
+        );
+    }
+
+    @Test
     void should_create_uri_with_https_prefix() {
         //given
         String candidate = "https://example.org/manifest.json";

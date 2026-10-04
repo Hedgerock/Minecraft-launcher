@@ -61,7 +61,10 @@ class LauncherLifecycleIntegrationTest {
             );
 
             ResolvedLauncherConfiguration resolvedLauncherConfiguration =
-                    new ResolvedLauncherConfiguration(config, ManifestSourceKind.MANAGED);
+                    new ResolvedLauncherConfiguration(
+                            config,
+                            ManifestSourceKind.EXPLICIT_URI
+                    );
 
             List<Object> callbacks = new CopyOnWriteArrayList<>();
             AtomicReference<PresentationLaunchCompletion> receivedCompletion =
@@ -144,7 +147,10 @@ class LauncherLifecycleIntegrationTest {
             );
 
             ResolvedLauncherConfiguration resolvedLauncherConfiguration =
-                    new ResolvedLauncherConfiguration(config, ManifestSourceKind.MANAGED);
+                    new ResolvedLauncherConfiguration(
+                            config,
+                            ManifestSourceKind.EXPLICIT_URI
+                    );
 
             DefaultApplicationAssembly assembly = new DefaultApplicationAssembly(resolvedLauncherConfiguration);
 

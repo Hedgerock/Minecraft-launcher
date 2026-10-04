@@ -18,8 +18,10 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LauncherConfigurationResolverTest {
 
@@ -35,13 +37,18 @@ class LauncherConfigurationResolverTest {
 
         Files.writeString(
                 userPaths.configurationFile(),
-                "manifest.uri=https://local.example/manifest.json"
+                """
+                        manifest.uri=https://local.example/manifest.json
+                        """
         );
 
         LauncherConfigurationResolver resolver = new LauncherConfigurationResolver(
                 () -> userPaths,
                 getSource(new ByteArrayInputStream(
-                        "manifest.uri=https://local.example/manifest.json"
+                        """
+                                manifest.uri=https://local.example/manifest.json
+                                manifest.signature.uri=https://local.example/manifest.sig
+                                """
                                 .getBytes(StandardCharsets.UTF_8)
                 ))
         );
@@ -60,6 +67,22 @@ class LauncherConfigurationResolverTest {
                 secondResult,
                 thirdResult
         );
+
+        assertTrue(firstResult.managedManifestUris().isPresent());
+
+        ManagedManifestUris expectedManagedManifestUris =
+                new ManagedManifestUris(
+                        URI.create("https://local.example/manifest.json"),
+                        URI.create("https://local.example/manifest.sig")
+                );
+
+        assertEquals(
+                expectedManagedManifestUris,
+                firstResult.managedManifestUris().get()
+        );
+
+        assertFalse(secondResult.managedManifestUris().isPresent());
+        assertFalse(thirdResult.managedManifestUris().isPresent());
 
         assertEquals(
                 ManifestSourceKind.MANAGED,
@@ -89,13 +112,19 @@ class LauncherConfigurationResolverTest {
 
         Files.writeString(
                 userPaths.configurationFile(),
-                "manifest.uri=https://local.example/manifest.json"
+                """
+                        manifest.uri=https://local.example/manifest.json
+                        manifest.signature.uri=https://example.org/manifest.sig
+                        """
         );
 
         LauncherConfigurationResolver resolver = new LauncherConfigurationResolver(
                 () -> userPaths,
                 getSource(new ByteArrayInputStream(
-                        "manifest.uri=https://example.org/manifest.json"
+                        """
+                                manifest.uri=https://example.org/manifest.json
+                                manifest.signature.uri=https://example.org/manifest.sig
+                                """
                                 .getBytes(StandardCharsets.UTF_8)
                 ))
         );
@@ -196,7 +225,7 @@ class LauncherConfigurationResolverTest {
         );
 
         assertEquals(
-                "Manifest URI must be an absolute HTTP(S) URI with a host",
+                "URI must be an absolute HTTPS URI with a host for managed",
                 exception.getMessage()
         );
     }

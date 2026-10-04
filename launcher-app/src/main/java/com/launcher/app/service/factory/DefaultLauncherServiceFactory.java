@@ -1,12 +1,16 @@
 package com.launcher.app.service.factory;
 
 import com.launcher.api.manifest.client.HttpManifestClient;
+import com.launcher.api.manifest.client.HttpManifestSignatureClient;
 import com.launcher.api.manifest.client.ManifestClient;
 import com.launcher.api.manifest.library.DefaultRuntimeLibrarySelector;
 import com.launcher.api.manifest.library.RuntimeLibrarySelector;
 import com.launcher.api.manifest.mapper.JsonManifestMapper;
 import com.launcher.api.manifest.mapper.ManifestMapper;
 import com.launcher.api.manifest.service.HttpManifestService;
+import com.launcher.api.manifest.service.SignedHttpManifestService;
+import com.launcher.api.manifest.signature.Ed25519ManifestSignatureVerifier;
+import com.launcher.app.configuration.BundledManifestPublicKeySource;
 import com.launcher.app.configuration.ResolvedLauncherConfiguration;
 import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.app.service.LauncherServices;
@@ -35,12 +39,51 @@ import com.launcher.verification.file.DefaultFileVerifier;
 import com.launcher.verification.file.FileVerifier;
 import com.launcher.verification.service.DefaultVerificationService;
 
+import java.security.PublicKey;
+import java.util.Objects;
+import java.util.function.Supplier;
+
 public final class DefaultLauncherServiceFactory implements LauncherServicesFactory {
     private final ResolvedLauncherConfiguration resolvedLauncherConfiguration;
     private final LauncherInfrastructure infrastructure;
     private final ResourcePathResolver resourcePathResolver;
     private final DirectoryProvider directoryProvider;
     private final RuntimeEnvironmentProvider environmentProvider;
+    private final Supplier<PublicKey> publicKeySupplier;
+
+    DefaultLauncherServiceFactory(
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration,
+            LauncherInfrastructure infrastructure,
+            ResourcePathResolver resourcePathResolver,
+            DirectoryProvider directoryProvider,
+            RuntimeEnvironmentProvider environmentProvider,
+            Supplier<PublicKey> publicKeySupplier
+    ) {
+        this.resolvedLauncherConfiguration = Objects.requireNonNull(
+                resolvedLauncherConfiguration,
+                "resolvedLauncherConfiguration"
+        );
+        this.infrastructure = Objects.requireNonNull(
+                infrastructure,
+                "infrastructure"
+        );
+        this.resourcePathResolver = Objects.requireNonNull(
+                resourcePathResolver,
+                "resourcePathResolver"
+        );
+        this.directoryProvider = Objects.requireNonNull(
+                directoryProvider,
+                "directoryProvider"
+        );
+        this.environmentProvider = Objects.requireNonNull(
+                environmentProvider,
+                "environmentProvider"
+        );
+        this.publicKeySupplier = Objects.requireNonNull(
+                publicKeySupplier,
+                "publicKeySupplier"
+        );
+    }
 
     public DefaultLauncherServiceFactory(
             ResolvedLauncherConfiguration resolvedLauncherConfiguration,
@@ -49,11 +92,32 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
             DirectoryProvider directoryProvider,
             RuntimeEnvironmentProvider environmentProvider
     ) {
-        this.resolvedLauncherConfiguration = resolvedLauncherConfiguration;
-        this.infrastructure = infrastructure;
-        this.resourcePathResolver = resourcePathResolver;
-        this.directoryProvider = directoryProvider;
-        this.environmentProvider = environmentProvider;
+        this(
+                resolvedLauncherConfiguration,
+                infrastructure,
+                resourcePathResolver,
+                directoryProvider,
+                environmentProvider,
+                () -> {
+                    BundledManifestPublicKeySource source =
+                            new BundledManifestPublicKeySource();
+                    return source.load();
+                }
+        );
+    }
+
+    @Override
+    public LauncherServices createServices() {
+        ResourceSetPlanner resourceSetPlanner = new ResourceSetPlanner(resourcePathResolver);
+
+        return new LauncherServices(
+                createManifestService(),
+                createVerificationService(directoryProvider, resourceSetPlanner),
+                createDirectoryService(directoryProvider),
+                createDownloadService(directoryProvider, resourceSetPlanner),
+                createGameService(),
+                createNativeExtractionService(directoryProvider, resourcePathResolver)
+        );
     }
 
     private ManifestService createManifestService() {
@@ -69,10 +133,26 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
                         environmentProvider
                 );
 
-        return new HttpManifestService(
-                manifestClient,
-                manifestMapper
-        );
+        return switch (resolvedLauncherConfiguration.sourceKind()) {
+            case EXPLICIT_URI, LOCAL_CONFIG ->
+                    new HttpManifestService(
+                            manifestClient,
+                            manifestMapper
+                    );
+            case MANAGED -> {
+                PublicKey publicKey = Objects.requireNonNull(publicKeySupplier.get(), "publicKey");
+
+                yield new SignedHttpManifestService(
+                        manifestClient,
+                        new HttpManifestSignatureClient(
+                                infrastructure.launcherHttpClient(),
+                                resolvedLauncherConfiguration.managedManifestUris().orElseThrow().signatureUri()
+                        ),
+                        new Ed25519ManifestSignatureVerifier(publicKey),
+                        manifestMapper
+                );
+            }
+        };
     }
 
     private DirectoryService createDirectoryService(DirectoryProvider directoryProvider) {
@@ -114,20 +194,6 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
     private GameService createGameService() {
         return new DefaultGameService(
                 new ProcessBuilderGameProcessLauncher()
-        );
-    }
-
-    @Override
-    public LauncherServices createServices() {
-        ResourceSetPlanner resourceSetPlanner = new ResourceSetPlanner(resourcePathResolver);
-
-        return new LauncherServices(
-                createManifestService(),
-                createVerificationService(directoryProvider, resourceSetPlanner),
-                createDirectoryService(directoryProvider),
-                createDownloadService(directoryProvider, resourceSetPlanner),
-                createGameService(),
-                createNativeExtractionService(directoryProvider, resourcePathResolver)
         );
     }
 }

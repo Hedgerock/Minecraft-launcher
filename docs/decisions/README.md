@@ -83,3 +83,4 @@
 | [ADR-0069](records/ADR-0069-managed-manifest-acceptance-boundary.md)                | Граница принятия управляемого манифеста                            | manifest           |
 | [ADR-0070](records/ADR-0070-managed-manifest-authenticity-boundary.md)              | Подтверждение подлинности управляемого манифеста                   | manifest           |
 | [ADR-0071](records/ADR-0071-managed-manifest-signature-delivery-contract.md)        | Контракт доставки подписи управляемого манифеста                   | manifest           |
+| [ADR-0072](records/ADR-0072-managed-manifest-publication-boundary.md)               | Граница публикации подписанного управляемого манифеста             | manifest           |

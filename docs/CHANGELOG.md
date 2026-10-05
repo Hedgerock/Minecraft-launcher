@@ -11,6 +11,7 @@
 - Added Ed25519 verification of original managed manifest bytes before JSON mapping
 - Added separate binary signature retrieval and bundled public key loading for managed manifests
 - Added test coverage for signed managed manifest assembly and HTTP redirect rejection
+- Documented signed managed manifest publication boundary decision
 
 ### Changed
 

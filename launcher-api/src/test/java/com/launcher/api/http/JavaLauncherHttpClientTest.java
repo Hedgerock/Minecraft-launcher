@@ -41,6 +41,50 @@ class JavaLauncherHttpClientTest {
     }
 
     @Test
+    void should_reject_get_redirection() {
+        //given
+        registerResponse(
+                "/manifest.json",
+                302,
+                EXPECTED_BODY,
+                "/manifest-redirect.json"
+        );
+
+        //when & then
+        HttpRequestException exception = assertThrows(
+                HttpRequestException.class,
+                () -> javaLauncherHttpClient.get(uri("/manifest.json"))
+        );
+
+        assertEquals(
+                "HTTP GET failed with status code: 302",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void should_reject_get_bytes_redirection() {
+        //given
+        registerResponse(
+                "/manifest.json",
+                302,
+                new byte[0],
+                "/manifest-redirect.json"
+        );
+
+        //when & then
+        HttpRequestException exception = assertThrows(
+                HttpRequestException.class,
+                () -> javaLauncherHttpClient.getBytes(uri("/manifest.json"))
+        );
+
+        assertEquals(
+                "HTTP GET failed with status code: 302",
+                exception.getMessage()
+        );
+    }
+
+    @Test
     void should_throw_exception_for_byte_result_when_status_not_success() {
         //given
         registerResponse(
@@ -141,7 +185,7 @@ class JavaLauncherHttpClientTest {
         );
     }
 
-    @SuppressWarnings("SameParameterValue")
+
     private URI uri(String path) {
         return URI.create(
                 "http://localhost:" +
@@ -150,7 +194,6 @@ class JavaLauncherHttpClientTest {
         );
     }
 
-    @SuppressWarnings("SameParameterValue")
     private void registerResponse(
             String path,
             int statusCode,
@@ -159,7 +202,22 @@ class JavaLauncherHttpClientTest {
         registerResponse(
                 path,
                 statusCode,
-                body.getBytes(StandardCharsets.UTF_8)
+                body.getBytes(StandardCharsets.UTF_8),
+                null
+        );
+    }
+
+    private void registerResponse(
+            String path,
+            int statusCode,
+            String body,
+            String location
+    ) {
+        registerResponse(
+                path,
+                statusCode,
+                body.getBytes(StandardCharsets.UTF_8),
+                location
         );
     }
 
@@ -168,9 +226,27 @@ class JavaLauncherHttpClientTest {
             int statusCode,
             byte[] body
     ) {
+       registerResponse(
+               path,
+               statusCode,
+               body,
+               null
+       );
+    }
+
+    private void registerResponse(
+            String path,
+            int statusCode,
+            byte[] body,
+            String location
+    ) {
         httpServer.createContext(
                 path,
                 exchange -> {
+                    if (location != null) {
+                        exchange.getResponseHeaders().set("Location", location);
+                    }
+
                     exchange.sendResponseHeaders(
                             statusCode,
                             body.length

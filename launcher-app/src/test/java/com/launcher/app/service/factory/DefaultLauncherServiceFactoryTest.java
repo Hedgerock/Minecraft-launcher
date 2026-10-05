@@ -1,8 +1,10 @@
 package com.launcher.app.service.factory;
 
 import com.launcher.api.http.JavaLauncherHttpClient;
+import com.launcher.api.http.LauncherHttpClient;
 import com.launcher.api.manifest.service.HttpManifestService;
 import com.launcher.api.manifest.service.SignedHttpManifestService;
+import com.launcher.api.manifest.signature.ManifestSignatureVerificationException;
 import com.launcher.app.configuration.ManagedManifestUris;
 import com.launcher.app.configuration.ManifestPublicKeyConfigurationException;
 import com.launcher.app.configuration.ManifestSourceKind;
@@ -11,21 +13,28 @@ import com.launcher.app.infrastructure.LauncherInfrastructure;
 import com.launcher.app.runtime.SystemRuntimeEnvironmentProvider;
 import com.launcher.app.service.LauncherServices;
 import com.launcher.app.storage.directory.LocalDirectoryProvider;
+import com.launcher.app.support.JsonProvider;
+import com.launcher.app.support.StubLauncherHttpClient;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.event.EventBus;
+import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.runtime.RuntimeEnvironmentProvider;
 import com.launcher.core.storage.directory.DirectoryProvider;
+import com.launcher.model.manifest.Manifest;
+import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.storage.file.LocalFileStorage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PublicKey;
+import java.security.Signature;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -35,9 +44,91 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DefaultLauncherServiceFactoryTest {
+    private static final String ALGORITHM = "Ed25519";
+
+    private static final URI MANIFEST_URI =
+            URI.create("https://example.test/manifest.json");
+    private static final URI SIGNATURE_URI =
+            URI.create("https://example.test/manifest.sig");
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void should_fail_when_manifest_was_modified_after_signing() throws Exception {
+        //given
+        byte[] manifestBytes = JsonProvider.MANIFEST_JSON
+                .getBytes(StandardCharsets.UTF_8);
+
+        KeyPair keyPair = KeyPairGenerator
+                .getInstance(ALGORITHM)
+                .generateKeyPair();
+
+        byte[] signatureBytes =
+                signatureBytes(keyPair, manifestBytes);
+
+        manifestBytes[0] ^= 1;
+
+        ManifestService manifestService = getManifestService(manifestBytes, signatureBytes, keyPair);
+
+        //when & then
+        ManifestSignatureVerificationException exception = assertThrows(
+                ManifestSignatureVerificationException.class,
+                manifestService::loadManifest
+        );
+
+        assertEquals(
+               "Manifest signature is invalid",
+               exception.getMessage()
+        );
+    }
+
+    @Test
+    void should_load_managed_manifest_through_signed_manifest_service() throws Exception {
+        //given
+        byte[] manifestBytes = JsonProvider.MANIFEST_JSON
+                .getBytes(StandardCharsets.UTF_8);
+
+        KeyPair keyPair = KeyPairGenerator
+                .getInstance(ALGORITHM)
+                .generateKeyPair();
+
+        byte[] signatureBytes =
+                signatureBytes(keyPair, manifestBytes);
+
+        //when
+        ManifestService manifestService = getManifestService(manifestBytes, signatureBytes, keyPair);
+        ManifestLoadResult result =
+                manifestService.loadManifest();
+
+        //then
+        assertInstanceOf(
+                SignedHttpManifestService.class,
+                manifestService
+        );
+
+        Manifest manifest = result.manifest();
+
+        assertEquals(
+                "1.12.2",
+                manifest.minecraftVersion()
+        );
+
+        assertEquals(
+                "fabric",
+                manifest.loader().type()
+        );
+
+        assertEquals(
+                "0.16.10",
+                manifest.loader().version()
+        );
+
+        assertEquals(
+                "net.minecraft.client.main.Main",
+                manifest.launchInfo().mainClass()
+        );
+    }
 
     @Test
     void should_fail_when_public_key_is_not_loaded() {
@@ -358,5 +449,64 @@ class DefaultLauncherServiceFactoryTest {
                 runtimeEnvironmentProvider(),
                 publicKeySupplier
         );
+    }
+
+    private byte[] signatureBytes(KeyPair keyPair, byte[] manifestBytes) throws Exception {
+        Signature signer = Signature.getInstance(ALGORITHM);
+        signer.initSign(keyPair.getPrivate());
+        signer.update(manifestBytes);
+
+        return signer.sign();
+    }
+
+    private ManifestService getManifestService(
+            byte[] manifestBytes,
+            byte[] signatureBytes,
+            KeyPair keyPair
+    ) {
+        LauncherHttpClient httpClient =
+                new StubLauncherHttpClient(
+                        MANIFEST_URI,
+                        manifestBytes,
+                        SIGNATURE_URI,
+                        signatureBytes
+                );
+
+        LauncherConfiguration configuration =
+                new LauncherConfiguration(
+                        MANIFEST_URI,
+                        tempDir.resolve("launch-directory")
+                );
+
+        ResolvedLauncherConfiguration resolvedLauncherConfiguration =
+                new ResolvedLauncherConfiguration(
+                        configuration,
+                        ManifestSourceKind.MANAGED,
+                        Optional.of(
+                                new ManagedManifestUris(
+                                        MANIFEST_URI,
+                                        SIGNATURE_URI
+                                )
+                        )
+                );
+
+        LauncherInfrastructure infrastructure =
+                new LauncherInfrastructure(
+                        httpClient,
+                        new LocalFileStorage(),
+                        new EventBus()
+                );
+
+        DefaultLauncherServiceFactory factory =
+                new DefaultLauncherServiceFactory(
+                        resolvedLauncherConfiguration,
+                        infrastructure,
+                        new SafeResourcePathResolver(),
+                        new LocalDirectoryProvider(configuration),
+                        new SystemRuntimeEnvironmentProvider(),
+                        keyPair::getPublic
+                );
+
+        return factory.createServices().manifestService();
     }
 }

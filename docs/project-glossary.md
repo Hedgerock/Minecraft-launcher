@@ -38,9 +38,18 @@
 
 Результат разрешения startup-конфигурации в `launcher-app`
 
-Содержит `LauncherConfiguration` и `ManifestSourceKind` и сохраняет режим источника до application assembly
+Содержит `LauncherConfiguration`, `ManifestSourceKind` и сведения об URI управляемого источника только для режима
+`MANAGED`
+
+Сохраняет режим источника до application assembly
 
 В `launcher-core` передается только `LauncherConfiguration`
+
+### ManagedManifestUris
+
+Модель `launcher-app`, содержащая отдельные HTTPS URI управляемого манифеста и его подписи
+
+Используется только для источника `MANAGED` и не передается в `launcher-core`
 
 ### LaunchResult
 

@@ -21,7 +21,13 @@
 
 `HttpManifestClient` предоставляет оба способа загрузки манифеста по `manifestUri`
 
-`HttpManifestService` использует строковый результат для преобразования JSON в `ManifestLoadResult`
+`HttpManifestService` использует строковый результат для преобразования JSON в `ManifestLoadResult` в технических режимах
+`EXPLICIT_URI` и `LOCAL_CONFIG`
+
+Для источника `MANAGED` `SignedHttpManifestService` получает исходные байты манифеста и отдельной подписи, проверяет подпись
+Ed25519 до декодирования JSON и только после этого создает `ManifestLoadResult`
+
+Подпись не является полем manifest JSON
 
 ```text
 JSON manifest

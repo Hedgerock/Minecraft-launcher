@@ -6,6 +6,14 @@
 
 Accepted
 
+> Примечание: решение частично реализовано в итерациях
+> `feat(api): add Ed25519 manifest signature verifier`
+> `feat(api): add signed manifest loading service`
+> `feat(app): wire signed managed manifest loading`
+> `test(app): cover signed managed manifest assembly`
+>
+> До полного завершения остается поставка действительного доверенного публичного ключа вместе с приложением
+
 ---
 
 ## Контекст

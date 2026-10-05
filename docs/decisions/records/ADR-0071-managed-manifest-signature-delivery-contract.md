@@ -6,6 +6,15 @@
 
 Accepted
 
+> Примечание: решение частично реализовано в итерациях
+> `feat(api): add HTTP manifest signature client`
+> `feat(app): resolve managed manifest signature URI`
+> `feat(app): add bundled Ed25519 public key loader`
+> `test(api): cover HTTP redirect rejection`
+>
+> До полного завершения остается поставка действительных URI манифеста и подписи, а
+> также доверенного публичного ключа в составе приложения
+
 ---
 
 ## Контекст

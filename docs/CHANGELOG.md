@@ -8,11 +8,15 @@
 - Documented managed manifest acceptance boundary decision
 - Documented managed manifest authenticity boundary decision
 - Documented managed manifest signature delivery contract decision
+- Added Ed25519 verification of original managed manifest bytes before JSON mapping
+- Added separate binary signature retrieval and bundled public key loading for managed manifests
+- Added test coverage for signed managed manifest assembly and HTTP redirect rejection
 
 ### Changed
 
 - Selected the bundled manifest URI source for default startup and required `--local-config` for local file selection
 - Preserved the selected manifest source kind through startup and application assembly without passing it to launcher-core
+- Wired signed manifest loading for the managed source while retaining unsigned loading for technical sources
 
 ---
 

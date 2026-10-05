@@ -2,7 +2,8 @@
 
 ## Текущий фокус
 
-- Реализовать проверку подлинности управляемого манифеста согласно [ADR-0070](../decisions/records/ADR-0070-managed-manifest-authenticity-boundary.md)
+- Подготовить действительные URI управляемого манифеста и подписи и доверенный публичный ключ до включения обычного
+  пользовательского запуска
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
@@ -56,3 +57,5 @@
 - Завершен milestone `v0.8.0-presentation-launch-boundary`; подробные итоги зафиксированы
   в [ретроспективе presentation launch boundary](../retrospective/2026-09-presentation-launch-boundary.md)
 - Завершен milestone `v0.9.0-local-ui-launch-flow`; подробные итоги зафиксированы в [ретроспективе local UI launch flow](../retrospective/2026-09-local-ui-launch-flow.md)
+- Для управляемого источника подключена проверка подписи исходных байтов манифеста до преобразования JSON; поведение
+  подтверждено тестами `launcher-api` и application assembly

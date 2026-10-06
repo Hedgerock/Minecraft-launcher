@@ -13,12 +13,15 @@
 - Added test coverage for signed managed manifest assembly and HTTP redirect rejection
 - Documented signed managed manifest publication boundary decision
 - Documented managed manifest resource URI boundary decision
+- Added managed manifest resource URI validation before launcher lifecycle
+- Added HTTPS-only resource downloads without redirect following for managed sources
 
 ### Changed
 
 - Selected the bundled manifest URI source for default startup and required `--local-config` for local file selection
 - Preserved the selected manifest source kind through startup and application assembly without passing it to launcher-core
 - Wired signed manifest loading for the managed source while retaining unsigned loading for technical sources
+- Selected resource download transport by manifest source kind while preserving technical source behavior
 
 ---
 

@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(api): validate managed manifest resource URIs`
+> `feat(downloader): enforce managed resource transport policy`
+
 ---
 
 ## Контекст

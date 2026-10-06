@@ -84,3 +84,4 @@
 | [ADR-0070](records/ADR-0070-managed-manifest-authenticity-boundary.md)              | Подтверждение подлинности управляемого манифеста                   | manifest           |
 | [ADR-0071](records/ADR-0071-managed-manifest-signature-delivery-contract.md)        | Контракт доставки подписи управляемого манифеста                   | manifest           |
 | [ADR-0072](records/ADR-0072-managed-manifest-publication-boundary.md)               | Граница публикации подписанного управляемого манифеста             | manifest           |
+| [ADR-0073](records/ADR-0073-managed-manifest-resource-uri-boundary.md)              | Допустимые URI ресурсов управляемого манифеста                     | manifest resources |

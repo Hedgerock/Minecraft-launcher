@@ -12,6 +12,7 @@
 - Added separate binary signature retrieval and bundled public key loading for managed manifests
 - Added test coverage for signed managed manifest assembly and HTTP redirect rejection
 - Documented signed managed manifest publication boundary decision
+- Documented managed manifest resource URI boundary decision
 
 ### Changed
 

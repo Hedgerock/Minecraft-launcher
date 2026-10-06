@@ -61,7 +61,12 @@ public final class SignedHttpManifestService implements ManifestService {
                     .decode(ByteBuffer.wrap(manifestBytes))
                     .toString();
 
-            return manifestMapper.map(manifestJson);
+            ManifestLoadResult manifestLoadResult = manifestMapper.map(manifestJson);
+
+            ManagedResourceUriValidator validator = new ManagedResourceUriValidator();
+            validator.validate(manifestLoadResult);
+
+            return manifestLoadResult;
         } catch (CharacterCodingException e) {
             throw new ManifestDecodingException(
                     "Failed to decode manifest",

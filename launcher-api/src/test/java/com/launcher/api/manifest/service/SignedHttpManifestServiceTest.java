@@ -9,8 +9,10 @@ import com.launcher.api.manifest.support.FailingManifestSignatureClient;
 import com.launcher.api.manifest.support.ManifestJsonProvider;
 import com.launcher.api.manifest.support.RecordingManifestClient;
 import com.launcher.api.manifest.support.RecordingManifestMapper;
+import com.launcher.api.manifest.support.fixture.ManifestLoadResultFixture;
 import com.launcher.api.manifest.support.RecordingManifestSignatureClient;
 import com.launcher.api.manifest.support.RecordingManifestSignatureVerifier;
+import com.launcher.model.manifest.ManifestLoadResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +45,27 @@ class SignedHttpManifestServiceTest {
     }
 
     @Test
+    void should_reject_managed_manifest_when_resource_uri_is_invalid() {
+        //given
+        ManifestMapper mapper = manifestJson ->
+                new ManifestLoadResultFixture().loadManifestWithFragment();
+
+        SignedHttpManifestService service =
+                new SignedHttpManifestService(
+                        manifestClient,
+                        manifestSignatureClient,
+                        manifestSignatureVerifier,
+                        mapper
+                );
+
+        //when & then
+        assertThrows(
+                ManagedResourceUriValidationException.class,
+                service::loadManifest
+        );
+    }
+
+    @Test
     void should_map_manifest_only_after_signature_verification_passed() {
         //given
         AtomicBoolean verified = new AtomicBoolean();
@@ -57,8 +80,9 @@ class SignedHttpManifestServiceTest {
                     "Manifest must be verified before mapping"
             );
 
+            ManifestLoadResult result = new ManifestLoadResultFixture().loadManifest();
             mapped.set(true);
-            return null;
+            return result;
         };
 
         SignedHttpManifestService service =

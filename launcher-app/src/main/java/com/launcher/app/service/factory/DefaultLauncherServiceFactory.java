@@ -166,7 +166,11 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
             DirectoryProvider directoryProvider,
             ResourceSetPlanner resourceSetPlanner
     ) {
-        FileDownloader downloader = new DefaultFileDownloader();
+        FileDownloader downloader = switch (resolvedLauncherConfiguration.sourceKind()) {
+            case MANAGED -> DefaultFileDownloader.forManagedResources();
+            case EXPLICIT_URI, LOCAL_CONFIG -> new DefaultFileDownloader();
+        };
+
         return new DefaultDownloadService(directoryProvider, downloader, resourceSetPlanner);
     }
 

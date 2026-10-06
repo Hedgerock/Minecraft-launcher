@@ -16,30 +16,37 @@ import com.launcher.app.storage.directory.LocalDirectoryProvider;
 import com.launcher.app.support.JsonProvider;
 import com.launcher.app.support.StubLauncherHttpClient;
 import com.launcher.core.configuration.LauncherConfiguration;
+import com.launcher.core.download.model.DownloadPlan;
 import com.launcher.core.event.EventBus;
 import com.launcher.core.manifest.ManifestService;
 import com.launcher.core.resource.ResourcePathResolver;
 import com.launcher.core.resource.SafeResourcePathResolver;
 import com.launcher.core.runtime.RuntimeEnvironmentProvider;
 import com.launcher.core.storage.directory.DirectoryProvider;
+import com.launcher.downloader.exception.DownloadException;
+import com.launcher.downloader.exception.DownloadExceptionReason;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ManifestLoadResult;
+import com.launcher.model.manifest.ResourceEntry;
 import com.launcher.storage.file.LocalFileStorage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PublicKey;
 import java.security.Signature;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -53,6 +60,81 @@ class DefaultLauncherServiceFactoryTest {
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void should_preserve_file_download_for_local_config_source_kind() throws Exception {
+        //given
+        Path source = tempDir.resolve("source.jar");
+        Files.writeString(source, "resource-content");
+
+        ResourceEntry resource = new ResourceEntry(
+                "mods/test.jar",
+                "test-sha256",
+                Files.size(source),
+                source.toUri().toString()
+        );
+
+        LauncherServices services = launcherServiceFactory(
+                () -> {
+                    throw new AssertionError(
+                            "Public key must not be loaded"
+                    );
+                },
+                ManifestSourceKind.LOCAL_CONFIG
+        ).createServices();
+
+        //when
+        services.downloadService().download(
+                new DownloadPlan(
+                        List.of(resource)
+                )
+        );
+
+        //then
+        assertEquals(
+                "resource-content",
+                Files.readString(tempDir.resolve("game/mods/test.jar")
+                )
+        );
+    }
+
+    @Test
+    void should_reject_file_resource_for_managed_source_kind() throws Exception {
+        //given
+        Path source = tempDir.resolve("source.jar");
+        Files.writeString(source, "resource-content");
+
+        ResourceEntry resourceEntry = new ResourceEntry(
+                "mods/test.jar",
+                "test-sha256",
+                Files.size(source),
+                source.toUri().toString()
+        );
+
+        PublicKey publicKey = generateKey();
+        LauncherServices services = launcherServiceFactory(
+                () -> publicKey,
+                ManifestSourceKind.MANAGED
+        ).createServices();
+
+        //when
+        DownloadException exception = assertThrows(
+                DownloadException.class,
+                () -> services.downloadService().download(
+                        new DownloadPlan(List.of(resourceEntry))
+                )
+        );
+
+        //then
+        assertEquals(DownloadExceptionReason.DOWNLOAD_FAILED, exception.getReason());
+        assertEquals(
+                "Managed resource requires an HTTPS URI",
+                exception.getCause().getMessage()
+        );
+        assertFalse(Files.exists(tempDir.resolve(
+                "game/mods/test.jar"
+        )));
+    }
 
     @Test
     void should_fail_when_manifest_was_modified_after_signing() throws Exception {

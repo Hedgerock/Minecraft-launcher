@@ -21,6 +21,12 @@ public class DefaultFileDownloader implements FileDownloader {
         this.downloadSource = downloadSource;
     }
 
+    public static FileDownloader forManagedResources() {
+        return new DefaultFileDownloader(
+                new ManagedHttpDownloadSource()
+        );
+    }
+
     @Override
     @SuppressWarnings("DataFlowIssue")
     public void download(String url, Path targetPath) {

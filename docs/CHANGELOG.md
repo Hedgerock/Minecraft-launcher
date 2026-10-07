@@ -17,6 +17,7 @@
 - Added HTTPS-only resource downloads without redirect following for managed sources
 - Documented local resource write boundary decision
 - Documented release artifact trust and security review as a future direction
+- Added trusted-root validation for local download and native extraction targets, including existing directory redirects
 
 ### Changed
 

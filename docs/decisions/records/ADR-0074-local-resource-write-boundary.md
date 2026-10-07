@@ -6,6 +6,12 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(storage): resolve local write targets within trusted root`
+> `feat(downloader): validate local resource write targets`
+> `feat(storage): prepare directory targets within trusted root`
+> `feat(natives): validate native extraction write targets`
+
 ---
 
 ## Контекст

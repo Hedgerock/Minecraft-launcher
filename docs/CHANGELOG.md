@@ -16,6 +16,7 @@
 - Added managed manifest resource URI validation before launcher lifecycle
 - Added HTTPS-only resource downloads without redirect following for managed sources
 - Documented local resource write boundary decision
+- Documented release artifact trust and security review as a future direction
 
 ### Changed
 

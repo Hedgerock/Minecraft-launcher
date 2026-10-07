@@ -110,14 +110,15 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
     @Override
     public LauncherServices createServices() {
         ResourceSetPlanner resourceSetPlanner = new ResourceSetPlanner(resourcePathResolver);
+        LocalWriteTargetResolver writeTargetResolver = new LocalWriteTargetResolver();
 
         return new LauncherServices(
                 createManifestService(),
                 createVerificationService(directoryProvider, resourceSetPlanner),
                 createDirectoryService(directoryProvider),
-                createDownloadService(directoryProvider, resourceSetPlanner),
+                createDownloadService(directoryProvider, resourceSetPlanner, writeTargetResolver),
                 createGameService(),
-                createNativeExtractionService(directoryProvider, resourcePathResolver)
+                createNativeExtractionService(directoryProvider, resourcePathResolver, writeTargetResolver)
         );
     }
 
@@ -165,10 +166,9 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
 
     private DownloadService createDownloadService(
             DirectoryProvider directoryProvider,
-            ResourceSetPlanner resourceSetPlanner
+            ResourceSetPlanner resourceSetPlanner,
+            LocalWriteTargetResolver writeTargetResolver
     ) {
-        LocalWriteTargetResolver writeTargetResolver =
-                new LocalWriteTargetResolver();
 
         FileDownloader downloader = switch (resolvedLauncherConfiguration.sourceKind()) {
             case MANAGED -> DefaultFileDownloader.forManagedResources(writeTargetResolver);
@@ -191,11 +191,13 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
 
     private NativeExtractionService createNativeExtractionService(
             DirectoryProvider directoryProvider,
-            ResourcePathResolver resourcePathResolver
+            ResourcePathResolver resourcePathResolver,
+            LocalWriteTargetResolver writeTargetResolver
     ) {
         return new DefaultNativeExtractionService(
                 directoryProvider,
-                resourcePathResolver
+                resourcePathResolver,
+                writeTargetResolver
         );
     }
 

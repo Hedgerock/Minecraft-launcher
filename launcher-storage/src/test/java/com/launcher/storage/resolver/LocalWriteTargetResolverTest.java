@@ -17,6 +17,134 @@ class LocalWriteTargetResolverTest {
             new LocalWriteTargetResolver();
 
     @Test
+    void should_reject_directory_target_when_final_component_redirects_outside_trusted_root(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path trustedRoot = tempDir.resolve("game");
+        Path outsideDirectory = tempDir.resolve("outside");
+
+        Files.createDirectories(trustedRoot);
+        Files.createDirectories(outsideDirectory);
+
+        Path targetDirectory = trustedRoot.resolve("natives");
+        DirectoryRedirectFixture.create(targetDirectory, outsideDirectory);
+
+        //when & then
+        assertThrows(
+                IOException.class,
+                () -> resolver.prepareDirectoryTarget(trustedRoot, targetDirectory)
+        );
+    }
+
+    @Test
+    void should_prepare_trusted_root_when_directory_target_is_root(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path trustedRoot = tempDir.resolve("game");
+
+        //when
+        Path result = resolver.prepareDirectoryTarget(trustedRoot, trustedRoot);
+
+        //then
+        assertTrue(Files.isDirectory(trustedRoot));
+        assertEquals(trustedRoot.toRealPath(), result.toRealPath());
+    }
+
+    @Test
+    void should_allow_directory_redirect_inside_trusted_root(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path trustedRoot = tempDir.resolve("game");
+        Path actualDirectory = trustedRoot.resolve("storage");
+
+        Files.createDirectories(actualDirectory);
+
+        Path redirect = trustedRoot.resolve("natives");
+        DirectoryRedirectFixture.create(redirect, actualDirectory);
+
+        Path targetDirectory = redirect.resolve("nested");
+
+        //when
+        Path result = resolver.prepareDirectoryTarget(trustedRoot, targetDirectory);
+
+        //then
+        assertTrue(Files.isDirectory(actualDirectory.resolve("nested")));
+        assertEquals(
+                actualDirectory.resolve("nested").toRealPath(),
+                result.toRealPath()
+        );
+    }
+
+    @Test
+    void should_reject_directory_redirect_outside_trusted_root(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path trustedRoot = tempDir.resolve("game");
+        Path outsideDirectory = tempDir.resolve("outside");
+
+        Files.createDirectories(trustedRoot);
+        Files.createDirectories(outsideDirectory);
+
+        Path redirect = trustedRoot.resolve("natives");
+        DirectoryRedirectFixture.create(redirect, outsideDirectory);
+
+        Path targetDirectory = redirect.resolve("must-not-be-created");
+
+        //when
+        assertThrows(
+                IOException.class,
+                () -> resolver.prepareDirectoryTarget(trustedRoot, targetDirectory)
+        );
+
+        //then
+        assertFalse(Files.exists(outsideDirectory.resolve("must-not-be-created")));
+    }
+
+    @Test
+    void should_reject_directory_target_outside_trusted_root(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path trustedRoot = tempDir.resolve("game");
+        Files.createDirectories(trustedRoot);
+
+        Path targetDirectory = trustedRoot.resolve("../outside/nested");
+
+        //when
+        assertThrows(
+                IOException.class,
+                () -> resolver.prepareDirectoryTarget(trustedRoot, targetDirectory)
+        );
+
+        //then
+        assertFalse(Files.exists(tempDir.resolve("outside")));
+
+    }
+
+    @Test
+    void should_prepare_nested_directory_when_trusted_root_does_not_exist(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path trustedRoot = tempDir.resolve("game");
+        Path targetDirectory = trustedRoot.resolve("natives/nested");
+
+        //when
+        Path result = resolver.prepareDirectoryTarget(trustedRoot, targetDirectory);
+
+        //then
+        assertTrue(Files.isDirectory(targetDirectory));
+        assertEquals(
+                targetDirectory.toRealPath(),
+                result.toRealPath()
+        );
+    }
+
+    @Test
     void should_reject_target_outside_trusted_root(
             @TempDir Path tempDir
     ) throws IOException {

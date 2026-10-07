@@ -7,6 +7,7 @@ import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.model.manifest.natives.NativeExtractionRules;
 import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import com.launcher.natives.exception.NativeExtractionException;
+import com.launcher.storage.resolver.LocalWriteTargetResolver;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,13 +21,16 @@ import java.util.zip.ZipInputStream;
 public final class DefaultNativeExtractionService implements NativeExtractionService {
     private final DirectoryProvider directoryProvider;
     private final ResourcePathResolver resourcePathResolver;
+    private final LocalWriteTargetResolver writeTargetResolver;
 
     public DefaultNativeExtractionService(
             DirectoryProvider directoryProvider,
-            ResourcePathResolver resourcePathResolver
+            ResourcePathResolver resourcePathResolver,
+            LocalWriteTargetResolver writeTargetResolver
     ) {
         this.directoryProvider = Objects.requireNonNull(directoryProvider, "directoryProvider");
         this.resourcePathResolver = Objects.requireNonNull(resourcePathResolver, "resourcePathResolver");
+        this.writeTargetResolver = Objects.requireNonNull(writeTargetResolver, "writeTargetResolver");
     }
 
     @Override
@@ -88,19 +92,18 @@ public final class DefaultNativeExtractionService implements NativeExtractionSer
         }
 
         if (zipEntry.isDirectory()) {
-            Files.createDirectories(targetPath);
+            writeTargetResolver.prepareFileTarget(targetDirectory, targetPath);
             return;
         }
 
-        Path parent = targetPath.getParent();
-
-        if (parent != null) {
-            Files.createDirectories(parent);
-        }
+        Path preparedTargetPath = writeTargetResolver.prepareFileTarget(
+                targetDirectory,
+                targetPath
+        );
 
         Files.copy(
                 zipInputStream,
-                targetPath,
+                preparedTargetPath,
                 StandardCopyOption.REPLACE_EXISTING
         );
     }

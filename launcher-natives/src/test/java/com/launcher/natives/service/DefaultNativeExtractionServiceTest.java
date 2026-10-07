@@ -7,6 +7,7 @@ import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import com.launcher.natives.exception.NativeExtractionException;
 import com.launcher.natives.support.FixedDirectoryProvider;
 import com.launcher.natives.support.RecordingResourcePathResolver;
+import com.launcher.storage.resolver.LocalWriteTargetResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -39,7 +40,8 @@ class DefaultNativeExtractionServiceTest {
         resourcePathResolver = new RecordingResourcePathResolver();
         service = new DefaultNativeExtractionService(
                 directoryProvider,
-                resourcePathResolver
+                resourcePathResolver,
+                new LocalWriteTargetResolver()
         );
     }
 
@@ -216,13 +218,29 @@ class DefaultNativeExtractionServiceTest {
     }
 
     @Test
+    void should_reject_null_local_write_target_resolver() {
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new DefaultNativeExtractionService(
+                        directoryProvider,
+                        resourcePathResolver,
+                        null
+                )
+        );
+
+        assertTrue(exception.getMessage().contains("writeTargetResolver"));
+    }
+
+    @Test
     void should_reject_null_resource_path_resolver() {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new DefaultNativeExtractionService(
                         directoryProvider,
-                        null
+                        null,
+                        new LocalWriteTargetResolver()
                 )
         );
 
@@ -236,7 +254,8 @@ class DefaultNativeExtractionServiceTest {
                 NullPointerException.class,
                 () -> new DefaultNativeExtractionService(
                         null,
-                        resourcePathResolver
+                        resourcePathResolver,
+                        new LocalWriteTargetResolver()
                 )
         );
 

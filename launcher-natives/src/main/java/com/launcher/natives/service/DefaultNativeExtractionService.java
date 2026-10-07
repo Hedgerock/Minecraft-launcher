@@ -92,7 +92,7 @@ public final class DefaultNativeExtractionService implements NativeExtractionSer
         }
 
         if (zipEntry.isDirectory()) {
-            writeTargetResolver.prepareFileTarget(targetDirectory, targetPath);
+            writeTargetResolver.prepareDirectoryTarget(targetDirectory, targetPath);
             return;
         }
 

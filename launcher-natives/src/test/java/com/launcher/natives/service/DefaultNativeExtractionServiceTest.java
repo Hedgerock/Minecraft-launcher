@@ -7,6 +7,7 @@ import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import com.launcher.natives.exception.NativeExtractionException;
 import com.launcher.natives.support.FixedDirectoryProvider;
 import com.launcher.natives.support.RecordingResourcePathResolver;
+import com.launcher.storage.resolver.DirectoryRedirectFixture;
 import com.launcher.storage.resolver.LocalWriteTargetResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,93 @@ class DefaultNativeExtractionServiceTest {
                 resourcePathResolver,
                 new LocalWriteTargetResolver()
         );
+    }
+
+    @Test
+    void should_reject_native_directory_entry_redirecting_outside_target_root()
+            throws IOException {
+        //given
+        Path gameDirectory = directoryProvider.directories().game();
+        Path archivePath = gameDirectory.resolve("library/natives.jar");
+        Path targetRoot = directoryProvider.directories().natives();
+        Path outsideDirectory = targetRoot.getParent().resolve("outside");
+
+        Files.createDirectories(targetRoot);
+        Files.createDirectories(outsideDirectory);
+
+        DirectoryRedirectFixture.create(
+                targetRoot.resolve("redirected"),
+                outsideDirectory
+        );
+
+        createArchive(archivePath, "redirected/", "");
+
+        NativeExtractionPlan plan = new NativeExtractionPlan(
+                List.of(getArtifact("libraries/natives")),
+                targetRoot
+        );
+
+        //when & then
+        NativeExtractionException exception = assertThrows(
+                NativeExtractionException.class,
+                () -> service.extract(plan)
+        );
+
+        assertInstanceOf(IOException.class, exception.getCause());
+    }
+
+    @Test
+    void should_reject_native_file_through_directory_redirect_outside_target_root() throws IOException {
+        //given
+        Path gameDirectory = directoryProvider.directories().game();
+        Path archivePath = gameDirectory.resolve("libraries/natives.jar");
+        Path targetRoot = directoryProvider.directories().natives();
+        Path outsideDirectory = targetRoot.getParent().resolve("outside");
+
+        Files.createDirectories(targetRoot);
+        Files.createDirectories(outsideDirectory);
+
+        DirectoryRedirectFixture.create(
+                targetRoot.resolve("redirected"),
+                outsideDirectory
+        );
+
+        createArchive(archivePath, "redirected/native.dll", "content");
+
+        NativeExtractionPlan plan = new NativeExtractionPlan(
+                List.of(getArtifact("libraries/natives")),
+                targetRoot
+        );
+
+        //when & then
+        NativeExtractionException exception = assertThrows(
+                NativeExtractionException.class,
+                () -> service.extract(plan)
+        );
+
+        assertInstanceOf(IOException.class, exception.getCause());
+        assertFalse(Files.exists(outsideDirectory.resolve("native.dll")));
+    }
+
+    @Test
+    void should_create_empty_directory_from_archive_entry() throws IOException {
+        //given
+        Path gameDirectory = directoryProvider.directories().game();
+        Path archivePath = gameDirectory.resolve("libraries/natives.jar");
+        Path targetDirectory = directoryProvider.directories().natives();
+
+        createArchive(archivePath, "empty/", "");
+
+        NativeExtractionPlan plan = new NativeExtractionPlan(
+                List.of(getArtifact("libraries/natives")),
+                targetDirectory
+        );
+
+        //when
+        service.extract(plan);
+
+        //then
+        assertTrue(Files.isDirectory(targetDirectory.resolve("empty")));
     }
 
     @Test

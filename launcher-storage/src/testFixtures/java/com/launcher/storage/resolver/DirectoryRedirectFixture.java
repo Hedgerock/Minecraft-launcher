@@ -7,12 +7,12 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-final class DirectoryRedirectFixture {
+public final class DirectoryRedirectFixture {
 
     private DirectoryRedirectFixture() {
     }
 
-    static void create(Path link, Path target) throws IOException {
+    public static void create(Path link, Path target) throws IOException {
         Path absoluteLink = link.toAbsolutePath().normalize();
         Path absoluteTarget = target.toAbsolutePath().normalize();
 

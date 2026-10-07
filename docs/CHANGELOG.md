@@ -15,6 +15,7 @@
 - Documented managed manifest resource URI boundary decision
 - Added managed manifest resource URI validation before launcher lifecycle
 - Added HTTPS-only resource downloads without redirect following for managed sources
+- Documented local resource write boundary decision
 
 ### Changed
 

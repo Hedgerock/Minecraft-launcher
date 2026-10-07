@@ -35,6 +35,7 @@ import com.launcher.storage.file.FileMetadataReader;
 import com.launcher.storage.file.LocalFileMetadataReader;
 import com.launcher.storage.hash.HashService;
 import com.launcher.storage.hash.Sha256HashService;
+import com.launcher.storage.resolver.LocalWriteTargetResolver;
 import com.launcher.verification.file.DefaultFileVerifier;
 import com.launcher.verification.file.FileVerifier;
 import com.launcher.verification.service.DefaultVerificationService;
@@ -166,9 +167,12 @@ public final class DefaultLauncherServiceFactory implements LauncherServicesFact
             DirectoryProvider directoryProvider,
             ResourceSetPlanner resourceSetPlanner
     ) {
+        LocalWriteTargetResolver writeTargetResolver =
+                new LocalWriteTargetResolver();
+
         FileDownloader downloader = switch (resolvedLauncherConfiguration.sourceKind()) {
-            case MANAGED -> DefaultFileDownloader.forManagedResources();
-            case EXPLICIT_URI, LOCAL_CONFIG -> new DefaultFileDownloader();
+            case MANAGED -> DefaultFileDownloader.forManagedResources(writeTargetResolver);
+            case EXPLICIT_URI, LOCAL_CONFIG -> new DefaultFileDownloader(writeTargetResolver);
         };
 
         return new DefaultDownloadService(directoryProvider, downloader, resourceSetPlanner);

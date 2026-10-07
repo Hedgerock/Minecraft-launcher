@@ -1,6 +1,7 @@
 package com.launcher.downloader.download;
 
 import com.launcher.downloader.exception.DownloadException;
+import com.launcher.storage.resolver.LocalWriteTargetResolver;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,45 +10,54 @@ import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 
 public class DefaultFileDownloader implements FileDownloader {
     private final DownloadSource downloadSource;
+    private final LocalWriteTargetResolver writeTargetResolver;
 
-    public DefaultFileDownloader() {
-        this(url -> URI.create(url).toURL().openStream());
+    public DefaultFileDownloader(LocalWriteTargetResolver writeTargetResolver) {
+        this(
+                url -> URI.create(url).toURL().openStream(),
+                    writeTargetResolver
+        );
     }
 
-    DefaultFileDownloader(DownloadSource downloadSource) {
-        this.downloadSource = downloadSource;
+    DefaultFileDownloader(
+            DownloadSource downloadSource,
+            LocalWriteTargetResolver writeTargetResolver
+    ) {
+        this.downloadSource = Objects.requireNonNull(downloadSource, "downloadSource");
+        this.writeTargetResolver = Objects.requireNonNull(writeTargetResolver, "writeTargetResolver");
     }
 
-    public static FileDownloader forManagedResources() {
+    public static FileDownloader forManagedResources(LocalWriteTargetResolver writeTargetResolver) {
         return new DefaultFileDownloader(
-                new ManagedHttpDownloadSource()
+                new ManagedHttpDownloadSource(),
+                writeTargetResolver
         );
     }
 
     @Override
-    @SuppressWarnings("DataFlowIssue")
-    public void download(String url, Path targetPath) {
+    public void download(String url, Path trustedRoot, Path targetPath) {
         Path temporaryFile = null;
 
         try {
-            Path parent = targetPath.getParent();
+            Path preparedTargetPath = writeTargetResolver.prepareFileTarget(
+                    trustedRoot,
+                    targetPath
+            );
 
-            if (parent != null) {
-                Files.createDirectories(parent);
-            }
+            Path parent = preparedTargetPath.getParent();
 
             temporaryFile = Files.createTempFile(
                     parent,
-                    targetPath.getFileName().toString(),
+                    preparedTargetPath.getFileName().toString(),
                     ".download"
             );
 
             copyTempFile(url, temporaryFile);
-
-            safeMove(temporaryFile, targetPath);
+            safeMove(temporaryFile, preparedTargetPath);
 
         } catch (IOException | IllegalArgumentException e) {
 

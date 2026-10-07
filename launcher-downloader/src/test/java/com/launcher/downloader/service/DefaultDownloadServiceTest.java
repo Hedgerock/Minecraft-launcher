@@ -134,7 +134,11 @@ class DefaultDownloadServiceTest {
         assertEquals(
                 Stream.of(first, second).map((res) -> {
                             Path currentPath = resourcePathResolver.resolve(gameDirectory, res.path());
-                            return new RecordingFileDownloader.DownloadRequest(res.url(), currentPath);
+                            return new RecordingFileDownloader.DownloadRequest(
+                                    res.url(),
+                                    gameDirectory,
+                                    currentPath
+                            );
                         })
                         .toList(),
                 downloader.getRequests()
@@ -170,7 +174,9 @@ class DefaultDownloadServiceTest {
         assertEquals(
                 Stream.of(first, second).map((res) -> {
                     Path currentPath = resourcePathResolver.resolve(gameDirectory, res.path());
-                    return new RecordingFileDownloader.DownloadRequest(res.url(), currentPath);
+                    return new RecordingFileDownloader.DownloadRequest(
+                            res.url(), gameDirectory,currentPath
+                    );
                 })
                     .toList(),
                 downloader.getRequests()
@@ -182,12 +188,11 @@ class DefaultDownloadServiceTest {
     void should_pass_resolved_path_file_downloader(@TempDir Path tempDir) {
         //given
         Path gameDirectory = tempDir.resolve("game");
-        Path resolvedPath = tempDir.resolve("resolved/test-file.jar");
+        Path resolvedPath = gameDirectory.resolve("resolved/test-file.jar");
         RecordingFileDownloader downloader = new RecordingFileDownloader();
 
         resourcePathResolver.setWithReturnResolvedPath();
         resourcePathResolver.setResolvedPath(resolvedPath);
-
 
         DownloadService service = new DefaultDownloadService(
                 new FixedDirectoryProvider(gameDirectory),
@@ -201,7 +206,13 @@ class DefaultDownloadServiceTest {
         service.download(new DownloadPlan(List.of(resourceEntry)));
 
         //then
-        assertEquals(resolvedPath, downloader.getRequests().getFirst().targetPath());
+        RecordingFileDownloader.DownloadRequest expectedRequest = new RecordingFileDownloader.DownloadRequest(
+                resourceEntry.url(),
+                gameDirectory,
+                resolvedPath
+        );
+
+        assertEquals(expectedRequest, downloader.getRequests().getFirst());
     }
 
     @Test

@@ -31,9 +31,11 @@ public class DefaultDownloadService implements DownloadService {
 
     @Override
     public void download(DownloadPlan plan) {
+        Path trustedRoot = directoryProvider.directories().game();
+
         ResourceSetPlan resourceSetPlan = resourceSetPlanner.plan(
                 plan.resources(),
-                directoryProvider.directories().game()
+                trustedRoot
         );
 
         for (PlannedResource plannedResource : resourceSetPlan.resources()) {
@@ -41,7 +43,7 @@ public class DefaultDownloadService implements DownloadService {
             Path targetPath = plannedResource.targetPath();
 
             try {
-                fileDownloader.download(resource.url(), targetPath);
+                fileDownloader.download(resource.url(), trustedRoot, targetPath);
             } catch (DownloadException exception) {
                 throw exception.withPath(resource.path());
             }

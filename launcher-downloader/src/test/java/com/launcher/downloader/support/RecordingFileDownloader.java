@@ -34,10 +34,10 @@ public final class RecordingFileDownloader implements FileDownloader {
         this.fileSize = fileSize;
     }
 
-    public record DownloadRequest(String url, Path targetPath) {}
+    public record DownloadRequest(String url, Path trustedRoot, Path targetPath) {}
 
     @Override
-    public void download(String url, Path targetPath) {
+    public void download(String url, Path trustedRoot, Path targetPath) {
         if (withException) {
             throw DownloadException.downloadFailed(
                     url,
@@ -46,7 +46,7 @@ public final class RecordingFileDownloader implements FileDownloader {
             );
         }
 
-        requests.add(new DownloadRequest(url, targetPath));
+        requests.add(new DownloadRequest(url, trustedRoot, targetPath));
 
         if (createFile) {
             createFile(targetPath);

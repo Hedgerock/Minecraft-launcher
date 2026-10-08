@@ -3,6 +3,7 @@
 ### Added
 
 - Documented immutable first publication policy for signed managed manifests
+- Documented publisher signing key source decision
 
 ---
 

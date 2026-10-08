@@ -11,3 +11,6 @@ include("launcher-model")
 include("launcher-storage")
 include("launcher-verification")
 include("launcher-app")
+include("launcher-publisher")
+
+project(":launcher-publisher").projectDir = file("tools/manifest-publisher")

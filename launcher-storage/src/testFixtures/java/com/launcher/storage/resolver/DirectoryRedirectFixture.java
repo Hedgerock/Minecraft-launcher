@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public final class DirectoryRedirectFixture {
+    private static final long JUNCTION_CREATION_TIMEOUT_SECONDS = 30;
 
     private DirectoryRedirectFixture() {
     }
@@ -50,9 +51,12 @@ public final class DirectoryRedirectFixture {
         Process process = processBuilder.start();
 
         try {
-            if (!process.waitFor(10, TimeUnit.SECONDS)) {
+            if (!process.waitFor(JUNCTION_CREATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
                 process.destroyForcibly();
-                throw new IOException("Timed out while creating directory junction");
+                throw new IOException(
+                        "Timed out while creating directory junction after " +
+                                JUNCTION_CREATION_TIMEOUT_SECONDS + " seconds"
+                );
             }
         } catch (InterruptedException e) {
             process.destroyForcibly();

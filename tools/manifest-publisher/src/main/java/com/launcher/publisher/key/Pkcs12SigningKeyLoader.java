@@ -2,21 +2,25 @@ package com.launcher.publisher.key;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.security.Key;
+import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.Signature;
+import java.security.cert.Certificate;
 import java.util.Objects;
 
 public final class Pkcs12SigningKeyLoader {
     private static final String ALGORITHM = "Ed25519";
     private static final String KEY_STORE_TYPE = "PKCS12";
 
-    public PrivateKey load(
+    public KeyPair load(
             Path keyStoreFile,
             String alias,
             char[] password
@@ -47,8 +51,40 @@ public final class Pkcs12SigningKeyLoader {
             );
         }
 
-        Signature.getInstance(ALGORITHM).initSign(privateKey);
+        Certificate certificate = keyStore.getCertificate(alias);
 
-        return privateKey;
+        if (certificate == null) {
+            throw new KeyStoreException(
+                    "Signing key has no public certificate"
+            );
+        }
+
+        PublicKey publicKey = certificate.getPublicKey();
+        verifyKeyPair(privateKey, publicKey);
+
+        return new KeyPair(publicKey, privateKey);
+    }
+
+    private void verifyKeyPair(
+            PrivateKey privateKey,
+            PublicKey publicKey
+    ) throws GeneralSecurityException {
+        byte[] probe = "manifest-signing-key-pair"
+                .getBytes(StandardCharsets.US_ASCII);
+
+        Signature signer = Signature.getInstance(ALGORITHM);
+        signer.initSign(privateKey);
+        signer.update(probe);
+        byte[] signature = signer.sign();
+
+        Signature verifier = Signature.getInstance(ALGORITHM);
+        verifier.initVerify(publicKey);
+        verifier.update(probe);
+
+        if (!verifier.verify(signature)) {
+            throw new KeyStoreException(
+                    "Signing key does not match its public certificate"
+            );
+        }
     }
 }

@@ -28,6 +28,7 @@ import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,6 +39,30 @@ class Pkcs12SigningKeyLoaderTest {
 
     private final Pkcs12SigningKeyLoader loader = new Pkcs12SigningKeyLoader();
     private final ManifestSignerFixture fixture = new ManifestSignerFixture();
+
+    @Test
+    void should_reject_private_key_with_mismatched_certificate(
+            @TempDir Path tempDir
+    ) throws Exception {
+        //given
+        KeyPair signingPair = fixture.generateKeyPair();
+        KeyPair certificatePair = fixture.generateKeyPair();
+        Path keyStoreFile = tempDir.resolve(SIGN_P12);
+
+        createKeyStore(
+                keyStoreFile,
+                ALIAS,
+                PASSWORD,
+                signingPair.getPrivate(),
+                createCertificate(certificatePair)
+        );
+
+        //when & then
+        assertThrows(
+                KeyStoreException.class,
+                () -> loader.load(keyStoreFile, ALIAS, PASSWORD)
+        );
+    }
 
     @Test
     void should_reject_private_key_with_different_algorithm(
@@ -115,7 +140,7 @@ class Pkcs12SigningKeyLoaderTest {
         createKeyStore(keystoreFile, ALIAS, PASSWORD, keyPair);
 
         //when
-        PrivateKey loadedKey = loader.load(
+        KeyPair loadedPair = loader.load(
                 keystoreFile,
                 ALIAS,
                 PASSWORD
@@ -125,7 +150,7 @@ class Pkcs12SigningKeyLoaderTest {
         byte[] manifestBytes = "manifest".getBytes(StandardCharsets.UTF_8);
 
         Signature signer = Signature.getInstance("Ed25519");
-        signer.initSign(loadedKey);
+        signer.initSign(loadedPair.getPrivate());
         signer.update(manifestBytes);
 
         byte[] signature = signer.sign();
@@ -135,6 +160,10 @@ class Pkcs12SigningKeyLoaderTest {
         verifier.update(manifestBytes);
 
         assertTrue(verifier.verify(signature));
+        assertArrayEquals(
+                keyPair.getPublic().getEncoded(),
+                loadedPair.getPublic().getEncoded()
+        );
     }
 
     private void createKeyStore(
@@ -151,6 +180,29 @@ class Pkcs12SigningKeyLoaderTest {
         keyStore.setKeyEntry(
                 alias,
                 keyPair.getPrivate(),
+                password,
+                new Certificate[]{certificate}
+        );
+
+        try (OutputStream output = Files.newOutputStream(keyStoreFile)) {
+            keyStore.store(output, password);
+        }
+    }
+
+    private void createKeyStore(
+            Path keyStoreFile,
+            String alias,
+            char[] password,
+            PrivateKey privateKey,
+            X509Certificate certificate
+    ) throws Exception {
+
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        keyStore.load(null, password);
+
+        keyStore.setKeyEntry(
+                alias,
+                privateKey,
                 password,
                 new Certificate[]{certificate}
         );

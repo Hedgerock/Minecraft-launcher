@@ -1,8 +1,10 @@
 ## Unreleased
 
-### Manifest Trust Foundation
+---
 
-#### Added
+## v0.10.0 – Manifest Trust Foundation
+
+### Added
 
 - Documented publisher-managed manifest source boundary decision
 - Documented startup manifest source selection boundary decision
@@ -21,7 +23,7 @@
 - Documented release artifact trust and security review as a future direction
 - Added trusted-root validation for local download and native extraction targets, including existing directory redirects
 
-#### Changed
+### Changed
 
 - Selected the bundled manifest URI source for default startup and required `--local-config` for local file selection
 - Preserved the selected manifest source kind through startup and application assembly without passing it to launcher-core
@@ -29,6 +31,8 @@
 - Selected resource download transport by manifest source kind while preserving technical source behavior
 - Expanded `clean check` CI coverage to Ubuntu and Windows
 - Updated CI actions and upgraded the Gradle Wrapper to 9.8.1
+- Aligned Gradle project version with v0.10.0
+- Added Maven Central to `buildSrc` plugin and dependency resolution
 
 ---
 

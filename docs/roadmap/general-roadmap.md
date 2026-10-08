@@ -57,10 +57,5 @@
 - Завершен milestone `v0.8.0-presentation-launch-boundary`; подробные итоги зафиксированы
   в [ретроспективе presentation launch boundary](../retrospective/2026-09-presentation-launch-boundary.md)
 - Завершен milestone `v0.9.0-local-ui-launch-flow`; подробные итоги зафиксированы в [ретроспективе local UI launch flow](../retrospective/2026-09-local-ui-launch-flow.md)
-- Для управляемого источника подключена проверка подписи исходных байтов манифеста до преобразования JSON; поведение
-  подтверждено тестами `launcher-api` и application assembly
-- Для управляемого источника реализованы проверки URI выбранных ресурсов до launcher lifecycle и загрузка без следования
-  HTTP-перенаправлениям; технические режимы сохранили прежнее поведение
-- Реализована проверка фактического назначения при загрузке ресурсов и распаковке natives согласно
-  [ADR-0074](../decisions/records/ADR-0074-local-resource-write-boundary.md)
-- Проверка `clean check` в CI расширена на Linux и Windows
+- Завершен milestone `v0.10.0-manifest-trust-foundation`; подробные итоги зафиксированы
+  в [ретроспективе manifest trust foundation](../retrospective/2026-10-manifest-trust-foundation.md)

@@ -1,32 +1,17 @@
 package com.launcher.publisher.key;
 
+import com.launcher.publisher.key.support.Pkcs12KeyStoreFixture;
 import com.launcher.publisher.manifest.support.ManifestSignerFixture;
-import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.X509v3CertificateBuilder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.PrivateKey;
 import java.security.Signature;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.time.Instant;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,12 +34,12 @@ class Pkcs12SigningKeyLoaderTest {
         KeyPair certificatePair = fixture.generateKeyPair();
         Path keyStoreFile = tempDir.resolve(SIGN_P12);
 
-        createKeyStore(
+        Pkcs12KeyStoreFixture.createKeyStore(
                 keyStoreFile,
                 ALIAS,
                 PASSWORD,
                 signingPair.getPrivate(),
-                createCertificate(certificatePair)
+                Pkcs12KeyStoreFixture.createCertificate(certificatePair)
         );
 
         //when & then
@@ -72,7 +57,7 @@ class Pkcs12SigningKeyLoaderTest {
         KeyPair keyPair = fixture.generateRsaKeyPair();
         Path keyStoreFile = tempDir.resolve(SIGN_P12);
 
-        createKeyStore(keyStoreFile, ALIAS, PASSWORD, keyPair);
+        Pkcs12KeyStoreFixture.createKeyStore(keyStoreFile, ALIAS, PASSWORD, keyPair);
 
         //when & then
         assertThrows(
@@ -93,7 +78,7 @@ class Pkcs12SigningKeyLoaderTest {
         KeyPair keyPair = fixture.generateKeyPair();
         Path keystoreFile = tempDir.resolve(SIGN_P12);
 
-        createKeyStore(keystoreFile, ALIAS, PASSWORD, keyPair);
+        Pkcs12KeyStoreFixture.createKeyStore(keystoreFile, ALIAS, PASSWORD, keyPair);
 
         char[] incorrectPassword = "wrong-password".toCharArray();
 
@@ -116,7 +101,7 @@ class Pkcs12SigningKeyLoaderTest {
         KeyPair keyPair = fixture.generateKeyPair();
         Path keystoreFile = tempDir.resolve(SIGN_P12);
 
-        createKeyStore(keystoreFile, ALIAS, PASSWORD, keyPair);
+        Pkcs12KeyStoreFixture.createKeyStore(keystoreFile, ALIAS, PASSWORD, keyPair);
 
         //when & then
         assertThrows(
@@ -137,7 +122,7 @@ class Pkcs12SigningKeyLoaderTest {
         KeyPair keyPair = fixture.generateKeyPair();
         Path keystoreFile = tempDir.resolve(SIGN_P12);
 
-        createKeyStore(keystoreFile, ALIAS, PASSWORD, keyPair);
+        Pkcs12KeyStoreFixture.createKeyStore(keystoreFile, ALIAS, PASSWORD, keyPair);
 
         //when
         KeyPair loadedPair = loader.load(
@@ -166,83 +151,4 @@ class Pkcs12SigningKeyLoaderTest {
         );
     }
 
-    private void createKeyStore(
-            Path keyStoreFile,
-            String alias,
-            char[] password,
-            KeyPair keyPair
-    ) throws Exception {
-        X509Certificate certificate = createCertificate(keyPair);
-
-        KeyStore keyStore = KeyStore.getInstance("PKCS12");
-        keyStore.load(null, password);
-
-        keyStore.setKeyEntry(
-                alias,
-                keyPair.getPrivate(),
-                password,
-                new Certificate[]{certificate}
-        );
-
-        try (OutputStream output = Files.newOutputStream(keyStoreFile)) {
-            keyStore.store(output, password);
-        }
-    }
-
-    private void createKeyStore(
-            Path keyStoreFile,
-            String alias,
-            char[] password,
-            PrivateKey privateKey,
-            X509Certificate certificate
-    ) throws Exception {
-
-        KeyStore keyStore = KeyStore.getInstance("PKCS12");
-        keyStore.load(null, password);
-
-        keyStore.setKeyEntry(
-                alias,
-                privateKey,
-                password,
-                new Certificate[]{certificate}
-        );
-
-        try (OutputStream output = Files.newOutputStream(keyStoreFile)) {
-            keyStore.store(output, password);
-        }
-    }
-
-    private X509Certificate createCertificate(KeyPair keyPair) throws Exception {
-        String signatureAlgorithm = switch (keyPair.getPrivate().getAlgorithm()) {
-            case "EdDSA", "Ed25519" -> "Ed25519";
-            case "RSA" -> "SHA256withRSA";
-            default -> throw new IllegalArgumentException(
-                    "Unsupported test key algorithm"
-            );
-        };
-
-        Instant now = Instant.now();
-
-        X500Name subject = new X500Name("CN=Test Manifest Signing");
-
-        X509v3CertificateBuilder builder =
-                new JcaX509v3CertificateBuilder(
-                        subject,
-                        BigInteger.ONE,
-                        Date.from(now.minusSeconds(60)),
-                        Date.from(now.plusSeconds(3600)),
-                        subject,
-                        keyPair.getPublic()
-                );
-
-        ContentSigner contentSigner =
-                new JcaContentSignerBuilder(signatureAlgorithm)
-                        .build(keyPair.getPrivate());
-
-        X509CertificateHolder certificateHolder =
-                builder.build(contentSigner);
-
-        return new JcaX509CertificateConverter()
-                .getCertificate(certificateHolder);
-    }
 }

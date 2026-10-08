@@ -1,5 +1,9 @@
 ## Unreleased
 
+### Added
+
+- Documented immutable first publication policy for signed managed manifests
+
 ---
 
 ## v0.10.0 – Manifest Trust Foundation

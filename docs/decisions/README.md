@@ -86,3 +86,4 @@
 | [ADR-0072](records/ADR-0072-managed-manifest-publication-boundary.md)               | Граница публикации подписанного управляемого манифеста             | manifest           |
 | [ADR-0073](records/ADR-0073-managed-manifest-resource-uri-boundary.md)              | Допустимые URI ресурсов управляемого манифеста                     | manifest resources |
 | [ADR-0074](records/ADR-0074-local-resource-write-boundary.md)                       | Граница локальной записи ресурсов                                  | resource paths     |
+| [ADR-0075](records/ADR-0075-first-managed-manifest-publication-policy.md)           | Политика первой публикации управляемого манифеста                  | manifest           |

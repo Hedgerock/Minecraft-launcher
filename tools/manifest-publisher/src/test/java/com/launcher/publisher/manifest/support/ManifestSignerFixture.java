@@ -12,6 +12,13 @@ public final class ManifestSignerFixture {
         return KeyPairGenerator.getInstance("Ed25519").generateKeyPair();
     }
 
+    public KeyPair generateRsaKeyPair() throws GeneralSecurityException {
+        KeyPairGenerator generator =
+                KeyPairGenerator.getInstance("RSA");
+        generator.initialize(2048);
+        return generator.generateKeyPair();
+    }
+
     public byte[] getManifestBytes() {
         return DEFAULT_MANIFEST_VALUE.getBytes(StandardCharsets.UTF_8);
     }

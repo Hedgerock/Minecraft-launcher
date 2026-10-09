@@ -43,6 +43,46 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JsonManifestMapperTest {
 
+    @Test
+    void should_reject_blank_client_artifact_path() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-invalid-manifest-json-with-blank-client-artifact-path.json");
+
+        //when
+        assertThrows(
+                ManifestMappingException.class,
+                () -> mapper.map(json)
+        );
+    }
+
+    @Test
+    void should_map_empty_classpath_and_client_artifact_path() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest-json-with-empty-classpath.json");
+
+        //when
+        ManifestLoadResult result =  mapper.map(json);
+
+        //then
+        Manifest manifest = result.manifest();
+        assertTrue(manifest.launchInfo().classpath().isEmpty());
+
+        String clientArtifactPath = manifest.launchInfo().clientArtifactPath();
+
+        assertEquals(
+                "path/to/client/artifact",
+                clientArtifactPath
+        );
+        assertEquals(
+                manifest.files().getFirst().path(),
+                clientArtifactPath
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("invalidLoaderJsonPaths")
     void should_reject_loader_with_missing_fields(String path) {
@@ -393,6 +433,7 @@ class JsonManifestMapperTest {
 
         LaunchInfo launchInfo = manifest.launchInfo();
         assertNotNull(launchInfo);
+        assertNull(launchInfo.clientArtifactPath());
 
         assertEquals("net.minecraft.client.main.Main", launchInfo.mainClass());
 

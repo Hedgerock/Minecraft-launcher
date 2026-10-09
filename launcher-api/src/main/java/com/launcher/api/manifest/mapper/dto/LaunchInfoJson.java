@@ -12,7 +12,8 @@ public record LaunchInfoJson(
         List<String> classpath,
         String javaExecutable,
         JavaVersionRequirementJson javaVersionRequirement,
-        List<String> authArgs
+        List<String> authArgs,
+        String clientArtifactPath
 ) {
 
     public LaunchInfoJson {
@@ -31,7 +32,8 @@ public record LaunchInfoJson(
                 classpath,
                 javaExecutable,
                 javaVersionRequirement.toJavaVersionRequirement(),
-                authArgs
+                authArgs,
+                clientArtifactPath
         );
     }
 

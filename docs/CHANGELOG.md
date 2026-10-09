@@ -8,6 +8,7 @@
   PKCS#12 keystore
 - Documented optional manifest loader semantics for vanilla launch preparation
 - Added support for manifest JSON without loader metadata
+- Documented client artifact classpath boundary decision
 
 ---
 

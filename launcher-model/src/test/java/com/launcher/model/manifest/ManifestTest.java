@@ -8,18 +8,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ManifestTest {
 
-    private LibraryEntry getLibraryEntry(String path) {
-        return new LibraryEntry(
-                path,
-                "sha256-" + path,
-                123L,
-                "https://test-url.com/"+path
+    @Test
+    void should_accept_null_loader() {
+        //given & when
+        Manifest result = new Manifest(
+                "1.12.2",
+                null,
+                List.of(getFileEntry("test.jar")),
+                getLaunchInfo(),
+                getLibraries()
         );
+
+        //then
+        assertNull(result.loader());
     }
 
     @Test
@@ -216,6 +223,15 @@ class ManifestTest {
                                 getLaunchInfo(),
                                 getLibraries()
                         )
+        );
+    }
+
+    private LibraryEntry getLibraryEntry(String path) {
+        return new LibraryEntry(
+                path,
+                "sha256-" + path,
+                123L,
+                "https://test-url.com/"+path
         );
     }
 }

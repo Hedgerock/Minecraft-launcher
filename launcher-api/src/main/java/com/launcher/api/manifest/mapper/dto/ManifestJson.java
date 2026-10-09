@@ -30,7 +30,6 @@ public record ManifestJson(
     }
 
     public ManifestJson {
-        Objects.requireNonNull(loader, "loader");
         Objects.requireNonNull(files, "files");
         Objects.requireNonNull(launchInfo, "launchInfo");
         Objects.requireNonNull(libraries, "libraries");

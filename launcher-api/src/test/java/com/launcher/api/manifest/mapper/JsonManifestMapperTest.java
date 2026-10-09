@@ -23,6 +23,9 @@ import com.launcher.model.manifest.rules.LibraryRuleAction;
 import com.launcher.model.runtime.OperatingSystem;
 import com.launcher.model.runtime.RuntimeEnvironment;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,13 +33,45 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JsonManifestMapperTest {
+
+    @ParameterizedTest
+    @MethodSource("invalidLoaderJsonPaths")
+    void should_reject_loader_with_missing_fields(String path) {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource(path);
+
+        //when & then
+        assertThrows(
+                ManifestMappingException.class,
+                () -> mapper.map(json)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("absentLoaderJsonPaths")
+    void should_map_absent_loader_to_null(String path) {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource(path);
+
+        //when
+        ManifestLoadResult result = mapper.map(json);
+
+        //then
+        assertNull(result.manifest().loader());
+    }
 
     @Test
     void should_map_empty_auth_args_when_auth_args_field_is_null() {
@@ -496,5 +531,20 @@ class JsonManifestMapperTest {
                             "https://localhost/files/libraries/org/example/example/natives-linux.jar"
                     );
         };
+    }
+
+    private static Stream<Arguments> invalidLoaderJsonPaths() {
+        return Stream.of(
+                Arguments.of("manifest/test-invalid-manifest-with-missing-loader-version.json"),
+                Arguments.of("manifest/test-invalid-manifest-with-missing-loader-type.json"),
+                Arguments.of("manifest/test-invalid-manifest-with-missing-loader-fields.json")
+        );
+    }
+
+    private static Stream<Arguments> absentLoaderJsonPaths() {
+        return Stream.of(
+                Arguments.of("manifest/test-valid-manifest-with-null-loader.json"),
+                Arguments.of("manifest/test-valid-manifest-without-loader.json")
+        );
     }
 }

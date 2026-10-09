@@ -2,7 +2,7 @@ package com.launcher.publisher.manifest;
 
 import com.launcher.api.manifest.signature.Ed25519ManifestSignatureVerifier;
 import com.launcher.api.manifest.signature.ManifestSignatureVerificationException;
-import com.launcher.publisher.manifest.support.ManifestSignerFixture;
+import com.launcher.publisher.support.ManifestSignerFixture;
 import org.junit.jupiter.api.Test;
 
 import java.security.GeneralSecurityException;

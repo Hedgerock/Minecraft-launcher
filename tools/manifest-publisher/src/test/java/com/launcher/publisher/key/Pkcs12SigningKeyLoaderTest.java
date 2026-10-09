@@ -1,7 +1,7 @@
 package com.launcher.publisher.key;
 
-import com.launcher.publisher.key.support.Pkcs12KeyStoreFixture;
-import com.launcher.publisher.manifest.support.ManifestSignerFixture;
+import com.launcher.publisher.support.Pkcs12KeyStoreFixture;
+import com.launcher.publisher.support.ManifestSignerFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

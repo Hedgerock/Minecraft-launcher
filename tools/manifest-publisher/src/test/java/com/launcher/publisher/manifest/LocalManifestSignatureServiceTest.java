@@ -1,7 +1,7 @@
 package com.launcher.publisher.manifest;
 
 import com.launcher.api.manifest.signature.Ed25519ManifestSignatureVerifier;
-import com.launcher.publisher.manifest.support.ManifestSignerFixture;
+import com.launcher.publisher.support.ManifestSignerFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

@@ -1,6 +1,5 @@
-package com.launcher.publisher.key.support;
+package com.launcher.publisher.support;
 
-import com.launcher.publisher.manifest.support.ManifestSignerFixture;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;

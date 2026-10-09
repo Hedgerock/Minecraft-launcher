@@ -1,5 +1,9 @@
 plugins {
-    id("java")
+    id("application")
+}
+
+application {
+    mainClass = "com.launcher.publisher.ManifestPublisherMain"
 }
 
 dependencies {

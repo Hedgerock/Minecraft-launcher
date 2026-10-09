@@ -1,12 +1,8 @@
 package com.launcher.publisher;
 
 import com.launcher.api.manifest.signature.Ed25519ManifestSignatureVerifier;
-import com.launcher.publisher.key.LocalManifestPublicKeyExportService;
-import com.launcher.publisher.key.Pkcs12SigningKeyLoader;
-import com.launcher.publisher.key.support.Pkcs12KeyStoreFixture;
-import com.launcher.publisher.manifest.Ed25519ManifestSigner;
-import com.launcher.publisher.manifest.LocalManifestSignatureService;
-import com.launcher.publisher.manifest.support.ManifestSignerFixture;
+import com.launcher.publisher.support.ManifestSignerFixture;
+import com.launcher.publisher.support.Pkcs12KeyStoreFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -26,16 +22,8 @@ class LocalManifestPublicationPreparerTest {
     private static final String ALIAS = "manifest-signing";
     private static final char[] PASSWORD = "test-password".toCharArray();
 
-    private final LocalManifestPublicationPreparer preparer =
-            new LocalManifestPublicationPreparer(
-                    new Pkcs12SigningKeyLoader(),
-                    new LocalManifestSignatureService(
-                            new Ed25519ManifestSigner()
-                    ),
-                    new LocalManifestPublicKeyExportService()
-            );
-
     private final ManifestSignerFixture fixture = new ManifestSignerFixture();
+    private final LocalManifestPublicationPreparer preparer = ManifestSignerFixture.PREPARER;
 
     @Test
     void should_not_export_public_key_when_password_is_invalid(

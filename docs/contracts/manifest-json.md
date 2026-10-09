@@ -112,13 +112,19 @@ RuntimeEnvironment
 }
 ```
 
+Пример описывает сборку с загрузчиком
+
+Для сборки без загрузчика поле `loader` может отсутствовать или иметь значение `null`
+
 ---
 
 ## Правила преобразования
 
 `minecraftVersion` переносится в `Manifest.minecraftVersion`
 
-`loader` преобразуется в `LoaderInfo`
+Если `loader` содержит объект, его `type` и `version` должны быть непустыми; объект преобразуется в `LoaderInfo`
+
+Если `loader` отсутствует или равен `null`, `Manifest.loader` имеет значение `null`
 
 `files` преобразуется в список `FileEntry`
 
@@ -341,6 +347,8 @@ LaunchInfo
 `LaunchInfo` требует непустые значения `mainClass` и `javaExecutable`
 
 `Manifest` требует наличие списка `libraries`, пустой список допустим для минимальных сценариев
+
+Неполный объект `loader` отклоняется; отсутствие поля или `loader: null` допустимо
 
 Отсутствие `assets` допустимо и преобразуется в пустой `AssetsIndex`
 

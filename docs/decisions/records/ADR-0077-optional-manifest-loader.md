@@ -6,6 +6,8 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации `feat(api): map manifests without loader`
+
 ---
 
 ## Контекст

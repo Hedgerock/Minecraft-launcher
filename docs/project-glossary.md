@@ -282,6 +282,8 @@ Configured Java override имеет приоритет над manifest-provided 
 
 Содержит список файлов, список libraries и `launch metadata`
 
+`LoaderInfo` отсутствует, если манифест не объявляет отдельный загрузчик
+
 `files` является обязательным неизменяемым списком
 
 Связанный внешний контракт описан в [Контракт manifest JSON](contracts/manifest-json.md)

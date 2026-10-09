@@ -88,3 +88,4 @@
 | [ADR-0074](records/ADR-0074-local-resource-write-boundary.md)                       | Граница локальной записи ресурсов                                  | resource paths     |
 | [ADR-0075](records/ADR-0075-first-managed-manifest-publication-policy.md)           | Политика первой публикации управляемого манифеста                  | manifest           |
 | [ADR-0076](records/ADR-0076-publisher-signing-key-source-boundary.md)               | Источник закрытого ключа для первой публикации манифеста           | manifest           |
+| [ADR-0077](records/ADR-0077-optional-manifest-loader.md)                            | Семантика отсутствующего загрузчика в манифесте                    | manifest           |

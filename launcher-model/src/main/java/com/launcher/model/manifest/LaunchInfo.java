@@ -12,9 +12,9 @@ public record LaunchInfo(
         List<String> classpath,
         String javaExecutable,
         JavaVersionRequirement javaVersionRequirement,
-        List<String> authArgs
+        List<String> authArgs,
+        String clientArtifactPath
 ) {
-
     public LaunchInfo(
             String mainClass,
             List<String> jvmArgs,
@@ -34,6 +34,27 @@ public record LaunchInfo(
         );
     }
 
+    public LaunchInfo(
+            String mainClass,
+            List<String> jvmArgs,
+            List<String> gameArgs,
+            List<String> classpath,
+            String javaExecutable,
+            JavaVersionRequirement javaVersionRequirement,
+            List<String> authArgs
+    ) {
+        this(
+                mainClass,
+                jvmArgs,
+                gameArgs,
+                classpath,
+                javaExecutable,
+                javaVersionRequirement,
+                authArgs,
+                null
+        );
+    }
+
     public LaunchInfo {
         Objects.requireNonNull(mainClass, "mainClass");
         Objects.requireNonNull(jvmArgs, "jvmArgs");
@@ -46,7 +67,11 @@ public record LaunchInfo(
         validateFieldOnBlankValue(mainClass, "mainClass");
         validateFieldOnBlankValue(javaExecutable, "javaExecutable");
 
-        if (classpath.isEmpty()) {
+        if (clientArtifactPath != null) {
+            validateFieldOnBlankValue(clientArtifactPath, "clientArtifactPath");
+        }
+
+        if (classpath.isEmpty() && clientArtifactPath == null) {
             throw new IllegalArgumentException("classpath must not be empty");
         }
 

@@ -4,7 +4,6 @@ import com.launcher.model.runtime.JavaVersionRequirement;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,6 +11,83 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LaunchInfoTest {
+
+    @Test
+    void should_reject_empty_classpath_when_client_artifact_path_is_null() {
+        //given
+        List<String> authArgs = new ArrayList<>(List.of("auth-arg-1"));
+
+        //when & then
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> new LaunchInfo(
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        List.of(),
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement(),
+                        authArgs,
+                        null
+                )
+        );
+
+        assertEquals(
+                "classpath must not be empty",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void should_reject_blank_client_artifact_path() {
+        //given
+        List<String> authArgs = new ArrayList<>(List.of("auth-arg-1"));
+
+        //when & then
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> new LaunchInfo(
+                        getDefaultMainClass(),
+                        getDefaultJvmArgs(),
+                        getDefaultGameArgs(),
+                        List.of(),
+                        getDefaultJavaExecutable(),
+                        getDefaultJavaVersionRequirement(),
+                        authArgs,
+                        " "
+                )
+        );
+
+        assertEquals(
+                "clientArtifactPath must not be blank",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void should_return_client_artifact_path() {
+        //given
+        List<String> authArgs = new ArrayList<>(List.of("auth-arg-1"));
+
+        //when
+        LaunchInfo result = new LaunchInfo(
+                getDefaultMainClass(),
+                getDefaultJvmArgs(),
+                getDefaultGameArgs(),
+                List.of(),
+                getDefaultJavaExecutable(),
+                getDefaultJavaVersionRequirement(),
+                authArgs,
+                "pathToArtifact"
+
+        );
+
+        //then
+        assertEquals(
+                "pathToArtifact",
+                result.clientArtifactPath()
+        );
+    }
 
     @Test
     void should_use_empty_auth_args_by_default() {
@@ -353,29 +429,6 @@ class LaunchInfoTest {
                         getDefaultJavaExecutable(),
                         getDefaultJavaVersionRequirement()
                 )
-        );
-    }
-
-    @Test
-    void should_reject_empty_classpath() {
-        //given
-        List<String> emptyClasspath = Collections.emptyList();
-
-        //when & then
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> new LaunchInfo(
-                        getDefaultMainClass(),
-                        getDefaultJvmArgs(),
-                        getDefaultGameArgs(),
-                        emptyClasspath,
-                        getDefaultJavaExecutable(),
-                        getDefaultJavaVersionRequirement()
-                )
-        );
-
-        assertTrue(
-                exception.getMessage().contains("classpath must not be empty")
         );
     }
 

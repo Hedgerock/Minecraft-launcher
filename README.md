@@ -45,6 +45,7 @@ native-библиотек, выбор и проверка Java runtime, пост
 - `launcher-api`, `launcher-downloader`, `launcher-verification`, `launcher-storage`, `launcher-natives` и `launcher-game` содержат
   реализации отдельных инфраструктурных возможностей
 - `launcher-auth` и `launcher-common` остаются зарезервированными модулями
+- `launcher-publisher` локальный инструмент подготовки подписи управляемого манифеста и экспорта публичного ключа
 
 Подробные границы ответственности описаны в [модульных границах](docs/architecture/module-boundaries.md)
 
@@ -71,6 +72,7 @@ native-библиотек, выбор и проверка Java runtime, пост
 - [Общий план развития](docs/roadmap/general-roadmap.md)
 - [Индекс архитектурных решений](docs/decisions/README.md)
 - [История изменений](docs/CHANGELOG.md)
+- [Контракт локального инструмента публикации манифеста](docs/contracts/manifest-publisher-cli.md)
 
 ## Лицензия
 

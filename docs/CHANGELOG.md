@@ -4,6 +4,8 @@
 
 - Documented immutable first publication policy for signed managed manifests
 - Documented publisher signing key source decision
+- Added a local CLI for signing managed manifest bytes and exporting the matching Ed25519 public key from a password-protected
+  PKCS#12 keystore
 
 ---
 

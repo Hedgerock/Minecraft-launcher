@@ -5,6 +5,8 @@ import com.launcher.core.architecture.support.recording.RecordingManifestService
 import com.launcher.core.architecture.support.recording.RecordingResourcePathResolver;
 import com.launcher.core.game.classpath.GameClasspath;
 import com.launcher.core.game.classpath.builder.DefaultGameClasspathBuilder;
+import com.launcher.model.manifest.FileEntry;
+import com.launcher.model.manifest.LaunchInfo;
 import com.launcher.model.manifest.LibraryEntry;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ManifestLoadResult;
@@ -22,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultGameClasspathBuilderTest {
+    private static final String CLIENT_PATH = "versions/test/client.jar";
+
     private RecordingResourcePathResolver resourcePathResolver;
     private DefaultGameClasspathBuilder builder;
 
@@ -29,6 +33,85 @@ class DefaultGameClasspathBuilderTest {
     void setUp() {
         resourcePathResolver = new RecordingResourcePathResolver();
         builder = new DefaultGameClasspathBuilder(resourcePathResolver);
+    }
+
+    @Test
+    void should_reject_undeclared_client_artifact_before_resolving_paths() {
+        //given
+        ManifestLoadResult loadResult = getManifestLoadResult();
+        Manifest manifest = withClientArtifact(
+                loadResult.manifest(),
+                List.of("fallback.jar"),
+                loadResult.manifest().files(),
+                CLIENT_PATH
+        );
+
+        //when
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> builder.build(
+                        manifest,
+                        loadResult.runtimeLibrarySelection().libraries(),
+                        Path.of("game-directory")
+                )
+        );
+
+        //then
+        assertTrue(exception.getMessage().contains(CLIENT_PATH));
+        assertTrue(resourcePathResolver.getRecords().isEmpty());
+    }
+
+    @Test
+    void should_use_only_client_artifact_when_selected_libraries_and_fallback_are_empty() {
+        //given
+        Manifest base = getManifestLoadResult().manifest();
+        Manifest manifest = withClientArtifact(
+                base,
+                List.of(),
+                List.of(clientFile()),
+                CLIENT_PATH
+        );
+        Path gameDirectory = Path.of("game-directory");
+
+        //when
+        GameClasspath classpath = builder.build(manifest, List.of(), gameDirectory);
+
+        //then
+        assertEquals(
+                List.of(gameDirectory.resolve(CLIENT_PATH)),
+                classpath.entries()
+        );
+    }
+
+    @Test
+    void should_append_client_artifact_after_selected_libraries_without_using_fallback() {
+        //given
+        ManifestLoadResult loadResult = getManifestLoadResult();
+        Manifest manifest = withClientArtifact(
+                loadResult.manifest(),
+                List.of("fallback.jar"),
+                List.of(loadResult.manifest().files().getFirst(), clientFile()),
+                CLIENT_PATH
+        );
+        Path gameDirectory = Path.of("game-directory");
+        List<LibraryEntry> libraries = loadResult.runtimeLibrarySelection().libraries();
+
+        //when
+        GameClasspath classpath = builder.build(manifest, libraries, gameDirectory);
+
+        //then
+        assertEquals(
+                List.of(
+                        gameDirectory.resolve(libraries.getFirst().path()),
+                        gameDirectory.resolve(CLIENT_PATH)
+                ),
+                classpath.entries()
+        );
+
+        assertEquals(
+                getRecords(gameDirectory, libraries.getFirst().path(), CLIENT_PATH),
+                resourcePathResolver.getRecords()
+        );
     }
 
     @Test
@@ -271,5 +354,43 @@ class DefaultGameClasspathBuilderTest {
 
     private ManifestLoadResult getManifestLoadResultWithNativeArtifactsAndWithoutLibraries() {
         return new RecordingManifestService().loadManifestWithNativeArtifactsAndWithoutLibraries();
+    }
+
+    private FileEntry clientFile() {
+        return new FileEntry(
+                CLIENT_PATH,
+                "client-sha256",
+                1L,
+                "https://example.com/client.jar"
+        );
+    }
+
+    private Manifest withClientArtifact(
+            Manifest original,
+            List<String> classpath,
+            List<FileEntry> files,
+            String clientArtifactPath
+    ) {
+        LaunchInfo current = original.launchInfo();
+
+        LaunchInfo launchInfo = new LaunchInfo(
+                current.mainClass(),
+                current.jvmArgs(),
+                current.gameArgs(),
+                classpath,
+                current.javaExecutable(),
+                current.javaVersionRequirement(),
+                current.authArgs(),
+                clientArtifactPath
+        );
+
+        return new Manifest(
+                original.minecraftVersion(),
+                original.loader(),
+                files,
+                launchInfo,
+                original.libraries(),
+                original.assetsIndex()
+        );
     }
 }

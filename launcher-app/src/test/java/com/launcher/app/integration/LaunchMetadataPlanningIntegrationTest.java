@@ -25,11 +25,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LaunchMetadataPlanningIntegrationTest {
     private DefaultGameLaunchPlanBuilder builder;
@@ -45,6 +48,65 @@ class LaunchMetadataPlanningIntegrationTest {
         );
 
         builder = getBuilder();
+    }
+
+    @Test
+    void should_reject_launch_plan_when_client_artifact_is_not_declared_in_files() {
+        //given
+        String missingClientPath = "versions/missing.jar";
+        String json = JsonProvider.getManifestJsonWithClientArtifact(
+                "versions/1.21.1/client.jar",
+                missingClientPath
+        );
+
+        ManifestLoadResult mapped = getMapper().map(json);
+
+        //when & then
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> builder.build(
+                        mapped.manifest(),
+                        mapped.runtimeLibrarySelection()
+                )
+        );
+
+        assertTrue(
+                exception.getMessage().contains(missingClientPath)
+        );
+    }
+
+    @Test
+    void should_include_selected_library_and_client_artifact_when_building_launch_command() {
+        //given
+        String clientPath = "versions/1.21.1/client.jar";
+        String json = JsonProvider.getManifestJsonWithClientArtifact(
+                clientPath,
+                clientPath
+        );
+
+        ManifestLoadResult mapped = getMapper().map(json);
+
+        //when
+        GameLaunchPlan result = builder.build(
+                mapped.manifest(),
+                mapped.runtimeLibrarySelection()
+        );
+
+        //then
+        Path gameDirectory = directoryProvider.directories().game();
+        String expectedClasspath = gameDirectory
+                .resolve("libraries/example/library.jar")
+                + File.pathSeparator
+                + gameDirectory.resolve(clientPath);
+
+        assertEquals(
+                List.of(
+                        "java",
+                        "-Djava.class.path=" + expectedClasspath,
+                        "net.minecraft.client.main.Main"
+                ),
+                result.command()
+        );
     }
 
     @Test

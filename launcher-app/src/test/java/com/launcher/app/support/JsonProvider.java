@@ -24,6 +24,52 @@ public final class JsonProvider {
         return getManifestJson().formatted(files, assets);
     }
 
+    public static String getManifestJsonWithClientArtifact(
+            String declaredFilePath,
+            String clientArtifactPath
+    ) {
+        return """
+                {
+                    "minecraftVersion": "1.21.1",
+                    "files": [
+                        {
+                            "path": "%s",
+                            "sha256": "client-sha256",
+                            "size": 1,
+                            "url": "https://localhost/client.jar"
+                        }
+                    ],
+                    "launchInfo": {
+                        "mainClass": "net.minecraft.client.main.Main",
+                        "jvmArgs": [
+                            "-Djava.class.path=${classpath}"
+                        ],
+                        "gameArgs": [],
+                        "classpath": [],
+                        "javaExecutable": "java",
+                        "javaVersionRequirement": {
+                            "minimumMajorVersion": 17
+                        },
+                        "clientArtifactPath": "%s"
+                    },
+                    "libraries": [
+                        {
+                            "path": "libraries/example/library.jar",
+                            "sha256": "library-sha256",
+                            "size": 1,
+                            "url": "https://localhost/library.jar",
+                            "rules": [
+                                {
+                                    "action": "allow",
+                                    "os": "windows"
+                                }
+                            ]
+                        }
+                    ]
+                }
+                """.formatted(declaredFilePath, clientArtifactPath);
+    }
+
     private static String getResourceTemplate() {
         return
                 """

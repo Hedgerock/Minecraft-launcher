@@ -92,12 +92,21 @@ L-5
 Во время построения `GameLaunchPlan` launcher создает `LaunchVariables` и применяет поддерживаемые
 подстановки в `jvmArgs`, `gameArgs` и `authArgs`
 
-Также в процессе построения `GameLaunchPlan` строит `GameClasspath` из `RuntimeLibrarySelection.libraries`,
-безопасно разрешает classpath entries относительно игровой директории, форматирует его и передает как значение
-подстановки `${classpath}`
+Во время построения `GameLaunchPlan` `GameClasspathBuilder` формирует `GameClasspath` из выбранных `RuntimeLibrarySelection.libraries`
 
-Если `RuntimeLibrarySelection.libraries` пустой, используется fallback `launchInfo.classpath`, который тоже проходит
-через тот же механизм безопасного разрешения пути
+Если `LaunchInfo.clientArtifactPath` указан, builder проверяет наличие `FileEntry` с тем же `path` в `Manifest.files` и
+добавляет client artifact после выбранных libraries
+
+Если соответствующая запись отсутствует, построение плана завершается ошибкой до запуска игрового процесса
+
+В этом сценарии `launchInfo.classpath` не используется и может быть пустым списком
+
+Если `clientArtifactPath` отсутствует, выбранные libraries остаются источником classpath; при их отсутствии используется
+fallback `launchInfo.classpath`
+
+Все записи classpath разрешаются относительно игровой директории через `ResourcePathResolver` и формируют `GameClasspath`
+
+`ClasspathFormatter` преобразует `GameClasspath` в строку, которая передается как значение подстановки `${classpath}`
 
 Директория natives передается в `LaunchVariables` и может быть использована manifest metadata через
 подстановку `${natives_directory}`

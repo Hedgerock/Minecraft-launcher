@@ -249,7 +249,10 @@ Runtime-контекст текущего запуска лаунчера
 
 Метаданные запуска игры из `Manifest`
 
-Содержит `mainClass`, `javaExecutable`, `javaVersionRequirement`, `jvmArgs`, `gameArgs`, `authArgs` и `classpath`
+Содержит `mainClass`, `javaExecutable`, `javaVersionRequirement`, `jvmArgs`, `gameArgs`, `authArgs`, `clientArtifactPath`
+и `classpath`
+
+`clientArtifactPath` — необязательная ссылка на `FileEntry.path` из `Manifest.files`
 
 Используется `GameLaunchPlanBuilder` для построения команды запуска
 
@@ -813,8 +816,10 @@ Pure planning-компонент подготовки согласованног
 
 Компонент, строящий `GameClasspath` из `RuntimeLibrarySelection.libraries`
 
-Если `RuntimeLibrarySelection.libraries` пустой, использует `launchInfo.classpath` как fallback для минимальных
-сценариев
+Если указан `LaunchInfo.clientArtifactPath`, проверяет его соответствие `FileEntry.path` в `Manifest.files` и добавляет
+client artifact после выбранных libraries
+
+Если `clientArtifactPath` отсутствует и выбранных libraries нет, использует `launchInfo.classpath` как fallback
 
 `Manifest.libraries` больше не принимает участия в построении classpath
 

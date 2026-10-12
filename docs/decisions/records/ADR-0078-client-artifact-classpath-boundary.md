@@ -6,6 +6,11 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(model): add client artifact path to launch info`
+> `feat(api): map client artifact path from manifest json`
+> `feat(core): include declared client artifact in game classpath`
+
 ---
 
 ## Контекст

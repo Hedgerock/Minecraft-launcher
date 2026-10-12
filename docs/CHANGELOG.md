@@ -9,6 +9,7 @@
 - Documented optional manifest loader semantics for vanilla launch preparation
 - Added support for manifest JSON without loader metadata
 - Documented client artifact classpath boundary decision
+- Added manifest-declared client artifact to game classpath through launch metadata and JSON mapping
 
 ---
 

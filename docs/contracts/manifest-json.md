@@ -58,18 +58,25 @@ RuntimeEnvironment
       "sha256": "cb285f51cd38267e1e85b1b174578b11b35460edb630ad7b861d15c6d78698a6",
       "size": 123456789,
       "url": "https://localhost/files/mods/example.jar"
+    },
+    {
+      "path": "path/to/artifact.jar",
+      "sha256": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
+      "size": 1,
+      "url": "https://localhost/path/to/artifact.jar"
     }
   ],
   "launchInfo": {
     "mainClass": "net.minecraft.client.main.Main",
     "jvmArgs": ["-Xmx2G"],
     "gameArgs": ["--username", "Player"],
-    "classpath": ["libraries/example.jar", "client.jar"],
+    "classpath": [],
     "javaExecutable": "java",
     "javaVersionRequirement": {
       "minimumMajorVersion": 17
     },
-    "authArgs": ["--accessToken", "${access_token}"]
+    "authArgs": ["--accessToken", "${access_token}"],
+    "clientArtifactPath": "path/to/artifact.jar"
   },
   "libraries": [
     {
@@ -129,6 +136,10 @@ RuntimeEnvironment
 `files` преобразуется в список `FileEntry`
 
 `launchInfo` преобразуется в `LaunchInfo`
+
+`launchInfo.clientArtifactPath` может отсутствовать; указанное значение не должно быть пустым или пробельным
+
+`launchInfo.classpath` должен присутствовать; пустой список допустим только при указанном `clientArtifactPath`
 
 `ResourceEntry` является общей защитой уровня ресурсов для физической метадаты `path`, `sha256`, `size` и `url`
 
@@ -256,12 +267,14 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 
 На текущем этапе поддерживается
 
-| Подстановка            | Значение                                                                                    |
-|------------------------|---------------------------------------------------------------------------------------------|
-| `${version_name}`      | Версия Minecraft из `Manifest.minecraftVersion`                                             |
-| `${game_directory}`    | Путь к игровой директории из `DirectoryProvider`                                            |
-| `${classpath}`         | Отформатированный classpath, построенный из `libraries` или fallback `launchInfo.classpath` |
-| `${natives_directory}` | Путь к директории natives из `DirectoryProvider`                                            |
+
+| Подстановка            | Значение                                                                   |
+|------------------------|----------------------------------------------------------------------------|
+| `${version_name}`      | Версия Minecraft из `Manifest.minecraftVersion`                            |
+| `${game_directory}`    | Путь к игровой директории из `DirectoryProvider`                           |
+| `${classpath}`         | Отформатированный `GameClasspath`; правила выбора его записей описаны ниже |
+| `${natives_directory}` | Путь к директории natives из `DirectoryProvider`                           |
+
 
 `libraries` является основным источником classpath entries и описывает библиотеки для построения classpath
 
@@ -272,9 +285,6 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 Включение `libraries` в verification/download flow зафиксировано отдельным архитектурным решением и реализовано через
 `ManifestResources`
 
-Если `RuntimeLibrarySelection.libraries` пустой, launcher использует `launchInfo.classpath` как fallback для минимальных
-сценариев
-
 После добавления physical metadata `libraries` могут быть использованы как источник восстанавливаемых ресурсов
 
 Однако `LibraryEntry` не должен напрямую заменять `FileEntry`
@@ -282,15 +292,22 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 Для verification/download flow должен использоваться общий resource-level contract, который выражает только `path`,
 `sha256`, `size` и `url`
 
-`GameClasspathBuilder` строит classpath из `RuntimeLibrarySelection.libraries`
+`GameClasspathBuilder` строит classpath из выбранных `RuntimeLibrarySelection.libraries`
 
-Если `RuntimeLibrarySelection.libraries` пустой, launcher использует fallback `launchInfo.classpath`
+Если `launchInfo.clientArtifactPath` указан, builder проверяет точное совпадение с `FileEntry.path` в `Manifest.files` и
+добавляет client artifact после выбранных libraries
 
-Во время построения `GameLaunchPlan` выбранный источник classpath преобразуется в `GameClasspath`,
-разрешается относительно игровой директории и форматируется в строку с использованием системного разделителя путей
+При отсутствии соответствующего `FileEntry` построение `GameClasspath` завершается ошибкой
 
-Перед добавлением в `GameClasspath` каждый classpath entry разрешается через общий `ResourcePathResolver` относительно
-игровой директории
+В этом случае `launchInfo.classpath` не используется и может быть пустым списком
+
+Если `clientArtifactPath` отсутствует, выбранные libraries остаются основным источником classpath, а `launchInfo.classpath`
+используется как fallback только при отсутствии выбранных libraries
+
+Во время построения `GameLaunchPlan` все записи classpath разрешаются относительно игровой директории через `ResourcePathResolver`
+и формируют `GameClasspath`
+
+`ClasspathFormatter` преобразует `GameClasspath` в строку, которая передается как значение подстановки `${classpath}`
 
 `Manifest.libraries` остается compatibility projection для verification/download flow и не является источником
 game classpath
@@ -299,15 +316,16 @@ game classpath
 пути общему resolver-у
 
 ```text
-RuntimeLibrarySelection.libraries
+clientArtifactPath указан:
+RuntimeLibrarySelection.libraries + launchInfo.clientArtifactPath
     -> GameClasspathBuilder
         -> GameClasspath
             -> ClasspathFormatter
                 -> LaunchVariables.classpath
                     -> ${classpath}
 
-fallback:
-    launchInfo.classpath
+clientArtifactPath отсутствует:
+    RuntimeLibrarySelection.libraries или, если список пуст, launchInfo.classpath
         -> GameClasspathBuilder
 ```
 

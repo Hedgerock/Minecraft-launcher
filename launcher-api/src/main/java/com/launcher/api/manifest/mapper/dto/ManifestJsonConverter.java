@@ -38,7 +38,10 @@ public final class ManifestJsonConverter {
                 new AssetsIndex(
                         manifestJson.assets().stream()
                                 .map(AssetEntryJson::toAssetEntry)
-                                .toList()
+                                .toList(),
+                        manifestJson.assetIndex() == null
+                            ? null
+                            : manifestJson.assetIndex().toAssetIndexMetadata()
                 )
         );
 

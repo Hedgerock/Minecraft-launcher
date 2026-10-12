@@ -13,6 +13,7 @@ import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.model.manifest.RuntimeLibraryMetadata;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
 import com.launcher.model.manifest.assets.AssetEntry;
+import com.launcher.model.manifest.assets.AssetIndexMetadata;
 import com.launcher.model.manifest.assets.AssetsIndex;
 import com.launcher.model.manifest.classifiers.LibraryClassifiersMetadata;
 import com.launcher.model.manifest.natives.LibraryNativesMetadata;
@@ -42,6 +43,54 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JsonManifestMapperTest {
+
+    @Test
+    void should_reject_inconsistent_id_and_path_in_asset_index_metadata() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-invalid-manifest-with-asset-index-metadata.json");
+
+        //when & then
+        assertThrows(
+                ManifestMappingException.class,
+                () -> mapper.map(json)
+        );
+    }
+
+    @Test
+    void should_map_manifest_with_asset_index_metadata() {
+        //given
+        RecordingRuntimeLibrarySelector selector = new RecordingRuntimeLibrarySelector();
+        JsonManifestMapper mapper = getMapper(selector);
+        String json = loadResource("manifest/test-valid-manifest-with-asset-index-metadata.json");
+
+        //when
+        ManifestLoadResult result = mapper.map(json);
+
+        //then
+        AssetIndexMetadata expectedMetadata = new AssetIndexMetadata(
+                "17",
+                "assets/indexes/17.json",
+                "<sha256-value>",
+                123L,
+                "https://example.test/assets/indexes/17.json"
+        );
+
+        AssetEntry expectedEntry = new AssetEntry(
+                "assets.jar",
+                "assets-sha256",
+                123456789L,
+                "https://localhost/assets/example/assets.jar"
+        );
+
+        AssetsIndex expected = new AssetsIndex(
+                List.of(expectedEntry),
+                expectedMetadata
+        );
+
+        assertEquals(expected, result.manifest().assetsIndex());
+    }
 
     @Test
     void should_reject_blank_client_artifact_path() {
@@ -520,6 +569,8 @@ class JsonManifestMapperTest {
                 expected,
                 manifest.assetsIndex()
         );
+
+        assertNull(expected.index());
     }
 
     private String loadResource(String name) {

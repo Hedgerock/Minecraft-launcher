@@ -9,8 +9,28 @@ public record ManifestJson(
         List<FileEntryJson> files,
         LaunchInfoJson launchInfo,
         List<LibraryEntryJson> libraries,
-        List<AssetEntryJson> assets
+        List<AssetEntryJson> assets,
+        AssetIndexMetadataJson assetIndex
 ) {
+
+    public ManifestJson(
+            String minecraftVersion,
+            LoaderJson loader,
+            List<FileEntryJson> files,
+            LaunchInfoJson launchInfo,
+            List<LibraryEntryJson> libraries,
+            List<AssetEntryJson> assets
+    ) {
+        this(
+                minecraftVersion,
+                loader,
+                files,
+                launchInfo,
+                libraries,
+                assets,
+                null
+        );
+    }
 
     public ManifestJson(
             String minecraftVersion,
@@ -25,7 +45,8 @@ public record ManifestJson(
                 files,
                 launchInfo,
                 libraries,
-                List.of()
+                List.of(),
+                null
         );
     }
 

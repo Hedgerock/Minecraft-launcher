@@ -327,8 +327,8 @@ Configured Java override имеет приоритет над manifest-provided 
 Компонент доменной модели, который строит список `ResourceEntry` из `Manifest.files`,
 `Manifest.libraries` и `Manifest.assetsIndex`
 
-Сохраняет семантику исходных моделей: `FileEntry`, `LibraryEntry` и `AssetEntry` продолжают использоваться в своих
-runtime-сценариях
+Сохраняет семантику исходных моделей: `FileEntry`, `LibraryEntry`, `AssetEntry` и необязательный `AssetIndexMetadata`
+продолжают использоваться в своих runtime-сценариях
 
 ### AssetEntry
 
@@ -345,11 +345,15 @@ Manifest-specific модель asset resource metadata
 
 ### AssetsIndex
 
-Manifest-specific контейнер asset resources
+Manifest-specific контейнер asset resources и необязательной метадаты файла индекса
 
 Используется как отдельная semantic boundary для assets metadata внутри manifest model
 
 Подключен к `ManifestResources` и участвует в verification/download flow через общий `ResourceEntry` контракт
+
+### AssetIndexMetadata
+
+Идентификатор и физическая метадата проверяемого файла индекса
 
 ---
 

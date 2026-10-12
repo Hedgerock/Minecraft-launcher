@@ -115,7 +115,14 @@ RuntimeEnvironment
       "size": 123456789,
       "url": "https://localhost/assets/example/assets.jar"
     }
-  ]
+  ],
+  "assetIndex": {
+    "id": "17",
+    "path": "assets/indexes/17.json",
+    "sha256": "948ceb8ad872f49c786b94a460c73c59ea2d3588be3a05110ec3ceb62b45b660",
+    "size": 123,
+    "url": "https://example.test/assets/indexes/17.json"
+  }
 }
 ```
 
@@ -225,19 +232,20 @@ Library исключается из `RuntimeLibrarySelection.libraries`, есл�
 
 `launchInfo.authArgs` участвует в построении `GameLaunchPlan.command` после `launchInfo.gameArgs`
 
-`assets` преобразуется в `AssetsIndex`
+`assets` преобразуется в список `AssetEntry` внутри `AssetsIndex`
 
-Каждый asset entry содержит физическую метадату
+Необязательное поле `assetIndex` преобразуется в `AssetIndexMetadata` внутри того же `AssetsIndex`
 
-- `path`
-- `sha256`
-- `size`
-- `url`
+`AssetIndexMetadata` содержит идентификатор индекса и физическую метадату его файла: `path`, `sha256`, `size` и `url`
 
-Отсутствие `assets` означает пустой `AssetsIndex`
+Путь файла индекса должен соответствовать `assets/indexes/<id>.json` относительно игровой директории
 
-На текущем этапе `AssetsIndex` подключен к `ManifestResources` и участвует в verification/download flow через общий
-`ResourceEntry` контракт
+Отсутствие `assets` означает пустой список asset objects
+
+Отсутствие `assetIndex` означает, что файл индекса не объявлен
+
+Объявленный файл индекса и asset objects преобразуются в `ResourceEntry` через `ManifestResources` и участвуют в существующем
+verification/download flow
 
 `JsonManifestMapper` не выполняет запуск, загрузку файлов или проверку хеша
 
@@ -358,6 +366,7 @@ LaunchInfo
 - `LibraryEntry`
 - `AssetEntry`
 - `AssetsIndex`
+- `AssetIndexMetadata`
 
 Если JSON невозможно прочитать или преобразовать в корректный `Manifest`, mapper завершает работу ошибкой
 `ManifestMappingException`
@@ -368,7 +377,9 @@ LaunchInfo
 
 Неполный объект `loader` отклоняется; отсутствие поля или `loader: null` допустимо
 
-Отсутствие `assets` допустимо и преобразуется в пустой `AssetsIndex`
+Отсутствие `assets` допустимо и означает пустой список asset objects
+
+Отсутствие `assetIndex` означает, что файл индекса не объявлен
 
 ---
 
@@ -400,3 +411,4 @@ LaunchInfo
 - `LaunchInfo`
 - `AssetEntry`
 - `AssetsIndex`
+- `AssetIndexMetadata`

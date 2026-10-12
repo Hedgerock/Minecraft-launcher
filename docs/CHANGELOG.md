@@ -10,6 +10,7 @@
 - Added support for manifest JSON without loader metadata
 - Documented client artifact classpath boundary decision
 - Added manifest-declared client artifact to game classpath through launch metadata and JSON mapping
+- Documented Minecraft asset index launch boundary decision
 
 ---
 

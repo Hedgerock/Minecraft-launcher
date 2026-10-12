@@ -90,3 +90,4 @@
 | [ADR-0076](records/ADR-0076-publisher-signing-key-source-boundary.md)               | Источник закрытого ключа для первой публикации манифеста           | manifest           |
 | [ADR-0077](records/ADR-0077-optional-manifest-loader.md)                            | Семантика отсутствующего загрузчика в манифесте                    | manifest           |
 | [ADR-0078](records/ADR-0078-client-artifact-classpath-boundary.md)                  | Источник client artifact для game classpath                        | classpath          |
+| [ADR-0079](records/ADR-0079-minecraft-asset-index-launch-boundary.md)               | Граница Minecraft asset index для запуска игры                     | assets             |

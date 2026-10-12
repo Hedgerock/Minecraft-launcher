@@ -4,8 +4,13 @@ import java.util.List;
 import java.util.Objects;
 
 public record AssetsIndex(
-        List<AssetEntry> assets
+        List<AssetEntry> assets,
+        AssetIndexMetadata index
 ) {
+
+    public AssetsIndex(List<AssetEntry> assets) {
+        this(assets, null);
+    }
 
     public AssetsIndex {
         Objects.requireNonNull(assets, "assets");

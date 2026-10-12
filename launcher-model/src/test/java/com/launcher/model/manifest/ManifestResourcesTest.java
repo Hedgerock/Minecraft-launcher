@@ -1,5 +1,7 @@
 package com.launcher.model.manifest;
 
+import com.launcher.model.manifest.assets.AssetIndexMetadata;
+import com.launcher.model.manifest.assets.AssetsIndex;
 import com.launcher.model.support.ManifestResourcesFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,6 +78,31 @@ class ManifestResourcesTest {
     }
 
     @Test
+    void should_collect_manifest_resources_with_asset_index_metadata() {
+        //given & when
+        Manifest manifest = getManifestWithAssetIndexMetadata();
+        List<ResourceEntry> resourceEntries = ManifestResources.from(manifest);
+
+        ResourceEntry resourceEntry = manifestResourcesFixture.getFileEntry();
+        ResourceEntry libraryEntry = manifestResourcesFixture.getLibraryEntry();
+        ResourceEntry assetEntry = manifestResourcesFixture.getAssetEntry();
+
+        //then
+        AssetIndexMetadata metadata = manifest.assetsIndex().index();
+        ResourceEntry metadataResourceEntry = manifestResourcesFixture.fromAssetIndexMetadata(metadata);
+
+        assertEquals(
+                List.of(
+                        resourceEntry,
+                        libraryEntry,
+                        assetEntry,
+                        metadataResourceEntry
+                ),
+                resourceEntries
+        );
+    }
+
+    @Test
     void should_collect_manifest_resources() {
         //given & when
         Manifest manifest = manifestResourcesFixture.getManifest();
@@ -89,6 +116,30 @@ class ManifestResourcesTest {
         assertEquals(
                 List.of(resourceEntry, libraryEntry, assetEntry),
                 resourceEntries
+        );
+    }
+
+    private Manifest getManifestWithAssetIndexMetadata() {
+        Manifest original = manifestResourcesFixture.getManifest();
+
+        AssetsIndex assetsIndex = new AssetsIndex(
+                original.assetsIndex().assets(),
+                new AssetIndexMetadata(
+                        "current-id",
+                        "assets/indexes/current-id.json",
+                        "sha-256",
+                        123L,
+                        "https://example.org"
+                )
+        );
+
+        return new Manifest(
+                original.minecraftVersion(),
+                original.loader(),
+                original.files(),
+                original.launchInfo(),
+                original.libraries(),
+                assetsIndex
         );
     }
 }

@@ -8,6 +8,7 @@ import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ResourceEntry;
 import com.launcher.model.manifest.assets.AssetEntry;
+import com.launcher.model.manifest.assets.AssetIndexMetadata;
 import com.launcher.model.manifest.assets.AssetsIndex;
 import com.launcher.model.runtime.JavaVersionRequirement;
 
@@ -122,6 +123,15 @@ public final class ManifestResourcesFixture {
 
     public ResourceEntry getAssetEntry() {
         return toResourceEntry(ASSET_ENTRY);
+    }
+
+    public ResourceEntry fromAssetIndexMetadata(AssetIndexMetadata metadata) {
+        return new ResourceEntry(
+                metadata.path(),
+                metadata.sha256(),
+                metadata.size(),
+                metadata.url()
+        );
     }
 
     public ResourceEntry generateResourceEntry(String path, String sha256, long size, String url) {

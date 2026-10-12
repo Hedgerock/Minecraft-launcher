@@ -1,6 +1,7 @@
 package com.launcher.model.manifest;
 
 import com.launcher.model.manifest.assets.AssetEntry;
+import com.launcher.model.manifest.assets.AssetIndexMetadata;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +19,8 @@ public final class ManifestResources {
         return Stream.of(
                 manifest.files().stream().map(ManifestResources::fromFile),
                 manifest.libraries().stream().map(ManifestResources::fromLibrary),
-                manifest.assetsIndex().assets().stream().map(ManifestResources::fromAsset)
+                manifest.assetsIndex().assets().stream().map(ManifestResources::fromAsset),
+                Stream.ofNullable(manifest.assetsIndex().index()).map(ManifestResources::fromAssetIndex)
         )
                 .flatMap(stream -> stream)
                 .toList();
@@ -51,4 +53,12 @@ public final class ManifestResources {
         );
     }
 
+    private static ResourceEntry fromAssetIndex(AssetIndexMetadata assetIndex) {
+        return new ResourceEntry(
+                assetIndex.path(),
+                assetIndex.sha256(),
+                assetIndex.size(),
+                assetIndex.url()
+        );
+    }
 }

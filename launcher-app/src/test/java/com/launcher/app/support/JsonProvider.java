@@ -70,6 +70,39 @@ public final class JsonProvider {
                 """.formatted(declaredFilePath, clientArtifactPath);
     }
 
+    public static String getManifestJsonWithDownloadableClientArtifact(
+            String clientPath,
+            String sha256,
+            long size,
+            String clientUrl
+    ) {
+        return """
+                {
+                    "minecraftVersion": "1.21.1",
+                    "files": [
+                        {
+                            "path": "%s",
+                            "sha256": "%s",
+                            "size": %d,
+                            "url": "%s"
+                        }
+                    ],
+                    "launchInfo": {
+                        "mainClass": "net.minecraft.client.main.Main",
+                        "jvmArgs": ["-cp", "${classpath}"],
+                        "gameArgs": [],
+                        "classpath": [],
+                        "javaExecutable": "java",
+                        "javaVersionRequirement": {
+                            "minimumMajorVersion": 21
+                        },
+                        "clientArtifactPath": "%s"
+                    },
+                    "libraries": []
+                }
+                """.formatted(clientPath, sha256, size, clientUrl, clientPath);
+    }
+
     private static String getResourceTemplate() {
         return
                 """

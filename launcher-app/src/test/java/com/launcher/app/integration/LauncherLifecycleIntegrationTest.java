@@ -8,6 +8,7 @@ import com.launcher.app.presentation.LaunchRequestResult;
 import com.launcher.app.presentation.PresentationLaunchBoundary;
 import com.launcher.app.presentation.completion.PresentationLaunchCompletion;
 import com.launcher.app.presentation.phase.PresentationLaunchPhase;
+import com.launcher.app.storage.directory.LocalDirectoryProvider;
 import com.launcher.app.support.JsonProvider;
 import com.launcher.app.support.LocalServerStarter;
 import com.launcher.core.LaunchResult;
@@ -19,19 +20,24 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,6 +46,81 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LauncherLifecycleIntegrationTest {
     private final LocalServerStarter localServerStarter = new LocalServerStarter();
+
+    @Test
+    void should_launch_with_downloaded_client_artifact_when_manifest_declares_it(
+            @TempDir Path tempDir
+    ) throws Exception {
+        //given
+        String clientPath = "versions/1.21.1/client.jar";
+        byte[] clientBytes = "test-client-artifact".getBytes(StandardCharsets.UTF_8);
+        String sha256 = HexFormat.of()
+                .formatHex(
+                        MessageDigest.getInstance("SHA-256")
+                                .digest(clientBytes)
+                );
+        HttpServer server = HttpServer.create(
+                new InetSocketAddress(0),
+                0
+        );
+        String baseUrl = "http://localhost:" + server.getAddress().getPort();
+        AtomicInteger resourceRequests = new AtomicInteger();
+
+        String manifestJson = JsonProvider.getManifestJsonWithDownloadableClientArtifact(
+                clientPath,
+                sha256,
+                clientBytes.length,
+                baseUrl + "/client.jar"
+        );
+
+        localServerStarter.createJsonContext(server, "/manifest.json", manifestJson);
+        localServerStarter.createOctetStreamContext(
+                server,
+                "/client.jar",
+                resourceRequests,
+                clientBytes
+        );
+
+        server.start();
+
+        try {
+            Path gameStartedMarker = tempDir.resolve("gamestarted.marker");
+            Path executable = createFakeJavaExecutable(tempDir, gameStartedMarker);
+
+            LauncherConfiguration configuration = new LauncherConfiguration(
+                    URI.create(baseUrl + "/manifest.json"),
+                    tempDir.resolve("launcher-directory"),
+                    Optional.of(executable.toString())
+            );
+
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration =
+                    new ResolvedLauncherConfiguration(
+                            configuration,
+                            ManifestSourceKind.EXPLICIT_URI
+                    );
+
+            LauncherEngine engine =
+                    new DefaultApplicationAssembly(resolvedLauncherConfiguration).createEngine();
+
+            //when
+            LaunchResult result = engine.launch(configuration);
+
+            //then
+            assertTrue(result.success());
+            assertEquals(LauncherState.RUNNING, result.finalState());
+
+            Path downloadedClient = new LocalDirectoryProvider(configuration)
+                    .directories()
+                    .game()
+                    .resolve(clientPath);
+
+            assertArrayEquals(clientBytes, Files.readAllBytes(downloadedClient));
+            assertEquals(1, resourceRequests.get());
+            waitUntilExists(gameStartedMarker);
+        } finally {
+            server.stop(0);
+        }
+    }
 
     @Test
     void should_deliver_ordered_phases_before_completion_when_launcher_lifecycle_succeeds(@TempDir Path tempDir)

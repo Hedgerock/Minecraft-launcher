@@ -19,6 +19,8 @@ import com.launcher.core.runtime.javaexecutable.checker.NoOpJavaExecutableReadin
 import com.launcher.core.runtime.javaexecutable.resolver.ManifestJavaExecutableReferenceResolver;
 import com.launcher.core.storage.directory.DirectoryProvider;
 import com.launcher.model.manifest.ManifestLoadResult;
+import com.launcher.model.manifest.ManifestResources;
+import com.launcher.model.manifest.ResourceEntry;
 import com.launcher.model.runtime.OperatingSystem;
 import com.launcher.model.runtime.RuntimeEnvironment;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,6 +74,66 @@ class LaunchMetadataPlanningIntegrationTest {
 
         assertTrue(
                 exception.getMessage().contains(missingClientPath)
+        );
+    }
+
+    @Test
+    void should_reject_asset_index_argument_when_manifest_does_not_declare_index() {
+        //given
+        String json = JsonProvider.getManifestJsonRequiringAssetIndexWithoutDeclaration();
+
+        ManifestLoadResult mapped = getMapper().map(json);
+
+        //when & then
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> builder.build(
+                        mapped.manifest(),
+                        mapped.runtimeLibrarySelection()
+                )
+        );
+
+        assertTrue(
+                exception.getMessage().contains("${assets_index_name}")
+        );
+    }
+
+    @Test
+    void should_resolve_asset_index_arguments_from_manifest_json() {
+        //given
+        String json = JsonProvider.getManifestJsonWithGameArgsAndAssetIndex();
+
+        ManifestLoadResult mapped = getMapper().map(json);
+
+        //when
+        GameLaunchPlan result = builder.build(
+                mapped.manifest(),
+                mapped.runtimeLibrarySelection()
+        );
+
+        //then
+        Path assetDirectory = directoryProvider.directories().assets();
+
+        assertEquals(
+                List.of(
+                        "java", "net.minecraft.client.main.Main",
+                        "--assetsDir", assetDirectory.toString(),
+                        "--assetIndex", "17"
+                ),
+                result.command()
+        );
+
+        ResourceEntry metadata =
+                new ResourceEntry(
+                        "assets/indexes/17.json",
+                        "<sha256-value>",
+                        123L,
+                        "https://example.test/assets/indexes/17.json"
+                );
+
+        assertEquals(
+                List.of(metadata),
+                ManifestResources.from(mapped.manifest())
         );
     }
 

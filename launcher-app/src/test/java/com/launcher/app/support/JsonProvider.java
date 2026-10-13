@@ -24,6 +24,63 @@ public final class JsonProvider {
         return getManifestJson().formatted(files, assets);
     }
 
+    public static String getManifestJsonRequiringAssetIndexWithoutDeclaration() {
+        return """
+                {
+                    "minecraftVersion": "1.12.2",
+                    "loader": {
+                        "type": "fabric",
+                        "version": "0.16.10"
+                    },
+                    "files": [],
+                    "launchInfo": {
+                        "mainClass": "net.minecraft.client.main.Main",
+                        "jvmArgs": [],
+                        "gameArgs": ["--assetsDir", "${assets_root}", "--assetIndex", "${assets_index_name}"],
+                        "classpath": ["versions/client.jar"],
+                        "javaExecutable": "java",
+                        "javaVersionRequirement": {
+                            "minimumMajorVersion": 17
+                        }
+                    },
+                    "libraries": []
+                }
+                """;
+
+    }
+
+    public static String getManifestJsonWithGameArgsAndAssetIndex() {
+        return """
+                {
+                    "minecraftVersion": "1.12.2",
+                    "loader": {
+                        "type": "fabric",
+                        "version": "0.16.10"
+                    },
+                    "files": [],
+                    "launchInfo": {
+                        "mainClass": "net.minecraft.client.main.Main",
+                        "jvmArgs": [],
+                        "gameArgs": ["--assetsDir", "${assets_root}", "--assetIndex", "${assets_index_name}"],
+                        "classpath": ["versions/client.jar"],
+                        "javaExecutable": "java",
+                        "javaVersionRequirement": {
+                            "minimumMajorVersion": 17
+                        }
+                    },
+                    "libraries": [],
+                    "assetIndex": {
+                        "id": "17",
+                        "path": "assets/indexes/17.json",
+                        "sha256": "<sha256-value>",
+                        "size": 123,
+                        "url": "https://example.test/assets/indexes/17.json"
+                    }
+                }
+                """;
+
+    }
+
     public static String getManifestJsonWithClientArtifact(
             String declaredFilePath,
             String clientArtifactPath

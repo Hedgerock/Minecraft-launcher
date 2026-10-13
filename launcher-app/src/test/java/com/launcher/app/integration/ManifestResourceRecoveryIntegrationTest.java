@@ -49,6 +49,208 @@ public class ManifestResourceRecoveryIntegrationTest {
     private final LocalServerStarter localServerStarter = new LocalServerStarter();
 
     @Test
+    void should_replace_corrupted_asset_index(
+            @TempDir Path tempDir
+    ) throws IOException, NoSuchAlgorithmException {
+        //given
+        HttpServer server = HttpServer.create(
+                new InetSocketAddress(0),
+                0
+        );
+
+        String baseUrl = "http://localhost:" + server.getAddress().getPort();
+        String indexUrl = baseUrl + "/assets/indexes/17.json";
+
+        byte[] indexContent = "{\"objects\": {}}".getBytes(StandardCharsets.UTF_8);
+        String sha256 = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(indexContent));
+
+        AtomicInteger indexRequests = new AtomicInteger();
+
+        localServerStarter.createJsonContext(
+                server,
+                "/manifest.json",
+                JsonProvider.getManifestJsonWithDownloadableAssetIndex(
+                        indexUrl,
+                        sha256,
+                        indexContent.length
+                )
+        );
+
+        localServerStarter.createOctetStreamContext(
+                server,
+                "/assets/indexes/17.json",
+                indexRequests,
+                indexContent
+        );
+
+        server.start();
+
+        try {
+            LauncherConfiguration configuration = new LauncherConfiguration(
+                    URI.create(baseUrl + "/manifest.json"),
+                    tempDir.resolve("launch-directory")
+            );
+
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration =
+                    new ResolvedLauncherConfiguration(
+                            configuration,
+                            ManifestSourceKind.EXPLICIT_URI
+                    );
+
+            DirectoryProvider directoryProvider = new LocalDirectoryProvider(configuration);
+            LauncherServices services = getFactory(
+                    resolvedLauncherConfiguration,
+                    directoryProvider
+            ).createServices();
+
+            Path indexPath = directoryProvider.directories()
+                    .assets()
+                    .resolve("indexes/17.json");
+
+            Files.createDirectories(indexPath.getParent());
+
+            byte[] corruptedContent = indexContent.clone();
+            corruptedContent[0] ^= 1;
+            Files.write(indexPath, corruptedContent);
+
+            Manifest manifest = services.manifestService().loadManifest().manifest();
+
+            //when
+            VerificationPlan initialPlan = services.verificationService().verify(manifest);
+            DownloadPlan downloadPlan = new DownloadPlanBuilder().build(initialPlan);
+
+            //then
+            assertEquals(1, initialPlan.resources().size());
+            assertEquals(
+                    VerificationStatus.CORRUPTED,
+                    initialPlan.resources().getFirst().status()
+            );
+            assertEquals(1, downloadPlan.resources().size());
+            assertEquals(0, indexRequests.get());
+
+            //when
+            services.downloadService().download(downloadPlan);
+            VerificationPlan finalPlan = services.verificationService().verify(manifest);
+
+            //then
+            assertArrayEquals(indexContent, Files.readAllBytes(indexPath));
+            assertEquals(1, indexRequests.get());
+            assertTrue(finalPlan.isValid());
+            assertEquals(
+                    VerificationStatus.VALID,
+                    finalPlan.resources().getFirst().status()
+            );
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
+    void should_download_missing_asset_index_declared_in_manifest_json(
+            @TempDir Path tempDir
+    ) throws IOException, NoSuchAlgorithmException {
+        //given
+        HttpServer server = HttpServer.create(
+                new InetSocketAddress(0),
+                0
+        );
+
+        String baseUrl = "http://localhost:" + server.getAddress().getPort();
+        String indexUrl = baseUrl + "/assets/indexes/17.json";
+
+        byte[] indexContent = "{\"objects\": {}}".getBytes(StandardCharsets.UTF_8);
+        String sha256 = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(indexContent));
+
+        AtomicInteger indexRequests = new AtomicInteger();
+
+        localServerStarter.createJsonContext(
+                server,
+                "/manifest.json",
+                JsonProvider.getManifestJsonWithDownloadableAssetIndex(
+                        indexUrl,
+                        sha256,
+                        indexContent.length
+                )
+        );
+
+        localServerStarter.createOctetStreamContext(
+                server,
+                "/assets/indexes/17.json",
+                indexRequests,
+                indexContent
+        );
+
+        server.start();
+
+        try {
+            LauncherConfiguration configuration = new LauncherConfiguration(
+                    URI.create(baseUrl + "/manifest.json"),
+                    tempDir.resolve("launch-directory")
+            );
+
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration =
+                    new ResolvedLauncherConfiguration(
+                            configuration,
+                            ManifestSourceKind.EXPLICIT_URI
+                    );
+
+            DirectoryProvider directoryProvider = new LocalDirectoryProvider(configuration);
+            LauncherServices services = getFactory(
+                    resolvedLauncherConfiguration,
+                    directoryProvider
+            ).createServices();
+
+            Manifest manifest = services.manifestService().loadManifest().manifest();
+            Path indexPath = directoryProvider.directories()
+                    .assets()
+                    .resolve("indexes/17.json");
+
+            //when
+            VerificationPlan initialPlan = services.verificationService().verify(manifest);
+            DownloadPlan downloadPlan = new DownloadPlanBuilder().build(initialPlan);
+
+            //then
+            assertFalse(Files.exists(indexPath));
+            assertEquals(1, initialPlan.resources().size());
+            assertEquals(
+                    VerificationStatus.MISSING,
+                    initialPlan.resources().getFirst().status()
+            );
+
+            ResourceEntry expectedResourceEntry = new ResourceEntry(
+                    "assets/indexes/17.json",
+                    sha256,
+                    indexContent.length,
+                    indexUrl
+            );
+
+            assertEquals(1, downloadPlan.resources().size());
+
+            assertEquals(
+                    expectedResourceEntry,
+                    downloadPlan.resources().getFirst()
+            );
+
+            assertEquals(0, indexRequests.get());
+
+            //when
+            services.downloadService().download(downloadPlan);
+            VerificationPlan finalPlan = services.verificationService().verify(manifest);
+
+            //then
+            assertArrayEquals(indexContent, Files.readAllBytes(indexPath));
+            assertEquals(1, indexRequests.get());
+            assertTrue(finalPlan.isValid());
+            assertEquals(
+                    VerificationStatus.VALID,
+                    finalPlan.resources().getFirst().status()
+            );
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
     void should_reject_entire_download_plan_when_resource_targets_conflict(@TempDir Path tempDir)
             throws NoSuchAlgorithmException, IOException {
         //given

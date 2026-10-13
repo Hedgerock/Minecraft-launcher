@@ -24,6 +24,37 @@ public final class JsonProvider {
         return getManifestJson().formatted(files, assets);
     }
 
+    public static String getManifestJsonWithDownloadableAssetIndex(
+            String url,
+            String sha256,
+            long size
+    ) {
+        return """
+                    {
+                        "minecraftVersion": "1.21.1",
+                        "files": [],
+                        "launchInfo": {
+                            "mainClass": "net.minecraft.client.main.Main",
+                            "jvmArgs": [],
+                            "gameArgs": ["--assetsDir", "${assets_root}", "--assetIndex", "${assets_index_name}"],
+                            "classpath": ["versions/client.jar"],
+                            "javaExecutable": "java",
+                            "javaVersionRequirement": {
+                                "minimumMajorVersion": 17
+                            }
+                        },
+                        "libraries": [],
+                        "assetIndex": {
+                            "id": "17",
+                            "path": "assets/indexes/17.json",
+                            "sha256": "%s",
+                            "size": %d,
+                            "url": "%s"
+                        }
+                    }
+                """.formatted(sha256, size, url);
+    }
+
     public static String getManifestJsonRequiringAssetIndexWithoutDeclaration() {
         return """
                 {

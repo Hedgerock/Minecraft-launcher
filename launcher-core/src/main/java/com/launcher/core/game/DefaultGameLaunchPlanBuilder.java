@@ -91,11 +91,19 @@ public final class DefaultGameLaunchPlanBuilder implements GameLaunchPlanBuilder
 
         String classpath = classpathFormatter.format(gameClasspath);
 
+        String assetsIndexName = null;
+
+        if (manifest.assetsIndex().index() != null) {
+            assetsIndexName = manifest.assetsIndex().index().id();
+        }
+
         LaunchVariables launchVariables = new LaunchVariables(
                 manifest.minecraftVersion(),
                 gameDirectory,
                 classpath,
-                nativesDirectory
+                nativesDirectory,
+                directoryProvider.directories().assets(),
+                assetsIndexName
         );
 
         LaunchInfo launchInfo = manifest.launchInfo();

@@ -10,8 +10,8 @@ import com.launcher.core.architecture.support.recording.RecordingJavaRuntimeComp
 import com.launcher.core.architecture.support.recording.RecordingJavaRuntimeSelector;
 import com.launcher.core.architecture.support.recording.RecordingJavaRuntimeVersionDetector;
 import com.launcher.core.architecture.support.recording.RecordingManifestService;
-import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.game.DefaultGameLaunchPlanBuilder;
+import com.launcher.core.game.GameLaunchPlan;
 import com.launcher.core.runtime.model.JavaRuntimeSelectionRequest;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ManifestLoadResult;
@@ -54,6 +54,32 @@ class DefaultGameLaunchPlanBuilderTest {
         recordingJavaCommandPathResolver = new RecordingJavaCommandPathResolver();
         recordingJavaRuntimeVersionDetector = new RecordingJavaRuntimeVersionDetector();
         recordingJavaRuntimeCompatibilityChecker = new RecordingJavaRuntimeCompatibilityChecker();
+    }
+
+    @Test
+    void should_pass_assets_root_and_index_name_to_launch_command_builder() {
+        //given
+        DefaultGameLaunchPlanBuilder gameLaunchPlanBuilder = getGameLaunchPlanBuilder();
+
+        ManifestLoadResult manifestLoadResult = manifestService.loadManifestWithAssetArguments();
+        Manifest manifest = manifestLoadResult.manifest();
+        RuntimeLibrarySelection runtimeLibrarySelection = manifestLoadResult.runtimeLibrarySelection();
+
+        //when
+        gameLaunchPlanBuilder.build(manifest, runtimeLibrarySelection);
+
+        //then
+        assertNotNull(launchCommandBuilder.getLaunchVariables());
+
+        assertEquals(
+                directoryProvider.directories().assets(),
+                launchCommandBuilder.getLaunchVariables().assetsRoot()
+        );
+
+        assertEquals(
+                manifest.assetsIndex().index().id(),
+                launchCommandBuilder.getLaunchVariables().assetsIndexName()
+        );
     }
 
     @Test
@@ -374,6 +400,13 @@ class DefaultGameLaunchPlanBuilderTest {
                 directoryProvider.directories().natives(),
                 launchCommandBuilder.getLaunchVariables().nativesDirectory()
         );
+
+        assertEquals(
+                directoryProvider.directories().assets(),
+                launchCommandBuilder.getLaunchVariables().assetsRoot()
+        );
+
+        assertNull(launchCommandBuilder.getLaunchVariables().assetsIndexName());
     }
 
     private DefaultGameLaunchPlanBuilder getGameLaunchPlanBuilder() {

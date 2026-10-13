@@ -18,12 +18,24 @@ public final class DefaultLaunchArgumentResolver implements LaunchArgumentResolv
     }
 
     private String resolve(String argument, LaunchVariables variables) {
+        if (argument.contains("${assets_index_name}")) {
+            String assetsIndexName = variables.assetsIndexName();
+
+            if (assetsIndexName == null) {
+                throw new IllegalArgumentException(
+                        "Asset index name is required for ${assets_index_name}"
+                );
+            }
+
+            argument = argument.replace("${assets_index_name}", variables.assetsIndexName());
+        }
+
         return argument
             .replace("${version_name}", variables.versionName())
             .replace("${game_directory}", variables.gameDirectory().toString())
             .replace("${classpath}", variables.classpath())
-            .replace("${natives_directory}", variables.nativesDirectory().toString());
-
+            .replace("${natives_directory}", variables.nativesDirectory().toString())
+            .replace("${assets_root}", variables.assetsRoot().toString());
     }
 
 }

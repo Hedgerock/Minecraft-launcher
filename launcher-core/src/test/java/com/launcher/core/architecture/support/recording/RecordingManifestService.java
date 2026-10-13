@@ -8,6 +8,8 @@ import com.launcher.model.manifest.LoaderInfo;
 import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.model.manifest.RuntimeLibrarySelection;
+import com.launcher.model.manifest.assets.AssetIndexMetadata;
+import com.launcher.model.manifest.assets.AssetsIndex;
 import com.launcher.model.manifest.natives.NativeExtractionRules;
 import com.launcher.model.manifest.natives.SelectedNativeArtifact;
 import com.launcher.model.runtime.JavaVersionRequirement;
@@ -34,6 +36,33 @@ public final class RecordingManifestService implements ManifestService {
         return new ManifestLoadResult(
                 manifest,
                 runtimeLibrarySelection
+        );
+    }
+
+    public ManifestLoadResult loadManifestWithAssetArguments() {
+        ManifestLoadResult originalResult = loadManifest();
+        Manifest original = originalResult.manifest();
+
+        AssetIndexMetadata index = new AssetIndexMetadata(
+                "17",
+                "assets/indexes/17.json",
+                "test-sha256",
+                123L,
+                "https://example.test/assets/indexes/17.json"
+        );
+
+        Manifest manifest = new Manifest(
+                original.minecraftVersion(),
+                original.loader(),
+                original.files(),
+                original.launchInfo(),
+                original.libraries(),
+                new AssetsIndex(List.of(), index)
+        );
+
+        return new ManifestLoadResult(
+                manifest,
+                originalResult.runtimeLibrarySelection()
         );
     }
 

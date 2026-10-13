@@ -122,7 +122,8 @@ class DefaultGameLaunchCommandBuilderTest {
                 "1.12.1",
                 Path.of("test-directory"),
                 "classpath.to.CurrentClass",
-                Path.of("natives-directory")
+                Path.of("natives-directory"),
+                Path.of("assets-root")
         );
     }
 

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,7 +25,8 @@ class LaunchVariablesTest {
                         versionName,
                         gameDirectory,
                         classpath,
-                        null
+                        null,
+                        Path.of("assets-root")
                 )
         );
 
@@ -46,11 +48,50 @@ class LaunchVariablesTest {
                         versionName,
                         gameDirectory,
                         classpath,
-                        nativesDirectory
+                        nativesDirectory,
+                        Path.of("assets-root")
                 )
         );
 
         assertTrue(exception.getMessage().contains("classpath must not be blank"));
+    }
+
+    @Test
+    void should_reject_blank_assets_index_name() {
+        //when & then
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> new LaunchVariables(
+                        "test",
+                        Path.of("test-directory"),
+                        "classpath",
+                        Path.of("natives-directory"),
+                        Path.of("assets-root"),
+                        " "
+                )
+        );
+
+        assertEquals(
+                "assetsIndexName must not be blank",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void should_reject_null_assets_root() {
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new LaunchVariables(
+                        "test",
+                        Path.of("test-directory"),
+                        "classpath",
+                        Path.of("natives-directory"),
+                        null
+                )
+        );
+
+        assertEquals("assetsRoot", exception.getMessage());
     }
 
     @Test
@@ -67,7 +108,8 @@ class LaunchVariablesTest {
                         versionName,
                         gameDirectory,
                         null,
-                        nativesDirectory
+                        nativesDirectory,
+                        Path.of("assets-root")
                 )
         );
 
@@ -88,7 +130,8 @@ class LaunchVariablesTest {
                         versionName,
                         null,
                         classpath,
-                        nativesDirectory
+                        nativesDirectory,
+                        Path.of("assets-root")
                 )
         );
 
@@ -108,7 +151,8 @@ class LaunchVariablesTest {
                         null,
                         gameDirectory,
                         classpath,
-                        Path.of("natives-directory")
+                        Path.of("natives-directory"),
+                        Path.of("assets-root")
                 )
         );
 
@@ -130,7 +174,8 @@ class LaunchVariablesTest {
                         versionName,
                         gameDirectory,
                         classpath,
-                        nativesDirectory
+                        nativesDirectory,
+                        Path.of("assets-root")
                 )
         );
 

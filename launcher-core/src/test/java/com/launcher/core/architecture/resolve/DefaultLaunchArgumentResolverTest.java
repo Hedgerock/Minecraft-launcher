@@ -16,6 +16,87 @@ class DefaultLaunchArgumentResolverTest {
     private final DefaultLaunchArgumentResolver underTest = new DefaultLaunchArgumentResolver();
 
     @Test
+    void should_resolve_assets_index_name_placeholder() {
+        //given
+        List<String> arguments = List.of(
+                "-assetsRoot=${assets_root}",
+                "-assetIndexName=${assets_index_name}"
+        );
+        Path gameDirectory = Path.of("game-path");
+        Path nativesDirectory = gameDirectory.resolve("natives");
+
+        LaunchVariables launchVariables = new LaunchVariables(
+                "1.12.1",
+                gameDirectory,
+                "net.minecraft.launchwrapper.Launch",
+                nativesDirectory,
+                Path.of("assets-root"),
+                "assetsIndexNameValue"
+        );
+
+        //when
+        List<String> result = underTest.resolve(arguments, launchVariables);
+
+        //then
+        assertEquals(
+                "-assetIndexName=assetsIndexNameValue",
+                result.getLast()
+        );
+    }
+
+    @Test
+    void should_throw_when_arguments_contains_assets_index_name_placeholder_without_assets_index_name() {
+        //given
+        List<String> arguments = List.of(
+                "-assetsRoot=${assets_root}",
+                "-assetIndexName=${assets_index_name}"
+        );
+        Path gameDirectory = Path.of("game-path");
+        Path nativesDirectory = gameDirectory.resolve("natives");
+
+        LaunchVariables launchVariables = new LaunchVariables(
+                "1.12.1",
+                gameDirectory,
+                "net.minecraft.launchwrapper.Launch",
+                nativesDirectory,
+                Path.of("assets-root")
+        );
+
+        //when & then
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> underTest.resolve(arguments, launchVariables)
+        );
+    }
+
+    @Test
+    void should_resolve_assets_root_placeholder() {
+        //given
+        List<String> arguments = List.of(
+                "-assetsRoot=${assets_root}"
+        );
+        Path gameDirectory = Path.of("game-path");
+        Path nativesDirectory = gameDirectory.resolve("natives");
+
+        LaunchVariables launchVariables = new LaunchVariables(
+                "1.12.1",
+                gameDirectory,
+                "net.minecraft.launchwrapper.Launch",
+                nativesDirectory,
+                Path.of("assets-root")
+        );
+
+        //when
+        List<String> result = underTest.resolve(arguments, launchVariables);
+
+        //then
+        assertEquals(
+                "-assetsRoot=assets-root",
+                result.getFirst()
+        );
+    }
+
+    @Test
     void should_resolve_natives_directory_placeholder() {
         //given
         List<String> arguments = List.of(
@@ -28,7 +109,8 @@ class DefaultLaunchArgumentResolverTest {
                 "1.12.1",
                 gameDirectory,
                 "net.minecraft.launchwrapper.Launch",
-                nativesDirectory
+                nativesDirectory,
+                Path.of("assets-root")
         );
 
         //when
@@ -50,7 +132,8 @@ class DefaultLaunchArgumentResolverTest {
                 "1.12.1",
                 Path.of("game-path"),
                 "net.minecraft.launchwrapper.Launch",
-                Path.of("natives-directory")
+                Path.of("natives-directory"),
+                Path.of("assets-root")
         );
 
         //when
@@ -71,7 +154,8 @@ class DefaultLaunchArgumentResolverTest {
                 "1.12.1",
                 Path.of("game-path"),
                 "net.minecraft.launchwrapper.Launch",
-                Path.of("natives-directory")
+                Path.of("natives-directory"),
+                Path.of("assets-root")
         );
 
         //when & then
@@ -102,7 +186,8 @@ class DefaultLaunchArgumentResolverTest {
                 "1.12.1",
                 Path.of("game-path"),
                 "net.minecraft.launchwrapper.Launch",
-                Path.of("natives-directory")
+                Path.of("natives-directory"),
+                Path.of("assets-root")
         );
 
         //when & then
@@ -123,7 +208,8 @@ class DefaultLaunchArgumentResolverTest {
                 "1.12.1",
                 Path.of("game-path"),
                 "net.minecraft.launchwrapper.Launch",
-                Path.of("natives-directory")
+                Path.of("natives-directory"),
+                Path.of("assets-root")
         );
 
         //when
@@ -144,7 +230,8 @@ class DefaultLaunchArgumentResolverTest {
                 "1.12.1",
                 Path.of("game-path"),
                 "net.minecraft.launchwrapper.Launch",
-                Path.of("natives-directory")
+                Path.of("natives-directory"),
+                Path.of("assets-root")
         );
 
         //when
@@ -163,7 +250,8 @@ class DefaultLaunchArgumentResolverTest {
                 "1.12.1",
                 Path.of("game-path"),
                 "net.minecraft.launchwrapper.Launch",
-                Path.of("natives-directory")
+                Path.of("natives-directory"),
+                Path.of("assets-root")
         );
 
         //when
@@ -185,7 +273,8 @@ class DefaultLaunchArgumentResolverTest {
                 "--cp",
                 "${classpath}",
                 "--nativesDir",
-                "${natives_directory}"
+                "${natives_directory}",
+                "${assets_root}"
         );
     }
 }

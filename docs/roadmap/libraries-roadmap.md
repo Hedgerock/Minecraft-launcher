@@ -4,7 +4,8 @@
 
 ## Текущий план
 
-- Подготовить Minecraft asset index и его аргументы для первого воспроизводимого технического запуска
+- Проверить совместную работу client artifact, asset index и объявленных asset index objects в одном launcher lifecycle
+  integration scenario
 - Другие направления library/native flow возобновлять после появления подтвержденного сценария
 
 ---

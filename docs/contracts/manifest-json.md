@@ -276,13 +276,22 @@ verification/download flow
 На текущем этапе поддерживается
 
 
-| Подстановка            | Значение                                                                   |
-|------------------------|----------------------------------------------------------------------------|
-| `${version_name}`      | Версия Minecraft из `Manifest.minecraftVersion`                            |
-| `${game_directory}`    | Путь к игровой директории из `DirectoryProvider`                           |
+| Подстановка            | Значение                                                                  |
+|------------------------|---------------------------------------------------------------------------|
+| `${version_name}`      | Версия Minecraft из `Manifest.minecraftVersion`                           |
+| `${game_directory}`    | Путь к игровой директории из `DirectoryProvider`                          |
 | `${classpath}`         | Отформатированный `GameClasspath`; правила выбора его записей описаны ниже |
-| `${natives_directory}` | Путь к директории natives из `DirectoryProvider`                           |
+| `${natives_directory}` | Путь к директории natives из `DirectoryProvider`                          |
+| `${assets_root}`       | Путь к директории assets из `DirectoryProvider`                           |
+| `${assets_index_name}` | Идентификатор объявленного `AssetIndexMetadata`                           |
 
+`LaunchInfo.gameArgs` определяет, нужны ли asset-related аргументы конкретной сборке. `GameLaunchPlanBuilder` не добавляет
+их автоматически
+
+`${assets_root}` доступен независимо от наличия файла индекса
+
+Если аргумент требует `${assets_index_name}`, но `assetIndex` не объявлен, построение плана завершается ошибкой до запуска
+игрового процесса
 
 `libraries` является основным источником classpath entries и описывает библиотеки для построения classpath
 

@@ -6,6 +6,11 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(model): include asset index file in manifest resources`
+> `feat(api): map asset index metadata from manifest json`
+> `feat(core): resolve asset launch variables from manifest`
+
 ---
 
 ## Контекст

@@ -15,6 +15,8 @@ import com.launcher.core.LaunchResult;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.state.LauncherState;
+import com.launcher.model.manifest.ResourceEntry;
+import com.launcher.model.manifest.assets.AssetIndexMetadata;
 import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -26,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
@@ -48,17 +51,153 @@ class LauncherLifecycleIntegrationTest {
     private final LocalServerStarter localServerStarter = new LocalServerStarter();
 
     @Test
+    void should_launch_with_downloaded_client_asset_index_and_asset_object(
+            @TempDir Path tempDir
+    ) throws Exception {
+        //given
+        byte[] clientBytes = "test-client-artifact".getBytes(StandardCharsets.UTF_8);
+        byte[] objectBytes = "test-asset-object".getBytes(StandardCharsets.UTF_8);
+
+        String objectSha1 = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-1")
+                .digest(objectBytes));
+
+        String objectRelativePath = "assets/objects/"
+                + objectSha1.substring(0, 2)
+                + "/"
+                + objectSha1;
+
+        byte[] indexBytes = """
+                {
+                    "objects": {
+                        "test/object": {
+                            "hash": "%s",
+                            "size": %d
+                        }
+                    }
+                }
+                """.formatted(objectSha1, objectBytes.length)
+                .getBytes(StandardCharsets.UTF_8);
+
+        HttpServer server = HttpServer.create(
+                new InetSocketAddress(0),
+                0
+        );
+
+        String baseUrl = "http://localhost:" + server.getAddress().getPort();
+
+        ResourceEntry client = new ResourceEntry(
+                "versions/1.21.1/client.jar",
+                sha256(clientBytes),
+                clientBytes.length,
+                baseUrl + "/client.jar"
+        );
+
+        AssetIndexMetadata index = new AssetIndexMetadata(
+                "17",
+                "assets/indexes/17.json",
+                sha256(indexBytes),
+                indexBytes.length,
+                baseUrl + "/assets/indexes/17.json"
+        );
+
+        ResourceEntry assetObject = new ResourceEntry(
+                objectRelativePath,
+                sha256(objectBytes),
+                objectBytes.length,
+                baseUrl + "/" + objectRelativePath
+        );
+
+        AtomicInteger clientRequests = new AtomicInteger();
+        AtomicInteger indexRequests = new AtomicInteger();
+        AtomicInteger objectRequests = new AtomicInteger();
+
+        String manifestJson = JsonProvider.getManifestJsonWithDownloadableClientAndAssets(
+                client,
+                index,
+                assetObject
+        );
+
+        localServerStarter.createJsonContext(server, "/manifest.json", manifestJson);
+        localServerStarter.createOctetStreamContext(
+                server,
+                "/client.jar",
+                clientRequests,
+                clientBytes
+        );
+        localServerStarter.createOctetStreamContext(
+                server,
+                "/assets/indexes/17.json",
+                indexRequests,
+                indexBytes
+        );
+        localServerStarter.createOctetStreamContext(
+                server,
+                "/" + objectRelativePath,
+                objectRequests,
+                objectBytes
+        );
+        server.start();
+
+        try {
+            Path gameStartedMarker = tempDir.resolve("gamestarted.marker");
+            Path executable = createFakeJavaExecutable(tempDir, gameStartedMarker);
+
+            LauncherConfiguration configuration = new LauncherConfiguration(
+                    URI.create(baseUrl + "/manifest.json"),
+                    tempDir.resolve("launcher-directory"),
+                    Optional.of(executable.toString())
+            );
+
+            ResolvedLauncherConfiguration resolvedLauncherConfiguration =
+                    new ResolvedLauncherConfiguration(
+                            configuration,
+                            ManifestSourceKind.EXPLICIT_URI
+                    );
+
+            LauncherEngine engine = new DefaultApplicationAssembly(resolvedLauncherConfiguration)
+                    .createEngine();
+
+            Path gameDirectory = new LocalDirectoryProvider(configuration)
+                    .directories()
+                    .game();
+
+            //when
+            LaunchResult result = engine.launch(configuration);
+
+            //then
+            assertTrue(result.success());
+            assertEquals(LauncherState.RUNNING, result.finalState());
+            assertArrayEquals(
+                    clientBytes,
+                    Files.readAllBytes(gameDirectory.resolve(client.path()))
+            );
+            assertArrayEquals(
+                    indexBytes,
+                    Files.readAllBytes(gameDirectory.resolve(index.path()))
+            );
+            assertArrayEquals(
+                    objectBytes,
+                    Files.readAllBytes(gameDirectory.resolve(assetObject.path()))
+            );
+
+            assertEquals(1, clientRequests.get());
+            assertEquals(1, indexRequests.get());
+            assertEquals(1, objectRequests.get());
+
+            waitUntilExists(gameStartedMarker);
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
     void should_launch_with_downloaded_client_artifact_when_manifest_declares_it(
             @TempDir Path tempDir
     ) throws Exception {
         //given
         String clientPath = "versions/1.21.1/client.jar";
         byte[] clientBytes = "test-client-artifact".getBytes(StandardCharsets.UTF_8);
-        String sha256 = HexFormat.of()
-                .formatHex(
-                        MessageDigest.getInstance("SHA-256")
-                                .digest(clientBytes)
-                );
+        String sha256 = sha256(clientBytes);
         HttpServer server = HttpServer.create(
                 new InetSocketAddress(0),
                 0
@@ -323,5 +462,11 @@ class LauncherLifecycleIntegrationTest {
         }
 
         return executable;
+    }
+
+    private String sha256(byte[] bytes) throws NoSuchAlgorithmException {
+        return HexFormat.of().formatHex(
+                MessageDigest.getInstance("SHA-256").digest(bytes)
+        );
     }
 }

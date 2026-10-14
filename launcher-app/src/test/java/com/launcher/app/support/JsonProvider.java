@@ -1,5 +1,8 @@
 package com.launcher.app.support;
 
+import com.launcher.model.manifest.ResourceEntry;
+import com.launcher.model.manifest.assets.AssetIndexMetadata;
+
 public final class JsonProvider {
 
     private JsonProvider() {
@@ -53,6 +56,67 @@ public final class JsonProvider {
                         }
                     }
                 """.formatted(sha256, size, url);
+    }
+
+    public static String getManifestJsonWithDownloadableClientAndAssets(
+            ResourceEntry client,
+            AssetIndexMetadata index,
+            ResourceEntry assetObject
+    ) {
+        return """
+            {
+                "minecraftVersion": "1.21.1",
+                "files": [%s],
+                "launchInfo": {
+                    "mainClass": "net.minecraft.client.main.Main",
+                    "jvmArgs": ["-cp", "${classpath}"],
+                    "gameArgs": [
+                        "--assetsDir", "${assets_root}",
+                        "--assetIndex", "${assets_index_name}"
+                    ],
+                    "classpath": [],
+                    "javaExecutable": "java",
+                    "javaVersionRequirement": {
+                        "minimumMajorVersion": 21
+                    },
+                    "clientArtifactPath": "%s"
+                },
+                "libraries": [],
+                "assets": [%s],
+                "assetIndex": {
+                    "id": "%s",
+                    "path": "%s",
+                    "sha256": "%s",
+                    "size": %d,
+                    "url": "%s"
+                }
+            }
+            """.formatted(
+                resourceJson(client),
+                client.path(),
+                resourceJson(assetObject),
+                index.id(),
+                index.path(),
+                index.sha256(),
+                index.size(),
+                index.url()
+        );
+    }
+
+    private static String resourceJson(ResourceEntry resource) {
+        return """
+            {
+                "path": "%s",
+                "sha256": "%s",
+                "size": %d,
+                "url": "%s"
+            }
+            """.formatted(
+                resource.path(),
+                resource.sha256(),
+                resource.size(),
+                resource.url()
+        );
     }
 
     public static String getManifestJsonRequiringAssetIndexWithoutDeclaration() {

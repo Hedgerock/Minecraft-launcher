@@ -12,5 +12,7 @@ include("launcher-storage")
 include("launcher-verification")
 include("launcher-app")
 include("launcher-publisher")
+include("launcher-preparer")
 
 project(":launcher-publisher").projectDir = file("tools/manifest-publisher")
+project(":launcher-preparer").projectDir = file("tools/manifest-preparer")

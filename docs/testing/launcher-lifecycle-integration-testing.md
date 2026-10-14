@@ -130,6 +130,19 @@ Then
 
 ---
 
+## Совместное восстановление ресурсов запуска
+
+Отдельный integration scenario проходит через application assembly с манифестом, объявляющим client artifact, файл asset
+index и один asset object
+
+Сценарий использует локальный HTTP server, временную launcher directory и fake Java executable
+
+Тест подтверждает восстановление объявленных файлов, успешный `LaunchResult` и старт fake game process
+
+Он не подтверждает запуска реального Minecraft и не проверяет согласованность списка asset objects с содержимым файла индекса
+
+---
+
 ## Передача этапов через application boundary
 
 Отдельный integration slice проверяет передачу `PresentationLaunchPhase` через production `Bootstrap` и `PresentationLaunchBoundary`

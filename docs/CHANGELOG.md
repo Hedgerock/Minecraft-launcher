@@ -14,6 +14,7 @@
 - Added asset index file metadata to the manifest model, resource projection, and JSON mapping
 - Added `${assets_root}` and `${assets_index_name}` launch substitutions with rejection of a missing required index name
 - Added integration coverage for recovery of missing and corrupted asset index files
+- Added launcher lifecycle integration coverage for combined client artifact, asset index, and asset object recovery
 
 ---
 

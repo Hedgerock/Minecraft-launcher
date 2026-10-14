@@ -4,8 +4,7 @@
 
 ## Текущий план
 
-- Проверить совместную работу client artifact, asset index и объявленных asset index objects в одном launcher lifecycle
-  integration scenario
+- Сверить ресурсы и аргументы одной выбранной vanilla Minecraft version с возможностями текущего manifest lifecycle
 - Другие направления library/native flow возобновлять после появления подтвержденного сценария
 
 ---
@@ -79,7 +78,9 @@ Library/native flow доведен до состояния, где manifest meta
 
 ### Assets
 
-Минимальный assets index flow закрыт через manifest model, JSON mapping и `ManifestResources` projection
+Файл asset index и объявленные asset objects проходят manifest mapping и существующий verification/download flow
+
+Их совместная работа с client artifact подтверждена launcher lifecycle integration test
 
 Дальнейшее развитие assets flow должно начинаться с отдельного подтвержденного сценария и нового решения
 

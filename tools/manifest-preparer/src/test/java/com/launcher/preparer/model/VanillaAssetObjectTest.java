@@ -1,4 +1,4 @@
-package com.launcher.preparer;
+package com.launcher.preparer.model;
 
 import org.junit.jupiter.api.Test;
 

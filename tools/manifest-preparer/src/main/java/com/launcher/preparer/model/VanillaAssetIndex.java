@@ -1,4 +1,4 @@
-package com.launcher.preparer;
+package com.launcher.preparer.model;
 
 import java.util.List;
 import java.util.Objects;

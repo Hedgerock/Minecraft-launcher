@@ -1,5 +1,7 @@
 package com.launcher.preparer;
 
+import com.launcher.preparer.model.VanillaAssetIndex;
+import com.launcher.preparer.model.VanillaAssetObject;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;

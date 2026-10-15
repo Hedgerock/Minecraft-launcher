@@ -3,6 +3,8 @@ package com.launcher.preparer;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.launcher.preparer.model.VanillaAssetIndex;
+import com.launcher.preparer.model.VanillaAssetObject;
 
 import java.io.IOException;
 import java.security.MessageDigest;

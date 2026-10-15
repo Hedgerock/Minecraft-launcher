@@ -1,4 +1,4 @@
-package com.launcher.preparer;
+package com.launcher.preparer.model;
 
 import java.util.Objects;
 import java.util.regex.Pattern;

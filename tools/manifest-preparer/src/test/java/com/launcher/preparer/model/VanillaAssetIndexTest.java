@@ -11,6 +11,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class VanillaAssetIndexTest {
 
     @Test
+    void should_reject_duplicate_object_sha1() {
+        //given
+        VanillaAssetObject first = vanillaAssetObject("a", 10);
+        VanillaAssetObject duplicate = vanillaAssetObject("a", 10);
+
+        //when & then
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new VanillaAssetIndex(List.of(first, duplicate))
+        );
+    }
+
+    @Test
     void should_reject_asset_objects_mutation_from_accessor() {
         //given
         List<VanillaAssetObject> assetObjects = new ArrayList<>(

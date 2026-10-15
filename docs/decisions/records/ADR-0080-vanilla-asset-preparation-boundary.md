@@ -6,6 +6,15 @@
 
 Accepted
 
+> Примечание: решение частично реализовано в итерациях
+> `feat(preparer): read and validate vanilla asset index`
+> `feat(preparer): verify vanilla asset object bytes`
+> `feat(preparer): verify complete vanilla asset object set`
+>
+> До полного завершения остаются конкретный источник и размещение проверенных байтов,
+> определение путей и URI ресурсов, формирование `AssetIndexMetadata` и `AssetEntry`, а также
+> сборка окончательного манифеста
+
 ---
 
 ## Контекст

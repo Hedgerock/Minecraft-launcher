@@ -4,6 +4,8 @@
 
 ## Текущий план
 
+- Довести подготовку vanilla assets до формирования `AssetIndexMetadata` и `AssetEntry` согласно
+  [ADR-0080](../decisions/records/ADR-0080-vanilla-asset-preparation-boundary.md)
 - Сверить ресурсы и аргументы одной выбранной vanilla Minecraft version с возможностями текущего manifest lifecycle
 - Другие направления library/native flow возобновлять после появления подтвержденного сценария
 
@@ -64,7 +66,6 @@ Library/native flow доведен до состояния, где manifest meta
 - Параллельная поддержка нескольких runtime native sets
 - Architecture-specific natives selection
 - Rules на основе features
-- Дальнейшее развитие assets flow после появления подтвержденного сценария
 - Loader-specific правила запуска
 
 ---
@@ -82,7 +83,9 @@ Library/native flow доведен до состояния, где manifest meta
 
 Их совместная работа с client artifact подтверждена launcher lifecycle integration test
 
-Дальнейшее развитие assets flow должно начинаться с отдельного подтвержденного сценария и нового решения
+Граница подготовки полного набора объектов на стороне публикации определена в [ADR-0080](../decisions/records/ADR-0080-vanilla-asset-preparation-boundary.md)
+
+`launcher-preparer` проверяет индекс и байты объектов, но пока не формирует ресурсы управляемого манифеста
 
 ### Launch metadata
 

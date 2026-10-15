@@ -360,6 +360,30 @@ Manifest-specific контейнер asset resources и необязательн
 
 ---
 
+## Vanilla
+
+### VanillaAssetIndex
+
+Модель набора уникальных объектов vanilla asset index на стороне подготовки манифеста
+
+`VanillaAssetIndexReader` формирует её после проверки размера и SHA-1 байтов индекса
+
+Не заменяет `AssetsIndex`, используемый в управляемом манифесте
+
+### VanillaAssetObject
+
+Модель объекта vanilla assets с ожидаемыми SHA-1 и размером
+
+Уникальность объектов по SHA-1 обеспечивает `VanillaAssetIndex`
+
+### VerifiedVanillaAssetObject
+
+Результат проверки байтов объекта, содержащий его модель и вычисленный SHA-256
+
+Не содержит сохранённых байтов, локального пути или URI ресурса
+
+---
+
 ## Runtime
 
 ### JavaRuntimeCompatibilityChecker

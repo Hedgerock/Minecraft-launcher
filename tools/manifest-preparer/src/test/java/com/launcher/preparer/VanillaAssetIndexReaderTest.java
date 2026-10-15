@@ -1,7 +1,7 @@
 package com.launcher.preparer;
 
-import com.launcher.preparer.model.VanillaAssetIndex;
 import com.launcher.preparer.model.VanillaAssetObject;
+import com.launcher.preparer.model.VerifiedVanillaAssetIndex;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -103,9 +103,10 @@ class VanillaAssetIndexReaderTest {
     void should_read_unique_objects_and_deduplicate_shared_hash() {
         //given
         String json = getJson();
+        byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
 
         //when
-        VanillaAssetIndex result = readMatchingMetadata(json);
+        VerifiedVanillaAssetIndex result = readMatchingMetadata(json);
 
         //then
         assertEquals(
@@ -113,7 +114,19 @@ class VanillaAssetIndexReaderTest {
                         new VanillaAssetObject(FIRST_HASH, 10),
                         new VanillaAssetObject(SECOND_HASH, 20)
                 ),
-                result.objects()
+                result.index().objects()
+        );
+
+        String expectedSha256 = sha256(bytes);
+
+        assertEquals(
+                expectedSha256,
+                result.sha256()
+        );
+
+        assertEquals(
+                bytes.length,
+                result.size()
         );
     }
 
@@ -161,18 +174,26 @@ class VanillaAssetIndexReaderTest {
                 """.formatted(FIRST_HASH, FIRST_HASH, SECOND_HASH);
     }
 
-    private VanillaAssetIndex readMatchingMetadata(String json) {
+    private VerifiedVanillaAssetIndex readMatchingMetadata(String json) {
         byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
         return reader.read(bytes, sha1(bytes), bytes.length);
     }
 
+    private String sha256(byte[] bytes) {
+        return getHash("SHA-256", bytes);
+    }
+
     private String sha1(byte[] bytes) {
+        return getHash("SHA-1", bytes);
+    }
+
+    private String getHash(String algorithm, byte[] bytes) {
         try {
-            byte[] digest = MessageDigest.getInstance("SHA-1").digest(bytes);
+            byte[] digest = MessageDigest.getInstance(algorithm).digest(bytes);
             return HexFormat.of().formatHex(digest);
         } catch (NoSuchAlgorithmException e) {
             throw new AssertionError(
-                    "SHA-1 must be available in the test runtime",
+                    algorithm + " must be available in the test runtime",
                     e
             );
         }

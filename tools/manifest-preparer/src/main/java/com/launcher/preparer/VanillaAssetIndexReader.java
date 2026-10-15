@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.launcher.preparer.model.VanillaAssetIndex;
 import com.launcher.preparer.model.VanillaAssetObject;
+import com.launcher.preparer.model.VerifiedVanillaAssetIndex;
 
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -12,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -23,7 +25,7 @@ public final class VanillaAssetIndexReader {
             .enable(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)
             .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
 
-    public VanillaAssetIndex read(
+    public VerifiedVanillaAssetIndex read(
             byte[] indexBytes,
             String expectedSha1,
             long expectedSize
@@ -93,8 +95,14 @@ public final class VanillaAssetIndexReader {
             }
         }
 
-        return new VanillaAssetIndex(
-                new ArrayList<>(uniqueObjects.values())
+        List<VanillaAssetObject> indexes = new ArrayList<>(
+                uniqueObjects.values()
+        );
+
+        return new VerifiedVanillaAssetIndex(
+                new VanillaAssetIndex(indexes),
+                sha256(indexBytes),
+                indexBytes.length
         );
     }
 
@@ -140,13 +148,21 @@ public final class VanillaAssetIndexReader {
         }
     }
 
+    private static String sha256(byte[] bytes) {
+        return getHash("SHA-256", bytes);
+    }
+
     private static String sha1(byte[] bytes) {
+        return getHash("SHA-1", bytes);
+    }
+
+    private static String getHash(String algorithm, byte[] bytes) {
         try {
             byte[] digest = MessageDigest
-                    .getInstance("SHA-1").digest(bytes);
+                    .getInstance(algorithm).digest(bytes);
             return HexFormat.of().formatHex(digest);
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA-1 is unavailable");
+            throw new IllegalStateException(algorithm + " is unavailable", e);
         }
     }
 }

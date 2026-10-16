@@ -17,6 +17,7 @@
 - Added launcher lifecycle integration coverage for combined client artifact, asset index, and asset object recovery
 - Documented vanilla asset preparation boundary decision
 - Added vanilla asset index parsing and verification of unique asset object bytes as a foundation for managed manifest preparation
+- Documented vanilla asset resource source boundary for managed manifest preparation
 
 ---
 

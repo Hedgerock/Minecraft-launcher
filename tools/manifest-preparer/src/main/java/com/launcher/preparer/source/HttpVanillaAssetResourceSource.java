@@ -13,6 +13,7 @@ import java.util.Objects;
 public final class HttpVanillaAssetResourceSource {
 
     private final VanillaAssetResponseFetcher fetcher;
+
     public HttpVanillaAssetResourceSource() {
         this(defaultFetcher());
     }

@@ -23,6 +23,8 @@
 - Added HTTPS vanilla asset resource loading with redirect rejection
 - Added hash-based vanilla asset object sources and bounded loading of verified asset indexes with source URI preservation
 - Added mapping of verified vanilla assets to manifest resources with completeness validation and source URI preservation
+- Added integration coverage for vanilla asset preparation, including object deduplication, integrity failures, and resource
+  closure
 
 ---
 

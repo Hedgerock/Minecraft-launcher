@@ -1,11 +1,11 @@
 package com.launcher.preparer;
 
 import com.launcher.preparer.model.VanillaAssetObject;
+import com.launcher.preparer.source.OpenedVanillaAssetResource;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public interface VanillaAssetObjectSource {
 
-    InputStream open(VanillaAssetObject object) throws IOException;
+    OpenedVanillaAssetResource open(VanillaAssetObject object) throws IOException;
 }

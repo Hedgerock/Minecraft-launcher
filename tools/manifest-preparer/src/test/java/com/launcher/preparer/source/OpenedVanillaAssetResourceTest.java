@@ -2,7 +2,6 @@ package com.launcher.preparer.source;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.ByteArrayInputStream;
@@ -10,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,7 +74,7 @@ class OpenedVanillaAssetResourceTest {
     }
 
     @ParameterizedTest(name = "should reject invalid resource uri: {0}")
-    @MethodSource("invalidUris")
+    @MethodSource("com.launcher.preparer.support.InvalidUriProvider#invalidUris")
     void should_reject_invalid_resource_uri(
             String cause,
             URI uri
@@ -135,31 +133,6 @@ class OpenedVanillaAssetResourceTest {
         assertEquals(
                 "query=value",
                 resource.getUri().getQuery()
-        );
-    }
-
-    private static Stream<Arguments> invalidUris() {
-        return Stream.of(
-                Arguments.of(
-                        "non absolute uri",
-                        getUri("/content/value")
-                ),
-                Arguments.of(
-                        "non https",
-                        getUri("http://localhost/content-value.jar")
-                ),
-                Arguments.of(
-                        "without host",
-                        getUri("https:/example.org/value.jar")
-                ),
-                Arguments.of(
-                        "with raw user info",
-                        getUri("https://admin%40global:p%25ss@example.com")
-                ),
-                Arguments.of(
-                        "with raw fragment",
-                        getUri("https://example.com#content%20value")
-                )
         );
     }
 

@@ -1,5 +1,7 @@
 package com.launcher.preparer.source;
 
+import com.launcher.preparer.validation.VanillaAssetResourceUriValidator;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +17,7 @@ public final class OpenedVanillaAssetResource implements Closeable {
             URI uri,
             InputStream input
     ) {
-        this.uri = requireResourceUri(uri);
+        this.uri = VanillaAssetResourceUriValidator.requireValid(uri);
         this.input = Objects.requireNonNull(input, "input");
     }
 
@@ -30,24 +32,5 @@ public final class OpenedVanillaAssetResource implements Closeable {
     @Override
     public void close() throws IOException {
         input.close();
-    }
-
-    private static URI requireResourceUri(URI uri) {
-        Objects.requireNonNull(uri, "uri");
-
-        if (
-                !uri.isAbsolute()
-                || !"https".equalsIgnoreCase(uri.getScheme())
-                || uri.getHost() == null
-                || uri.getRawUserInfo() != null
-                || uri.getRawFragment() != null
-        ) {
-            throw new IllegalArgumentException(
-                    "Resource URI must be an absolute HTTPS URI with a " +
-                            "host and without user info or fragment"
-            );
-        }
-
-        return uri;
     }
 }

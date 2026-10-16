@@ -1,12 +1,13 @@
 package com.launcher.preparer;
 
+import com.launcher.preparer.model.PreparedVanillaAssetObject;
 import com.launcher.preparer.model.VanillaAssetIndex;
 import com.launcher.preparer.model.VanillaAssetObject;
 import com.launcher.preparer.model.VerifiedVanillaAssetObject;
+import com.launcher.preparer.source.OpenedVanillaAssetResource;
 import com.launcher.preparer.verifier.VanillaAssetObjectVerifier;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,22 +24,29 @@ public final class VanillaAssetObjectsPreparer {
         this.verifier = Objects.requireNonNull(verifier, "verifier");
     }
 
-    public List<VerifiedVanillaAssetObject> prepare(
+    public List<PreparedVanillaAssetObject> prepare(
             VanillaAssetIndex index
     ) throws IOException {
         Objects.requireNonNull(index, "index");
 
-        List<VerifiedVanillaAssetObject> verifiedObjects = new ArrayList<>();
+        List<PreparedVanillaAssetObject> preparedObjects = new ArrayList<>();
 
         for (VanillaAssetObject object : index.objects()) {
-            try (InputStream inputStream = source.open(object)) {
-                verifiedObjects.add(verifier.verify(
+            try (OpenedVanillaAssetResource resource = source.open(object)) {
+                VerifiedVanillaAssetObject verified = verifier.verify(
                         object,
-                        inputStream
-                ));
+                        resource.getInput()
+                );
+
+                preparedObjects.add(
+                        new PreparedVanillaAssetObject(
+                                verified,
+                                resource.getUri()
+                        )
+                );
             }
         }
 
-        return List.copyOf(verifiedObjects);
+        return List.copyOf(preparedObjects);
     }
 }

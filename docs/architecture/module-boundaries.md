@@ -193,14 +193,20 @@ assembly напрямую
 
 ## Граница подготовки vanilla assets
 
-`launcher-preparer` работает вне launcher lifecycle: проверяет файл vanilla asset index, формирует набор уникальных объектов
-и проверяет размер, SHA-1 и SHA-256 их байтов
+`launcher-preparer` работает вне launcher lifecycle: сверяет размер и SHA-1 файла vanilla asset index, формирует набор
+уникальных объектов и вычисляет SHA-256 проверенных байтов
 
-`VanillaAssetObjectsPreparer` получает потоки через `VanillaAssetObjectSource` и не возвращает частичный результат при
-ошибке
+`VanillaAssetIndexReader` возвращает `VerifiedVanillaAssetIndex` с разобранным индексом, размером и SHA-256 исходных байтов
 
-Конкретный источник байтов, их размещение, URI ресурсов и преобразование в `AssetIndexMetadata` и `AssetEntry` пока не
-реализованы
+`VanillaAssetObjectSource` предоставляет `OpenedVanillaAssetResource`, связывающий URI ресурса и открытый поток его байтов
+
+`VanillaAssetObjectsPreparer` проверяет объекты, закрывает открытые ресурсы и возвращает неизменяемый список `PreparedVanillaAssetObject`,
+сохраняющий URI вместе с результатом проверки
+
+Ошибки получения, проверки или закрытия ресурса останавливают подготовку без возврата частичного результата
+
+Конкретное получение ресурсов по HTTPS и преобразование подготовленных метаданных в `AssetIndexMetadata` и `AssetEntry`
+пока не реализованы
 
 `launcher-publisher` подписывает уже подготовленные байты манифеста и не отвечает за разбор vanilla asset index или получение
 его объектов

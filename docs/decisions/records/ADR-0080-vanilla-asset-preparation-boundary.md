@@ -10,10 +10,12 @@ Accepted
 > `feat(preparer): read and validate vanilla asset index`
 > `feat(preparer): verify vanilla asset object bytes`
 > `feat(preparer): verify complete vanilla asset object set`
+> `feat(preparer): expose verified asset index metadata`
+> `feat(preparer): add URI-bound asset resource handle`
+> `feat(preparer): preserve source URIs in prepared asset objects`
 >
-> До полного завершения остаются конкретный источник и размещение проверенных байтов,
-> определение путей и URI ресурсов, формирование `AssetIndexMetadata` и `AssetEntry`, а также
-> сборка окончательного манифеста
+> До полного завершения остаются получение ресурсов по согласованным URI, определение локальных путей,
+> формирование `AssetIndexMetadata` и `AssetEntry`, а также сборка окончательного манифеста
 
 ---
 

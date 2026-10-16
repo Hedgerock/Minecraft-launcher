@@ -370,6 +370,14 @@ Manifest-specific контейнер asset resources и необязательн
 
 Не заменяет `AssetsIndex`, используемый в управляемом манифесте
 
+### VerifiedVanillaAssetIndex
+
+Результат проверки и разбора файла vanilla asset index
+
+Содержит `VanillaAssetIndex`, размер и SHA-256 исходных байтов
+
+Формируется `VanillaAssetIndexReader` после сверки размера и SHA-1 файла индекса
+
 ### VanillaAssetObject
 
 Модель объекта vanilla assets с ожидаемыми SHA-1 и размером
@@ -381,6 +389,18 @@ Manifest-specific контейнер asset resources и необязательн
 Результат проверки байтов объекта, содержащий его модель и вычисленный SHA-256
 
 Не содержит сохранённых байтов, локального пути или URI ресурса
+
+### PreparedVanillaAssetObject
+
+Результат подготовки объекта, связывающий `VerifiedVanillaAssetObject` с URI источника проверенных байтов
+
+Сохраняет метаданные и URI после закрытия открытого ресурса
+
+### OpenedVanillaAssetResource
+
+Объект, связывающий допустимый HTTPS URI ресурса и открытый поток его байтов
+
+Владеет потоком и закрывает его при вызове `close()`
 
 ---
 

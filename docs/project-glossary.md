@@ -409,6 +409,14 @@ Manifest-specific контейнер asset resources и необязательн
 
 Владеет потоком и закрывает его при вызове `close()`
 
+### VanillaAssetsMapper
+
+Преобразует `PreparedVanillaAssetIndex` и набор `PreparedVanillaAssetObject` в `AssetsIndex`
+
+Проверяет соответствие подготовленных объектов индексу, определяет локальные пути и сохраняет URI, SHA-256 и размер ресурсов
+
+Не получает байты ресурсов и не выполняет их повторную проверку
+
 ---
 
 ## Runtime

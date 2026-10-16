@@ -13,9 +13,9 @@ Accepted
 > `feat(preparer): expose verified asset index metadata`
 > `feat(preparer): add URI-bound asset resource handle`
 > `feat(preparer): preserve source URIs in prepared asset objects`
+> `feat(preparer): map verified vanilla assets to manifest resources`
 >
-> До полного завершения остаются определение локальных путей, формирование `AssetIndexMetadata` и `AssetEntry`, а
-> также сборка окончательного манифеста
+> До полного завершения остается сборка окончательного управляемого манифеста с подготовленным набором assets
 
 ---
 

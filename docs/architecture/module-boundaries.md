@@ -205,8 +205,16 @@ assembly напрямую
 
 Ошибки получения, проверки или закрытия ресурса останавливают подготовку без возврата частичного результата
 
-Конкретное получение ресурсов по HTTPS и преобразование подготовленных метаданных в `AssetIndexMetadata` и `AssetEntry`
-пока не реализованы
+`HttpVanillaAssetResourceSource` получает ресурсы по допустимым HTTPS URI и отклоняет HTTP-перенаправления
+
+`HttpVanillaAssetObjectSource` определяет URI объекта по SHA-1 относительно заданной базовой директории
+
+`HttpVanillaAssetIndexLoader` ограничивает чтение файла индекса ожидаемым размером плюс один байт, передает исходные байты
+в `VanillaAssetIndexReader` и возвращает `PreparedVanillaAssetIndex`
+
+`PreparedVanillaAssetIndex` сохраняет URI источника вместе с проверенными метаданными после закрытия потока
+
+Преобразование подготовленных результатов в `AssetIndexMetadata` и `AssetEntry` пока не реализовано
 
 `launcher-publisher` подписывает уже подготовленные байты манифеста и не отвечает за разбор vanilla asset index или получение
 его объектов

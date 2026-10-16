@@ -4,7 +4,6 @@
 
 ## Текущий план
 
-- Подключить получение vanilla assets по HTTPS согласно [ADR-0081](../decisions/records/ADR-0081-vanilla-asset-resource-source.md)
 - Довести подготовку vanilla assets до формирования `AssetIndexMetadata` и `AssetEntry` согласно
   [ADR-0080](../decisions/records/ADR-0080-vanilla-asset-preparation-boundary.md)
 - Сверить ресурсы и аргументы одной выбранной vanilla Minecraft version с возможностями текущего manifest lifecycle
@@ -86,9 +85,10 @@ Library/native flow доведен до состояния, где manifest meta
 
 Граница подготовки полного набора объектов на стороне публикации определена в [ADR-0080](../decisions/records/ADR-0080-vanilla-asset-preparation-boundary.md)
 
-`launcher-preparer` сохраняет URI источника вместе с проверенными метаданными объектов
+`launcher-preparer` получает файл индекса и объекты по HTTPS, проверяет их байты и сохраняет URI источников в подготовленных
+результатах согласно [ADR-0081](../decisions/records/ADR-0081-vanilla-asset-resource-source.md)
 
-Получение ресурсов по HTTPS и формирование ресурсов управляемого манифеста остаются следующими шагами
+Следующий шаг — преобразование подготовленных результатов в ресурсы управляемого манифеста
 
 ### Launch metadata
 

@@ -6,6 +6,13 @@
 
 Accepted
 
+> Примечание: решение частично реализовано в итерациях
+> `feat(preparer): open vanilla asset resources over HTTPS`
+> `feat(preparer): connect vanilla asset objects to HTTPS source`
+> `feat(preparer): load verified vanilla asset index over HTTPS`
+>
+> До полного завершения остается перенос URI проверенных ресурсов в `AssetIndexMetadata` и `AssetEntry`
+
 ---
 
 ## Контекст

@@ -14,8 +14,8 @@ Accepted
 > `feat(preparer): add URI-bound asset resource handle`
 > `feat(preparer): preserve source URIs in prepared asset objects`
 >
-> До полного завершения остаются получение ресурсов по согласованным URI, определение локальных путей,
-> формирование `AssetIndexMetadata` и `AssetEntry`, а также сборка окончательного манифеста
+> До полного завершения остаются определение локальных путей, формирование `AssetIndexMetadata` и `AssetEntry`, а
+> также сборка окончательного манифеста
 
 ---
 

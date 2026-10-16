@@ -20,6 +20,8 @@
 - Documented vanilla asset resource source boundary for managed manifest preparation
 - Added verified vanilla asset index results containing the original byte size and SHA-256
 - Added URI-bound vanilla asset resource handles and preserved source URIs in prepared asset object results
+- Added HTTPS vanilla asset resource loading with redirect rejection
+- Added hash-based vanilla asset object sources and bounded loading of verified asset indexes with source URI preservation
 
 ---
 

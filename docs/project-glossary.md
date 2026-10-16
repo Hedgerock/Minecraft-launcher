@@ -378,6 +378,13 @@ Manifest-specific контейнер asset resources и необязательн
 
 Формируется `VanillaAssetIndexReader` после сверки размера и SHA-1 файла индекса
 
+### PreparedVanillaAssetIndex
+
+Результат получения и проверки файла vanilla asset index, связывающий `VerifiedVanillaAssetIndex` с URI источника проверенных
+байтов
+
+Сохраняет метаданные и URI после закрытия открытого ресурса
+
 ### VanillaAssetObject
 
 Модель объекта vanilla assets с ожидаемыми SHA-1 и размером

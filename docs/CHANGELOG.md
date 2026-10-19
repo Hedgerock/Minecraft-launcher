@@ -27,6 +27,7 @@
   closure
 - Documented managed manifest asset assembly boundary decision
 - Added managed manifest asset assembly from a JSON template with complete asset field replacement and preservation of other JSON data
+- Added integration coverage for managed manifest asset assembly with preservation of other JSON data
 
 ---
 

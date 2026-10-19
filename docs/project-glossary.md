@@ -477,6 +477,10 @@ Adapter-level модель диагностики Java process lifecycle вну�
 - process вернул пустой output
 - process вернул output, который невозможно распарсить как Java runtime version
 - ожидание завершения Java process было interrupted
+- превышено время выполнения Java version probe
+- превышен допустимый объем process output
+- произошла ошибка чтения process output
+- cleanup процесса или потока чтения не завершился за отведенное время
 
 Не является частью `launcher-core` runtime policy и не поднимается в operation layer как Java-specific reason
 

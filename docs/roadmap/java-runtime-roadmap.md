@@ -72,7 +72,9 @@ Java executable runtime flow доведен до минимального produc
 
 ## Активное направление
 
-- Java runtime flow временно закрыт до появления подтвержденного сценария
+- Новые возможности Java runtime flow не развиваются без подтвержденного сценария
+- Укрепление существующего Java version probe выполнено в рамках [стабилизации фундамента](foundation-stabilization-roadmap.md)
+- Дальнейшие stabilization steps определяются общим планом укрепления фундамента
 
 ---
 

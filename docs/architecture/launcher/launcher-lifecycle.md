@@ -157,6 +157,17 @@ Application assembly использует `SystemJavaCommandPathEnvironmentProvi
 Application assembly использует `DefaultJavaRuntimeVersionDetector`, который запускает resolved Java executable с
 аргументом версии, объединяет process output и передает его в parser `JavaRuntimeVersionOutputParser`
 
+`ProcessJavaRuntimeVersionCommandRunner` ограничивает чтение process output и ожидание завершения общим execution budget
+
+По умолчанию execution timeout составляет 10 секунд, максимальный объем output — 64 KiB, cleanup timeout — 5 секунд
+
+Execution budget отсчитывается после успешного создания процесса и не ограничивает сам вызов запуска процесса
+
+При отказе или прерывании runner выполняет cleanup с ограниченным ожиданием и сохраняет interrupt flag вызывающего потока
+
+Если cleanup завершается ошибкой после основного отказа, исходная ошибка сохраняется, а cleanup failure добавляется как
+suppressed exception
+
 После detection `GameLaunchPlanBuilder` передает detected `JavaRuntimeVersion` и `LaunchInfo.javaVersionRequirement` в
 `JavaRuntimeCompatibilityChecker`
 
@@ -174,6 +185,11 @@ Application assembly использует `DefaultJavaRuntimeCompatibilityChecke
 После успешного `BUILD_GAME_LAUNCH_PLAN` `LauncherEngine` запускает `LAUNCH_GAME`
 
 Во время `LAUNCH_GAME` `GameService` передает `GameLaunchPlan` в адаптер запуска процесса
+
+`ProcessBuilderGameProcessLauncher` перенаправляет stdout и stderr игрового процесса в соответствующие стандартные потоки
+launcher process
+
+Успешный `LAUNCH_GAME` подтверждает создание процесса, но не готовность игры и не ее дальнейшее успешное выполнение
 
 Если `LAUNCH_GAME` завершается с ошибкой, launcher переходит в `FAILED`
 

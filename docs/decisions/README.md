@@ -93,3 +93,4 @@
 | [ADR-0079](records/ADR-0079-minecraft-asset-index-launch-boundary.md)               | Граница Minecraft asset index для запуска игры                     | assets             |
 | [ADR-0080](records/ADR-0080-vanilla-asset-preparation-boundary.md)                  | Граница подготовки vanilla asset objects для управляемого манифеста | assets             |
 | [ADR-0081](records/ADR-0081-vanilla-asset-resource-source.md)                       | Источник vanilla assets для управляемого манифеста                 | assets             |
+| [ADR-0082](records/ADR-0082-managed-manifest-asset-assembly-boundary.md)            | Граница сборки управляемого манифеста с подготовленными assets     | manifest           |

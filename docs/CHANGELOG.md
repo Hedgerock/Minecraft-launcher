@@ -25,6 +25,7 @@
 - Added mapping of verified vanilla assets to manifest resources with completeness validation and source URI preservation
 - Added integration coverage for vanilla asset preparation, including object deduplication, integrity failures, and resource
   closure
+- Documented managed manifest asset assembly boundary decision
 
 ---
 

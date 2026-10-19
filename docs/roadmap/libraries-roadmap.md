@@ -4,8 +4,8 @@
 
 ## Текущий план
 
-- Довести подготовку vanilla assets до включения в окончательный управляемый манифест согласно
-  [ADR-0080](../decisions/records/ADR-0080-vanilla-asset-preparation-boundary.md)
+- Реализовать сборку управляемого манифеста из JSON-шаблона и подготовленного `AssetsIndex` согласно
+  [ADR-0082](../decisions/records/ADR-0082-managed-manifest-asset-assembly-boundary.md)
 - Сверить ресурсы и аргументы одной выбранной vanilla Minecraft version с возможностями текущего manifest lifecycle
 - Другие направления library/native flow возобновлять после появления подтвержденного сценария
 

@@ -6,6 +6,9 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации
+> `feat(preparer): assemble managed manifest assets from JSON template`
+
 ---
 
 ## Контекст

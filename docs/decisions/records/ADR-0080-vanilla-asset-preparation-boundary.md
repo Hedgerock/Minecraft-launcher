@@ -6,7 +6,7 @@
 
 Accepted
 
-> Примечание: решение частично реализовано в итерациях
+> Примечание: решение реализовано в итерациях
 > `feat(preparer): read and validate vanilla asset index`
 > `feat(preparer): verify vanilla asset object bytes`
 > `feat(preparer): verify complete vanilla asset object set`
@@ -14,8 +14,7 @@ Accepted
 > `feat(preparer): add URI-bound asset resource handle`
 > `feat(preparer): preserve source URIs in prepared asset objects`
 > `feat(preparer): map verified vanilla assets to manifest resources`
->
-> До полного завершения остается сборка окончательного управляемого манифеста с подготовленным набором assets
+> `feat(preparer): assemble managed manifest assets from JSON template`
 
 ---
 

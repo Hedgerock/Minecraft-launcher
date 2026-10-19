@@ -26,6 +26,7 @@
 - Added integration coverage for vanilla asset preparation, including object deduplication, integrity failures, and resource
   closure
 - Documented managed manifest asset assembly boundary decision
+- Added managed manifest asset assembly from a JSON template with complete asset field replacement and preservation of other JSON data
 
 ---
 

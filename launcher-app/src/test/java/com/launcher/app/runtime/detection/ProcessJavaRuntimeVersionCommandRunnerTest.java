@@ -12,23 +12,84 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ProcessJavaRuntimeVersionCommandRunnerTest {
-    private final ProcessJavaRuntimeVersionCommandRunner commandRunner = new ProcessJavaRuntimeVersionCommandRunner();
+    private final ProcessJavaRuntimeVersionCommandRunner commandRunner =
+            new ProcessJavaRuntimeVersionCommandRunner();
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void should_not_start_process_when_calling_thread_is_interrupted() {
+        //given
+        AtomicBoolean startRequested = new AtomicBoolean();
+
+        ProcessJavaRuntimeVersionCommandRunner runner =
+                new ProcessJavaRuntimeVersionCommandRunner(
+                        reference -> {
+                            startRequested.set(true);
+                            throw new AssertionError(
+                                    "Process must not be started"
+                            );
+                        },
+                        JavaRuntimeVersionProbeLimits.defaults()
+                );
+
+        JavaExecutableReference reference =
+                JavaExecutableReference.explicitPath("runtime/java/bin/java");
+
+        try {
+            Thread.currentThread().interrupt();
+
+            //when
+            JavaRuntimeVersionDetectionException exception = assertThrows(
+                    JavaRuntimeVersionDetectionException.class,
+                    () -> runner.run(reference)
+            );
+
+            //then
+            assertEquals(
+                    "Java process was interrupted",
+                    exception.getMessage()
+            );
+            assertFalse(startRequested.get());
+            assertTrue(Thread.currentThread().isInterrupted());
+        } finally {
+            Thread.interrupted();
+        }
+    }
+
+    @Test
+    void should_reject_null_probe_limits() {
+        //when & then
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new ProcessJavaRuntimeVersionCommandRunner(
+                        new ProcessBuilderJavaRuntimeVersionProcessStarter(),
+                        null
+                )
+        );
+
+        assertEquals("limits", exception.getMessage());
+    }
 
     @Test
     void should_reject_null_process_starter() {
         //when & then
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> new ProcessJavaRuntimeVersionCommandRunner(null)
+                () -> new ProcessJavaRuntimeVersionCommandRunner(
+                        null,
+                        JavaRuntimeVersionProbeLimits.defaults()
+                )
         );
 
         assertEquals(
@@ -40,9 +101,12 @@ class ProcessJavaRuntimeVersionCommandRunnerTest {
     @Test
     void should_fail_when_java_process_waiting_is_interrupted() {
         //given
+        InterruptedProcess process = new InterruptedProcess();
+
         ProcessJavaRuntimeVersionCommandRunner commandRunner =
                 new ProcessJavaRuntimeVersionCommandRunner(
-                        javaExecutableReference -> new InterruptedProcess()
+                        reference -> process,
+                        JavaRuntimeVersionProbeLimits.defaults()
                 );
 
         JavaExecutableReference reference =
@@ -61,6 +125,7 @@ class ProcessJavaRuntimeVersionCommandRunnerTest {
             );
 
             assertTrue(Thread.currentThread().isInterrupted());
+            assertFalse(process.isAlive());
         } finally {
             Thread.interrupted();
         }
@@ -149,6 +214,7 @@ class ProcessJavaRuntimeVersionCommandRunnerTest {
     }
 
     private static final class InterruptedProcess extends Process {
+        private volatile boolean alive = true;
 
         @Override
         public OutputStream getOutputStream() {
@@ -173,13 +239,39 @@ class ProcessJavaRuntimeVersionCommandRunnerTest {
         }
 
         @Override
+        public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
+            if (alive) {
+                throw new InterruptedException();
+            }
+
+            return true;
+        }
+
+        @Override
+        public boolean isAlive() {
+            return alive;
+        }
+
+        @Override
         public int exitValue() {
+            if (alive) {
+                throw new IllegalThreadStateException(
+                        "Test process is still alive"
+                );
+            }
+
             return 0;
         }
 
         @Override
         public void destroy() {
+            alive = false;
+        }
 
+        @Override
+        public Process destroyForcibly() {
+            destroy();
+            return this;
         }
     }
 }

@@ -413,7 +413,18 @@ launcher-app
 
 `LauncherUiBoundaryTest` проверяет imports из launcher-app и launcher-core согласно явным спискам разрешений
 
-Проверки разбирают Java source без компиляции и разрешения импортируемых типов
+Общий разбор Java source выполняет `JavaSourceImportParser` из инструментального модуля `launcher-architecture-test-support`
+
+Модуль расположен в `tools/architecture-test-support`, не зависит от production-модулей и подключается потребителем только
+через `testImplementation`
+
+`JavaSourceImport` сохраняет имя импортируемого элемента и различие обычного и static import
+
+Parser не компилирует исходник и не разрешает импортируемые типы
+
+Правила допустимости imports остаются в `CoreImportBoundaryCheck` и `UiImportBoundaryCheck`
+
+Тестовая поддержка не входит в runtime classpath приложения
 
 Форматирование импортов, комментарии и строковые литералы не должны изменять результат проверки
 

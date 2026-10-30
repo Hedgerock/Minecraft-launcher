@@ -31,11 +31,13 @@
 - Documented foundation stabilization scope, progress tracking, and completion criteria
 - Added regression coverage for architecture import rules and source-file check integration
 - Documented shared architecture test support boundary decision
+- Added a test-only architecture support module with a shared Java source import parser
 
 ### Changed
 
 - Included buildSrc verification in the Windows and Linux CI checks
 - Strengthened core and UI import-boundary checks using Java source parsing without expanding UI allowlists
+- Moved core and UI import parsing to shared test support without changing boundary policies
 
 ### Fixed
 

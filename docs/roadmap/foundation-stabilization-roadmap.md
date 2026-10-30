@@ -34,6 +34,9 @@
 - Усилены import-based architecture checks для launcher-core с сохранением допустимых контрактных зависимостей
 - Усилены import-based architecture checks для launcher-ui без расширения существующих allowlists
 - Добавлено regression coverage для parsing imports и подключения проверок к чтению исходных файлов
+- Выделена общая test-only поддержка разбора Java imports согласно [ADR-0083](../decisions/records/ADR-0083-architecture-test-support-boundary.md)
+- Проверки launcher-core и launcher-ui переведены на общий parser без изменения правил; добавлены самостоятельные тесты
+  контракта parser и модели import
 
 Перенаправление вывода не вводит файловое логирование и не гарантирует доступность диагностики при запуске GUI без консоли
 
@@ -44,9 +47,7 @@
 ## В работе
 
 - До завершения architecture-среза остается закрепить запрет зависимости launcher-app от launcher-ui и JavaFX
-- Подтвержден повтор Java source parsing в тестовых проверках модульных границ
-- Граница общей поддержки архитектурных тестов зафиксирована в [ADR-0083](../decisions/records/ADR-0083-architecture-test-support-boundary.md)
-- Следующий шаг — выделить общий parser imports и перевести на него проверки core и UI без изменения их правил
+- Следующий шаг — добавить import-based architecture check для launcher-app на основе общего parser
 
 ---
 

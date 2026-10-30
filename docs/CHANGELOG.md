@@ -30,10 +30,16 @@
 - Added integration coverage for managed manifest asset assembly with preservation of other JSON data
 - Documented foundation stabilization scope, progress tracking, and completion criteria
 
+### Changed
+
+- Included buildSrc verification in the Windows and Linux CI checks
+
 ### Fixed
 
 - Prevented game process output blocking by inheriting launcher stdout and stderr
 - Bounded Java version probe execution and output, with bounded cleanup and interruption handling
+- Fixed detection of multiline and comment-only empty catch blocks with regression coverage
+- Preserved secondary cleanup and diagnostic reporting failures as suppressed exceptions without replacing the original failure
 
 ---
 

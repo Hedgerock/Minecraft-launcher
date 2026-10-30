@@ -55,19 +55,23 @@ native-библиотек, выбор и проверка Java runtime, пост
 
 Проект использует Java 21 toolchain
 
+Для полной проверки проекта Gradle запускается под полным JDK 21
+
+qualityCheck использует Java Compiler Tree API для разбора Java source без компиляции проверяемых файлов
+
 В Windows PowerShell:
 
 ```powershell
-.\gradlew check
+.\gradlew buildSrc:check check
 ```
 
 В Linux и macOS:
 
 ```sh
-./gradlew check
+./gradlew buildSrc:check check
 ```
 
-Команда запускает тесты и принятые проверки качества
+Команда запускает тесты приложения, тесты build logic и принятые проверки качества
 
 ## Документация
 

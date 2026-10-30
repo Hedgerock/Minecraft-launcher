@@ -1,21 +1,20 @@
 package com.launcher.ui.architecture.boundary;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class LauncherUiBoundaryTest {
-    private static final Path PROJECT_ROOT = findProjectRoot();
 
-    private static final String CORE_IMPORT_PREFIX = "com.launcher.core.";
-    private static final String APPLICATION_IMPORT_PREFIX = "com.launcher.app.";
+    private static final Path PROJECT_ROOT = findProjectRoot();
 
     private static final Path UI_MAIN_SOURCES = PROJECT_ROOT
             .resolve("launcher-ui")
@@ -23,34 +22,11 @@ class LauncherUiBoundaryTest {
             .resolve("main")
             .resolve("java");
 
-    private static final Set<String> ALLOWED_CORE_IMPORTS = Set.of(
-            "import com.launcher.core.LaunchResult;",
-            "import com.launcher.core.LaunchFailure;",
-            "import com.launcher.core.operation.type.OperationType;"
-    );
-
-    private static final Set<String> ALLOWED_APPLICATION_IMPORTS = Set.of(
-            "import com.launcher.app.bootstrap.Bootstrap;",
-            "import com.launcher.app.configuration.LauncherConfigurationResolver;",
-            "import com.launcher.app.presentation.LaunchRequestResult;",
-            "import com.launcher.app.presentation.PresentationLaunchBoundary;",
-            "import com.launcher.app.presentation.completion.PresentationLaunchCompletion;",
-            "import com.launcher.app.presentation.completion.PresentationLaunchCompletionHandler;",
-            "import com.launcher.app.presentation.phase.PresentationLaunchPhase;",
-            "import com.launcher.app.presentation.phase.PresentationLaunchPhaseHandler;",
-            "import com.launcher.app.configuration.ManifestUriConfigurationException;",
-            "import com.launcher.app.configuration.path.LauncherUserPathsResolutionException;",
-            "import com.launcher.app.configuration.LauncherDirectoryConfigurationException;",
-            "import com.launcher.app.configuration.LocalManifestUriConfigurationException;",
-            "import com.launcher.app.configuration.ResolvedLauncherConfiguration;"
-    );
+    private final UiImportBoundaryCheck importBoundaryCheck = new UiImportBoundaryCheck();
 
     @Test
-    void should_reject_internal_application_imports_in_launcher_ui() throws IOException {
-        List<String> violations = findViolations(
-                APPLICATION_IMPORT_PREFIX,
-                ALLOWED_APPLICATION_IMPORTS
-        );
+    void should_not_import_forbidden_application_or_core_types() throws IOException {
+        List<String> violations = findViolations();
 
         if (!violations.isEmpty()) {
             fail(String.join(System.lineSeparator(), violations));
@@ -58,11 +34,79 @@ class LauncherUiBoundaryTest {
     }
 
     @Test
-    void should_reject_forbidden_core_imports_in_launcher_ui() throws IOException {
-        List<String> violations = findViolations(CORE_IMPORT_PREFIX, ALLOWED_CORE_IMPORTS);
+    void should_report_formatted_forbidden_imports_from_source_file(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path sourceFile = tempDir.resolve("Example.java");
 
-        if (!violations.isEmpty()) {
-            fail(String.join(System.lineSeparator(), violations));
+        Files.writeString(sourceFile, """
+                import
+                    com.launcher.app.presentation.DefaultPresentationLaunchBoundary;
+                import   static   com.launcher.core.LaunchResult.success;
+                class Example {}
+                """);
+
+        //when
+        List<String> result = violationsIn(sourceFile).toList();
+
+        //then
+        assertEquals(
+                List.of(
+                        "%s contains forbidden import: %s".formatted(
+                                sourceFile,
+                                "import com.launcher.app.presentation.DefaultPresentationLaunchBoundary;"
+                        ),
+                        "%s contains forbidden import: %s".formatted(
+                                sourceFile,
+                                "import static com.launcher.core.LaunchResult.success;"
+                        )
+                ),
+                result
+        );
+    }
+
+    @Test
+    void should_allow_formatted_public_imports_from_source_file(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path sourceFile = tempDir.resolve("Example.java");
+
+        Files.writeString(sourceFile, """
+                import   com.launcher.core.LaunchResult; // public result
+                import
+                    com.launcher.app.presentation.PresentationLaunchBoundary;
+                class Example {}
+                """);
+
+        //when
+        List<String> result = violationsIn(sourceFile).toList();
+
+        //then
+        assertEquals(List.of(), result);
+    }
+
+    private List<String> findViolations() throws IOException {
+        try (Stream<Path> paths = Files.walk(UI_MAIN_SOURCES)) {
+            return paths
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(".java"))
+                    .flatMap(this::violationsIn)
+                    .toList();
+        }
+    }
+
+    private Stream<String> violationsIn(Path sourceFile) {
+        try {
+            String content = Files.readString(sourceFile);
+
+            return importBoundaryCheck.findForbiddenImports(content).stream()
+                    .map(forbiddenImport -> "%s contains forbidden import: %s".formatted(sourceFile, forbiddenImport));
+        } catch (IOException | IllegalArgumentException e) {
+            String message = "%s could not be inspected: %s".formatted(sourceFile, e.getMessage());
+
+            return Stream.of(message);
         }
     }
 
@@ -70,12 +114,10 @@ class LauncherUiBoundaryTest {
         Path currentPath = Path.of("").toAbsolutePath();
 
         while (currentPath != null) {
-            boolean isCurrentPath =
-                    Files.exists(currentPath.resolve("settings.gradle")) ||
-                            Files.exists(currentPath.resolve("settings.gradle.kts"));
+            boolean isCurrentPath = Files.exists(currentPath.resolve("settings.gradle")) ||
+                    Files.exists(currentPath.resolve("settings.gradle.kts"));
 
             if (isCurrentPath) {
-
                 return currentPath;
             }
 
@@ -83,40 +125,5 @@ class LauncherUiBoundaryTest {
         }
 
         throw new IllegalStateException("Project root not found");
-    }
-
-    private List<String> findViolations(String importPrefix, Set<String> allowedImports) throws IOException {
-        try (Stream<Path> paths = Files.walk(UI_MAIN_SOURCES)) {
-            return paths
-                    .filter(Files::isRegularFile)
-                    .filter(path -> path.toString().endsWith(".java"))
-                    .flatMap(path -> violationsIn(path, importPrefix, allowedImports))
-                    .toList();
-        }
-    }
-
-    private Stream<String> violationsIn(Path sourceFile, String importPrefix, Set<String> allowedImports) {
-        try {
-            String content = Files.readString(sourceFile);
-
-            return content.lines()
-                    .map(String::trim)
-                    .filter(line -> isImportFrom(line, importPrefix))
-                    .filter(line -> !allowedImports.contains(line))
-                    .map(importLine ->
-                            "%s contains forbidden import: %s".formatted(sourceFile, importLine));
-        } catch (IOException exception) {
-            String message = "%s could not be inspected: %s".formatted(sourceFile, exception.getMessage());
-
-            return Stream.of(message);
-        }
-    }
-
-    private boolean isImportFrom(
-            String line,
-            String importPrefix
-    ) {
-        return line.startsWith("import " + importPrefix) ||
-                line.startsWith("import static " + importPrefix);
     }
 }

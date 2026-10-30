@@ -1,5 +1,6 @@
 package com.launcher.core.architecture.boundary;
 
+import com.launcher.testing.architecture.JavaSourceImport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,6 +16,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class CoreImportBoundaryCheckTest {
 
     private final CoreImportBoundaryCheck checker = new CoreImportBoundaryCheck();
+
+    @Test
+    void should_use_shared_model_through_test_dependency() {
+        //given
+        JavaSourceImport javaSourceImport =
+                new JavaSourceImport("java.util.List", false);
+
+        //when
+        String declaration = javaSourceImport.declaration();
+
+        //then
+        assertEquals("import java.util.List;", declaration);
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {

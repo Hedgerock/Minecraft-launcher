@@ -13,6 +13,8 @@ include("launcher-verification")
 include("launcher-app")
 include("launcher-publisher")
 include("launcher-preparer")
+include("launcher-architecture-test-support")
 
 project(":launcher-publisher").projectDir = file("tools/manifest-publisher")
 project(":launcher-preparer").projectDir = file("tools/manifest-preparer")
+project(":launcher-architecture-test-support").projectDir = file("tools/architecture-test-support")

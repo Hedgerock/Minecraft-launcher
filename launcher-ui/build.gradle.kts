@@ -6,6 +6,8 @@ plugins {
 dependencies {
     implementation(project(":launcher-app"))
     implementation(project(":launcher-core"))
+
+    testImplementation(project(":launcher-architecture-test-support"))
 }
 
 application {

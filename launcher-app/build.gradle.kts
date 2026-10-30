@@ -11,4 +11,6 @@ dependencies {
     implementation(project(":launcher-game"))
     implementation(project(":launcher-natives"))
     implementation(project(":launcher-model"))
+
+    testImplementation(project(":launcher-architecture-test-support"))
 }

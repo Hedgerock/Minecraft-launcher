@@ -413,6 +413,9 @@ launcher-app
 
 `LauncherUiBoundaryTest` проверяет imports из launcher-app и launcher-core согласно явным спискам разрешений
 
+`LauncherAppBoundaryTest` проверяет запрет imports из `com.launcher.ui`, `javafx` и `com.sun.javafx` в production-исходниках
+launcher-app
+
 Общий разбор Java source выполняет `JavaSourceImportParser` из инструментального модуля `launcher-architecture-test-support`
 
 Модуль расположен в `tools/architecture-test-support`, не зависит от production-модулей и подключается потребителем только
@@ -422,7 +425,7 @@ launcher-app
 
 Parser не компилирует исходник и не разрешает импортируемые типы
 
-Правила допустимости imports остаются в `CoreImportBoundaryCheck` и `UiImportBoundaryCheck`
+Правила допустимости imports остаются в `CoreImportBoundaryCheck`, `UiImportBoundaryCheck` и `AppImportBoundaryCheck`
 
 Тестовая поддержка не входит в runtime classpath приложения
 
@@ -433,8 +436,6 @@ Parser не компилирует исходник и не разрешает �
 Regression tests проверяют правила на контролируемых исходниках и подтверждают подключение к чтению файлов
 
 Import-based checks не заменяют полный анализ Java type references и графа Gradle dependencies
-
-Запрет зависимостей launcher-app от launcher-ui и JavaFX пока не закреплен отдельной автоматической проверкой
 
 ---
 

@@ -32,6 +32,8 @@
 - Added regression coverage for architecture import rules and source-file check integration
 - Documented shared architecture test support boundary decision
 - Added a test-only architecture support module with a shared Java source import parser
+- Added application source-import checks rejecting launcher UI and JavaFX namespaces, with source-file inspection regression
+  coverage
 
 ### Changed
 

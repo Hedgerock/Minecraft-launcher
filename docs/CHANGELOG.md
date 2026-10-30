@@ -30,6 +30,7 @@
 - Added integration coverage for managed manifest asset assembly with preservation of other JSON data
 - Documented foundation stabilization scope, progress tracking, and completion criteria
 - Added regression coverage for architecture import rules and source-file check integration
+- Documented shared architecture test support boundary decision
 
 ### Changed
 

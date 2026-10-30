@@ -62,7 +62,7 @@ public class DefaultFileDownloader implements FileDownloader {
         } catch (IOException | IllegalArgumentException e) {
 
             if (temporaryFile != null) {
-                deleteTemporaryFileQuietly(temporaryFile);
+                deleteTemporaryFileAfterFailure(temporaryFile, e);
             }
 
             throw DownloadException.downloadFailed(url, targetPath, e);
@@ -79,11 +79,16 @@ public class DefaultFileDownloader implements FileDownloader {
         }
     }
 
-    private void deleteTemporaryFileQuietly(Path temporaryFile) {
+    private void deleteTemporaryFileAfterFailure(
+            Path temporaryFile,
+            Throwable downloadFailure
+    ) {
         try {
             Files.deleteIfExists(temporaryFile);
-        } catch (IOException ignored) {
-            // Best-effort cleanup: the original download failure must remain the reported cause
+        } catch (IOException cleanupFailure) {
+            if (cleanupFailure != downloadFailure) {
+                downloadFailure.addSuppressed(cleanupFailure);
+            }
         }
     }
 

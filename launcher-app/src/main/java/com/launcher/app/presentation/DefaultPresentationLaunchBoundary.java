@@ -128,8 +128,10 @@ public final class DefaultPresentationLaunchBoundary implements PresentationLaun
                     source,
                     cause
             );
-        } catch (RuntimeException ignored) {
-            // Diagnostic reporting must not affect presentation launch flow
+        } catch (RuntimeException reportingFailure) {
+            if (reportingFailure != cause) {
+                cause.addSuppressed(reportingFailure);
+            }
         }
     }
 }

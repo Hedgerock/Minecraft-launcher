@@ -33,11 +33,109 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultPresentationLaunchBoundaryTest {
+
+    @Test
+    void should_deliver_execution_failure_when_reporter_throws_original_cause()
+            throws InterruptedException, ExecutionException, TimeoutException {
+        //given
+        RuntimeException executionFailure =
+                new RuntimeException("Launch execution failed");
+
+        LauncherLifecycleRunner runner = phaseHandler -> {
+            throw executionFailure;
+        };
+
+        PresentationLaunchDiagnosticReporter reporter = (source, cause) -> {
+            throw executionFailure;
+        };
+
+        RecordingPresentationLaunchCompletionHandler completionHandler =
+                new RecordingPresentationLaunchCompletionHandler();
+
+        ExecutorService executorService =
+                Executors.newSingleThreadExecutor();
+
+        try (DefaultPresentationLaunchBoundary boundary = createBoundary(
+                runner,
+                completionHandler,
+                reporter,
+                new NoOpPresentationLaunchPhaseHandler(),
+                executorService
+        )) {
+            //when
+            LaunchRequestResult result = boundary.requestLaunch();
+
+            executorService.submit(() -> {}).get(5, TimeUnit.SECONDS);
+
+            //then
+            assertEquals(LaunchRequestResult.ACCEPTED, result);
+
+            PresentationLaunchCompletion completion = completionHandler.getResult();
+
+            assertNotNull(completion);
+            assertTrue(completion.executionFailed());
+            assertTrue(completion.launchResult().isEmpty());
+            assertEquals(0, executionFailure.getSuppressed().length);
+        }
+    }
+
+    @Test
+    void should_preserve_diagnostic_reporting_failure_as_suppressed()
+            throws InterruptedException, ExecutionException, TimeoutException {
+        //given
+        RuntimeException executionFailure =
+                new RuntimeException("Launch execution failed");
+
+        RuntimeException reportingFailure =
+                new RuntimeException("Launch execution failed");
+
+        LauncherLifecycleRunner runner = phaseHandler -> {
+            throw executionFailure;
+        };
+
+        PresentationLaunchDiagnosticReporter reporter = (source, cause) -> {
+            throw reportingFailure;
+        };
+
+        RecordingPresentationLaunchCompletionHandler completionHandler =
+                new RecordingPresentationLaunchCompletionHandler();
+
+        ExecutorService executorService =
+                Executors.newSingleThreadExecutor();
+
+        try (DefaultPresentationLaunchBoundary boundary =
+                createBoundary(
+                        runner,
+                        completionHandler,
+                        reporter,
+                        new NoOpPresentationLaunchPhaseHandler(),
+                        executorService
+                )) {
+            //when
+            LaunchRequestResult result = boundary.requestLaunch();
+
+            executorService.submit(() -> {}).get(5, TimeUnit.SECONDS);
+
+            //then
+            assertEquals(LaunchRequestResult.ACCEPTED, result);
+            PresentationLaunchCompletion completion = completionHandler.getResult();
+
+            assertNotNull(completion);
+            assertTrue(completion.executionFailed());
+            assertTrue(completion.launchResult().isEmpty());
+
+            Throwable[] suppressed = executionFailure.getSuppressed();
+
+            assertEquals(1, suppressed.length);
+            assertSame(reportingFailure, suppressed[0]);
+        }
+    }
 
     @Test
     void should_deliver_phases_before_completion() throws InterruptedException {

@@ -18,12 +18,63 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultFileDownloaderTest {
     private static final String TEST_FILE_CONTENT = "Hello test!";
     private static final String FAKE_URL = "not-a-url";
+
+    @Test
+    void should_preserve_download_failure_when_temporary_file_cleanup_fails(
+            @TempDir Path tempDir
+    ) {
+        //given
+        Path trustedRoot = getTrustedRoot(tempDir);
+        Path targetPath = trustedRoot.resolve("mods/test.jar");
+
+        IOException downloadFailure = new IOException("Download source failed");
+
+        FileDownloader downloader = new DefaultFileDownloader(
+                url -> {
+                    Path temporaryFile;
+
+                    try (Stream<Path> files = Files.list(targetPath.getParent())) {
+                        temporaryFile = files.findFirst().orElseThrow();
+                    }
+
+                    Files.delete(temporaryFile);
+                    Files.createDirectory(temporaryFile);
+                    Files.writeString(
+                            temporaryFile.resolve("cleanup-blocker.txt"),
+                            "Prevent directory deletion"
+                    );
+
+                    throw downloadFailure;
+                },
+                new LocalWriteTargetResolver()
+        );
+
+        //when
+        DownloadException exception = assertThrows(
+                DownloadException.class,
+                () -> downloader.download("test-url", trustedRoot, targetPath)
+        );
+
+        //then
+        assertEquals(
+                DownloadExceptionReason.DOWNLOAD_FAILED,
+                exception.getReason()
+        );
+        assertSame(downloadFailure, exception.getCause());
+        assertFalse(Files.exists(targetPath));
+
+        Throwable[] suppressed = downloadFailure.getSuppressed();
+
+        assertEquals(1, suppressed.length);
+        assertInstanceOf(IOException.class, suppressed[0]);
+    }
 
     @Test
     void should_download_file_when_parent_redirects_inside_trusted_root(

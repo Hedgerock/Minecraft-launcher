@@ -29,10 +29,12 @@
 - Added managed manifest asset assembly from a JSON template with complete asset field replacement and preservation of other JSON data
 - Added integration coverage for managed manifest asset assembly with preservation of other JSON data
 - Documented foundation stabilization scope, progress tracking, and completion criteria
+- Added regression coverage for architecture import rules and source-file check integration
 
 ### Changed
 
 - Included buildSrc verification in the Windows and Linux CI checks
+- Strengthened core and UI import-boundary checks using Java source parsing without expanding UI allowlists
 
 ### Fixed
 

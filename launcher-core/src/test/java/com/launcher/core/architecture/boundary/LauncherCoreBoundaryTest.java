@@ -1,6 +1,7 @@
 package com.launcher.core.architecture.boundary;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,6 +9,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class LauncherCoreBoundaryTest {
@@ -20,16 +22,6 @@ class LauncherCoreBoundaryTest {
             .resolve("main")
             .resolve("java");
 
-    private static final List<String> FORBIDDEN_IMPORTS = List.of(
-            "import com.launcher.api.",
-            "import com.launcher.downloader.",
-            "import com.launcher.verification.",
-            "import com.launcher.game.",
-            "import com.launcher.storage.file.LocalFileStorage;",
-            "import com.launcher.storage.file.LocalFileMetadataReader;",
-            "import com.launcher.storage.hash.Sha256HashService;"
-    );
-
     private static final List<String> FORBIDDEN_CORE_SOURCE_FILES = List.of(
             "LocalFileStorage.java",
             "LocalDirectoryProvider.java",
@@ -39,13 +31,39 @@ class LauncherCoreBoundaryTest {
             "DefaultJavaExecutableReadinessChecker.java"
     );
 
+    private final CoreImportBoundaryCheck importBoundaryCheck = new CoreImportBoundaryCheck();
+
     @Test
-    void launcher_core_should_not_contain_forbidden_concrete_adapters() throws IOException {
+    void should_not_contain_forbidden_concrete_adapters() throws IOException {
         List<String> violations = findForbiddenCoreClasses();
 
         if (!violations.isEmpty()) {
             fail(String.join(System.lineSeparator(), violations));
         }
+    }
+
+    @Test
+    void should_report_formatted_forbidden_import_from_source_file(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path sourceFile = tempDir.resolve("Example.java");
+
+        Files.writeString(sourceFile, """
+            import   static   com.launcher.app.Adapter.VALUE;
+            class Example {}
+            """);
+
+        //when
+        List<String> result = violationsIn(sourceFile).toList();
+
+        //then
+        String expectedViolation = "%s contains forbidden import: %s".formatted(
+                sourceFile,
+                "import static com.launcher.app.Adapter.VALUE;"
+        );
+
+        assertEquals(List.of(expectedViolation), result);
     }
 
     private List<String> findForbiddenCoreClasses() throws IOException {
@@ -59,7 +77,7 @@ class LauncherCoreBoundaryTest {
     }
 
     @Test
-    void launcher_core_should_not_import_concrete_infrastructure_adapters() throws IOException {
+    void should_not_import_concrete_infrastructure_adapters() throws IOException {
         List<String> violations = findViolations();
 
         if (!violations.isEmpty()) {
@@ -89,6 +107,7 @@ class LauncherCoreBoundaryTest {
     private List<String> findViolations() throws IOException {
         try (Stream<Path> paths = Files.walk(CORE_MAIN_SOURCES)) {
             return paths
+                    .filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(".java"))
                     .flatMap(this::violationsIn)
                     .toList();
@@ -99,12 +118,18 @@ class LauncherCoreBoundaryTest {
         try {
             String content = Files.readString(sourceFile);
 
-            return FORBIDDEN_IMPORTS.stream()
-                    .filter(content::contains)
+            return importBoundaryCheck.findForbiddenImports(content).stream()
                     .map(forbiddenImport ->
-                            "%s contains forbidden import: %s".formatted(sourceFile, forbiddenImport));
-        } catch (IOException exception) {
-            String message = "%s could not be inspected: %s".formatted(sourceFile, exception.getMessage());
+                            "%s contains forbidden import: %s".formatted(
+                                    sourceFile,
+                                    forbiddenImport
+                            ));
+        } catch (IOException | IllegalArgumentException exception) {
+            String message = "%s could not be inspected: %s".formatted(
+                    sourceFile,
+                    exception.getMessage()
+            );
+
             return Stream.of(message);
         }
     }

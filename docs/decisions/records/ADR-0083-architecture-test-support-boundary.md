@@ -8,6 +8,8 @@ Accepted
 
 > Примечание: решение реализовано в итерации
 > `refactor(test): share java source import parsing`
+>
+> Граница файловой поддержки уточнена в [ADR-0084](ADR-0084-architecture-source-inspection-boundary.md)
 
 ---
 

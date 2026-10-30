@@ -34,6 +34,7 @@
 - Added a test-only architecture support module with a shared Java source import parser
 - Added application source-import checks rejecting launcher UI and JavaFX namespaces, with source-file inspection regression
   coverage
+- Documented shared source-file inspection boundary for architecture checks
 
 ### Changed
 

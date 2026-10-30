@@ -95,3 +95,4 @@
 | [ADR-0081](records/ADR-0081-vanilla-asset-resource-source.md)                       | Источник vanilla assets для управляемого манифеста                 | assets             |
 | [ADR-0082](records/ADR-0082-managed-manifest-asset-assembly-boundary.md)            | Граница сборки управляемого манифеста с подготовленными assets     | manifest           |
 | [ADR-0083](records/ADR-0083-architecture-test-support-boundary.md) | Граница общей поддержки архитектурных тестов | architecture tests |
+| [ADR-0084](records/ADR-0084-architecture-source-inspection-boundary.md) | Граница файловой поддержки архитектурных проверок | architecture tests |

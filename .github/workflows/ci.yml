@@ -28,8 +28,8 @@ jobs:
 
       - name: Build (Linux)
         if: runner.os == 'Linux'
-        run: ./gradlew clean check
+        run: ./gradlew clean buildSrc:check check
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
-        run: .\gradlew.bat clean check
+        run: .\gradlew.bat clean buildSrc:check check

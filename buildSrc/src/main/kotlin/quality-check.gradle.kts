@@ -1,6 +1,7 @@
 import java.io.File
 import java.nio.file.Files
 import org.gradle.api.GradleException
+import com.launcher.build.quality.EmptyCatchBlockCheck
 
 data class QualityViolation(
     val file: File,
@@ -178,6 +179,7 @@ tasks.register("qualityCheck") {
 
     doLast {
         val violations = mutableListOf<QualityViolation>()
+        val emptyCatchBlockCheck = EmptyCatchBlockCheck()
 
         val files = fileTree(rootDir) {
             include("**/*.java")
@@ -198,7 +200,6 @@ tasks.register("qualityCheck") {
 
         val wildcardImport = Regex("""^\s*import\s+(?:static\s+)?[\w.]+\.\*;\s*$""")
         val suppressAll = Regex("""@SuppressWarnings\s*\(\s*"all"\s*\)""")
-        val emptyCatchBlock = Regex("""catch\s*\([^)]*\)\s*\{\s*}""")
 
         files.forEach { file ->
             val bytes = file.readBytes()
@@ -217,6 +218,27 @@ tasks.register("qualityCheck") {
                     validateLocalMarkdownLink(file, link)?.let {
                         violations += it
                     }
+                }
+            }
+
+            if (file.extension == "java") {
+                val violationLines = try {
+                    emptyCatchBlockCheck.findViolationLines(bytes.toString(Charsets.UTF_8))
+                } catch (exception: Exception) {
+                    val relativePath = file.relativeTo(rootDir).invariantSeparatorsPath
+
+                    throw GradleException(
+                        "Could not inspect Java source for empty catch blocks: $relativePath",
+                        exception
+                    )
+                }
+
+                violationLines.forEach { lineNumber ->
+                    violations += QualityViolation(
+                        file,
+                        lineNumber,
+                        "Empty catch block is not allowed"
+                    )
                 }
             }
 
@@ -261,14 +283,6 @@ tasks.register("qualityCheck") {
                             file,
                             lineNumber,
                             "System.err.println is not allowed"
-                        )
-                    }
-
-                    if (emptyCatchBlock.containsMatchIn(line)) {
-                        violations += QualityViolation(
-                            file,
-                            lineNumber,
-                            "Empty catch block is not allowed"
                         )
                     }
 

@@ -13,18 +13,16 @@ import com.launcher.preparer.manifest.ManagedManifestAssetAssembler;
 import com.launcher.preparer.mapper.VanillaAssetsMapper;
 import com.launcher.preparer.model.PreparedVanillaAssetIndex;
 import com.launcher.preparer.model.PreparedVanillaAssetObject;
+import com.launcher.preparer.support.CloseTrackingInputStream;
+import com.launcher.preparer.support.TestDigests;
 import com.launcher.preparer.verifier.VanillaAssetObjectIntegrityException;
 import com.launcher.preparer.verifier.VanillaAssetObjectVerifier;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -120,7 +118,7 @@ class VanillaAssetPreparationIntegrationTest {
         expected.putObject("assetIndex")
                 .put("id", INDEX_ID)
                 .put("path", "assets/indexes/test-assets.json")
-                .put("sha256", hash("SHA-256", indexBytes))
+                .put("sha256", TestDigests.sha256(indexBytes))
                 .put("size", indexBytes.length)
                 .put("url", INDEX_URI.toString());
 
@@ -145,7 +143,7 @@ class VanillaAssetPreparationIntegrationTest {
         assertEquals(3, fetcher.streams.size());
 
         assertTrue(
-                fetcher.streams.stream().allMatch(TrackingInputStream::wasClosed)
+                fetcher.streams.stream().allMatch(CloseTrackingInputStream::wasCloseSuccessful)
         );
     }
 
@@ -181,7 +179,7 @@ class VanillaAssetPreparationIntegrationTest {
         assertEquals(1, fetcher.streams.size());
 
         assertTrue(
-                fetcher.streams.stream().allMatch(TrackingInputStream::wasClosed)
+                fetcher.streams.stream().allMatch(CloseTrackingInputStream::wasCloseSuccessful)
         );
     }
 
@@ -212,7 +210,7 @@ class VanillaAssetPreparationIntegrationTest {
                 new AssetIndexMetadata(
                         INDEX_ID,
                         "assets/indexes/test-assets.json",
-                        hash("SHA-256", indexBytes),
+                        TestDigests.sha256(indexBytes),
                         indexBytes.length,
                         INDEX_URI.toString()
                 ),
@@ -233,7 +231,7 @@ class VanillaAssetPreparationIntegrationTest {
         );
 
         assertEquals(3, fetcher.streams.size());
-        assertTrue(fetcher.streams.stream().allMatch(TrackingInputStream::wasClosed));
+        assertTrue(fetcher.streams.stream().allMatch(CloseTrackingInputStream::wasCloseSuccessful));
     }
 
     @Test
@@ -275,7 +273,7 @@ class VanillaAssetPreparationIntegrationTest {
         assertEquals(3, fetcher.streams.size());
 
         assertTrue(
-                fetcher.streams.stream().allMatch(TrackingInputStream::wasClosed)
+                fetcher.streams.stream().allMatch(CloseTrackingInputStream::wasCloseSuccessful)
         );
     }
 
@@ -294,7 +292,7 @@ class VanillaAssetPreparationIntegrationTest {
 
         PreparedVanillaAssetIndex index = loader.load(
                 INDEX_URI,
-                hash("SHA-1", expectedIndexBytes),
+                TestDigests.sha1(expectedIndexBytes),
                 expectedIndexBytes.length
         );
 
@@ -317,18 +315,18 @@ class VanillaAssetPreparationIntegrationTest {
     }
 
     private static AssetEntry expectedAsset(byte[] content, URI uri) {
-        String sha1 = hash("SHA-1", content);
+        String sha1 = TestDigests.sha1(content);
 
         return new AssetEntry(
                 "assets/objects/" + sha1.substring(0, 2) + "/" + sha1,
-                hash("SHA-256", content),
+                TestDigests.sha256(content),
                 content.length,
                 uri.toString()
         );
     }
 
     private static URI objectUri(byte[] content) {
-        String sha1 = hash("SHA-1", content);
+        String sha1 = TestDigests.sha1(content);
 
         return URI.create(
                 "https://assets.example.test/releases/objects/"
@@ -353,7 +351,7 @@ class VanillaAssetPreparationIntegrationTest {
             json.append("\"resource-")
                     .append(i)
                     .append("\":{\"hash\":\"")
-                    .append(hash("SHA-1", objects[i]))
+                    .append(TestDigests.sha1(objects[i]))
                     .append("\",\"size\":")
                     .append(objects[i].length)
                     .append('}');
@@ -368,25 +366,11 @@ class VanillaAssetPreparationIntegrationTest {
         return value.getBytes(StandardCharsets.UTF_8);
     }
 
-    private static String hash(String algorithm, byte[] content) {
-        try {
-            byte[] digest = MessageDigest.getInstance(algorithm)
-                    .digest(content);
-
-            return HexFormat.of().formatHex(digest);
-        } catch (NoSuchAlgorithmException e) {
-            throw new AssertionError(
-                    algorithm + " must be available",
-                    e
-            );
-        }
-    }
-
     private static final class RecordingFetcher implements VanillaAssetResponseFetcher {
 
         private final Map<URI, byte[]> resources;
         private final List<URI> requestedUris = new ArrayList<>();
-        private final List<TrackingInputStream> streams = new ArrayList<>();
+        private final List<CloseTrackingInputStream> streams = new ArrayList<>();
 
         public RecordingFetcher(Map<URI, byte[]> resources) {
             this.resources = resources;
@@ -402,28 +386,10 @@ class VanillaAssetPreparationIntegrationTest {
                 throw new AssertionError("Unexpected resource URI: " + uri);
             }
 
-            TrackingInputStream stream = new TrackingInputStream(content);
+            CloseTrackingInputStream stream = new CloseTrackingInputStream(content);
             streams.add(stream);
 
             return new VanillaAssetResponseFetcher.Response(200, stream);
-        }
-    }
-
-    private static final class TrackingInputStream extends ByteArrayInputStream {
-        private boolean closed;
-
-        public TrackingInputStream(byte[] content) {
-            super(content);
-        }
-
-        private boolean wasClosed() {
-            return closed;
-        }
-
-        @Override
-        public void close() throws IOException {
-            super.close();
-            closed = true;
         }
     }
 }

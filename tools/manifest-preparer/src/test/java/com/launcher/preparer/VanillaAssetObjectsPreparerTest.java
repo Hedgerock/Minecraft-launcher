@@ -5,18 +5,16 @@ import com.launcher.preparer.model.VanillaAssetIndex;
 import com.launcher.preparer.model.VanillaAssetObject;
 import com.launcher.preparer.model.VerifiedVanillaAssetObject;
 import com.launcher.preparer.source.OpenedVanillaAssetResource;
+import com.launcher.preparer.support.CloseTrackingInputStream;
+import com.launcher.preparer.support.TestDigests;
 import com.launcher.preparer.verifier.VanillaAssetObjectIntegrityException;
 import com.launcher.preparer.verifier.VanillaAssetObjectVerifier;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -91,7 +89,7 @@ class VanillaAssetObjectsPreparerTest {
                         preparedVanillaAssetObject(
                                 new VerifiedVanillaAssetObject(
                                         object,
-                                        hash("SHA-256", content)
+                                        TestDigests.sha256(content)
                                 ),
                                 "https://example.test/source-a?revision=1"
                         )
@@ -134,7 +132,7 @@ class VanillaAssetObjectsPreparerTest {
         );
 
         assertEquals(List.of(first, second), source.requested);
-        assertTrue(source.streams.getFirst().wasClosed());
+        assertTrue(source.streams.getFirst().wasCloseSuccessful());
     }
 
     @Test
@@ -175,7 +173,7 @@ class VanillaAssetObjectsPreparerTest {
                 source.requested
         );
 
-        assertTrue(source.streams.stream().allMatch(TrackingInputStream::wasClosed));
+        assertTrue(source.streams.stream().allMatch(CloseTrackingInputStream::wasCloseSuccessful));
     }
 
     @Test
@@ -209,13 +207,13 @@ class VanillaAssetObjectsPreparerTest {
                 List.of(
                         preparedVanillaAssetObject(
                                 new VerifiedVanillaAssetObject(
-                                        first, hash("SHA-256", firstBytes)
+                                        first, TestDigests.sha256(firstBytes)
                                 ),
                                 "https://example.test/source-a?revision=1"
                         ),
                         preparedVanillaAssetObject(
                                 new VerifiedVanillaAssetObject(
-                                        second, hash("SHA-256", secondBytes)
+                                        second, TestDigests.sha256(secondBytes)
                                 ),
                                 "https://example.test/source-b?revision=2"
                         )
@@ -228,7 +226,7 @@ class VanillaAssetObjectsPreparerTest {
                 source.requested
         );
 
-        assertTrue(source.streams.stream().allMatch(TrackingInputStream::wasClosed));
+        assertTrue(source.streams.stream().allMatch(CloseTrackingInputStream::wasCloseSuccessful));
     }
 
     private static VanillaAssetObjectsPreparer preparer(RecordingSource recordingSource) {
@@ -244,28 +242,16 @@ class VanillaAssetObjectsPreparerTest {
 
     private static VanillaAssetObject object(byte[] content) {
         return new VanillaAssetObject(
-                hash("SHA-1", content),
+                TestDigests.sha1(content),
                 content.length
         );
-    }
-
-    private static String hash(String algorithm, byte[] content) {
-        try {
-            byte[] digest = MessageDigest.getInstance(algorithm).digest(content);
-            return HexFormat.of().formatHex(digest);
-        } catch (NoSuchAlgorithmException e) {
-            throw new AssertionError(
-                    algorithm + " must be available",
-                    e
-            );
-        }
     }
 
     private static final class RecordingSource implements VanillaAssetObjectSource {
 
         private final Map<String, byte[]> contentByHash;
         private final List<VanillaAssetObject> requested = new ArrayList<>();
-        private final List<TrackingInputStream> streams = new ArrayList<>();
+        private final List<CloseTrackingInputStream> streams = new ArrayList<>();
         private final Map<VanillaAssetObject, URI> urls;
         private IOException closeException;
 
@@ -297,7 +283,7 @@ class VanillaAssetObjectsPreparerTest {
                 throw new IOException("Object unavailable");
             }
 
-            TrackingInputStream stream = new TrackingInputStream(content, closeException);
+            CloseTrackingInputStream stream = new CloseTrackingInputStream(content, closeException);
             streams.add(stream);
             URI uri = urls.isEmpty()
                     ? URI.create("https://example.test/source-a?revision=1")
@@ -318,29 +304,5 @@ class VanillaAssetObjectsPreparerTest {
                 object,
                 URI.create(url)
         );
-    }
-
-    private static final class TrackingInputStream extends ByteArrayInputStream {
-
-        private boolean closed;
-        private final IOException closeException;
-
-        private TrackingInputStream(byte[] content, IOException closeException) {
-            super(content);
-            this.closeException = closeException;
-        }
-
-        public boolean wasClosed() {
-            return closed;
-        }
-        @Override
-        public void close() throws IOException {
-            if (closeException != null) {
-                throw closeException;
-            }
-
-            closed = true;
-            super.close();
-        }
     }
 }

@@ -1,5 +1,6 @@
 package com.launcher.preparer.source;
 
+import com.launcher.preparer.support.CloseTrackingInputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -25,12 +26,10 @@ class HttpVanillaAssetResourceSourceTest {
     void should_preserve_status_failure_when_body_close_fails() {
         //given
         IOException closeFailure = new IOException("Failed to close body");
-        InputStream inputStream = new ByteArrayInputStream(new byte[100]) {
-            @Override
-            public void close() throws IOException {
-                throw closeFailure;
-            }
-        };
+        CloseTrackingInputStream inputStream = new CloseTrackingInputStream(
+                new byte[100],
+                closeFailure
+        );
 
         VanillaAssetResponseFetcher fetcher = uri -> response(404, inputStream);
 
@@ -100,15 +99,7 @@ class HttpVanillaAssetResourceSourceTest {
     @ValueSource(ints = { 206, 301, 302, 307, 308, 404, 500 })
     void should_reject_non_success_status_and_close_body(int statusCode) {
         //given
-        AtomicBoolean hasClosed = new AtomicBoolean(false);
-
-        InputStream inputStream = new ByteArrayInputStream(new byte[0]) {
-            @Override
-            public void close() throws IOException {
-                hasClosed.set(true);
-                super.close();
-            }
-        };
+        CloseTrackingInputStream inputStream = new CloseTrackingInputStream(new byte[0]);
 
         VanillaAssetResponseFetcher fetcher = uri -> response(statusCode, inputStream);
 
@@ -122,7 +113,7 @@ class HttpVanillaAssetResourceSourceTest {
         );
 
         assertEquals("Unexpected vanilla asset HTTP status: " + statusCode, exception.getMessage());
-        assertTrue(hasClosed.get());
+        assertTrue(inputStream.wasCloseCalled());
     }
 
     @Test
@@ -149,15 +140,7 @@ class HttpVanillaAssetResourceSourceTest {
     @Test
     void should_return_resource_with_requested_uri_and_response_body() throws IOException {
         //given
-        AtomicBoolean closed = new AtomicBoolean();
-
-        InputStream inputStream = new ByteArrayInputStream(new byte[100]) {
-            @Override
-            public void close() throws IOException {
-                closed.set(true);
-                super.close();
-            }
-        };
+        CloseTrackingInputStream inputStream = new CloseTrackingInputStream(new byte[100]);
 
         List<URI> requestedUris = new ArrayList<>();
         VanillaAssetResponseFetcher fetcher = uri -> {
@@ -178,13 +161,19 @@ class HttpVanillaAssetResourceSourceTest {
                 requestedUris
         );
 
-        assertFalse(closed.get(), "InputStream must remain open after open()");
+        assertFalse(
+                inputStream.wasCloseCalled(),
+                "InputStream must remain open after open()"
+        );
 
         //when
         resource.close();
 
         //then
-        assertTrue(closed.get(), "InputStream must be closed after resource.close()");
+        assertTrue(
+                inputStream.wasCloseCalled(),
+                "InputStream must be closed after resource.close()"
+        );
     }
 
     private VanillaAssetResponseFetcher.Response response(

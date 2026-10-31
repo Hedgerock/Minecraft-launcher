@@ -2,16 +2,15 @@ package com.launcher.preparer.verifier;
 
 import com.launcher.preparer.model.VanillaAssetObject;
 import com.launcher.preparer.model.VerifiedVanillaAssetObject;
+import com.launcher.preparer.support.CloseTrackingInputStream;
+import com.launcher.preparer.support.TestDigests;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.HexFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -30,9 +29,10 @@ class VanillaAssetObjectVerifierTest {
         VanillaAssetObject expected = expectedObject(bytes);
 
         //when & then
-        try (TrackingInputStream inputStream = new TrackingInputStream(bytes)) {
+        try (CloseTrackingInputStream inputStream = new CloseTrackingInputStream(bytes)) {
             verifier.verify(expected, inputStream);
-            assertFalse(inputStream.closed);
+
+            assertFalse(inputStream.wasCloseCalled());
         }
     }
 
@@ -88,7 +88,7 @@ class VanillaAssetObjectVerifierTest {
         //given
         byte[] bytes = bytes("asset-content");
         VanillaAssetObject expected = new VanillaAssetObject(
-                hash("SHA-1", bytes),
+                TestDigests.sha1(bytes),
                 bytes.length + 1L
         );
 
@@ -106,7 +106,7 @@ class VanillaAssetObjectVerifierTest {
         //given
         byte[] bytes = bytes("asset-content");
         VanillaAssetObject expected = new VanillaAssetObject(
-                hash("SHA-1", bytes),
+                TestDigests.sha1(bytes),
                 bytes.length - 1L
         );
 
@@ -134,41 +134,17 @@ class VanillaAssetObjectVerifierTest {
 
         //then
         assertEquals(expected, result.object());
-        assertEquals(hash("SHA-256", bytes), result.sha256());
+        assertEquals(TestDigests.sha256(bytes), result.sha256());
     }
 
     private static VanillaAssetObject expectedObject(byte[] bytes) {
         return new VanillaAssetObject(
-                hash("SHA-1", bytes),
+                TestDigests.sha1(bytes),
                 bytes.length
         );
     }
 
     private static byte[] bytes(String value) {
         return value.getBytes(StandardCharsets.UTF_8);
-    }
-
-    private static String hash(String algorithm, byte[] bytes) {
-        try {
-            byte[] digest = MessageDigest.getInstance(algorithm).digest(bytes);
-            return HexFormat.of().formatHex(digest);
-        } catch (NoSuchAlgorithmException e) {
-            throw new AssertionError(algorithm + " must be available", e);
-        }
-    }
-
-    private static final class TrackingInputStream extends ByteArrayInputStream {
-
-        private boolean closed;
-
-        private TrackingInputStream(byte[] bytes) {
-            super(bytes);
-        }
-
-        @Override
-        public void close() throws IOException {
-            closed = true;
-            super.close();
-        }
     }
 }

@@ -3,21 +3,19 @@ package com.launcher.preparer.source;
 import com.launcher.preparer.VanillaAssetIndexReader;
 import com.launcher.preparer.model.PreparedVanillaAssetIndex;
 import com.launcher.preparer.model.VanillaAssetObject;
+import com.launcher.preparer.support.CloseTrackingInputStream;
+import com.launcher.preparer.support.TestDigests;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -121,7 +119,7 @@ class HttpVanillaAssetIndexLoaderTest {
         //given
         byte[] bytes = indexBytes();
         IOException failure = new IOException("Failed to close index");
-        TrackingBody body = new TrackingBody(bytes, failure);
+        CloseTrackingInputStream body = new CloseTrackingInputStream(bytes, failure);
         HttpVanillaAssetIndexLoader loader = loader(body);
 
         //when & then
@@ -129,13 +127,13 @@ class HttpVanillaAssetIndexLoaderTest {
                 IOException.class,
                 () -> loader.load(
                         INDEX_URI,
-                        hash("SHA-1", bytes),
+                        TestDigests.sha1(bytes),
                         bytes.length
                 )
         );
 
         assertSame(failure, exception);
-        assertTrue(body.closeCalled);
+        assertTrue(body.wasCloseCalled());
     }
 
     @Test
@@ -220,7 +218,7 @@ class HttpVanillaAssetIndexLoaderTest {
             long expectedSize
     ) {
         //given
-        TrackingBody body = new TrackingBody(bytes);
+        CloseTrackingInputStream body = new CloseTrackingInputStream(bytes);
         HttpVanillaAssetIndexLoader loader = loader(body);
 
         //when & then
@@ -229,14 +227,14 @@ class HttpVanillaAssetIndexLoaderTest {
                 () -> loader.load(INDEX_URI, expectedSha1, expectedSize)
         );
 
-        assertTrue(body.closeCalled);
+        assertTrue(body.wasCloseCalled());
     }
 
     @Test
     void should_return_verified_index_with_source_uri() throws IOException {
         //given
         byte[] bytes = indexBytes();
-        TrackingBody body = new TrackingBody(bytes);
+        CloseTrackingInputStream body = new CloseTrackingInputStream(bytes);
         List<URI> requestedUris = new ArrayList<>();
 
         HttpVanillaAssetIndexLoader loader = loader(uri -> {
@@ -247,7 +245,7 @@ class HttpVanillaAssetIndexLoaderTest {
         //when
         PreparedVanillaAssetIndex result = loader.load(
                 INDEX_URI,
-                hash("SHA-1", bytes),
+                TestDigests.sha1(bytes),
                 bytes.length
         );
 
@@ -256,14 +254,14 @@ class HttpVanillaAssetIndexLoaderTest {
         assertEquals(INDEX_URI, result.uri());
         assertEquals(bytes.length, result.verified().size());
         assertEquals(
-                hash("SHA-256", bytes),
+                TestDigests.sha256(bytes),
                 result.verified().sha256()
         );
         assertEquals(
                 List.of(new VanillaAssetObject(OBJECT_HASH, 7)),
                 result.verified().index().objects()
         );
-        assertTrue(body.closeCalled);
+        assertTrue(body.wasCloseCalled());
     }
 
     private static HttpVanillaAssetIndexLoader loader(InputStream body) {
@@ -289,7 +287,7 @@ class HttpVanillaAssetIndexLoaderTest {
 
     private static Stream<Arguments> invalidIndexContents() {
         byte[] valid = indexBytes();
-        String validSha1 = hash("SHA-1", valid);
+        String validSha1 = TestDigests.sha1(valid);
         byte[] malformed = """
                 {"objects":}
                 """.getBytes(StandardCharsets.UTF_8);
@@ -316,23 +314,10 @@ class HttpVanillaAssetIndexLoaderTest {
                 Arguments.of(
                         "malformed JSON with matching metadata",
                         malformed,
-                        hash("SHA-1", malformed),
+                        TestDigests.sha1(malformed),
                         (long) malformed.length
                 )
         );
-    }
-
-    private static String hash(String algorithm, byte[] bytes) {
-        try {
-            return HexFormat.of().formatHex(
-                    MessageDigest.getInstance(algorithm).digest(bytes)
-            );
-        } catch (NoSuchAlgorithmException e) {
-            throw new AssertionError(
-                    algorithm + " must be available in the test runtime",
-                    e
-            );
-        }
     }
 
 
@@ -359,30 +344,5 @@ class HttpVanillaAssetIndexLoaderTest {
                     }
                 }
                 """.formatted(OBJECT_HASH, OBJECT_HASH).getBytes(StandardCharsets.UTF_8);
-    }
-
-    private static final class TrackingBody extends ByteArrayInputStream {
-
-        private final IOException closeFailure;
-        private boolean closeCalled;
-
-        private TrackingBody(byte[] bytes) {
-            this(bytes, null);
-        }
-
-        private TrackingBody(byte[] bytes, IOException closeFailure) {
-            super(bytes);
-            this.closeFailure = closeFailure;
-        }
-
-        @Override
-        public void close() throws IOException {
-            closeCalled = true;
-            super.close();
-
-            if (closeFailure != null) {
-                throw closeFailure;
-            }
-        }
     }
 }

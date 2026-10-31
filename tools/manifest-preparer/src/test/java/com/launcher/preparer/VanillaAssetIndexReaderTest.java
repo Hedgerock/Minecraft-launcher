@@ -2,12 +2,10 @@ package com.launcher.preparer;
 
 import com.launcher.preparer.model.VanillaAssetObject;
 import com.launcher.preparer.model.VerifiedVanillaAssetIndex;
+import com.launcher.preparer.support.TestDigests;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.HexFormat;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,7 +69,7 @@ class VanillaAssetIndexReaderTest {
         //when & then
         assertThrows(
                 IllegalArgumentException.class,
-                () -> reader.read(bytes, sha1(bytes), bytes.length + 1)
+                () -> reader.read(bytes, TestDigests.sha1(bytes), bytes.length + 1)
         );
     }
 
@@ -117,7 +115,7 @@ class VanillaAssetIndexReaderTest {
                 result.index().objects()
         );
 
-        String expectedSha256 = sha256(bytes);
+        String expectedSha256 = TestDigests.sha256(bytes);
 
         assertEquals(
                 expectedSha256,
@@ -176,26 +174,6 @@ class VanillaAssetIndexReaderTest {
 
     private VerifiedVanillaAssetIndex readMatchingMetadata(String json) {
         byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-        return reader.read(bytes, sha1(bytes), bytes.length);
-    }
-
-    private String sha256(byte[] bytes) {
-        return getHash("SHA-256", bytes);
-    }
-
-    private String sha1(byte[] bytes) {
-        return getHash("SHA-1", bytes);
-    }
-
-    private String getHash(String algorithm, byte[] bytes) {
-        try {
-            byte[] digest = MessageDigest.getInstance(algorithm).digest(bytes);
-            return HexFormat.of().formatHex(digest);
-        } catch (NoSuchAlgorithmException e) {
-            throw new AssertionError(
-                    algorithm + " must be available in the test runtime",
-                    e
-            );
-        }
+        return reader.read(bytes, TestDigests.sha1(bytes), bytes.length);
     }
 }

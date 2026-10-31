@@ -42,6 +42,7 @@
 - Strengthened core and UI import-boundary checks using Java source parsing without expanding UI allowlists
 - Moved core and UI import parsing to shared test support without changing boundary policies
 - Moved project-root lookup and architecture source-file inspection to shared test support without changing module policies
+- Consolidated digest and stream-close tracking helpers in vanilla asset preparation tests with standalone regression coverage
 
 ### Fixed
 

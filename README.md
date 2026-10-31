@@ -48,8 +48,8 @@ native-библиотек, выбор и проверка Java runtime, пост
 - `launcher-publisher` локальный инструмент подготовки подписи управляемого манифеста и экспорта публичного ключа
 - `launcher-preparer` получает и проверяет vanilla assets, преобразует подготовленные результаты в manifest resources и
   формирует окончательные байты управляемого манифеста из JSON-шаблона
-- `launcher-architecture-test-support` содержит общий parser Java imports для архитектурных тестов и не входит в runtime
-  приложения
+- `launcher-architecture-test-support` содержит общий parser Java imports и файловую поддержку архитектурных тестов и не входит
+  в runtime приложения
 
 Подробные границы ответственности описаны в [модульных границах](docs/architecture/module-boundaries.md)
 

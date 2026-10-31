@@ -41,6 +41,7 @@
 - Included buildSrc verification in the Windows and Linux CI checks
 - Strengthened core and UI import-boundary checks using Java source parsing without expanding UI allowlists
 - Moved core and UI import parsing to shared test support without changing boundary policies
+- Moved project-root lookup and architecture source-file inspection to shared test support without changing module policies
 
 ### Fixed
 

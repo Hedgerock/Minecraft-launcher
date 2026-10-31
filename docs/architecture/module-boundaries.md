@@ -425,6 +425,16 @@ launcher-app
 
 Parser не компилирует исходник и не разрешает импортируемые типы
 
+`ProjectRootLocator` определяет корень Gradle project от явно переданной директории
+
+`JavaSourceImportInspector` выполняет чтение отдельного файла и обход Java source в директории, выбранной потребителем
+
+Проверка исходного текста передается через `JavaSourceImportCheck`, а правила допустимости imports остаются у потребителя
+
+Общая файловая поддержка сохраняет формат диагностик и не скрывает ошибки чтения, parsing или обхода директории
+
+Проверка размещения известных concrete adapters в launcher-core остается локальной
+
 Правила допустимости imports остаются в `CoreImportBoundaryCheck`, `UiImportBoundaryCheck` и `AppImportBoundaryCheck`
 
 Тестовая поддержка не входит в runtime classpath приложения

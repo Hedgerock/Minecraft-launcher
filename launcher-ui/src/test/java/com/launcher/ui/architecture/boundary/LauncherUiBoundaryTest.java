@@ -1,5 +1,7 @@
 package com.launcher.ui.architecture.boundary;
 
+import com.launcher.testing.architecture.JavaSourceImportInspector;
+import com.launcher.testing.architecture.ProjectRootLocator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -7,14 +9,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class LauncherUiBoundaryTest {
 
-    private static final Path PROJECT_ROOT = findProjectRoot();
+    private static final Path PROJECT_ROOT = new ProjectRootLocator().findFrom(
+            Path.of("").toAbsolutePath()
+    );
 
     private static final Path UI_MAIN_SOURCES = PROJECT_ROOT
             .resolve("launcher-ui")
@@ -23,6 +26,7 @@ class LauncherUiBoundaryTest {
             .resolve("java");
 
     private final UiImportBoundaryCheck importBoundaryCheck = new UiImportBoundaryCheck();
+    private final JavaSourceImportInspector sourceInspector = new JavaSourceImportInspector();
 
     @Test
     void should_not_import_forbidden_application_or_core_types() throws IOException {
@@ -48,7 +52,10 @@ class LauncherUiBoundaryTest {
                 """);
 
         //when
-        List<String> result = violationsIn(sourceFile).toList();
+        List<String> result = sourceInspector.inspectFile(
+                sourceFile,
+                importBoundaryCheck::findForbiddenImports
+        );
 
         //then
         assertEquals(
@@ -81,49 +88,19 @@ class LauncherUiBoundaryTest {
                 """);
 
         //when
-        List<String> result = violationsIn(sourceFile).toList();
+        List<String> result = sourceInspector.inspectFile(
+                sourceFile,
+                importBoundaryCheck::findForbiddenImports
+        );
 
         //then
         assertEquals(List.of(), result);
     }
 
     private List<String> findViolations() throws IOException {
-        try (Stream<Path> paths = Files.walk(UI_MAIN_SOURCES)) {
-            return paths
-                    .filter(Files::isRegularFile)
-                    .filter(path -> path.toString().endsWith(".java"))
-                    .flatMap(this::violationsIn)
-                    .toList();
-        }
-    }
-
-    private Stream<String> violationsIn(Path sourceFile) {
-        try {
-            String content = Files.readString(sourceFile);
-
-            return importBoundaryCheck.findForbiddenImports(content).stream()
-                    .map(forbiddenImport -> "%s contains forbidden import: %s".formatted(sourceFile, forbiddenImport));
-        } catch (IOException | IllegalArgumentException e) {
-            String message = "%s could not be inspected: %s".formatted(sourceFile, e.getMessage());
-
-            return Stream.of(message);
-        }
-    }
-
-    private static Path findProjectRoot() {
-        Path currentPath = Path.of("").toAbsolutePath();
-
-        while (currentPath != null) {
-            boolean isCurrentPath = Files.exists(currentPath.resolve("settings.gradle")) ||
-                    Files.exists(currentPath.resolve("settings.gradle.kts"));
-
-            if (isCurrentPath) {
-                return currentPath;
-            }
-
-            currentPath = currentPath.getParent();
-        }
-
-        throw new IllegalStateException("Project root not found");
+        return sourceInspector.inspectDirectory(
+                UI_MAIN_SOURCES,
+                importBoundaryCheck::findForbiddenImports
+        );
     }
 }

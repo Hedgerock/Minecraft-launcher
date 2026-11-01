@@ -56,8 +56,9 @@
 
 ## В работе
 
-- Подтвержден повтор подготовки fake Java executable в launcher-app и launcher-ui
-- Следующий шаг — определить владельца общей test-only поддержки этого сценария без изменения production-зависимостей
+- Граница общей Fake Java fixture определена в [ADR-0085](../decisions/records/ADR-0085-fake-java-executable-test-support-boundary.md)
+- Следующий шаг — выделить подготовку тестового Java executable и перевести сценарии launcher-app и launcher-ui с сохранением
+  наблюдаемого поведения
 - HTTP fixtures остаются предметом ревизии: различия управления ответами, синхронизации и lifecycle требуют отдельной оценки
   перед выделением общей части
 

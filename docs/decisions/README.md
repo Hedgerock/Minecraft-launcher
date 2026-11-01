@@ -96,3 +96,4 @@
 | [ADR-0082](records/ADR-0082-managed-manifest-asset-assembly-boundary.md)            | Граница сборки управляемого манифеста с подготовленными assets     | manifest           |
 | [ADR-0083](records/ADR-0083-architecture-test-support-boundary.md) | Граница общей поддержки архитектурных тестов | architecture tests |
 | [ADR-0084](records/ADR-0084-architecture-source-inspection-boundary.md) | Граница файловой поддержки архитектурных проверок | architecture tests |
+| [ADR-0085](records/ADR-0085-fake-java-executable-test-support-boundary.md) | Подготовка общего тестового Java executable | test infrastructure |

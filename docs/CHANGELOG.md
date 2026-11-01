@@ -35,6 +35,7 @@
 - Added application source-import checks rejecting launcher UI and JavaFX namespaces, with source-file inspection regression
   coverage
 - Documented shared source-file inspection boundary for architecture checks
+- Documented shared fake Java executable test support boundary
 
 ### Changed
 

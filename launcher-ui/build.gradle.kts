@@ -8,6 +8,7 @@ dependencies {
     implementation(project(":launcher-core"))
 
     testImplementation(project(":launcher-architecture-test-support"))
+    testImplementation(project(":launcher-process-test-support"))
 }
 
 application {

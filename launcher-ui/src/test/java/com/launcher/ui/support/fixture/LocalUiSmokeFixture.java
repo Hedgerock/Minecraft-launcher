@@ -1,5 +1,6 @@
 package com.launcher.ui.support.fixture;
 
+import com.launcher.testing.process.FakeJavaExecutableFixture;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -10,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +27,7 @@ public final class LocalUiSmokeFixture implements AutoCloseable {
         launcherDirectory = tempDir.resolve("launcher-directory");
         gameStartedMarker = tempDir.resolve("gamestarted.marker");
 
-        Path executable = createFakeJavaExecutable(tempDir, gameStartedMarker);
+        Path executable = FakeJavaExecutableFixture.create(tempDir, gameStartedMarker);
         String manifest = getManifestJson(executable.toAbsolutePath().toString());
         String path = "/manifest.json";
 
@@ -79,55 +79,9 @@ public final class LocalUiSmokeFixture implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         releaseManifest();
         httpServer.stop(0);
-    }
-
-    private Path createFakeJavaExecutable(Path tempDir, Path gameStartedMarker) throws IOException {
-        boolean windows = System.getProperty("os.name")
-                .toLowerCase(Locale.ROOT)
-                .contains("win");
-
-        Path executable = tempDir.resolve(
-                windows ? "fake-java.cmd" : "fake-java.sh"
-        );
-
-        String markerPath = gameStartedMarker.toAbsolutePath().toString();
-
-        String windowsCommand = """
-                @echo off
-                if "%%~1"=="-version" (
-                 echo openjdk version "21.0.8" 2025-07-15 1>&2
-                 exit /b 0
-                )
-                cd /d "%%TEMP%%"
-                echo started > "%s"
-                exit /b 0
-                """.formatted(markerPath);
-
-        String otherOsCommand = """
-                #!/usr/bin/env sh
-                if [ "$1" = "-version" ]; then
-                 printf '%%s\\n' 'openjdk version "21.0.8" 2025-07-15' >&2
-                 exit 0
-                fi
-                cd /tmp
-                printf '%%s\\n' 'started' > '%s'
-                exit 0
-                """.formatted(markerPath);
-
-        String content = windows
-                ? windowsCommand
-                : otherOsCommand;
-
-        Files.writeString(executable, content, StandardCharsets.UTF_8);
-
-        if (!windows) {
-            executable.toFile().setExecutable(true);
-        }
-
-        return executable;
     }
 
     private static String getManifestJson(String javaExecutable) {

@@ -13,4 +13,5 @@ dependencies {
     implementation(project(":launcher-model"))
 
     testImplementation(project(":launcher-architecture-test-support"))
+    testImplementation(project(":launcher-process-test-support"))
 }

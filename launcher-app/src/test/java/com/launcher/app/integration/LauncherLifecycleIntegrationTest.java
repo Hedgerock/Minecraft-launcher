@@ -17,6 +17,7 @@ import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.state.LauncherState;
 import com.launcher.model.manifest.ResourceEntry;
 import com.launcher.model.manifest.assets.AssetIndexMetadata;
+import com.launcher.testing.process.FakeJavaExecutableFixture;
 import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -32,7 +33,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -140,7 +140,10 @@ class LauncherLifecycleIntegrationTest {
 
         try {
             Path gameStartedMarker = tempDir.resolve("gamestarted.marker");
-            Path executable = createFakeJavaExecutable(tempDir, gameStartedMarker);
+            Path executable = FakeJavaExecutableFixture.create(
+                    tempDir,
+                    gameStartedMarker
+            );
 
             LauncherConfiguration configuration = new LauncherConfiguration(
                     URI.create(baseUrl + "/manifest.json"),
@@ -224,7 +227,7 @@ class LauncherLifecycleIntegrationTest {
 
         try {
             Path gameStartedMarker = tempDir.resolve("gamestarted.marker");
-            Path executable = createFakeJavaExecutable(tempDir, gameStartedMarker);
+            Path executable = FakeJavaExecutableFixture.create(tempDir, gameStartedMarker);
 
             LauncherConfiguration configuration = new LauncherConfiguration(
                     URI.create(baseUrl + "/manifest.json"),
@@ -272,7 +275,7 @@ class LauncherLifecycleIntegrationTest {
         try {
             URI manifestUri = URI.create("http://localhost:" + server.getAddress().getPort() + path);
             Path gameStartedMarker = tempDir.resolve("gamestarted.marker");
-            Path executable = createFakeJavaExecutable(tempDir, gameStartedMarker);
+            Path executable = FakeJavaExecutableFixture.create(tempDir, gameStartedMarker);
 
             LauncherConfiguration config = new LauncherConfiguration(
                     manifestUri,
@@ -358,7 +361,7 @@ class LauncherLifecycleIntegrationTest {
         try {
             URI manifestUri = URI.create("http://localhost:" + server.getAddress().getPort() + path);
             Path gameStartedMarker = tempDir.resolve("gamestarted.marker");
-            Path executable = createFakeJavaExecutable(tempDir, gameStartedMarker);
+            Path executable = FakeJavaExecutableFixture.create(tempDir, gameStartedMarker);
 
             LauncherConfiguration config = new LauncherConfiguration(
                     manifestUri,
@@ -416,52 +419,6 @@ class LauncherLifecycleIntegrationTest {
                 Files.exists(path),
                 "Expected fake game process marker to be created"
         );
-    }
-
-    private Path createFakeJavaExecutable(Path tempDir, Path gameStartedMarker) throws IOException {
-        boolean windows = System.getProperty("os.name")
-                .toLowerCase(Locale.ROOT)
-                .contains("win");
-
-        Path executable = tempDir.resolve(
-                windows ? "fake-java.cmd" : "fake-java.sh"
-        );
-
-        String markerPath = gameStartedMarker.toAbsolutePath().toString();
-
-        String windowsCommand = """
-                @echo off
-                if "%%~1"=="-version" (
-                 echo openjdk version "21.0.8" 2025-07-15 1>&2
-                 exit /b 0
-                )
-                cd /d "%%TEMP%%"
-                echo started > "%s"
-                exit /b 0
-                """.formatted(markerPath);
-
-        String otherOsCommand = """
-                #!/usr/bin/env sh
-                if [ "$1" = "-version" ]; then
-                 printf '%%s\\n' 'openjdk version "21.0.8" 2025-07-15' >&2
-                 exit 0
-                fi
-                cd /tmp
-                printf '%%s\\n' 'started' > '%s'
-                exit 0
-                """.formatted(markerPath);
-
-        String content = windows
-                ? windowsCommand
-                : otherOsCommand;
-
-        Files.writeString(executable, content, StandardCharsets.UTF_8);
-
-        if (!windows) {
-            executable.toFile().setExecutable(true);
-        }
-
-        return executable;
     }
 
     private String sha256(byte[] bytes) throws NoSuchAlgorithmException {

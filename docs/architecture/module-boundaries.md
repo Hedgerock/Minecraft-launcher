@@ -404,6 +404,26 @@ launcher-app
 
 ---
 
+## Граница общей поддержки тестовых процессов
+
+`launcher-process-test-support` владеет общей подготовкой fake Java executable для тестов launcher-app и launcher-ui
+
+Модуль расположен в `tools/process-test-support`, не зависит от production-модулей и подключается потребителями только через
+`testImplementation`
+
+`FakeJavaExecutableFixture` получает директорию подготовки и путь marker-файла и возвращает подготовленный executable с
+учетом ОС
+
+Fixture не запускает процесс и не управляет его ожиданием или завершением
+
+Создание манифеста, HTTP server lifecycle, UI synchronization, ожидание marker и cleanup остаются у потребителей
+
+Тестовая поддержка не входит в runtime classpath приложения
+
+Граница определена в [ADR-0085](../decisions/records/ADR-0085-fake-java-executable-test-support-boundary.md)
+
+---
+
 ## Проверка правила
 
 Правила из этого документа постепенно закрепляются архитектурными тестами

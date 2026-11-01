@@ -50,6 +50,8 @@ native-библиотек, выбор и проверка Java runtime, пост
   формирует окончательные байты управляемого манифеста из JSON-шаблона
 - `launcher-architecture-test-support` содержит общий parser Java imports и файловую поддержку архитектурных тестов и не входит
   в runtime приложения
+- `launcher-process-test-support` содержит общую подготовку fake Java executable для launcher lifecycle integration tests
+  и UI smoke fixture и не входит в runtime приложения
 
 Подробные границы ответственности описаны в [модульных границах](docs/architecture/module-boundaries.md)
 

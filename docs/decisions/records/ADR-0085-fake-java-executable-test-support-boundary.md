@@ -6,6 +6,9 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерации
+> `refactor(test): share fake java executable fixture`
+
 ---
 
 ## Контекст

@@ -36,6 +36,7 @@
   coverage
 - Documented shared source-file inspection boundary for architecture checks
 - Documented shared fake Java executable test support boundary
+- Documented bounded HTTP loading boundary for manifests and signatures
 
 ### Changed
 

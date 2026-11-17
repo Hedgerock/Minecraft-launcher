@@ -1,5 +1,6 @@
 package com.launcher.api.manifest.client;
 
+import com.launcher.api.http.HttpRequestLimits;
 import com.launcher.api.manifest.support.ManifestJsonProvider;
 import com.launcher.api.manifest.support.RecordingLauncherHttpClient;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Signature;
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +25,7 @@ class HttpManifestSignatureClientTest {
         byte[] signatureBytes = getSignatureSign();
         httpClient.setResponse(signatureBytes);
 
-        URI expectedUri = URI.create("https//example.org/signature");
+        URI expectedUri = URI.create("https://example.org/signature");
 
         HttpManifestSignatureClient manifestSignatureClient =
                 new HttpManifestSignatureClient(
@@ -43,6 +45,11 @@ class HttpManifestSignatureClientTest {
         assertArrayEquals(
                 signatureBytes,
                 result
+        );
+
+        assertEquals(
+                new HttpRequestLimits(Duration.ofSeconds(10), 64),
+                httpClient.getLimits()
         );
     }
 

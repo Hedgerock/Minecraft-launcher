@@ -1,11 +1,16 @@
 package com.launcher.api.manifest.client;
 
+import com.launcher.api.http.HttpRequestLimits;
 import com.launcher.api.http.LauncherHttpClient;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Objects;
 
 public class HttpManifestClient implements ManifestClient {
+    private static final HttpRequestLimits MANIFEST_LIMITS =
+            new HttpRequestLimits(Duration.ofSeconds(30), 32 * 1024 * 1024);
+
     private final LauncherHttpClient launcherHttpClient;
     private final URI manifestUri;
 
@@ -23,11 +28,11 @@ public class HttpManifestClient implements ManifestClient {
 
     @Override
     public String download() {
-        return launcherHttpClient.get(this.manifestUri);
+        return launcherHttpClient.get(this.manifestUri, MANIFEST_LIMITS);
     }
 
     @Override
     public byte[] downloadBytes() {
-        return launcherHttpClient.getBytes(this.manifestUri);
+        return launcherHttpClient.getBytes(this.manifestUri, MANIFEST_LIMITS);
     }
 }

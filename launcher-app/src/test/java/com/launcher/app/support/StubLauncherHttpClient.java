@@ -1,5 +1,6 @@
 package com.launcher.app.support;
 
+import com.launcher.api.http.HttpRequestLimits;
 import com.launcher.api.http.LauncherHttpClient;
 
 import java.net.URI;
@@ -23,14 +24,14 @@ public final class StubLauncherHttpClient implements LauncherHttpClient {
     }
 
     @Override
-    public String get(URI uri) {
+    public String get(URI uri, HttpRequestLimits limits) {
         throw new AssertionError(
                 "Unexpected URI: " + uri
         );
     }
 
     @Override
-    public byte[] getBytes(URI uri) {
+    public byte[] getBytes(URI uri, HttpRequestLimits limits) {
         if (manifestUri.equals(uri)) {
             return manifestBytes.clone();
         }

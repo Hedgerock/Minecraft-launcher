@@ -1,10 +1,12 @@
 package com.launcher.api.manifest.client;
 
+import com.launcher.api.http.HttpRequestLimits;
 import com.launcher.api.manifest.support.RecordingLauncherHttpClient;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,6 +68,10 @@ class HttpManifestClientTest {
         //then
         assertEquals(manifestUri, launcherHttpClient.getUri());
         assertArrayEquals(expectedBytes, result);
+        assertEquals(
+                new HttpRequestLimits(Duration.ofSeconds(30), 32 * 1024 * 1024),
+                launcherHttpClient.getLimits()
+        );
     }
 
     @Test
@@ -89,5 +95,9 @@ class HttpManifestClientTest {
         //then
         assertEquals(manifestUri, launcherHttpClient.getUri());
         assertEquals(launcherHttpClient.getResponse(), result);
+        assertEquals(
+                new HttpRequestLimits(Duration.ofSeconds(30), 32 * 1024 * 1024),
+                launcherHttpClient.getLimits()
+        );
     }
 }

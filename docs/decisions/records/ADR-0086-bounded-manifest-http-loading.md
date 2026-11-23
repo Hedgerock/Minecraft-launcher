@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(api): add bounded HTTP response body support`
+> `feat(api): enforce manifest HTTP request limits`
+
 ---
 
 ## Контекст

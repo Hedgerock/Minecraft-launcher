@@ -53,6 +53,7 @@
 - Bounded Java version probe execution and output, with bounded cleanup and interruption handling
 - Fixed detection of multiline and comment-only empty catch blocks with regression coverage
 - Preserved secondary cleanup and diagnostic reporting failures as suppressed exceptions without replacing the original failure
+- Bounded HTTP request duration and response size for manifest and signature downloads
 
 ---
 

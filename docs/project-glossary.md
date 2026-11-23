@@ -721,11 +721,15 @@ manifest mapping и runtime library selection
 
 Используется адаптерами API для получения внешних данных
 
+### HttpRequestLimits
+
+Неизменяемые ограничения одного HTTP-запроса: общий временной бюджет и максимальный размер тела ответа в байтах
+
 ### JavaLauncherHttpClient
 
 Реализация `LauncherHttpClient` на основе стандартного Java HTTP Client
 
-Выполняет HTTP GET и возвращает тело ответа
+Выполняет HTTP GET и применяет переданные `HttpRequestLimits` при получении тела ответа
 
 ### HttpManifestClient
 

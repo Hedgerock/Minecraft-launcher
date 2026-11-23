@@ -98,3 +98,4 @@
 | [ADR-0084](records/ADR-0084-architecture-source-inspection-boundary.md) | Граница файловой поддержки архитектурных проверок | architecture tests |
 | [ADR-0085](records/ADR-0085-fake-java-executable-test-support-boundary.md) | Подготовка общего тестового Java executable | test infrastructure |
 | [ADR-0086](records/ADR-0086-bounded-manifest-http-loading.md) | Ограниченная HTTP-загрузка манифеста и подписи | HTTP loading |
+| [ADR-0087](records/ADR-0087-bounded-resource-download-boundary.md) | Ограниченная потоковая загрузка ресурсов | resource download |

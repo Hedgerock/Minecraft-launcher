@@ -43,7 +43,7 @@ public class DefaultDownloadService implements DownloadService {
             Path targetPath = plannedResource.targetPath();
 
             try {
-                fileDownloader.download(resource.url(), trustedRoot, targetPath);
+                fileDownloader.download(resource.url(), trustedRoot, targetPath, resource.size());
             } catch (DownloadException exception) {
                 throw exception.withPath(resource.path());
             }

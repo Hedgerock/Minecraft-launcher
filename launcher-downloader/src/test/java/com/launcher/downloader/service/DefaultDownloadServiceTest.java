@@ -137,7 +137,8 @@ class DefaultDownloadServiceTest {
                             return new RecordingFileDownloader.DownloadRequest(
                                     res.url(),
                                     gameDirectory,
-                                    currentPath
+                                    currentPath,
+                                    res.size()
                             );
                         })
                         .toList(),
@@ -175,7 +176,7 @@ class DefaultDownloadServiceTest {
                 Stream.of(first, second).map((res) -> {
                     Path currentPath = resourcePathResolver.resolve(gameDirectory, res.path());
                     return new RecordingFileDownloader.DownloadRequest(
-                            res.url(), gameDirectory,currentPath
+                            res.url(), gameDirectory,currentPath, res.size()
                     );
                 })
                     .toList(),
@@ -209,7 +210,8 @@ class DefaultDownloadServiceTest {
         RecordingFileDownloader.DownloadRequest expectedRequest = new RecordingFileDownloader.DownloadRequest(
                 resourceEntry.url(),
                 gameDirectory,
-                resolvedPath
+                resolvedPath,
+                resourceEntry.size()
         );
 
         assertEquals(expectedRequest, downloader.getRequests().getFirst());

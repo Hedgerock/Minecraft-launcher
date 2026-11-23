@@ -28,12 +28,23 @@ public class DownloadException extends RuntimeException {
 
     public static DownloadException sizeMismatch(
             String url,
+            Path targetPath
+    ) {
+        return sizeMismatch(url, null, targetPath);
+    }
+
+    public static DownloadException sizeMismatch(
+            String url,
             String path,
             Path targetPath
     ) {
+        String description = path != null
+                ? path
+                : String.valueOf(targetPath);
+
         return new DownloadException(
                 DownloadExceptionReason.SIZE_MISMATCH,
-                "Downloaded resource size mismatch: " + path,
+                "Downloaded resource size mismatch: " + description,
                 url,
                 path,
                 null,
@@ -42,7 +53,7 @@ public class DownloadException extends RuntimeException {
     }
 
     public DownloadException withPath(String path) {
-        return new DownloadException(
+        DownloadException result = new DownloadException(
                 reason,
                 getMessage(),
                 url,
@@ -50,6 +61,12 @@ public class DownloadException extends RuntimeException {
                 getCause(),
                 targetPath
         );
+
+        for (Throwable suppressed : getSuppressed()) {
+            result.addSuppressed(suppressed);
+        }
+
+        return result;
     }
 
     public static DownloadException sizeReadFailed(

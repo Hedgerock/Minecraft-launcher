@@ -16,7 +16,7 @@ public class WritingFileDownloader implements FileDownloader {
     }
 
     @Override
-    public void download(String url, Path trustedRoot, Path targetPath) {
+    public void download(String url, Path trustedRoot, Path targetPath, long expectedSize) {
         try {
             Files.createDirectories(targetPath.getParent());
             Files.write(targetPath, content);

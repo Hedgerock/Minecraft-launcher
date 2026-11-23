@@ -8,10 +8,13 @@ import com.launcher.storage.resolver.LocalWriteTargetResolver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
@@ -25,6 +28,161 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DefaultFileDownloaderTest {
     private static final String TEST_FILE_CONTENT = "Hello test!";
     private static final String FAKE_URL = "not-a-url";
+    private static final long EXPECTED_SIZE = 11L;
+
+    @Test
+    void should_preserve_existing_file_when_source_close_fails(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path trustedRoot = tempDir.resolve("game");
+        Path target = trustedRoot.resolve("mods/test.jar");
+
+        Files.createDirectories(target.getParent());
+        Files.writeString(target, "original");
+
+        IOException closeFailure = new IOException("Failed to close source");
+
+        FileDownloader downloader = new DefaultFileDownloader(
+                url -> new ByteArrayInputStream(new byte[]{1, 2, 3}) {
+                    @Override
+                    public void close() throws IOException {
+                        super.close();
+                        throw closeFailure;
+                    }
+                },
+                new LocalWriteTargetResolver()
+        );
+
+        //when
+        DownloadException failure = assertThrows(
+                DownloadException.class,
+                () -> downloader.download("test-url", trustedRoot, target, 3)
+        );
+
+        //then
+        assertEquals(DownloadExceptionReason.DOWNLOAD_FAILED, failure.getReason());
+        assertSame(closeFailure, failure.getCause());
+        assertEquals("original", Files.readString(target));
+
+        try (Stream<Path> files = Files.list(target.getParent())) {
+            assertEquals(List.of(target), files.toList());
+        }
+    }
+
+    @Test
+    void should_not_open_source_when_expected_size_exceeds_local_limit(
+            @TempDir Path tempDir
+    ) {
+        //given
+        AtomicBoolean sourceOpened = new AtomicBoolean();
+        Path trustedRoot = tempDir.resolve("game");
+        Path target = trustedRoot.resolve("mods/test.jar");
+
+        FileDownloader downloader = new DefaultFileDownloader(
+                url -> {
+                    sourceOpened.set(true);
+                    return new ByteArrayInputStream(new byte[]{1, 2, 3});
+                },
+                new LocalWriteTargetResolver(),
+                new ResourceDownloadLimits(Duration.ofSeconds(1), 2)
+        );
+
+        //when
+        DownloadException failure = assertThrows(
+                DownloadException.class,
+                () -> downloader.download("test-url", trustedRoot, target, 3)
+        );
+
+        //then
+        assertEquals(DownloadExceptionReason.DOWNLOAD_FAILED, failure.getReason());
+        assertInstanceOf(IllegalArgumentException.class, failure.getCause());
+        assertFalse(sourceOpened.get());
+        assertFalse(Files.exists(target));
+    }
+
+    @Test
+    void should_download_empty_resource_when_expected_size_is_zero(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path trustedRoot = tempDir.resolve("game");
+        Path target = trustedRoot.resolve("mods/empty.jar");
+
+        FileDownloader downloader = new DefaultFileDownloader(
+                url -> InputStream.nullInputStream(),
+                new LocalWriteTargetResolver()
+        );
+
+        //when
+        downloader.download("test-url", trustedRoot, target, 0);
+
+        //then
+        assertTrue(Files.isRegularFile(target));
+        assertEquals(0L, Files.size(target));
+    }
+
+    @Test
+    void should_preserve_existing_file_when_source_ends_before_expected_size(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path trustedRoot = tempDir.resolve("game");
+        Path target = trustedRoot.resolve("mods/test.jar");
+
+        Files.createDirectories(target.getParent());
+        Files.writeString(target, "original");
+
+        FileDownloader downloader = new DefaultFileDownloader(
+                url -> new ByteArrayInputStream(new byte[]{1, 2, 3}),
+                new LocalWriteTargetResolver()
+        );
+
+        //when
+        DownloadException failure = assertThrows(
+                DownloadException.class,
+                () -> downloader.download("test-url", trustedRoot, target, 4)
+        );
+
+        //then
+        assertEquals(DownloadExceptionReason.SIZE_MISMATCH, failure.getReason());
+        assertEquals("original", Files.readString(target));
+
+        try (Stream<Path> files = Files.list(target.getParent())) {
+            assertEquals(List.of(target), files.toList());
+        }
+    }
+
+    @Test
+    void should_preserve_existing_file_when_source_exceeds_expected_size(
+            @TempDir Path tempDir
+    ) throws IOException {
+        //given
+        Path trustedRoot = tempDir.resolve("game");
+        Path target = trustedRoot.resolve("mods/test.jar");
+
+        Files.createDirectories(target.getParent());
+        Files.writeString(target, "original");
+
+        FileDownloader downloader = new DefaultFileDownloader(
+                url -> new ByteArrayInputStream(new byte[]{1, 2, 3}),
+                new LocalWriteTargetResolver()
+        );
+
+        //when
+        DownloadException failure = assertThrows(
+                DownloadException.class,
+                () -> downloader.download("test-url", trustedRoot, target, 2)
+        );
+
+        //then
+        assertEquals(DownloadExceptionReason.SIZE_MISMATCH, failure.getReason());
+        assertEquals("original", Files.readString(target));
+
+        try (Stream<Path> files = Files.list(target.getParent())) {
+            assertEquals(List.of(target), files.toList());
+        }
+    }
 
     @Test
     void should_preserve_download_failure_when_temporary_file_cleanup_fails(
@@ -59,7 +217,7 @@ class DefaultFileDownloaderTest {
         //when
         DownloadException exception = assertThrows(
                 DownloadException.class,
-                () -> downloader.download("test-url", trustedRoot, targetPath)
+                () -> downloader.download("test-url", trustedRoot, targetPath, 1024)
         );
 
         //then
@@ -97,7 +255,7 @@ class DefaultFileDownloaderTest {
         );
 
         //when
-        downloader.download(sourceUrl(), trustedRoot, targetPath);
+        downloader.download(sourceUrl(), trustedRoot, targetPath, EXPECTED_SIZE);
 
         //then
         assertEquals(
@@ -136,7 +294,7 @@ class DefaultFileDownloaderTest {
         //when
         DownloadException exception = assertThrows(
                 DownloadException.class,
-                () -> downloader.download("test-uri", trustedRoot, targetPath)
+                () -> downloader.download("test-uri", trustedRoot, targetPath, 1024)
         );
 
         //then
@@ -170,7 +328,7 @@ class DefaultFileDownloaderTest {
         //when
         DownloadException exception = assertThrows(
                 DownloadException.class,
-                () -> downloader.download("test-uri", trustedRoot, targetPath)
+                () -> downloader.download("test-uri", trustedRoot, targetPath, 1024)
         );
 
         //then
@@ -204,7 +362,8 @@ class DefaultFileDownloaderTest {
                 () -> downloader.download(
                         "test-url",
                         new FixedDirectoryProvider(tempDir).directories().game(),
-                        target
+                        target,
+                        EXPECTED_SIZE
                 )
         );
 
@@ -228,7 +387,7 @@ class DefaultFileDownloaderTest {
         //when
         DownloadException exception = assertThrows(
                 DownloadException.class,
-                () -> downloader.download(FAKE_URL, getTrustedRoot(tempDir), targetPath)
+                () -> downloader.download(FAKE_URL, getTrustedRoot(tempDir), targetPath, 1024)
         );
 
         //then
@@ -246,7 +405,7 @@ class DefaultFileDownloaderTest {
         //when
         assertThrows(
                 DownloadException.class,
-                () -> downloader.download(FAKE_URL, getTrustedRoot(tempDir), target)
+                () -> downloader.download(FAKE_URL, getTrustedRoot(tempDir), target, 1024)
         );
 
         //then
@@ -268,7 +427,7 @@ class DefaultFileDownloaderTest {
         //when
         DownloadException exception = assertThrows(
                 DownloadException.class,
-                () -> downloader.download(FAKE_URL, getTrustedRoot(tempDir), target)
+                () -> downloader.download(FAKE_URL, getTrustedRoot(tempDir), target, 1024)
         );
 
         //then
@@ -294,7 +453,7 @@ class DefaultFileDownloaderTest {
         FileDownloader downloader = new DefaultFileDownloader(new LocalWriteTargetResolver());
 
         //when
-        downloader.download(sourceUrl(), getTrustedRoot(tempDir), target);
+        downloader.download(sourceUrl(), getTrustedRoot(tempDir), target, EXPECTED_SIZE);
 
         //then
         assertEquals(
@@ -315,7 +474,8 @@ class DefaultFileDownloaderTest {
         downloader.download(
                 sourceUrl(),
                 getTrustedRoot(tempDir),
-                target
+                target,
+                11
         );
 
         //then
@@ -337,7 +497,8 @@ class DefaultFileDownloaderTest {
         downloader.download(
                 sourceUrl(),
                 getTrustedRoot(tempDir),
-                target
+                target,
+                EXPECTED_SIZE
         );
 
         //then

@@ -4,6 +4,11 @@ import java.nio.file.Path;
 
 public interface FileDownloader {
 
-    void download(String url, Path trustedRoot, Path targetPath);
+    void download(
+            String url,
+            Path trustedRoot,
+            Path targetPath,
+            long expectedSize
+    );
 
 }

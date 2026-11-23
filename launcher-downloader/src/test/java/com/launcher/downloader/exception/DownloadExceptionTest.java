@@ -13,6 +13,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DownloadExceptionTest {
 
     @Test
+    void should_preserve_suppressed_failure_when_resource_path_is_added() {
+        //given
+        IOException cleanupFailure = new IOException("Cleanup failed");
+        Path target = Path.of("game/mods/test.jar");
+
+        DownloadException failure = DownloadException.sizeMismatch(
+                "https://example.org/test.jar",
+                target
+        );
+        failure.addSuppressed(cleanupFailure);
+
+        //when
+        DownloadException result = failure.withPath("mods/test.jar");
+
+        //then
+        assertEquals(DownloadExceptionReason.SIZE_MISMATCH, result.getReason());
+        assertEquals("mods/test.jar", result.getPath().orElseThrow());
+        assertEquals(target, result.getTargetPath().orElseThrow());
+        assertEquals(1, result.getSuppressed().length);
+        assertSame(cleanupFailure, result.getSuppressed()[0]);
+    }
+
+    @Test
     void should_add_resource_path_and_preserve_original_exception_as_cause() {
         //given
         IOException cause = new IOException("download failed");

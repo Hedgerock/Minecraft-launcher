@@ -4,53 +4,55 @@ import com.launcher.downloader.exception.DownloadException;
 import com.launcher.storage.resolver.LocalWriteTargetResolver;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
 import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 
 public class DefaultFileDownloader implements FileDownloader {
-    private final DownloadSource downloadSource;
+    private final ResourceTransfer resourceTransfer;
     private final ResourceDownloadLimits limits;
     private final LocalWriteTargetResolver writeTargetResolver;
 
     public DefaultFileDownloader(LocalWriteTargetResolver writeTargetResolver) {
         this(
-                url -> URI.create(url).toURL().openStream(),
-                    writeTargetResolver
-        );
-    }
-
-    DefaultFileDownloader(
-            DownloadSource downloadSource,
-            LocalWriteTargetResolver writeTargetResolver
-    ) {
-        this(
-                downloadSource,
+                new TechnicalResourceTransfer(new HttpResourceTransfer()),
                 writeTargetResolver,
                 ResourceDownloadLimits.defaults()
         );
     }
 
     DefaultFileDownloader(
-            DownloadSource downloadSource,
+            DownloadSource source,
+            LocalWriteTargetResolver writeTargetResolver
+    ) {
+        this(source, writeTargetResolver, ResourceDownloadLimits.defaults());
+    }
+
+    DefaultFileDownloader(
+            DownloadSource source,
             LocalWriteTargetResolver writeTargetResolver,
             ResourceDownloadLimits limits
     ) {
-        this.downloadSource = Objects.requireNonNull(downloadSource, "downloadSource");
+        this(new StreamResourceTransfer(source), writeTargetResolver, limits);
+    }
+
+    DefaultFileDownloader(
+            ResourceTransfer resourceTransfer,
+            LocalWriteTargetResolver writeTargetResolver,
+            ResourceDownloadLimits limits
+    ) {
+        this.resourceTransfer = Objects.requireNonNull(resourceTransfer, "resourceTransfer");
         this.writeTargetResolver = Objects.requireNonNull(writeTargetResolver, "writeTargetResolver");
         this.limits = Objects.requireNonNull(limits, "limits");
     }
 
     public static FileDownloader forManagedResources(LocalWriteTargetResolver writeTargetResolver) {
         return new DefaultFileDownloader(
-                new ManagedHttpDownloadSource(),
-                writeTargetResolver
+                new ManagedResourceTransfer(),
+                writeTargetResolver,
+                ResourceDownloadLimits.defaults()
         );
     }
 
@@ -77,7 +79,7 @@ public class DefaultFileDownloader implements FileDownloader {
                     ".download"
             );
 
-            copyTempFile(url, temporaryFile, targetPath, expectedSize);
+            resourceTransfer.transfer(url, temporaryFile, targetPath, expectedSize, limits);
 
             if (Files.size(temporaryFile) != expectedSize) {
                 throw DownloadException.sizeMismatch(url, targetPath);
@@ -96,45 +98,6 @@ public class DefaultFileDownloader implements FileDownloader {
             }
 
             throw DownloadException.downloadFailed(url, targetPath, failure);
-        }
-    }
-
-    private void copyTempFile(String url, Path temporaryFile, Path targetPath, long expectedSize) throws IOException {
-        byte[] buffer = new byte[8192];
-        long writtenBytes = 0;
-
-        try (
-                InputStream input = downloadSource.open(url);
-                OutputStream output = Files.newOutputStream(
-                        temporaryFile,
-                        StandardOpenOption.WRITE,
-                        StandardOpenOption.TRUNCATE_EXISTING
-                )
-        ) {
-            while (true) {
-                long remainingBytes = expectedSize - writtenBytes;
-
-                int readLimit = remainingBytes >= buffer.length
-                        ? buffer.length
-                        : (int) remainingBytes + 1;
-
-                int count = input.read(buffer, 0, readLimit);
-
-                if (count == -1) {
-                    break;
-                }
-
-                if (count > remainingBytes) {
-                    throw DownloadException.sizeMismatch(url, targetPath);
-                }
-
-                output.write(buffer, 0, count);
-                writtenBytes += count;
-            }
-
-            if (writtenBytes != expectedSize) {
-                throw DownloadException.sizeMismatch(url, targetPath);
-            }
         }
     }
 

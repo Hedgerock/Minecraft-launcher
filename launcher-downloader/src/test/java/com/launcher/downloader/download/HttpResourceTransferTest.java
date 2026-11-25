@@ -2,6 +2,7 @@ package com.launcher.downloader.download;
 
 import com.launcher.downloader.exception.DownloadException;
 import com.launcher.downloader.exception.DownloadExceptionReason;
+import com.launcher.storage.resolver.LocalWriteTargetResolver;
 import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
@@ -96,6 +98,36 @@ class HttpResourceTransferTest {
     }
 
     @Test
+    void should_write_only_final_response_when_technical_download_is_redirected() throws IOException {
+        //given
+        String path = "/redirected-resource";
+        String destination = "/final-resource";
+        byte[] content = {1, 2, 3};
+
+        Path trustedRoot = tempDir.resolve("game");
+        Path target = trustedRoot.resolve("libraries/library.jar");
+
+        httpServer.createContext(path, exchange -> {
+            try (exchange) {
+                byte[] redirectBody = {9, 9, 9, 9};
+                exchange.getResponseHeaders().set("Location", destination);
+                exchange.sendResponseHeaders(302, redirectBody.length);
+                exchange.getResponseBody().write(redirectBody);
+            }
+        });
+
+        registerResponse(destination, content);
+        FileDownloader downloader = technicalDownloader(DEFAULT_LIMITS);
+
+        //when
+        downloader.download(url(path), trustedRoot, target, content.length);
+
+        //then
+        assertArrayEquals(content, Files.readAllBytes(target));
+        assertOnlyTargetRemains(target);
+    }
+
+    @Test
     void should_timeout_when_response_headers_are_not_sent() throws Exception {
         //given
         String path = "/pending-headers";
@@ -128,6 +160,55 @@ class HttpResourceTransferTest {
             assertFalse(Files.exists(temporaryFile));
         } finally {
             release.countDown();
+        }
+    }
+
+    @Test
+    void should_preserve_existing_target_when_technical_download_times_out() throws Exception {
+        //given
+        String path = "/late-resource";
+        byte[] original = {9, 8};
+        Path trustedRoot = tempDir.resolve("game");
+        Path target = trustedRoot.resolve("libraries/library.jar");
+
+        Files.createDirectories(target.getParent());
+        Files.write(target, original);
+
+        PausedResponse response = registerPausedBody(
+                path, 200, new byte[]{1}, new byte[]{2}
+        );
+
+        FileDownloader downloader = technicalDownloader(DEADLINE_LIMITS);
+
+        try {
+            //when
+            DownloadException failure = assertThrows(
+                    DownloadException.class,
+                    () -> downloader.download(url(path), trustedRoot, target, 2)
+            );
+
+            //then
+            assertEquals(0L, response.started().getCount(), "Server did not send the first chunk");
+
+            assertEquals(DownloadExceptionReason.DOWNLOAD_FAILED, failure.getReason());
+
+            IOException transferFailure = assertInstanceOf(IOException.class, failure.getCause());
+            assertInstanceOf(TimeoutException.class, transferFailure.getCause());
+
+            assertExchangeTerminatedWhileResponsePaused(response);
+            assertArrayEquals(original, Files.readAllBytes(target));
+            assertOnlyTargetRemains(target);
+
+            response.release().countDown();
+            assertTrue(
+                    response.finished().await(5, TimeUnit.SECONDS),
+                    "Server did not finish the response"
+            );
+
+            assertArrayEquals(original, Files.readAllBytes(target));
+            assertOnlyTargetRemains(target);
+        } finally {
+            response.release().countDown();
         }
     }
 
@@ -171,6 +252,43 @@ class HttpResourceTransferTest {
     }
 
     @Test
+    void should_not_restart_deadline_after_technical_redirect() {
+        //given
+        String path = "/slow-redirect";
+        String destination = "/slow-final";
+        CountDownLatch finalRequestReceived = new CountDownLatch(1);
+
+        httpServer.createContext(path, exchange -> {
+            try (exchange) {
+                delayTestResponse();
+                exchange.getResponseHeaders().set("Location", destination);
+                exchange.sendResponseHeaders(302, -1);
+            }
+        });
+
+        httpServer.createContext(destination, exchange -> {
+            try (exchange) {
+                finalRequestReceived.countDown();
+                delayTestResponse();
+                exchange.sendResponseHeaders(200, 1);
+                exchange.getResponseBody().write(1);
+            }
+        });
+
+        //when
+        IOException failure = assertThrows(
+                IOException.class,
+                () -> httpResourceTransfer.transferTechnical(
+                        url(path), temporaryFile, targetPath, 1, DEADLINE_LIMITS
+                )
+        );
+
+        //then
+        assertEquals(0L, finalRequestReceived.getCount(), "Redirect was not followed");
+        assertInstanceOf(TimeoutException.class, failure.getCause());
+    }
+
+    @Test
     void should_reject_chunked_body_before_writing_excess_bytes() throws IOException {
         //given
         String path = "/excess";
@@ -210,10 +328,19 @@ class HttpResourceTransferTest {
                 64 * 1024
         );
 
+        FileDownloader downloader = technicalDownloader(limits);
+
+        byte[] original = {9, 8};
+        Path trustedRoot = tempDir.resolve("game");
+        Path target = trustedRoot.resolve("libraries/library.jar");
+
+        Files.createDirectories(target.getParent());
+        Files.write(target, original);
+
         FutureTask<InterruptedCall> call = new FutureTask<>(() -> {
-            IOException failure = assertThrows(
-                    IOException.class,
-                    () -> transfer(path, 2, limits)
+            DownloadException failure = assertThrows(
+                    DownloadException.class,
+                    () -> downloader.download(url(path), trustedRoot, target, 2)
             );
 
             return new InterruptedCall(
@@ -241,20 +368,13 @@ class HttpResourceTransferTest {
             );
 
             //then
-            assertInstanceOf(
-                    InterruptedException.class,
-                    result.failure().getCause()
-            );
-
-            assertTrue(
-                    result.interrupted(),
-                    "Transfer must restore the interrupted flag"
-            );
-
             assertExchangeTerminatedWhileResponsePaused(response);
 
-            Files.delete(temporaryFile);
-            assertFalse(Files.exists(temporaryFile));
+            assertTrue(result.interrupted(), "Download must restore the interrupt flag");
+            IOException transferFailure = assertInstanceOf(IOException.class, result.failure().getCause());
+            assertInstanceOf(InterruptedException.class, transferFailure.getCause());
+            assertArrayEquals(original, Files.readAllBytes(target));
+            assertOnlyTargetRemains(target);
         } finally {
             response.release().countDown();
             worker.interrupt();
@@ -492,7 +612,8 @@ class HttpResourceTransferTest {
     private PausedResponse registerPausedBody(
             String path,
             int status,
-            byte[] prefix
+            byte[] prefix,
+            byte[] suffix
     ) {
         PausedResponse response = new PausedResponse(
                 new CountDownLatch(1),
@@ -514,12 +635,20 @@ class HttpResourceTransferTest {
                 response.started().countDown();
 
                 awaitResponseRelease(response.release);
+
+                if (suffix.length > 0) {
+                    body.write(suffix);
+                }
             } finally {
                 response.finished().countDown();
             }
         });
 
         return response;
+    }
+
+    private PausedResponse registerPausedBody(String path, int status, byte[] prefix) {
+        return registerPausedBody(path, status, prefix, new byte[0]);
     }
 
     private void assertExchangeTerminatedWhileResponsePaused(
@@ -558,6 +687,29 @@ class HttpResourceTransferTest {
         }
     }
 
+    private static void assertOnlyTargetRemains(Path target) throws IOException {
+        try (var files = Files.list(target.getParent())) {
+            assertEquals(List.of(target), files.toList());
+        }
+    }
+
+    private static void delayTestResponse() throws IOException {
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException failure) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Test response handler interrupted", failure);
+        }
+    }
+
+    private FileDownloader technicalDownloader(ResourceDownloadLimits limits) {
+        return new DefaultFileDownloader(
+                new TechnicalResourceTransfer(httpResourceTransfer),
+                new LocalWriteTargetResolver(),
+                limits
+        );
+    }
+
     private record PausedResponse(
             CountDownLatch started,
             CountDownLatch release,
@@ -565,7 +717,7 @@ class HttpResourceTransferTest {
     ) {}
 
     private record InterruptedCall(
-            IOException failure,
+            DownloadException failure,
             boolean interrupted
     ) {}
 }

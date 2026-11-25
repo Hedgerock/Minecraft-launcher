@@ -4,6 +4,8 @@ import com.launcher.downloader.exception.DownloadException;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -24,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 final class HttpResourceTransfer {
-
+    private static final int MAX_TECHNICAL_REQUESTS = 20;
     private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(5);
 
     private final HttpClient httpClient;
@@ -40,6 +42,12 @@ final class HttpResourceTransfer {
 
     HttpResourceTransfer(HttpClient httpClient) {
         this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
+
+        if (httpClient.followRedirects() != HttpClient.Redirect.NEVER) {
+            throw new IllegalArgumentException(
+                    "HTTP client must not follow redirects automatically"
+            );
+        }
     }
 
     void transfer(
@@ -48,6 +56,27 @@ final class HttpResourceTransfer {
             Path targetPath,
             long expectedSize,
             ResourceDownloadLimits limits
+    ) throws IOException {
+        transfer(url, temporaryFile, targetPath, expectedSize, limits, false);
+    }
+
+    void transferTechnical(
+            String url,
+            Path temporaryFile,
+            Path targetPath,
+            long expectedSize,
+            ResourceDownloadLimits limits
+    ) throws IOException {
+        transfer(url, temporaryFile, targetPath, expectedSize, limits, true);
+    }
+
+    private void transfer(
+            String url,
+            Path temporaryFile,
+            Path targetPath,
+            long expectedSize,
+            ResourceDownloadLimits limits,
+            boolean technical
     ) throws IOException {
         Objects.requireNonNull(url, "url");
         Objects.requireNonNull(temporaryFile, "temporaryFile");
@@ -58,12 +87,9 @@ final class HttpResourceTransfer {
 
         long timeoutNanos = limits.timeout().toNanos();
         long startedAt = System.nanoTime();
-
-        HttpRequest request = HttpRequest.newBuilder(URI.create(url))
-                .GET()
-                .build();
-
-        boolean interrupted = false;
+        URI uri = URI.create(url);
+        boolean followRedirects = technical && HttpURLConnection.getFollowRedirects();
+        int requests = 0;
 
         try (
                 OutputStream output = Files.newOutputStream(
@@ -72,109 +98,172 @@ final class HttpResourceTransfer {
                         StandardOpenOption.TRUNCATE_EXISTING
                 )
         ) {
-            ResourceDownloadBodySubscriber subscriber =
-                    new ResourceDownloadBodySubscriber(
-                            url,
-                            targetPath,
-                            expectedSize,
-                            output
-                    );
+            while (true) {
+                HttpRequest request = HttpRequest.newBuilder(uri).GET().build();
+                requests++;
 
-            CompletableFuture<HttpResponse<Void>> exchange =
-                    httpClient.sendAsync(
+                try {
+                    execute(
                             request,
-                            responseInfo -> {
-                                if (responseInfo.statusCode() != 200) {
-                                    return new RejectedBodySubscriber(
-                                            new IOException(
-                                                    "Unexpected resource HTTP status: "
-                                                            + responseInfo.statusCode()
-                                            )
-                                    );
-                                }
-
-                                return subscriber;
-                            }
+                            response -> selectSubscriber(
+                                    response,
+                                    request.uri(),
+                                    technical,
+                                    followRedirects,
+                                    url,
+                                    targetPath,
+                                    expectedSize,
+                                    output
+                            ),
+                            startedAt,
+                            timeoutNanos
                     );
+                    return;
+                } catch (RedirectResponse redirect) {
+                    if (requests >= MAX_TECHNICAL_REQUESTS) {
+                        throw new IOException("Too many resource HTTP redirects", redirect);
+                    }
 
-            try {
-                long remainingNanos =
-                        timeoutNanos - (System.nanoTime() - startedAt);
-
-                if (remainingNanos <= 0) {
-                    throw new TimeoutException(
-                            "Resource HTTP deadline exceeded"
-                    );
+                    uri = redirect.location;
                 }
-
-                exchange.get(remainingNanos, TimeUnit.NANOSECONDS);
-
-                if (System.nanoTime() - startedAt >= timeoutNanos) {
-                    throw new TimeoutException(
-                            "Resource HTTP deadline exceeded"
-                    );
-                }
-            } catch (TimeoutException failure) {
-                throw cancelExchange(
-                        exchange,
-                        new IOException(
-                                "Resource HTTP transfer timed out",
-                                failure
-                        )
-                );
-            } catch (InterruptedException failure) {
-                interrupted = true;
-
-                throw cancelExchange(
-                        exchange,
-                        new IOException(
-                                "Resource HTTP transfer interrupted",
-                                failure
-                        )
-                );
-            } catch (CancellationException failure) {
-                throw new IOException(
-                        "Resource HTTP transfer cancelled",
-                        failure
-                );
-            } catch (ExecutionException failure) {
-                Throwable cause = failure.getCause();
-
-                if (cause instanceof DownloadException downloadFailure) {
-                    throw downloadFailure;
-                }
-
-                if (cause instanceof IOException ioFailure) {
-                    throw ioFailure;
-                }
-
-                if (cause instanceof Error error) {
-                    throw error;
-                }
-
-                throw new IOException(
-                        "Resource HTTP transfer failed",
-                        cause
-                );
             }
-        } finally {
-            if (interrupted) {
-                Thread.currentThread().interrupt();
+        } catch (TimeoutException failure) {
+            throw new IOException("Resource HTTP transfer timed out", failure);
+        } catch (InterruptedException failure) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Resource HTTP transfer interrupted", failure);
+        }
+    }
+
+    private static HttpResponse.BodySubscriber<Void> selectSubscriber(
+            HttpResponse.ResponseInfo response,
+            URI requestUri,
+            boolean technical,
+            boolean followRedirects,
+            String url,
+            Path targetPath,
+            long expectedSize,
+            OutputStream output
+    ) {
+        int status = response.statusCode();
+
+        if (followRedirects && isTechnicalRedirect(status)) {
+            String location = response.headers().firstValue("Location").orElse(null);
+
+            if (location != null) {
+                try {
+                    URI nextUri = requestUri.resolve(location);
+
+                    if (requestUri.getScheme().equalsIgnoreCase(nextUri.getScheme())) {
+                        if (nextUri.getHost() == null) {
+                            return new RejectedBodySubscriber(
+                                    new ProtocolException("Resource HTTP redirect requires a host")
+                            );
+                        }
+
+                        return new RejectedBodySubscriber(new RedirectResponse(nextUri));
+                    }
+                } catch (IllegalArgumentException failure) {
+                    return new RejectedBodySubscriber(
+                            new IOException("Invalid resource HTTP redirect", failure)
+                    );
+                }
+            }
+        }
+
+        boolean accepted = technical
+                ? status >= 200 && status < 400 && status != 305
+                : status == 200;
+
+        if (!accepted) {
+            return new RejectedBodySubscriber(
+                    new IOException("Unexpected resource HTTP status: " + status)
+            );
+        }
+
+        return new ResourceDownloadBodySubscriber(url, targetPath, expectedSize, output);
+    }
+
+    private void execute(
+            HttpRequest request,
+            HttpResponse.BodyHandler<Void> handler,
+            long startedAt,
+            long timeoutNanos
+    ) throws IOException, TimeoutException, InterruptedException {
+        checkInterrupted();
+        remainingNanos(startedAt, timeoutNanos);
+
+        CompletableFuture<HttpResponse<Void>> exchange = httpClient.sendAsync(request, handler);
+
+        try {
+            exchange.get(remainingNanos(startedAt, timeoutNanos), TimeUnit.NANOSECONDS);
+            checkInterrupted();
+            remainingNanos(startedAt, timeoutNanos);
+        } catch (TimeoutException | InterruptedException failure) {
+            cancelExchange(exchange, failure);
+            throw failure;
+        } catch (CancellationException failure) {
+            throw new IOException("Resource HTTP transfer cancelled", failure);
+        } catch (ExecutionException failure) {
+            Throwable cause = failure.getCause();
+
+            if (cause instanceof DownloadException downloadFailure) {
+                throw downloadFailure;
+            }
+
+            if (cause instanceof IOException ioFailure) {
+                throw ioFailure;
+            }
+
+            if (cause instanceof Error error) {
+                throw error;
+            }
+
+            throw new IOException("Resource HTTP transfer failed", cause);
+        }
+    }
+
+    private static long remainingNanos(long startedAt, long timeoutNanos)
+            throws TimeoutException {
+        long remaining = timeoutNanos - (System.nanoTime() - startedAt);
+
+        if (remaining <= 0) {
+            throw new TimeoutException("Resource HTTP deadline exceeded");
+        }
+
+        return remaining;
+    }
+
+    private static void checkInterrupted() throws InterruptedException {
+        if (Thread.interrupted()) {
+            throw new InterruptedException("Resource HTTP transfer interrupted");
+        }
+    }
+
+    private static boolean isTechnicalRedirect(int status) {
+        return switch (status) {
+            case 300, 301, 302, 303, 307 -> true;
+            default -> false;
+        };
+    }
+
+    private static void cancelExchange(CompletableFuture<?> exchange, Throwable failure) {
+        try {
+            exchange.cancel(true);
+        } catch (RuntimeException cancellationFailure) {
+            if (failure != cancellationFailure) {
+                failure.addSuppressed(cancellationFailure);
             }
         }
     }
 
-    private static IOException cancelExchange(
-            CompletableFuture<?> exchange,
-            IOException failure
-    ) {
-        try {
-            exchange.cancel(true);
-        } catch (RuntimeException cancellationFailure) {
-            failure.addSuppressed(cancellationFailure);
-        }
+    private static final class RedirectResponse extends IOException {
+        private final URI location;
 
-        return failure;
+        private RedirectResponse(URI location) {
+            super("Resource HTTP redirect");
+            this.location = location;
+        }
     }
 
     private static final class RejectedBodySubscriber

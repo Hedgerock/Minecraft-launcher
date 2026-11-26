@@ -9,6 +9,7 @@ dependencies {
 
     testImplementation(project(":launcher-architecture-test-support"))
     testImplementation(project(":launcher-process-test-support"))
+    testImplementation(project(":launcher-http-test-support"))
 }
 
 application {

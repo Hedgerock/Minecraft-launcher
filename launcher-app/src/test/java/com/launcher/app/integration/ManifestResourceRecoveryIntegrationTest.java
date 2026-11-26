@@ -9,7 +9,7 @@ import com.launcher.app.service.LauncherServices;
 import com.launcher.app.service.factory.DefaultLauncherServiceFactory;
 import com.launcher.app.storage.directory.LocalDirectoryProvider;
 import com.launcher.app.support.JsonProvider;
-import com.launcher.app.support.LocalServerStarter;
+import com.launcher.app.support.LauncherHttpTestRoutes;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.download.DownloadPlanBuilder;
 import com.launcher.core.download.model.DownloadPlan;
@@ -23,12 +23,11 @@ import com.launcher.model.manifest.Manifest;
 import com.launcher.model.manifest.ManifestLoadResult;
 import com.launcher.model.manifest.ResourceEntry;
 import com.launcher.storage.file.LocalFileStorage;
-import com.sun.net.httpserver.HttpServer;
+import com.launcher.testing.http.LocalHttpServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -46,48 +45,41 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ManifestResourceRecoveryIntegrationTest {
-    private final LocalServerStarter localServerStarter = new LocalServerStarter();
+    private final LauncherHttpTestRoutes httpRoutes = new LauncherHttpTestRoutes();
 
     @Test
     void should_replace_corrupted_asset_index(
             @TempDir Path tempDir
     ) throws IOException, NoSuchAlgorithmException {
         //given
-        HttpServer server = HttpServer.create(
-                new InetSocketAddress(0),
-                0
-        );
-
-        String baseUrl = "http://localhost:" + server.getAddress().getPort();
-        String indexUrl = baseUrl + "/assets/indexes/17.json";
-
         byte[] indexContent = "{\"objects\": {}}".getBytes(StandardCharsets.UTF_8);
         String sha256 = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(indexContent));
-
         AtomicInteger indexRequests = new AtomicInteger();
 
-        localServerStarter.createJsonContext(
-                server,
-                "/manifest.json",
-                JsonProvider.getManifestJsonWithDownloadableAssetIndex(
-                        indexUrl,
-                        sha256,
-                        indexContent.length
-                )
-        );
+        try (LocalHttpServer server = LocalHttpServer.bind()) {
+            String indexUrl = server.uri("/assets/indexes/17.json").toString();
+            httpRoutes.createJsonContext(
+                    server,
+                    "/manifest.json",
+                    JsonProvider.getManifestJsonWithDownloadableAssetIndex(
+                            indexUrl,
+                            sha256,
+                            indexContent.length
+                    )
+            );
 
-        localServerStarter.createOctetStreamContext(
-                server,
-                "/assets/indexes/17.json",
-                indexRequests,
-                indexContent
-        );
+            httpRoutes.createOctetStreamContext(
+                    server,
+                    "/assets/indexes/17.json",
+                    indexRequests,
+                    indexContent
+            );
 
-        server.start();
+            server.start();
 
-        try {
+            URI manifestUri = server.uri("/manifest.json");
             LauncherConfiguration configuration = new LauncherConfiguration(
-                    URI.create(baseUrl + "/manifest.json"),
+                    manifestUri,
                     tempDir.resolve("launch-directory")
             );
 
@@ -140,8 +132,6 @@ public class ManifestResourceRecoveryIntegrationTest {
                     VerificationStatus.VALID,
                     finalPlan.resources().getFirst().status()
             );
-        } finally {
-            server.stop(0);
         }
     }
 
@@ -150,41 +140,36 @@ public class ManifestResourceRecoveryIntegrationTest {
             @TempDir Path tempDir
     ) throws IOException, NoSuchAlgorithmException {
         //given
-        HttpServer server = HttpServer.create(
-                new InetSocketAddress(0),
-                0
-        );
-
-        String baseUrl = "http://localhost:" + server.getAddress().getPort();
-        String indexUrl = baseUrl + "/assets/indexes/17.json";
-
         byte[] indexContent = "{\"objects\": {}}".getBytes(StandardCharsets.UTF_8);
         String sha256 = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(indexContent));
 
         AtomicInteger indexRequests = new AtomicInteger();
 
-        localServerStarter.createJsonContext(
-                server,
-                "/manifest.json",
-                JsonProvider.getManifestJsonWithDownloadableAssetIndex(
-                        indexUrl,
-                        sha256,
-                        indexContent.length
-                )
-        );
+        try (LocalHttpServer server = LocalHttpServer.bind()) {
+            String indexUrl = server.uri("/assets/indexes/17.json").toString();
 
-        localServerStarter.createOctetStreamContext(
-                server,
-                "/assets/indexes/17.json",
-                indexRequests,
-                indexContent
-        );
+            httpRoutes.createJsonContext(
+                    server,
+                    "/manifest.json",
+                    JsonProvider.getManifestJsonWithDownloadableAssetIndex(
+                            indexUrl,
+                            sha256,
+                            indexContent.length
+                    )
+            );
 
-        server.start();
+            httpRoutes.createOctetStreamContext(
+                    server,
+                    "/assets/indexes/17.json",
+                    indexRequests,
+                    indexContent
+            );
 
-        try {
+            server.start();
+
+            URI manifestUri = server.uri("/manifest.json");
             LauncherConfiguration configuration = new LauncherConfiguration(
-                    URI.create(baseUrl + "/manifest.json"),
+                    manifestUri,
                     tempDir.resolve("launch-directory")
             );
 
@@ -245,8 +230,6 @@ public class ManifestResourceRecoveryIntegrationTest {
                     VerificationStatus.VALID,
                     finalPlan.resources().getFirst().status()
             );
-        } finally {
-            server.stop(0);
         }
     }
 
@@ -254,31 +237,26 @@ public class ManifestResourceRecoveryIntegrationTest {
     void should_reject_entire_download_plan_when_resource_targets_conflict(@TempDir Path tempDir)
             throws NoSuchAlgorithmException, IOException {
         //given
-        HttpServer server = HttpServer.create(new InetSocketAddress(0), 0);
-
-        String baseUrl = "http://localhost:" + server.getAddress().getPort();
-
         AtomicInteger resourceRequests = new AtomicInteger();
-
         byte[] content = "example-resource".getBytes(StandardCharsets.UTF_8);
-
         String sha256 = HexFormat.of().formatHex(
                 MessageDigest.getInstance("SHA-256").digest(content));
 
-        String resourceUrl = baseUrl + "/files/mods/example.jar";
+        try (LocalHttpServer server = LocalHttpServer.bind()) {
+            String resourceUrl = server.uri("/files/mods/example.jar").toString();
 
-        localServerStarter.createOctetStreamContext(
-                server,
-                "/files/mods/example.jar",
-                resourceRequests,
-                content
-        );
+            httpRoutes.createOctetStreamContext(
+                    server,
+                    "/files/mods/example.jar",
+                    resourceRequests,
+                    content
+            );
 
-        server.start();
+            server.start();
 
-        try {
+            URI manifestUri = server.uri("/manifest.json");
             LauncherConfiguration configuration = new LauncherConfiguration(
-                    URI.create(baseUrl + "/manifest.json"),
+                    manifestUri,
                     tempDir.resolve("launch-directory")
             );
 
@@ -355,8 +333,6 @@ public class ManifestResourceRecoveryIntegrationTest {
                     conflictingResource,
                     exception.getConflictingResource()
             );
-        } finally {
-            server.stop(0);
         }
     }
 
@@ -365,39 +341,35 @@ public class ManifestResourceRecoveryIntegrationTest {
             @TempDir Path tempDir
     ) throws IOException, NoSuchAlgorithmException {
         //given
-        HttpServer server = HttpServer.create(new InetSocketAddress(0), 0);
-
-        String baseUrl = "http://localhost:" + server.getAddress().getPort();
-
         AtomicInteger resourceRequests = new AtomicInteger();
-
         byte[] content = "example-resource".getBytes(StandardCharsets.UTF_8);
-
         String sha256 = HexFormat.of().formatHex(
                 MessageDigest.getInstance("SHA-256").digest(content));
 
-        String resourceUrl = baseUrl + "/files/mods/example.jar";
+        try (LocalHttpServer server = LocalHttpServer.bind()) {
+            String resourceUrl = server.uri("/files/mods/example.jar").toString();
 
-        String manifestJson = JsonProvider.getManifestJsonWithSameFileAndAsset(
-                resourceUrl,
-                sha256,
-                content.length
-        );
+            String manifestJson = JsonProvider.getManifestJsonWithSameFileAndAsset(
+                    resourceUrl,
+                    sha256,
+                    content.length
+            );
 
-        localServerStarter.createOctetStreamContext(
-                server,
-                "/files/mods/example.jar",
-                resourceRequests,
-                content
-        );
+            httpRoutes.createOctetStreamContext(
+                    server,
+                    "/files/mods/example.jar",
+                    resourceRequests,
+                    content
+            );
 
-        localServerStarter.createJsonContext(server, "/manifest.json", manifestJson);
+            httpRoutes.createJsonContext(server, "/manifest.json", manifestJson);
 
-        server.start();
+            server.start();
 
-        try {
+            URI manifestUri = server.uri("/manifest.json");
+
             LauncherConfiguration configuration = new LauncherConfiguration(
-                    URI.create(baseUrl + "/manifest.json"),
+                    manifestUri,
                     tempDir.resolve("launch-directory")
             );
 
@@ -443,8 +415,6 @@ public class ManifestResourceRecoveryIntegrationTest {
                     VerificationStatus.VALID,
                     finalPlan.resources().getFirst().status()
             );
-        } finally {
-            server.stop(0);
         }
     }
 

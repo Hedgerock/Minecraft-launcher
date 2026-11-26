@@ -10,20 +10,19 @@ import com.launcher.app.presentation.completion.PresentationLaunchCompletion;
 import com.launcher.app.presentation.phase.PresentationLaunchPhase;
 import com.launcher.app.storage.directory.LocalDirectoryProvider;
 import com.launcher.app.support.JsonProvider;
-import com.launcher.app.support.LocalServerStarter;
+import com.launcher.app.support.LauncherHttpTestRoutes;
 import com.launcher.core.LaunchResult;
 import com.launcher.core.LauncherEngine;
 import com.launcher.core.configuration.LauncherConfiguration;
 import com.launcher.core.state.LauncherState;
 import com.launcher.model.manifest.ResourceEntry;
 import com.launcher.model.manifest.assets.AssetIndexMetadata;
+import com.launcher.testing.http.LocalHttpServer;
 import com.launcher.testing.process.FakeJavaExecutableFixture;
-import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -48,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LauncherLifecycleIntegrationTest {
-    private final LocalServerStarter localServerStarter = new LocalServerStarter();
+    private final LauncherHttpTestRoutes httpRoutes = new LauncherHttpTestRoutes();
 
     @Test
     void should_launch_with_downloaded_client_asset_index_and_asset_object(
@@ -78,67 +77,65 @@ class LauncherLifecycleIntegrationTest {
                 """.formatted(objectSha1, objectBytes.length)
                 .getBytes(StandardCharsets.UTF_8);
 
-        HttpServer server = HttpServer.create(
-                new InetSocketAddress(0),
-                0
-        );
+        try (LocalHttpServer server = LocalHttpServer.bind()) {
+            String clientUrl = server.uri("/client.jar").toString();
+            String indexUrl = server.uri("/assets/indexes/17.json").toString();
+            String objectUrl = server.uri("/" + objectRelativePath).toString();
+            URI manifestUri = server.uri("/manifest.json");
 
-        String baseUrl = "http://localhost:" + server.getAddress().getPort();
+            ResourceEntry client = new ResourceEntry(
+                    "versions/1.21.1/client.jar",
+                    sha256(clientBytes),
+                    clientBytes.length,
+                    clientUrl
+            );
 
-        ResourceEntry client = new ResourceEntry(
-                "versions/1.21.1/client.jar",
-                sha256(clientBytes),
-                clientBytes.length,
-                baseUrl + "/client.jar"
-        );
+            AssetIndexMetadata index = new AssetIndexMetadata(
+                    "17",
+                    "assets/indexes/17.json",
+                    sha256(indexBytes),
+                    indexBytes.length,
+                    indexUrl
+            );
 
-        AssetIndexMetadata index = new AssetIndexMetadata(
-                "17",
-                "assets/indexes/17.json",
-                sha256(indexBytes),
-                indexBytes.length,
-                baseUrl + "/assets/indexes/17.json"
-        );
+            ResourceEntry assetObject = new ResourceEntry(
+                    objectRelativePath,
+                    sha256(objectBytes),
+                    objectBytes.length,
+                    objectUrl
+            );
 
-        ResourceEntry assetObject = new ResourceEntry(
-                objectRelativePath,
-                sha256(objectBytes),
-                objectBytes.length,
-                baseUrl + "/" + objectRelativePath
-        );
+            AtomicInteger clientRequests = new AtomicInteger();
+            AtomicInteger indexRequests = new AtomicInteger();
+            AtomicInteger objectRequests = new AtomicInteger();
 
-        AtomicInteger clientRequests = new AtomicInteger();
-        AtomicInteger indexRequests = new AtomicInteger();
-        AtomicInteger objectRequests = new AtomicInteger();
+            String manifestJson = JsonProvider.getManifestJsonWithDownloadableClientAndAssets(
+                    client,
+                    index,
+                    assetObject
+            );
 
-        String manifestJson = JsonProvider.getManifestJsonWithDownloadableClientAndAssets(
-                client,
-                index,
-                assetObject
-        );
+            httpRoutes.createJsonContext(server, "/manifest.json", manifestJson);
+            httpRoutes.createOctetStreamContext(
+                    server,
+                    "/client.jar",
+                    clientRequests,
+                    clientBytes
+            );
+            httpRoutes.createOctetStreamContext(
+                    server,
+                    "/assets/indexes/17.json",
+                    indexRequests,
+                    indexBytes
+            );
+            httpRoutes.createOctetStreamContext(
+                    server,
+                    "/" + objectRelativePath,
+                    objectRequests,
+                    objectBytes
+            );
+            server.start();
 
-        localServerStarter.createJsonContext(server, "/manifest.json", manifestJson);
-        localServerStarter.createOctetStreamContext(
-                server,
-                "/client.jar",
-                clientRequests,
-                clientBytes
-        );
-        localServerStarter.createOctetStreamContext(
-                server,
-                "/assets/indexes/17.json",
-                indexRequests,
-                indexBytes
-        );
-        localServerStarter.createOctetStreamContext(
-                server,
-                "/" + objectRelativePath,
-                objectRequests,
-                objectBytes
-        );
-        server.start();
-
-        try {
             Path gameStartedMarker = tempDir.resolve("gamestarted.marker");
             Path executable = FakeJavaExecutableFixture.create(
                     tempDir,
@@ -146,7 +143,7 @@ class LauncherLifecycleIntegrationTest {
             );
 
             LauncherConfiguration configuration = new LauncherConfiguration(
-                    URI.create(baseUrl + "/manifest.json"),
+                    manifestUri,
                     tempDir.resolve("launcher-directory"),
                     Optional.of(executable.toString())
             );
@@ -188,8 +185,6 @@ class LauncherLifecycleIntegrationTest {
             assertEquals(1, objectRequests.get());
 
             waitUntilExists(gameStartedMarker);
-        } finally {
-            server.stop(0);
         }
     }
 
@@ -201,36 +196,34 @@ class LauncherLifecycleIntegrationTest {
         String clientPath = "versions/1.21.1/client.jar";
         byte[] clientBytes = "test-client-artifact".getBytes(StandardCharsets.UTF_8);
         String sha256 = sha256(clientBytes);
-        HttpServer server = HttpServer.create(
-                new InetSocketAddress(0),
-                0
-        );
-        String baseUrl = "http://localhost:" + server.getAddress().getPort();
         AtomicInteger resourceRequests = new AtomicInteger();
 
-        String manifestJson = JsonProvider.getManifestJsonWithDownloadableClientArtifact(
-                clientPath,
-                sha256,
-                clientBytes.length,
-                baseUrl + "/client.jar"
-        );
+        try (LocalHttpServer server = LocalHttpServer.bind()) {
+            String clientUrl = server.uri("/client.jar").toString();
+            String manifestJson = JsonProvider.getManifestJsonWithDownloadableClientArtifact(
+                    clientPath,
+                    sha256,
+                    clientBytes.length,
+                    clientUrl
+            );
 
-        localServerStarter.createJsonContext(server, "/manifest.json", manifestJson);
-        localServerStarter.createOctetStreamContext(
-                server,
-                "/client.jar",
-                resourceRequests,
-                clientBytes
-        );
+            httpRoutes.createJsonContext(server, "/manifest.json", manifestJson);
+            httpRoutes.createOctetStreamContext(
+                    server,
+                    "/client.jar",
+                    resourceRequests,
+                    clientBytes
+            );
 
-        server.start();
+            server.start();
 
-        try {
             Path gameStartedMarker = tempDir.resolve("gamestarted.marker");
             Path executable = FakeJavaExecutableFixture.create(tempDir, gameStartedMarker);
 
+            URI manifestUri = server.uri("/manifest.json");
+
             LauncherConfiguration configuration = new LauncherConfiguration(
-                    URI.create(baseUrl + "/manifest.json"),
+                    manifestUri,
                     tempDir.resolve("launcher-directory"),
                     Optional.of(executable.toString())
             );
@@ -259,8 +252,6 @@ class LauncherLifecycleIntegrationTest {
             assertArrayEquals(clientBytes, Files.readAllBytes(downloadedClient));
             assertEquals(1, resourceRequests.get());
             waitUntilExists(gameStartedMarker);
-        } finally {
-            server.stop(0);
         }
     }
 
@@ -269,11 +260,12 @@ class LauncherLifecycleIntegrationTest {
             throws IOException, InterruptedException {
         //given
         String path = "/manifest.json";
-        HttpServer server = localServerStarter.getServer(JsonProvider.MANIFEST_JSON, path);
-        server.start();
 
-        try {
-            URI manifestUri = URI.create("http://localhost:" + server.getAddress().getPort() + path);
+        try (LocalHttpServer server = LocalHttpServer.bind()) {
+            httpRoutes.createJsonContext(server, path, JsonProvider.MANIFEST_JSON);
+            server.start();
+
+            URI manifestUri = server.uri(path);
             Path gameStartedMarker = tempDir.resolve("gamestarted.marker");
             Path executable = FakeJavaExecutableFixture.create(tempDir, gameStartedMarker);
 
@@ -344,8 +336,6 @@ class LauncherLifecycleIntegrationTest {
 
                 waitUntilExists(gameStartedMarker);
             }
-        } finally {
-            server.stop(0);
         }
     }
 
@@ -355,11 +345,12 @@ class LauncherLifecycleIntegrationTest {
     ) throws Exception {
         //given
         String path = "/manifest.json";
-        HttpServer server = localServerStarter.getServer(JsonProvider.MANIFEST_JSON, path);
-        server.start();
 
-        try {
-            URI manifestUri = URI.create("http://localhost:" + server.getAddress().getPort() + path);
+        try (LocalHttpServer server = LocalHttpServer.bind()) {
+            httpRoutes.createJsonContext(server, path, JsonProvider.MANIFEST_JSON);
+            server.start();
+
+            URI manifestUri = server.uri(path);
             Path gameStartedMarker = tempDir.resolve("gamestarted.marker");
             Path executable = FakeJavaExecutableFixture.create(tempDir, gameStartedMarker);
 
@@ -386,10 +377,7 @@ class LauncherLifecycleIntegrationTest {
             assertTrue(result.success());
             assertEquals(LauncherState.RUNNING, result.finalState());
             waitUntilExists(gameStartedMarker);
-        } finally {
-            server.stop(0);
         }
-
     }
 
     private List<PresentationLaunchPhase> withoutAdjacentDuplicates(

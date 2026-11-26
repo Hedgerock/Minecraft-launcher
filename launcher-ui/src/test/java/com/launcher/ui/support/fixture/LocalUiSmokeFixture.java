@@ -1,11 +1,10 @@
 package com.launcher.ui.support.fixture;
 
+import com.launcher.testing.http.LocalHttpServer;
 import com.launcher.testing.process.FakeJavaExecutableFixture;
-import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,7 +17,7 @@ public final class LocalUiSmokeFixture implements AutoCloseable {
     private final URI manifestUri;
     private final Path launcherDirectory;
     private final Path gameStartedMarker;
-    private final HttpServer httpServer;
+    private final LocalHttpServer httpServer;
 
     private final CountDownLatch manifestRequested = new CountDownLatch(1);
     private final CountDownLatch manifestReleased = new CountDownLatch(1);
@@ -31,17 +30,19 @@ public final class LocalUiSmokeFixture implements AutoCloseable {
         String manifest = getManifestJson(executable.toAbsolutePath().toString());
         String path = "/manifest.json";
 
-        httpServer = HttpServer.create(
-                new InetSocketAddress("127.0.0.1", 0),
-                0
-        );
+        httpServer = LocalHttpServer.bind();
 
-        createJsonContext(httpServer, path, manifest);
-        httpServer.start();
-
-        manifestUri = URI.create(
-                "http://127.0.0.1:" + httpServer.getAddress().getPort() + path
-        );
+        boolean started = false;
+        try {
+            createJsonContext(httpServer, path, manifest);
+            manifestUri = httpServer.uri(path);
+            httpServer.start();
+            started = true;
+        } finally {
+            if (!started) {
+                close();
+            }
+        }
     }
 
     public static LocalUiSmokeFixture start(Path tempDir) throws IOException {
@@ -81,7 +82,7 @@ public final class LocalUiSmokeFixture implements AutoCloseable {
     @Override
     public void close() {
         releaseManifest();
-        httpServer.stop(0);
+        httpServer.close();
     }
 
     private static String getManifestJson(String javaExecutable) {
@@ -115,7 +116,7 @@ public final class LocalUiSmokeFixture implements AutoCloseable {
         return template.formatted("[]", escapedExecutable, "[]");
     }
 
-    private void createJsonContext(HttpServer server, String path, String json) {
+    private void createJsonContext(LocalHttpServer server, String path, String json) {
         server.createContext(path, exchange -> {
             try (exchange) {
                 manifestRequested.countDown();

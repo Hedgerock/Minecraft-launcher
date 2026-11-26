@@ -6,6 +6,13 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(downloader): add resource download limits`
+> `feat(downloader): validate resource size before target replacement`
+> `feat(downloader): add streaming resource body subscriber`
+> `feat(downloader): add bounded HTTP resource transfer`
+> `feat(downloader): enforce resource download limits`
+
 ---
 
 ## Контекст

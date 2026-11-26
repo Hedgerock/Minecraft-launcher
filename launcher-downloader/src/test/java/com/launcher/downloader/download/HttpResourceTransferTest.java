@@ -3,7 +3,8 @@ package com.launcher.downloader.download;
 import com.launcher.downloader.exception.DownloadException;
 import com.launcher.downloader.exception.DownloadExceptionReason;
 import com.launcher.storage.resolver.LocalWriteTargetResolver;
-import com.sun.net.httpserver.HttpServer;
+import com.launcher.testing.http.LocalHttpServer;
+import com.launcher.testing.http.PausedHttpResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +12,6 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,6 +38,8 @@ class HttpResourceTransferTest {
             64 * 1024
     );
 
+    private static final Duration PAUSED_RESPONSE_TIMEOUT = Duration.ofSeconds(30);
+
     private static final ResourceDownloadLimits DEADLINE_LIMITS = new ResourceDownloadLimits(
             Duration.ofSeconds(5),
             64 * 1024
@@ -47,7 +48,7 @@ class HttpResourceTransferTest {
     @TempDir
     Path tempDir;
 
-    private HttpServer httpServer;
+    private LocalHttpServer httpServer;
     private HttpClient httpClient;
     private HttpResourceTransfer httpResourceTransfer;
 
@@ -71,11 +72,7 @@ class HttpResourceTransferTest {
 
         httpResourceTransfer = new HttpResourceTransfer(httpClient);
 
-        httpServer = HttpServer.create(
-                new InetSocketAddress("127.0.0.1", 0),
-                0
-        );
-
+        httpServer = LocalHttpServer.bind();
         httpServer.start();
     }
 
@@ -83,7 +80,7 @@ class HttpResourceTransferTest {
     void tearDown() throws InterruptedException {
         try {
             if (httpServer != null) {
-                httpServer.stop(0);
+                httpServer.close();
             }
         } finally {
             if (httpClient != null) {
@@ -174,8 +171,8 @@ class HttpResourceTransferTest {
         Files.createDirectories(target.getParent());
         Files.write(target, original);
 
-        PausedResponse response = registerPausedBody(
-                path, 200, new byte[]{1}, new byte[]{2}
+        PausedHttpResponse response = httpServer.registerPausedBody(
+                path, 200, new byte[]{1}, new byte[]{2}, PAUSED_RESPONSE_TIMEOUT
         );
 
         FileDownloader downloader = technicalDownloader(DEADLINE_LIMITS);
@@ -188,7 +185,10 @@ class HttpResourceTransferTest {
             );
 
             //then
-            assertEquals(0L, response.started().getCount(), "Server did not send the first chunk");
+            assertTrue(
+                    response.awaitStarted(Duration.ofSeconds(5)),
+                    "Server did not send the first body chunk"
+            );
 
             assertEquals(DownloadExceptionReason.DOWNLOAD_FAILED, failure.getReason());
 
@@ -199,16 +199,16 @@ class HttpResourceTransferTest {
             assertArrayEquals(original, Files.readAllBytes(target));
             assertOnlyTargetRemains(target);
 
-            response.release().countDown();
+            response.release();
             assertTrue(
-                    response.finished().await(5, TimeUnit.SECONDS),
+                    response.awaitFinished(Duration.ofSeconds(5)),
                     "Server did not finish the response"
             );
 
             assertArrayEquals(original, Files.readAllBytes(target));
             assertOnlyTargetRemains(target);
         } finally {
-            response.release().countDown();
+            response.release();
         }
     }
 
@@ -317,10 +317,8 @@ class HttpResourceTransferTest {
         //given
         String path = "/interrupted";
 
-        PausedResponse response = registerPausedBody(
-                path,
-                200,
-                new byte[]{1}
+        PausedHttpResponse response = httpServer.registerPausedBody(
+                path, 200, new byte[]{1}, new byte[]{2}, PAUSED_RESPONSE_TIMEOUT
         );
 
         ResourceDownloadLimits limits = new ResourceDownloadLimits(
@@ -356,7 +354,7 @@ class HttpResourceTransferTest {
 
         try {
             assertTrue(
-                    response.started().await(5, TimeUnit.SECONDS),
+                    response.awaitStarted(Duration.ofSeconds(5)),
                     "Server did not send the first body chunk"
             );
 
@@ -376,7 +374,7 @@ class HttpResourceTransferTest {
             assertArrayEquals(original, Files.readAllBytes(target));
             assertOnlyTargetRemains(target);
         } finally {
-            response.release().countDown();
+            response.release();
             worker.interrupt();
             worker.join(5_000);
         }
@@ -432,10 +430,8 @@ class HttpResourceTransferTest {
         //given
         String path = "/pending-body";
 
-        PausedResponse response = registerPausedBody(
-                path,
-                200,
-                new byte[]{1}
+        PausedHttpResponse response = httpServer.registerPausedBody(
+                path, 200, new byte[]{1}, new byte[]{2}, PAUSED_RESPONSE_TIMEOUT
         );
 
         try {
@@ -447,7 +443,7 @@ class HttpResourceTransferTest {
 
             //then
             assertTrue(
-                    response.started().await(5, TimeUnit.SECONDS),
+                    response.awaitStarted(Duration.ofSeconds(5)),
                     "Server did not send the first body chunk"
             );
 
@@ -461,7 +457,7 @@ class HttpResourceTransferTest {
             Files.delete(temporaryFile);
             assertFalse(Files.exists(temporaryFile));
         } finally {
-            response.release.countDown();
+            response.release();
         }
     }
 
@@ -470,10 +466,8 @@ class HttpResourceTransferTest {
         //given
         String path = "/missing";
 
-        PausedResponse response = registerPausedBody(
-                path,
-                404,
-                new byte[0]
+        PausedHttpResponse response = httpServer.registerPausedBody(
+                path, 404, new byte[0], PAUSED_RESPONSE_TIMEOUT
         );
 
         try {
@@ -491,7 +485,7 @@ class HttpResourceTransferTest {
 
             assertEquals(0L, Files.size(temporaryFile));
         } finally {
-            response.release().countDown();
+            response.release();
         }
     }
 
@@ -579,9 +573,7 @@ class HttpResourceTransferTest {
     }
 
     private String url(String path) {
-        return "http://127.0.0.1:"
-                + httpServer.getAddress().getPort()
-                + path;
+        return httpServer.uri(path).toString();
     }
 
     private void registerResponse(String path, byte[] content) {
@@ -609,50 +601,8 @@ class HttpResourceTransferTest {
         });
     }
 
-    private PausedResponse registerPausedBody(
-            String path,
-            int status,
-            byte[] prefix,
-            byte[] suffix
-    ) {
-        PausedResponse response = new PausedResponse(
-                new CountDownLatch(1),
-                new CountDownLatch(1),
-                new CountDownLatch(1)
-        );
-
-        httpServer.createContext(path, exchange -> {
-            try (exchange) {
-                exchange.sendResponseHeaders(status, 0);
-
-                OutputStream body = exchange.getResponseBody();
-
-                if (prefix.length > 0) {
-                    body.write(prefix);
-                }
-
-                body.flush();
-                response.started().countDown();
-
-                awaitResponseRelease(response.release);
-
-                if (suffix.length > 0) {
-                    body.write(suffix);
-                }
-            } finally {
-                response.finished().countDown();
-            }
-        });
-
-        return response;
-    }
-
-    private PausedResponse registerPausedBody(String path, int status, byte[] prefix) {
-        return registerPausedBody(path, status, prefix, new byte[0]);
-    }
-
     private void assertExchangeTerminatedWhileResponsePaused(
-            PausedResponse response
+            PausedHttpResponse response
     ) throws InterruptedException {
         httpClient.shutdown();
 
@@ -660,10 +610,8 @@ class HttpResourceTransferTest {
                 httpClient.awaitTermination(Duration.ofSeconds(5)),
                 "HTTP exchange must terminate while the response is paused"
         );
-
-        assertEquals(
-                1L,
-                response.finished().getCount(),
+        assertFalse(
+                response.awaitFinished(Duration.ZERO),
                 "Server response must still be paused"
         );
     }
@@ -709,12 +657,6 @@ class HttpResourceTransferTest {
                 limits
         );
     }
-
-    private record PausedResponse(
-            CountDownLatch started,
-            CountDownLatch release,
-            CountDownLatch finished
-    ) {}
 
     private record InterruptedCall(
             DownloadException failure,

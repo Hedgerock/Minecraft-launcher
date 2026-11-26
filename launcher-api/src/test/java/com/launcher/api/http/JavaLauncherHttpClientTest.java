@@ -1,14 +1,13 @@
 package com.launcher.api.http;
 
 import com.launcher.api.http.exception.HttpRequestException;
-import com.sun.net.httpserver.HttpServer;
+import com.launcher.testing.http.LocalHttpServer;
+import com.launcher.testing.http.PausedHttpResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +19,7 @@ import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,18 +32,14 @@ class JavaLauncherHttpClientTest {
             new HttpRequestLimits(Duration.ofSeconds(3), 1024);
 
     private JavaLauncherHttpClient javaLauncherHttpClient;
-    private HttpServer httpServer;
+    private LocalHttpServer httpServer;
     private static final String EXPECTED_BODY = """
             {"version": "1.12/2"}
             """;
 
     @BeforeEach
     void setUp() throws IOException {
-        httpServer = HttpServer.create(
-                new InetSocketAddress("127.0.0.1", 0),
-                0
-        );
-
+        httpServer = LocalHttpServer.bind();
         httpServer.start();
 
         javaLauncherHttpClient = new JavaLauncherHttpClient();
@@ -51,18 +47,21 @@ class JavaLauncherHttpClientTest {
 
     @AfterEach
     void tearDown() {
-        httpServer.stop(0);
+        if (httpServer != null) {
+            httpServer.close();
+        }
     }
 
     @Test
     void should_restore_interrupt_flag_when_waiting_for_response_is_interrupted() throws Exception {
         //given
         String path = "/interrupted";
-        CountDownLatch prefixSent = new CountDownLatch(1);
-        CountDownLatch release = new CountDownLatch(1);
+
+        PausedHttpResponse response = httpServer.registerPausedBody(
+                path, 200, new byte[]{1}, Duration.ofSeconds(15)
+        );
 
         HttpRequestLimits limits = new HttpRequestLimits(Duration.ofSeconds(30), 1024);
-        registerPausedBody(path, 200, new byte[]{1}, prefixSent, release);
 
         FutureTask<InterruptedCall> call = new FutureTask<>(() -> {
             HttpRequestException failure = assertThrows(
@@ -77,7 +76,10 @@ class JavaLauncherHttpClientTest {
         Thread worker = Thread.ofPlatform().daemon().start(call);
 
         try {
-            assertTrue(prefixSent.await(5, TimeUnit.SECONDS), "Server did not send the prefix");
+            assertTrue(
+                    response.awaitStarted(Duration.ofSeconds(5)),
+                    "Server did not send the prefix"
+            );
             worker.interrupt();
             InterruptedCall result = call.get(5, TimeUnit.SECONDS);
 
@@ -85,7 +87,7 @@ class JavaLauncherHttpClientTest {
             assertInstanceOf(InterruptedException.class, result.failure().getCause());
             assertTrue(result.interrupted(), "Client must restore the interrupt flag");
         } finally {
-            release.countDown();
+            response.release();
             worker.interrupt();
             worker.join(5_000);
         }
@@ -125,9 +127,9 @@ class JavaLauncherHttpClientTest {
             throws InterruptedException {
         //given
         String path = "/pending-body";
-        CountDownLatch prefixSent = new CountDownLatch(1);
-        CountDownLatch release = new CountDownLatch(1);
-        registerPausedBody(path, 200, new byte[]{1}, prefixSent, release);
+        PausedHttpResponse response = httpServer.registerPausedBody(
+                path, 200, new byte[]{1}, Duration.ofSeconds(15)
+        );
 
         HttpClient transport = HttpClient.newHttpClient();
         JavaLauncherHttpClient client = new JavaLauncherHttpClient(transport);
@@ -140,7 +142,10 @@ class JavaLauncherHttpClientTest {
             );
 
             //then
-            assertEquals(0L, prefixSent.getCount(), "Server never sent the first body chunk");
+            assertTrue(
+                    response.awaitStarted(Duration.ZERO),
+                    "Server never sent the first body chunk"
+            );
             assertInstanceOf(TimeoutException.class, failure.getCause());
 
             transport.shutdown();
@@ -148,8 +153,12 @@ class JavaLauncherHttpClientTest {
                     transport.awaitTermination(Duration.ofSeconds(5)),
                     "HTTP exchange must terminate while the server still holds the body open"
             );
+            assertFalse(
+                    response.awaitFinished(Duration.ZERO),
+                    "Server response must still be paused"
+            );
         } finally {
-            release.countDown();
+            response.release();
             transport.shutdownNow();
         }
     }
@@ -158,8 +167,9 @@ class JavaLauncherHttpClientTest {
     void should_reject_status_without_waiting_for_response_body() {
         //given
         String path = "/missing";
-        CountDownLatch release = new CountDownLatch(1);
-        registerPausedBody(path, 404, new byte[0], new CountDownLatch(1), release);
+        PausedHttpResponse response = httpServer.registerPausedBody(
+                path, 404, new byte[0], Duration.ofSeconds(15)
+        );
 
         try {
             //when & then
@@ -170,7 +180,7 @@ class JavaLauncherHttpClientTest {
 
             assertEquals("HTTP GET failed with status code: 404", failure.getMessage());
         } finally {
-            release.countDown();
+            response.release();
         }
     }
 
@@ -365,11 +375,6 @@ class JavaLauncherHttpClientTest {
         );
     }
 
-
-    private URI uri(String path) {
-        return URI.create("http://127.0.0.1:" + httpServer.getAddress().getPort() + path);
-    }
-
     private void registerResponse(
             String path,
             int statusCode,
@@ -410,6 +415,10 @@ class JavaLauncherHttpClientTest {
        );
     }
 
+    private URI uri(String path) {
+        return httpServer.uri(path);
+    }
+
     private void registerResponse(
             String path,
             int statusCode,
@@ -425,29 +434,6 @@ class JavaLauncherHttpClientTest {
                 exchange.sendResponseHeaders(statusCode, body.length);
                 exchange.getResponseBody().write(body);
             }
-        });
-    }
-
-    private void registerPausedBody(
-            String path,
-            int status,
-            byte[] prefix,
-            CountDownLatch prefixSent,
-            CountDownLatch release
-    ) {
-        httpServer.createContext(path, exchange -> {
-           try (exchange) {
-               exchange.sendResponseHeaders(status, 0);
-
-               if (prefix.length > 0) {
-                   OutputStream body = exchange.getResponseBody();
-                   body.write(prefix);
-                   body.flush();
-               }
-
-               prefixSent.countDown();
-               awaitResponseRelease(release);
-           }
         });
     }
 

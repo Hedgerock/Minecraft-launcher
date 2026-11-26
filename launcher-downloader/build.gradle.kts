@@ -8,4 +8,5 @@ dependencies {
     implementation(project(":launcher-storage"))
 
     testImplementation(testFixtures(project(":launcher-storage")))
+    testImplementation(project(":launcher-http-test-support"))
 }

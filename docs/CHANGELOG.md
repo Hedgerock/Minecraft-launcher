@@ -38,6 +38,7 @@
 - Documented shared fake Java executable test support boundary
 - Documented bounded HTTP loading boundary for manifests and signatures
 - Documented bounded resource download boundary with size validation before target replacement
+- Documented shared HTTP test support boundary
 
 ### Changed
 

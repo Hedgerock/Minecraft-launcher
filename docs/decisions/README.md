@@ -99,3 +99,4 @@
 | [ADR-0085](records/ADR-0085-fake-java-executable-test-support-boundary.md) | Подготовка общего тестового Java executable | test infrastructure |
 | [ADR-0086](records/ADR-0086-bounded-manifest-http-loading.md) | Ограниченная HTTP-загрузка манифеста и подписи | HTTP loading |
 | [ADR-0087](records/ADR-0087-bounded-resource-download-boundary.md) | Ограниченная потоковая загрузка ресурсов | resource download |
+| [ADR-0088](records/ADR-0088-http-test-support-boundary.md) | Общая поддержка HTTP-тестов | test infrastructure |

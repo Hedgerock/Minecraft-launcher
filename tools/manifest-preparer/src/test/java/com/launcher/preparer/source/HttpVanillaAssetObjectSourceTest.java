@@ -22,6 +22,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class HttpVanillaAssetObjectSourceTest {
 
     @Test
+    void should_reject_object_before_fetching_when_expected_size_exceeds_limit() {
+        //given
+        long maxObjectBytes = 16;
+        VanillaAssetObject object = new VanillaAssetObject("a".repeat(40), maxObjectBytes + 1);
+        HttpVanillaAssetObjectSource source = new HttpVanillaAssetObjectSource(
+                URI.create("https://example.test/assets/"),
+                resourceSource(),
+                maxObjectBytes
+        );
+
+        //when & then
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> source.open(object)
+        );
+    }
+
+    @Test
     void should_return_response_body_with_resolved_asset_uri() throws IOException {
         //given
         String firstHash = "ab" + "1".repeat(38);
@@ -39,8 +57,8 @@ class HttpVanillaAssetObjectSourceTest {
                 "https://example.test/releases/assets/objects/cd/" + secondHash
         );
 
-        InputStream firstInputStream = new ByteArrayInputStream(new byte[100]);
-        InputStream secondInputStream = new ByteArrayInputStream(new byte[100]);
+        InputStream firstInputStream = new ByteArrayInputStream(new byte[20]);
+        InputStream secondInputStream = new ByteArrayInputStream(new byte[20]);
 
         Map<URI, InputStream> bodies = Map.of(
                 firstUri, firstInputStream,
@@ -64,7 +82,8 @@ class HttpVanillaAssetObjectSourceTest {
         HttpVanillaAssetObjectSource objectSource =
                 new HttpVanillaAssetObjectSource(
                         baseUri,
-                        resourceSource(fetcher)
+                        resourceSource(fetcher),
+                        20L
                 );
 
         VanillaAssetObject first = vanillaAssetObject("ab", "1");

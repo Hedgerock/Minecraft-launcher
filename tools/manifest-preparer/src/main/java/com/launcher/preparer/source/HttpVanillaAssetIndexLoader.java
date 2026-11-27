@@ -11,15 +11,34 @@ import java.util.Objects;
 
 public final class HttpVanillaAssetIndexLoader {
 
+    private static final int DEFAULT_MAX_INDEX_BYTES = 16 * 1024 * 1024;
+
     private final HttpVanillaAssetResourceSource source;
     private final VanillaAssetIndexReader reader;
+    private final int maxIndexBytes;
 
     public HttpVanillaAssetIndexLoader(
             HttpVanillaAssetResourceSource source,
             VanillaAssetIndexReader reader
     ) {
+        this(source, reader, DEFAULT_MAX_INDEX_BYTES);
+    }
+
+    HttpVanillaAssetIndexLoader(
+            HttpVanillaAssetResourceSource source,
+            VanillaAssetIndexReader reader,
+            int maxIndexBytes
+    ) {
         this.source = Objects.requireNonNull(source, "source");
         this.reader = Objects.requireNonNull(reader, "reader");
+
+        if (maxIndexBytes <= 0 || maxIndexBytes == Integer.MAX_VALUE) {
+            throw new IllegalArgumentException(
+                    "maxIndexBytes must be between 1 and Integer.MAX_VALUE - 1"
+            );
+        }
+
+        this.maxIndexBytes = maxIndexBytes;
     }
 
     public PreparedVanillaAssetIndex load(
@@ -66,6 +85,12 @@ public final class HttpVanillaAssetIndexLoader {
         if (expectedSize < 0 || expectedSize >= Integer.MAX_VALUE) {
             throw new IllegalArgumentException(
                     "expectedSize must be between 0 and Integer.MAX_VALUE - 1"
+            );
+        }
+
+        if (expectedSize > maxIndexBytes) {
+            throw new IllegalArgumentException(
+                    "Expected asset index size exceeds maxIndexBytes"
             );
         }
     }

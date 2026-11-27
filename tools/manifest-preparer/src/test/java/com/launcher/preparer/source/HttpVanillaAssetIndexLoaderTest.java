@@ -35,6 +35,27 @@ class HttpVanillaAssetIndexLoaderTest {
     private static final String OBJECT_HASH = "a".repeat(40);
 
     @Test
+    void should_reject_index_before_fetching_when_expected_size_exceeds_limit() {
+        //given
+        int maxIndexBytes = 16;
+        HttpVanillaAssetResourceSource source = new HttpVanillaAssetResourceSource(uri -> {
+            throw new AssertionError("Unexpected request: " + uri);
+        });
+
+        HttpVanillaAssetIndexLoader loader = new HttpVanillaAssetIndexLoader(
+                source,
+                new VanillaAssetIndexReader(),
+                maxIndexBytes
+        );
+
+        //when & then
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> loader.load(INDEX_URI, OBJECT_HASH, maxIndexBytes + 1L)
+        );
+    }
+
+    @Test
     void should_reject_null_sha1_before_fetching() {
         //given
         HttpVanillaAssetIndexLoader loader = loaderRejectingFetch();
@@ -101,9 +122,11 @@ class HttpVanillaAssetIndexLoaderTest {
     void should_propagate_resource_open_failure() {
         //given
         IOException failure = new IOException("Failed to fetch index");
-        HttpVanillaAssetIndexLoader loader = loader(uri -> {
+        VanillaAssetResponseFetcher fetcher = uri -> {
             throw failure;
-        });
+        };
+
+        HttpVanillaAssetIndexLoader loader = loader(fetcher, 30);
 
         //when & then
         IOException exception = assertThrows(
@@ -237,10 +260,12 @@ class HttpVanillaAssetIndexLoaderTest {
         CloseTrackingInputStream body = new CloseTrackingInputStream(bytes);
         List<URI> requestedUris = new ArrayList<>();
 
-        HttpVanillaAssetIndexLoader loader = loader(uri -> {
+        VanillaAssetResponseFetcher fetcher = uri -> {
             requestedUris.add(uri);
             return new VanillaAssetResponseFetcher.Response(200, body);
-        });
+        };
+
+        HttpVanillaAssetIndexLoader loader = loader(fetcher, bytes.length);
 
         //when
         PreparedVanillaAssetIndex result = loader.load(
@@ -265,24 +290,33 @@ class HttpVanillaAssetIndexLoaderTest {
     }
 
     private static HttpVanillaAssetIndexLoader loader(InputStream body) {
-        return loader(uri ->
-                new VanillaAssetResponseFetcher.Response(200, body)
-        );
+        return loader(uri -> new VanillaAssetResponseFetcher.Response(200, body));
     }
 
-    private static HttpVanillaAssetIndexLoader loader(
-            VanillaAssetResponseFetcher fetcher
-    ) {
+    private static HttpVanillaAssetIndexLoader loader(VanillaAssetResponseFetcher fetcher) {
         return new HttpVanillaAssetIndexLoader(
                 new HttpVanillaAssetResourceSource(fetcher),
                 new VanillaAssetIndexReader()
         );
     }
 
+    private static HttpVanillaAssetIndexLoader loader(
+            VanillaAssetResponseFetcher fetcher,
+            int maxIndexBytes
+    ) {
+        return new HttpVanillaAssetIndexLoader(
+                new HttpVanillaAssetResourceSource(fetcher),
+                new VanillaAssetIndexReader(),
+                maxIndexBytes
+        );
+    }
+
     private static HttpVanillaAssetIndexLoader loaderRejectingFetch() {
-        return loader(uri -> {
+        VanillaAssetResponseFetcher fetcher = uri -> {
             throw new AssertionError("Unexpected request: " + uri);
-        });
+        };
+
+        return loader(fetcher);
     }
 
     private static Stream<Arguments> invalidIndexContents() {

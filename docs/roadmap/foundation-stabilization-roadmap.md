@@ -70,7 +70,8 @@
 
 ## В работе
 
-- Сетевые ограничения для получения vanilla assets в launcher-preparer остаются в плане стабилизации
+- Реализовать ограничения HTTP-загрузки vanilla assets в launcher-preparer согласно
+  [ADR-0089](../decisions/records/ADR-0089-bounded-vanilla-asset-http-loading.md)
 - Итоговая сверка документации включает уточнение инварианта L-5 в launcher lifecycle: завершение отдельной Operation
   не означает переход только в терминальное состояние
 

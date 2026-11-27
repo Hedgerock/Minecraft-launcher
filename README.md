@@ -52,6 +52,8 @@ native-библиотек, выбор и проверка Java runtime, пост
   в runtime приложения
 - `launcher-process-test-support` содержит общую подготовку fake Java executable для launcher lifecycle integration tests
   и UI smoke fixture и не входит в runtime приложения
+- `launcher-http-test-support` содержит общую подготовку локального HTTP-сервера и удерживаемых ответов для тестов
+  и не входит в runtime приложения
 
 Подробные границы ответственности описаны в [модульных границах](docs/architecture/module-boundaries.md)
 

@@ -424,11 +424,32 @@ launcher-app
 
 Fixture не запускает процесс и не управляет его ожиданием или завершением
 
-Создание манифеста, HTTP server lifecycle, UI synchronization, ожидание marker и cleanup остаются у потребителей
+Создание манифеста, UI synchronization, ожидание marker и cleanup остаются у потребителей
 
 Тестовая поддержка не входит в runtime classpath приложения
 
 Граница определена в [ADR-0085](../decisions/records/ADR-0085-fake-java-executable-test-support-boundary.md)
+
+---
+
+## Граница общей поддержки HTTP-тестов
+
+`launcher-http-test-support` владеет подготовкой локального HTTP-сервера и удерживаемого ответа для тестов
+launcher-api, launcher-downloader, launcher-app и launcher-ui
+
+Модуль расположен в `tools/http-test-support`, не зависит от production-модулей и подключается только через
+`testImplementation`
+
+`LocalHttpServer` управляет привязкой к loopback-адресу, построением URI, запуском и остановкой сервера
+
+`PausedHttpResponse` удерживает тело ответа до освобождения с ограниченным временем ожидания
+
+Маршруты, тестовые данные, управление клиентом и проверки остаются у потребителей. UI smoke fixture управляет
+паузой до отправки заголовков самостоятельно
+
+Тестовая поддержка не входит в runtime classpath приложения
+
+Граница определена в [ADR-0088](../decisions/records/ADR-0088-http-test-support-boundary.md)
 
 ---
 

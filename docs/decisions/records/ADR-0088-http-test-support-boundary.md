@@ -6,6 +6,10 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `refactor(test): share HTTP server and paused response fixtures`
+> `refactor(test): reuse shared HTTP server across launcher tests`
+
 ---
 
 ## Контекст

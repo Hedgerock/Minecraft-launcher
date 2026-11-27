@@ -8,7 +8,7 @@ dependencies {
     implementation(project(":launcher-auth"))
     implementation(project(":launcher-core"))
 
-    implementation(platform("com.fasterxml.jackson:jackson-bom:2.22.1"))
+    implementation(platform("com.fasterxml.jackson:jackson-bom:2.23.0"))
     implementation("com.fasterxml.jackson.core:jackson-databind")
 
     testImplementation(project(":launcher-http-test-support"))

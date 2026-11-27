@@ -6,11 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Objects;
 
 public final class HttpVanillaAssetResourceSource {
+
+    private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(5);
+    private static final Duration REQUEST_TIMEOUT = Duration.ofMinutes(2);
 
     private final VanillaAssetResponseFetcher fetcher;
 
@@ -53,23 +55,10 @@ public final class HttpVanillaAssetResourceSource {
 
     private static VanillaAssetResponseFetcher defaultFetcher() {
         HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(CONNECT_TIMEOUT)
                 .followRedirects(HttpClient.Redirect.NEVER)
                 .build();
 
-        return uri -> {
-            HttpRequest request = HttpRequest.newBuilder(uri)
-                    .GET()
-                    .build();
-
-            HttpResponse<InputStream> response = client.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofInputStream()
-            );
-
-            return new VanillaAssetResponseFetcher.Response(
-                    response.statusCode(),
-                    response.body()
-            );
-        };
+        return new DeadlineVanillaAssetResponseFetcher(client, REQUEST_TIMEOUT);
     }
 }

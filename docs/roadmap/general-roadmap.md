@@ -2,15 +2,13 @@
 
 ## Текущий фокус
 
-- Завершить [стабилизацию фундамента](foundation-stabilization-roadmap.md) перед дальнейшим расширением подготовки запуска
-- Вернуться к подготовке первого воспроизводимого технического запуска vanilla Minecraft только после выполнения условий
-  завершения стабилизации
+- Сверить состав следующего релиза после завершения стабилизации фундамента
 - Не включать обычный пользовательский запуск без действительных URI управляемого манифеста и подписи и доверенного публичного ключа
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
 - Не вводить domain-specific failure codes в operation layer без отдельного подтвержденного сценария
 - Использовать правила planning builders при будущих изменениях operation planning boundaries
-- Не расширять Java runtime flow новыми возможностями; укрепление существующего version probe входит в текущую стабилизацию
+- Не расширять Java runtime flow новыми возможностями
 
 ## Направления развития
 
@@ -62,3 +60,5 @@
 - Завершен milestone `v0.9.0-local-ui-launch-flow`; подробные итоги зафиксированы в [ретроспективе local UI launch flow](../retrospective/2026-09-local-ui-launch-flow.md)
 - Завершен milestone `v0.10.0-manifest-trust-foundation`; подробные итоги зафиксированы
   в [ретроспективе manifest trust foundation](../retrospective/2026-10-manifest-trust-foundation.md)
+- Завершена [стабилизация фундамента](foundation-stabilization-roadmap.md) перед продолжением подготовки технического запуска
+  vanilla Minecraft

@@ -56,6 +56,7 @@
 - Consolidated local HTTP server setup and paused responses in shared test support
 - Enabled Gradle dependency caching in CI while preserving wrapper validation
 - Updated Jackson BOM to 2.23.0 in launcher-api and launcher-preparer
+- Aligned Gradle project version with v0.11.0
 
 ### Fixed
 

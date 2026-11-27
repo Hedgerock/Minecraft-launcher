@@ -2,7 +2,7 @@
 
 ## Текущий фокус
 
-- Сверить состав следующего релиза после завершения стабилизации фундамента
+- Подготовить релиз `v0.11.0-vanilla-launch-preparation` и подтвердить его в CI
 - Не включать обычный пользовательский запуск без действительных URI управляемого манифеста и подписи и доверенного публичного ключа
 - Не вводить Java installation discovery без подтвержденного сценария
 - Не расширять Java runtime fallback policy до появления подтвержденного сценария несовместимой Java version
@@ -62,3 +62,5 @@
   в [ретроспективе manifest trust foundation](../retrospective/2026-10-manifest-trust-foundation.md)
 - Завершена [стабилизация фундамента](foundation-stabilization-roadmap.md) перед продолжением подготовки технического запуска
   vanilla Minecraft
+- Сформирована основа подготовки технического запуска vanilla Minecraft; итоги зафиксированы
+  в [ретроспективе vanilla launch preparation](../retrospective/2026-11-vanilla-launch-preparation.md)

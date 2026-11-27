@@ -49,8 +49,10 @@ L-4
 
 L-5
 
-Завершение `Operation` всегда приводит систему в согласованное состояние
-(`RUNNING`, `FAILED` или `IDLE` в зависимости от сценария)
+После завершения отдельной `Operation` `LauncherEngine` продолжает сценарий или завершает его в зависимости от результата
+операции и состояния `LaunchContext`
+
+При возврате `LaunchResult` успешному запуску соответствует `RUNNING`, неуспешному — `FAILED`
 
 ---
 
@@ -210,9 +212,9 @@ launcher process
 Связанные документы
 
 - [ADR-0003 Launcher Engine Responsibility](../../decisions/records/ADR-0003-launcher-engine-responsibility.md)
-- [ADR-0005 Context Ownership (Deferred)](../../decisions/records/ADR-0005-immutable-domain-model.md)
+- [ADR-0007 Context Ownership](../../decisions/records/ADR-0007-context-ownership.md)
 - [RFC-0002 Session Lifecycle Management](../../rfc/RFC-0002-session-lifecycle-management.md)
-- [RFC-0003 Task Cancellation](../../rfc/RFC-0003-task-lifecycle.md)
+- [RFC-0003 Task Lifecycle](../../rfc/RFC-0003-task-lifecycle.md)
 
 Диаграммы
 

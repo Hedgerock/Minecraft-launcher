@@ -61,6 +61,8 @@
   [ADR-0087](../decisions/records/ADR-0087-bounded-resource-download-boundary.md)
 - Выделена общая поддержка HTTP-тестов согласно [ADR-0088](../decisions/records/ADR-0088-http-test-support-boundary.md);
   существующие сценарии переведены на общий сервер с сохранением проверок потребителей
+- Реализованы ограничения времени и размера HTTP-загрузки vanilla assets согласно
+  [ADR-0089](../decisions/records/ADR-0089-bounded-vanilla-asset-http-loading.md)
 
 Перенаправление вывода не вводит файловое логирование и не гарантирует доступность диагностики при запуске GUI без консоли
 
@@ -70,8 +72,6 @@
 
 ## В работе
 
-- Реализовать ограничения HTTP-загрузки vanilla assets в launcher-preparer согласно
-  [ADR-0089](../decisions/records/ADR-0089-bounded-vanilla-asset-http-loading.md)
 - Итоговая сверка документации включает уточнение инварианта L-5 в launcher lifecycle: завершение отдельной Operation
   не означает переход только в терминальное состояние
 

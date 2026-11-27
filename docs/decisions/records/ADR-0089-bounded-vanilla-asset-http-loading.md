@@ -6,6 +6,11 @@
 
 Accepted
 
+> Примечание: решение реализовано в итерациях
+> `feat(preparer): enforce vanilla asset size limits`
+> `feat(preparer): add deadline-aware asset body reader`
+> `feat(preparer): enforce vanilla asset http deadlines`
+
 ---
 
 ## Контекст

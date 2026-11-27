@@ -215,6 +215,14 @@ assembly напрямую
 
 `HttpVanillaAssetResourceSource` получает ресурсы по допустимым HTTPS URI и отклоняет HTTP-перенаправления
 
+`launcher-preparer` ограничивает HTTP-загрузку каждого ресурса одним deadline от отправки запроса до завершения тела
+согласно [ADR-0089](../decisions/records/ADR-0089-bounded-vanilla-asset-http-loading.md)
+
+По умолчанию общий deadline составляет 2 минуты, а время установления соединения ограничено 5 секундами
+
+`HttpVanillaAssetIndexLoader` и `HttpVanillaAssetObjectSource` отклоняют ожидаемый размер выше локального предела
+до начала запроса: по умолчанию 16 МиБ для индекса и 128 МиБ для отдельного объекта
+
 `HttpVanillaAssetObjectSource` определяет URI объекта по SHA-1 относительно заданной базовой директории
 
 `HttpVanillaAssetIndexLoader` ограничивает чтение файла индекса ожидаемым размером плюс один байт, передает исходные байты

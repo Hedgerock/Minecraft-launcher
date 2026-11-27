@@ -1,5 +1,9 @@
 ## Unreleased
 
+---
+
+## v0.11.0 – Vanilla Launch Preparation
+
 ### Added
 
 - Documented immutable first publication policy for signed managed manifests
@@ -50,6 +54,8 @@
 - Consolidated digest and stream-close tracking helpers in vanilla asset preparation tests with standalone regression coverage
 - Consolidated fake Java executable preparation in test-only process support with standalone regression coverage
 - Consolidated local HTTP server setup and paused responses in shared test support
+- Enabled Gradle dependency caching in CI while preserving wrapper validation
+- Updated Jackson BOM to 2.23.0 in launcher-api and launcher-preparer
 
 ### Fixed
 
